@@ -1,0 +1,247 @@
+---
+title: "Coffee Berry Borer Lifecycle"
+author: "Simon Frost"
+bibliography: ../references.bib
+---
+
+Primary reference: [@Cure2020Coffee].
+
+
+## Background
+
+The coffee berry borer (*Hypothenemus hampei*) is the most devastating pest
+of coffee worldwide. This vignette models its lifecycle using a
+physiologically based demographic model with:
+
+- **Nonlinear development rates** (Lactin model)
+- **Age-structured population dynamics** across 7 life stages
+- **Berry age preference** for oviposition
+- **Intraspecific competition** (density-dependent larval mortality)
+- **Rainfall-induced mortality**
+
+**Reference:** Cure et al. (2020). *The coffee agroecosystem: Bio-economic
+analysis of coffee berry borer control.* Journal of Applied Ecology.
+Also: Gutierrez et al. (1998). *Tritrophic analysis of the coffee–coffee
+berry borer system.*
+
+## Model Parameters
+
+```{julia}
+using PhysiologicallyBasedDemographicModels
+
+# CBB temperature thresholds
+const CBB_T_LOWER = 14.9   # °C — minimum development threshold
+const CBB_T_UPPER = 34.25  # °C — maximum development threshold
+```
+
+### Lactin Development Rate
+
+The Lactin et al. (1995) nonlinear development rate model provides a
+more realistic temperature response than linear degree-days. We can
+approximate it using the Logan model available in the package:
+
+```{julia}
+# Logan Type III development rate approximating Lactin parameters
+# Parameters fitted to CBB: ψ=0.02, ρ=0.15, T_upper=34.25, ΔT=3.0
+cbb_dev = LoganDevelopmentRate(0.02, 0.15, CBB_T_UPPER, 3.0)
+
+# Compare with linear model
+cbb_linear = LinearDevelopmentRate(CBB_T_LOWER, CBB_T_UPPER)
+
+# Development rates at different temperatures
+for T in [15.0, 20.0, 25.0, 30.0, 34.0]
+    r_logan = development_rate(cbb_dev, T)
+    r_linear = development_rate(cbb_linear, T)
+    println("T=$(T)°C: Logan=$(round(r_logan, digits=4)), Linear=$(round(r_linear, digits=1))")
+end
+```
+
+## Life Stage Parameters
+
+The CBB lifecycle has 7 stages with developmental times measured in
+degree-days above 14.9°C:
+
+```{julia}
+# Life stages: (name, k substages, mean developmental time in DD)
+# Durations from Cure et al. Table 2:
+#   Eggs:       0–44.15 DD    → duration 44.15 DD
+#   Larva I:    44.15–64.92   → duration 20.77 DD
+#   Larva II:   64.92–174.98  → duration 110.06 DD
+#   Pre-pupae:  174.98–200.81 → duration 25.83 DD
+#   Pupae:      200.81–262.47 → duration 61.66 DD
+#   Young adult: 262.47–312.47 → duration 50.0 DD
+#   Mature female: 312.47–827.0 → duration 514.53 DD
+
+# Intrinsic mortality rates (per degree-day) from Table 3
+cbb_stages = [
+    LifeStage(:egg,          DistributedDelay(15, 44.15;  W0=100.0), cbb_linear, 0.00102),
+    LifeStage(:larva_I,      DistributedDelay(10, 20.77;  W0=0.0),   cbb_linear, 0.00094),
+    LifeStage(:larva_II,     DistributedDelay(20, 110.06; W0=0.0),   cbb_linear, 0.00094),
+    LifeStage(:prepupa,      DistributedDelay(10, 25.83;  W0=0.0),   cbb_linear, 0.00073),
+    LifeStage(:pupa,         DistributedDelay(15, 61.66;  W0=0.0),   cbb_linear, 0.00074),
+    LifeStage(:young_adult,  DistributedDelay(10, 50.0;   W0=0.0),   cbb_linear, 0.00035),
+    LifeStage(:mature_female, DistributedDelay(10, 514.53; W0=0.0),  cbb_linear, 0.00035),
+]
+
+cbb = Population(:coffee_berry_borer, cbb_stages)
+
+println("Total life stages: ", n_stages(cbb))
+println("Total substages:   ", n_substages(cbb))
+println("Initial population: ", total_population(cbb))
+```
+
+## Weather: Colombian Coffee Zone
+
+```{julia}
+# Ciudad Bolivar, Antioquia, Colombia: 05°51'N, 1342 m
+# Mean temperature ≈ 22°C, relatively stable year-round
+# Mean annual rainfall: 2766 mm
+
+n_days = 365
+colombia_temps = [22.0 + 2.0 * sin(2π * (d - 100) / 365) for d in 1:n_days]
+weather = WeatherSeries(colombia_temps; day_offset=1)
+```
+
+## Basic Simulation
+
+```{julia}
+prob = PBDMProblem(cbb, weather, (1, n_days))
+sol = solve(prob, DirectIteration())
+
+println(sol)
+println("Net growth rate: ", round(net_growth_rate(sol), digits=4))
+```
+
+## Lifecycle Analysis
+
+```{julia}
+stage_names = [:egg, :larva_I, :larva_II, :prepupa, :pupa, :young_adult, :mature_female]
+
+for (i, name) in enumerate(stage_names)
+    traj = stage_trajectory(sol, i)
+    peak_val = maximum(traj)
+    peak_day = sol.t[argmax(traj)]
+    final_val = traj[end]
+    println("$name: peak=$(round(peak_val, digits=1)) (day $peak_day), " *
+            "final=$(round(final_val, digits=1))")
+end
+```
+
+## Degree-Day Accumulation in Tropical Climate
+
+In the Colombian coffee zone, temperatures are warm year-round, so
+degree-day accumulation is roughly linear:
+
+```{julia}
+cdd = cumulative_degree_days(sol)
+dd_per_day = cdd[end] / length(cdd)
+println("Mean DD/day: ", round(dd_per_day, digits=1))  # ≈ 7.1 DD/day
+println("Total annual DD: ", round(cdd[end], digits=0))
+
+# Generations per year estimate
+generation_dd = 312.47  # DD from egg to mature female emergence
+gens = cdd[end] / generation_dd
+println("Estimated generations/year: ", round(gens, digits=1))
+```
+
+## Berry Preference Model
+
+CBB females preferentially attack ripe berries. The preference weights
+determine the effective attack rate on berries of different ages:
+
+```{julia}
+# Berry preference by phenological stage (from Table 4, cv. Colombia)
+berry_preferences = Dict(
+    :pin_stage    => 0.00,   # No attack
+    :green_stage  => 0.054,  # Low preference
+    :yellow_stage => 0.57,   # High preference
+    :ripe_stage   => 0.61,   # Highest preference
+)
+
+println("Berry preferences:")
+for (stage, pref) in sort(collect(berry_preferences), by=x->x[2])
+    bar = repeat("█", round(Int, pref * 40))
+    println("  $stage: $(round(pref, digits=3)) $bar")
+end
+```
+
+## Density-Dependent Simulation
+
+With density dependence, intraspecific competition kicks in when
+larval density exceeds a threshold within berries:
+
+```{julia}
+# Competition threshold: 4 larvae per berry
+const U_THRESHOLD = 4.0
+
+# Reproduction function: mature females produce eggs
+# Fecundity: 0.3481 eggs per female per adult-day
+# Sex ratio: 1:10 (male:female) → 90.9% female
+const FECUNDITY = 0.3481
+const FEMALE_FRAC = 10.0 / 11.0
+
+function cbb_reproduction(pop, w, p, day)
+    mature = delay_total(pop.stages[end].delay)
+    dd = degree_days(pop.stages[1].dev_rate, w.T_mean)
+    # Daily egg production scaled by degree-days
+    return FECUNDITY * FEMALE_FRAC * mature * dd / 10.0
+end
+
+# Reset population for DD run
+cbb_dd_stages = [
+    LifeStage(:egg,          DistributedDelay(15, 44.15;  W0=50.0),  cbb_linear, 0.00102),
+    LifeStage(:larva_I,      DistributedDelay(10, 20.77;  W0=0.0),   cbb_linear, 0.00094),
+    LifeStage(:larva_II,     DistributedDelay(20, 110.06; W0=0.0),   cbb_linear, 0.00094),
+    LifeStage(:prepupa,      DistributedDelay(10, 25.83;  W0=0.0),   cbb_linear, 0.00073),
+    LifeStage(:pupa,         DistributedDelay(15, 61.66;  W0=0.0),   cbb_linear, 0.00074),
+    LifeStage(:young_adult,  DistributedDelay(10, 50.0;   W0=0.0),   cbb_linear, 0.00035),
+    LifeStage(:mature_female, DistributedDelay(10, 514.53; W0=0.0),  cbb_linear, 0.00035),
+]
+cbb_dd = Population(:cbb, cbb_dd_stages)
+
+prob_dd = PBDMProblem(DensityDependent(), cbb_dd, weather, (1, 365))
+sol_dd = solve(prob_dd, DirectIteration(); reproduction_fn=cbb_reproduction)
+
+println("With reproduction:")
+println("  Final population: ", round(sum(sol_dd.u[end]), digits=0))
+println("  Net growth rate:  ", round(net_growth_rate(sol_dd), digits=4))
+```
+
+## Migration Rate Comparison
+
+CBB migration rates vary with tree age, affecting reinfestation dynamics:
+
+```{julia}
+# Migration rates (per day) from Table 5
+migration_rates = Dict(
+    "2-year trees" => 0.07,
+    "3-year trees" => 0.50,
+    "4-year trees" => 0.15,
+)
+
+println("\nCBB migration rates by tree age:")
+for (age, rate) in sort(collect(migration_rates), by=x->x[2])
+    println("  $age: ψ = $rate /day")
+end
+println("\nImplication: 3-year trees have highest reinfestation risk")
+```
+
+## Key Insights
+
+1. **Continuous generations**: In tropical climates, CBB can complete
+   ~8 generations per year with no diapause — populations grow
+   continuously unless controlled.
+
+2. **Berry phenology matters**: Attack is concentrated on yellow/ripe
+   berries (preference > 0.5), so harvest timing is a key control lever.
+
+3. **Sex ratio**: The extreme female bias (10:1) means nearly all
+   surviving adults are reproductive females.
+
+4. **Density regulation**: At high densities (>4 larvae/berry),
+   intraspecific competition limits population growth, creating
+   a natural carrying capacity within each berry.
+
+5. **Climate sensitivity**: The narrow development window (14.9–34.25°C)
+   means CBB is well-adapted to coffee-growing elevations but
+   vulnerable to both cold and heat extremes.

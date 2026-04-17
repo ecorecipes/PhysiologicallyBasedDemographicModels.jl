@@ -1,0 +1,1025 @@
+# Mediterranean Fruit Fly Under Climate Change
+Simon Frost
+
+- [Background](#background)
+  - [Key modelling features](#key-modelling-features)
+  - [Climate change context](#climate-change-context)
+- [Model Formulation](#model-formulation)
+  - [Kolmogorov PDE](#kolmogorov-pde)
+  - [Boundary conditions](#boundary-conditions)
+- [Parameters](#parameters)
+  - [Stage definitions](#stage-definitions)
+  - [Development rate parameters (Brière
+    model)](#development-rate-parameters-brière-model)
+  - [Base mortality parameters](#base-mortality-parameters)
+  - [Density-dependent mortality](#density-dependent-mortality)
+  - [Fecundity](#fecundity)
+- [Helper Functions](#helper-functions)
+  - [Validation against package
+    types](#validation-against-package-types)
+- [Visualising Thermal Responses](#visualising-thermal-responses)
+  - [Development rates](#development-rates)
+  - [Base mortality](#base-mortality)
+  - [Density-dependent mortality](#density-dependent-mortality-1)
+- [Staged PSPM Species Definition](#staged-pspm-species-definition)
+  - [Mesh resolution](#mesh-resolution)
+  - [Environment function](#environment-function)
+  - [Stage definitions](#stage-definitions-1)
+  - [Species assembly](#species-assembly)
+- [Climate Scenarios](#climate-scenarios)
+- [Simulation](#simulation)
+  - [Initial conditions](#initial-conditions)
+  - [Solve for all scenarios](#solve-for-all-scenarios)
+- [Results](#results)
+  - [Population time series across climate
+    scenarios](#population-time-series-across-climate-scenarios)
+  - [Stage-specific dynamics (current
+    climate)](#stage-specific-dynamics-current-climate)
+  - [Comparing scenarios by stage](#comparing-scenarios-by-stage)
+  - [Peak population vs mean annual
+    temperature](#peak-population-vs-mean-annual-temperature)
+  - [Generations per year](#generations-per-year)
+- [Method Comparison](#method-comparison)
+- [Discussion](#discussion)
+  - [Key findings](#key-findings)
+  - [Limitations](#limitations)
+  - [Extensions](#extensions)
+- [References](#references)
+
+Primary reference: (Gilioli et al. 2022).
+
+## Background
+
+The Mediterranean fruit fly (*Ceratitis capitata* Wiedemann), or medfly,
+is one of the world’s most destructive and invasive agricultural pests.
+Originating in sub-Saharan Africa, it has colonised the Mediterranean
+Basin, the Americas, Hawaii, and western Australia. The fly attacks over
+300 host-plant species — citrus, stone fruit, pome fruit, coffee, and
+tropical crops — making it a primary target for quarantine and
+eradication programmes worldwide.
+
+Unlike temperate pests with a diapause stage, the medfly’s range is
+governed almost entirely by temperature: cold winters limit
+establishment at high latitudes, while extreme heat reduces survival and
+fecundity in arid zones. This vignette builds a Kolmogorov
+partial-differential-equation (PDE) model to explore how climate warming
+reshapes medfly population dynamics across Mediterranean climate
+regions.
+
+The Kolmogorov PDE framework follows the same physiological age
+structure used in [vignette
+40](../40_spodoptera_frugiperda/40_spodoptera_frugiperda.qmd) for
+*Spodoptera frugiperda*, but adapted to the medfly’s thermal biology and
+density-dependent regulation. A complementary discrete-time treatment of
+medfly invasive potential appears in [vignette
+13](../13_medfly_invasion/13_medfly_invasion.qmd), which uses the
+distributed-delay approach of Gutierrez and Ponti (2011).
+
+### Key modelling features
+
+- **Brière development rates** — nonlinear temperature response with
+  stage-specific lower and upper thermal thresholds.
+- **Temperature-dependent base mortality** — quadratic function with
+  stage-specific optimal temperatures.
+- **Density-dependent mortality** — for larval and adult stages,
+  preventing unbounded growth (calibrated in Gilioli et al. 2022).
+- **Temperature-dependent fecundity** — downward parabola peaking near
+  25–26 °C with total shutdown at extreme temperatures.
+- **Method of Lines** — the continuous physiological-age PDE is
+  discretised into a system of ODEs solved with an adaptive Runge-Kutta
+  method.
+
+### Climate change context
+
+Gilioli et al. (2022) showed that medfly population responses to warming
+are *nonlinear*: moderate warming (+1–2 °C) increases voltinism and
+population size, but further warming pushes temperatures above thermal
+optima, raising mortality and reducing fecundity. This produces a
+hump-shaped relationship between mean annual temperature and peak
+population size — the central result we reproduce here.
+
+## Model Formulation
+
+### Kolmogorov PDE
+
+The population of each life stage $i \in \{1,2,3,4\}$ (egg, larva, pupa,
+adult) is described by a density $N^i(t, x)$ over physiological age
+$x \in [0, 1]$ and calendar time $t$:
+
+$$\frac{\partial N^i}{\partial t} +
+\frac{\partial}{\partial x}\!\bigl[G^i(T)\, N^i(t,x)\bigr]
+= -m^i(T, N)\, N^i(t,x)$$
+
+where:
+
+- $G^i(T)$ is the temperature-dependent development (advection) rate,
+- $m^i(T, N)$ is the total mortality rate (temperature-dependent base +
+  density-dependent component for larvae and adults).
+
+Individuals enter stage $i$ at $x = 0$ and complete the stage at
+$x = 1$, where they transition to the next stage (or, for adults at
+$x = 1$, they die of senescence). Egg stage influx at $x = 0$ comes from
+adult fecundity.
+
+### Boundary conditions
+
+- **Egg stage ($i=1$):** influx from reproduction by adults
+  $$G^1(T)\, N^1(t,0) = \mathrm{SR} \cdot \beta(T) \cdot N^4_{\mathrm{total}}(t)$$
+- **Subsequent stages ($i=2,3,4$):** influx from completion of the
+  previous stage $$G^i(T)\, N^i(t,0) = G^{i-1}(T)\, N^{i-1}(t,1)$$
+
+## Parameters
+
+``` julia
+using PhysiologicallyBasedDemographicModels
+using OrdinaryDiffEq
+using CairoMakie
+```
+
+### Stage definitions
+
+``` julia
+# ── Life stages ──────────────────────────────────────────────────
+# i=1 egg, i=2 larva, i=3 pupa, i=4 adult
+const STAGE_NAMES = ["Egg", "Larva", "Pupa", "Adult"]
+const N_STAGES = 4
+```
+
+    4
+
+### Development rate parameters (Brière model)
+
+The Brière function gives a nonlinear, asymmetric
+temperature–development curve:
+
+$$G^i(T) = a_i \, T \, (T - T_L^i)\, \sqrt{T_M^i - T}$$
+
+which is positive only for $T_L^i < T < T_M^i$.
+
+``` julia
+# ── Brière development rate parameters (Gilioli et al. 2022, Table S2)
+# Stage-specific: (a, T_lower, T_upper)
+const DEV_PARAMS = (
+    egg   = (a = 6.73e-5, T_L = 10.5, T_M = 35.5),
+    larva = (a = 4.57e-5, T_L = 10.5, T_M = 35.5),
+    pupa  = (a = 2.41e-5, T_L =  9.5, T_M = 34.5),
+    adult = (a = 2.41e-5, T_L =  9.5, T_M = 34.5),
+)
+
+# Use the package's BriereDevelopmentRate type for validation
+briere_models = (
+    BriereDevelopmentRate(DEV_PARAMS.egg.a,   DEV_PARAMS.egg.T_L,   DEV_PARAMS.egg.T_M),
+    BriereDevelopmentRate(DEV_PARAMS.larva.a,  DEV_PARAMS.larva.T_L, DEV_PARAMS.larva.T_M),
+    BriereDevelopmentRate(DEV_PARAMS.pupa.a,   DEV_PARAMS.pupa.T_L,  DEV_PARAMS.pupa.T_M),
+    BriereDevelopmentRate(DEV_PARAMS.adult.a,  DEV_PARAMS.adult.T_L, DEV_PARAMS.adult.T_M),
+)
+
+println("Medfly Brière development rate parameters:")
+println("="^60)
+println("Stage  | a          | T_L (°C) | T_M (°C)")
+println("-"^60)
+for (i, name) in enumerate(STAGE_NAMES)
+    p = DEV_PARAMS[i]
+    println("  $(rpad(name, 7))| $(rpad(p.a, 11))| $(rpad(p.T_L, 9))| $(p.T_M)")
+end
+```
+
+    Medfly Brière development rate parameters:
+    ============================================================
+    Stage  | a          | T_L (°C) | T_M (°C)
+    ------------------------------------------------------------
+      Egg    | 6.73e-5    | 10.5     | 35.5
+      Larva  | 4.57e-5    | 10.5     | 35.5
+      Pupa   | 2.41e-5    | 9.5      | 34.5
+      Adult  | 2.41e-5    | 9.5      | 34.5
+
+### Base mortality parameters
+
+Temperature-dependent base mortality follows a quadratic function
+centred on a stage-specific thermal optimum:
+
+$$\mu^i(T) = a_m^i \, (T - T_{\mathrm{opt}}^i)^2 + \mu_{\min}^i$$
+
+``` julia
+# ── Base mortality parameters ────────────────────────────────────
+# Stage-specific: (a_m, T_opt, μ_min)
+const MORT_PARAMS = (
+    egg   = (a_m = 0.0005, T_opt = 24.0, μ_min = 0.010),
+    larva = (a_m = 0.0004, T_opt = 25.0, μ_min = 0.010),
+    pupa  = (a_m = 0.0003, T_opt = 22.0, μ_min = 0.008),
+    adult = (a_m = 0.0005, T_opt = 23.0, μ_min = 0.015),
+)
+
+println("Base mortality parameters:")
+println("="^60)
+println("Stage  | a_m      | T_opt (°C) | μ_min")
+println("-"^60)
+for (i, name) in enumerate(STAGE_NAMES)
+    p = MORT_PARAMS[i]
+    println("  $(rpad(name, 7))| $(rpad(p.a_m, 9))| $(rpad(p.T_opt, 11))| $(p.μ_min)")
+end
+```
+
+    Base mortality parameters:
+    ============================================================
+    Stage  | a_m      | T_opt (°C) | μ_min
+    ------------------------------------------------------------
+      Egg    | 0.0005   | 24.0       | 0.01
+      Larva  | 0.0004   | 25.0       | 0.01
+      Pupa   | 0.0003   | 22.0       | 0.008
+      Adult  | 0.0005   | 23.0       | 0.015
+
+### Density-dependent mortality
+
+Density dependence prevents unbounded growth in the larval and adult
+stages. Following Gilioli et al. (2022), the additional mortality is:
+
+$$m^i_{\mathrm{dd}} = \delta_i + \left(\frac{N^i_{\mathrm{total}}}{N^i_{\max}}\right)^2$$
+
+``` julia
+# ── Density-dependent mortality (calibrated, Gilioli et al. 2022) ─
+const δ_L     = 4.5459e-2   # larval baseline DD parameter
+const N_MAX_L = 1.5361e4    # larval carrying capacity
+
+const δ_A     = 2.5579e-1   # adult baseline DD parameter
+const N_MAX_A = 1.5677e1    # adult carrying capacity
+
+println("Density-dependent mortality parameters:")
+println("  Larva:  δ_L = $δ_L, N_max = $N_MAX_L")
+println("  Adult:  δ_A = $δ_A, N_max = $N_MAX_A")
+```
+
+    Density-dependent mortality parameters:
+      Larva:  δ_L = 0.045459, N_max = 15361.0
+      Adult:  δ_A = 0.25579, N_max = 15.677
+
+### Fecundity
+
+Adult fecundity is temperature-dependent: a downward parabola peaking
+near 25.8 °C with zero reproduction at extreme temperatures.
+
+$$\beta(T) = F_{\max} \cdot \max\!\Bigl(0,\; 1 - \Bigl(\frac{T - 25.8}{11}\Bigr)^{\!2}\Bigr)$$
+
+The sex ratio is 1:1 ($\mathrm{SR} = 0.5$).
+
+``` julia
+# ── Fecundity parameters ─────────────────────────────────────────
+const F_MAX = 20.0   # max eggs/female/day (~800 lifetime over ~40 days)
+const T_OPT_FEC = 25.8  # temperature for peak fecundity (°C)
+const T_RANGE_FEC = 11.0 # half-width of thermal window (°C)
+const SR = 0.5       # sex ratio (proportion female)
+
+println("Fecundity parameters:")
+println("  F_max = $F_MAX eggs/female/day")
+println("  T_opt = $T_OPT_FEC °C, thermal half-width = $T_RANGE_FEC °C")
+println("  Sex ratio = $SR")
+```
+
+    Fecundity parameters:
+      F_max = 20.0 eggs/female/day
+      T_opt = 25.8 °C, thermal half-width = 11.0 °C
+      Sex ratio = 0.5
+
+## Helper Functions
+
+``` julia
+"""
+    briere(T, a, T_L, T_M)
+
+Brière development rate: `a · T · (T - T_L) · √(T_M - T)` for T_L < T < T_M.
+"""
+function briere(T, a, T_L, T_M)
+    (T <= T_L || T >= T_M) && return 0.0
+    return a * T * (T - T_L) * sqrt(T_M - T)
+end
+
+"""
+    base_mortality(T, a_m, T_opt, μ_min)
+
+Quadratic temperature-dependent mortality centred on `T_opt`.
+"""
+function base_mortality(T, a_m, T_opt, μ_min)
+    return a_m * (T - T_opt)^2 + μ_min
+end
+
+"""
+    fecundity(T)
+
+Temperature-dependent daily fecundity per female (eggs/day).
+"""
+function fecundity(T)
+    f = F_MAX * max(0.0, 1.0 - ((T - T_OPT_FEC) / T_RANGE_FEC)^2)
+    return f
+end
+```
+
+    Main.Notebook.fecundity
+
+### Validation against package types
+
+We verify that our `briere` helper matches the `development_rate`
+function from
+`PhysiologicallyBasedDemographicModels.BriereDevelopmentRate`:
+
+``` julia
+T_test = 25.0
+for (i, name) in enumerate(STAGE_NAMES)
+    p = DEV_PARAMS[i]
+    manual = briere(T_test, p.a, p.T_L, p.T_M)
+    pkg    = development_rate(briere_models[i], T_test)
+    @assert abs(manual - pkg) < 1e-12 "Mismatch for $name at $(T_test)°C"
+end
+println("✓ All Brière rates match PhysiologicallyBasedDemographicModels at $(T_test)°C")
+```
+
+    ✓ All Brière rates match PhysiologicallyBasedDemographicModels at 25.0°C
+
+## Visualising Thermal Responses
+
+### Development rates
+
+``` julia
+Ts = 5.0:0.25:40.0
+
+fig1 = Figure(size = (800, 500))
+ax1 = Axis(fig1[1, 1],
+    xlabel = "Temperature (°C)",
+    ylabel = "Development rate (1/day)",
+    title = "Medfly Brière Development Rates")
+
+stage_colors = [:steelblue, :forestgreen, :goldenrod, :firebrick]
+
+for (i, name) in enumerate(STAGE_NAMES)
+    p = DEV_PARAMS[i]
+    rates = [briere(T, p.a, p.T_L, p.T_M) for T in Ts]
+    lines!(ax1, collect(Ts), rates,
+           label = name, linewidth = 2, color = stage_colors[i])
+end
+axislegend(ax1, position = :lt)
+fig1
+```
+
+<div id="fig-development-rates">
+
+<img
+src="46_medfly_kolmogorov_files/figure-commonmark/fig-development-rates-output-1.png"
+width="800" height="500" />
+
+Figure 1: Brière development rates for each medfly life stage as a
+function of temperature.
+
+</div>
+
+Development peaks near 30 °C for eggs and larvae (higher $a$ values) and
+at lower rates for pupae and adults. All rates drop to zero at the
+stage-specific lower and upper thresholds.
+
+### Base mortality
+
+``` julia
+fig2 = Figure(size = (800, 500))
+ax2 = Axis(fig2[1, 1],
+    xlabel = "Temperature (°C)",
+    ylabel = "Mortality rate (1/day)",
+    title = "Base Mortality vs Temperature")
+
+for (i, name) in enumerate(STAGE_NAMES)
+    p = MORT_PARAMS[i]
+    μ_vals = [base_mortality(T, p.a_m, p.T_opt, p.μ_min) for T in Ts]
+    lines!(ax2, collect(Ts), μ_vals,
+           label = name, linewidth = 2, color = stage_colors[i])
+end
+axislegend(ax2, position = :ct)
+fig2
+```
+
+<div id="fig-base-mortality">
+
+<img
+src="46_medfly_kolmogorov_files/figure-commonmark/fig-base-mortality-output-1.png"
+width="800" height="500" />
+
+Figure 2: Temperature-dependent base mortality for each life stage.
+
+</div>
+
+Mortality is U-shaped around each stage’s thermal optimum, rising
+sharply at both low and high temperatures. Eggs and adults have the
+steepest curves ($a_m = 0.0005$), while pupae are the most robust.
+
+### Density-dependent mortality
+
+``` julia
+fig3 = Figure(size = (900, 400))
+
+ax3a = Axis(fig3[1, 1],
+    xlabel = "Total larval abundance",
+    ylabel = "Additional mortality (1/day)",
+    title = "Larval Density Dependence")
+
+N_range_L = 0.0:50.0:25000.0
+dd_L = [δ_L + (N / N_MAX_L)^2 for N in N_range_L]
+lines!(ax3a, collect(N_range_L), dd_L, linewidth = 2, color = :forestgreen)
+vlines!(ax3a, [N_MAX_L], linestyle = :dash, color = :gray50,
+        label = "N_max = $(Int(N_MAX_L))")
+axislegend(ax3a, position = :lt)
+
+ax3b = Axis(fig3[1, 2],
+    xlabel = "Total adult abundance",
+    ylabel = "Additional mortality (1/day)",
+    title = "Adult Density Dependence")
+
+N_range_A = 0.0:0.1:40.0
+dd_A = [δ_A + (N / N_MAX_A)^2 for N in N_range_A]
+lines!(ax3b, collect(N_range_A), dd_A, linewidth = 2, color = :firebrick)
+vlines!(ax3b, [N_MAX_A], linestyle = :dash, color = :gray50,
+        label = "N_max = $(round(N_MAX_A, digits=1))")
+axislegend(ax3b, position = :lt)
+
+fig3
+```
+
+<div id="fig-dd-mortality">
+
+<img
+src="46_medfly_kolmogorov_files/figure-commonmark/fig-dd-mortality-output-1.png"
+width="900" height="400" />
+
+Figure 3: Density-dependent additional mortality for larvae (left) and
+adults (right).
+
+</div>
+
+The quadratic density-dependent term ensures that populations
+equilibrate near $N_{\max}$: once total abundance exceeds the carrying
+capacity, the mortality surcharge rises rapidly and pulls the population
+back.
+
+## Staged PSPM Species Definition
+
+We use the package’s `StagedPSPMSpecies` API to define a four-stage
+physiologically structured population model. Each stage is a `PSPMStage`
+with temperature-dependent growth and mortality. The `PSPMProblem`
+handles the method-of-lines discretisation (upwind finite differences,
+Lax–Friedrichs, Escalator Boxcar Train, or method of characteristics)
+and inter-stage boundary conditions automatically.
+
+### Mesh resolution
+
+``` julia
+const NX = 30  # mesh cells per stage
+```
+
+    30
+
+### Environment function
+
+The environment function computes the current temperature from a forcing
+function and the per-stage population totals (needed for
+density-dependent mortality) from the raw state vector at each time
+step.
+
+``` julia
+"""
+    make_medfly_env(T_func, nx)
+
+Build an environment closure `(u, t) → NamedTuple` that provides the
+current temperature `E.T` and stage abundance totals `E.stage_totals`
+to every PSPM callback.
+"""
+function make_medfly_env(T_func, nx)
+    dx = 1.0 / nx
+    n_stages = N_STAGES
+    function medfly_env(u, t)
+        T_val = T_func(t)
+        # Use eltype(u) so ForwardDiff Dual types propagate correctly
+        # through implicit solvers (Rosenbrock23, etc.)
+        stage_totals = zeros(eltype(u), n_stages)
+        for s in 1:n_stages
+            s_off = (s - 1) * nx
+            for j in 1:nx
+                stage_totals[s] += u[s_off + j] * dx
+            end
+        end
+        return (T = T_val, stage_totals = stage_totals)
+    end
+    return medfly_env
+end
+```
+
+    Main.Notebook.make_medfly_env
+
+### Stage definitions
+
+``` julia
+egg_stage = PSPMStage(:egg;
+    growth_rate    = (x, E, t) -> briere(E.T, DEV_PARAMS.egg.a,
+                                         DEV_PARAMS.egg.T_L, DEV_PARAMS.egg.T_M),
+    mortality_rate = (x, E, t) -> base_mortality(E.T, MORT_PARAMS.egg.a_m,
+                                                 MORT_PARAMS.egg.T_opt, MORT_PARAMS.egg.μ_min))
+
+larva_stage = PSPMStage(:larva;
+    growth_rate    = (x, E, t) -> briere(E.T, DEV_PARAMS.larva.a,
+                                         DEV_PARAMS.larva.T_L, DEV_PARAMS.larva.T_M),
+    mortality_rate = (x, E, t) -> begin
+        μ = base_mortality(E.T, MORT_PARAMS.larva.a_m,
+                           MORT_PARAMS.larva.T_opt, MORT_PARAMS.larva.μ_min)
+        μ + δ_L + (E.stage_totals[2] / N_MAX_L)^2
+    end)
+
+pupa_stage = PSPMStage(:pupa;
+    growth_rate    = (x, E, t) -> briere(E.T, DEV_PARAMS.pupa.a,
+                                         DEV_PARAMS.pupa.T_L, DEV_PARAMS.pupa.T_M),
+    mortality_rate = (x, E, t) -> base_mortality(E.T, MORT_PARAMS.pupa.a_m,
+                                                 MORT_PARAMS.pupa.T_opt, MORT_PARAMS.pupa.μ_min))
+
+adult_stage = PSPMStage(:adult;
+    growth_rate    = (x, E, t) -> briere(E.T, DEV_PARAMS.adult.a,
+                                         DEV_PARAMS.adult.T_L, DEV_PARAMS.adult.T_M),
+    mortality_rate = (x, E, t) -> begin
+        μ = base_mortality(E.T, MORT_PARAMS.adult.a_m,
+                           MORT_PARAMS.adult.T_opt, MORT_PARAMS.adult.μ_min)
+        μ + δ_A + (E.stage_totals[4] / N_MAX_A)^2
+    end)
+
+println("Defined 4 PSPMStage objects: egg, larva, pupa, adult")
+```
+
+    Defined 4 PSPMStage objects: egg, larva, pupa, adult
+
+### Species assembly
+
+``` julia
+medfly = StagedPSPMSpecies(:medfly;
+    stages = [egg_stage, larva_stage, pupa_stage, adult_stage],
+    reproduction_flux = (E, t, stage_totals) -> SR * fecundity(E.T) * stage_totals[4],
+    init_density = (stage_idx, x) -> stage_idx == 4 && x < 0.2 ? 10.0 / 0.2 : 0.0)
+
+println("StagedPSPMSpecies :medfly — $(n_pspm_stages(medfly)) stages")
+println("PDE discretisation: $(NX) cells × $(N_STAGES) stages = $(NX * N_STAGES) ODEs")
+```
+
+    StagedPSPMSpecies :medfly — 4 stages
+    PDE discretisation: 30 cells × 4 stages = 120 ODEs
+
+## Climate Scenarios
+
+We compare three temperature trajectories representing current and
+projected Mediterranean climate in central Italy:
+
+| Scenario | Mean T (°C) | Description                         |
+|----------|-------------|-------------------------------------|
+| Current  | 17.0        | 2020 baseline (Mediterranean Italy) |
+| RCP 4.5  | 18.5        | Moderate warming (+1.5 °C)          |
+| RCP 8.5  | 20.0        | Severe warming (+3.0 °C)            |
+
+All use a sinusoidal annual cycle with amplitude 9 °C and phase offset
+of 80 days (peak in late July).
+
+``` julia
+# ── Temperature functions ─────────────────────────────────────────
+T_current(t)  = 17.0 + 9.0 * sin(2π * (t - 80) / 365)
+T_rcp45(t)    = 18.5 + 9.0 * sin(2π * (t - 80) / 365)
+T_rcp85(t)    = 20.0 + 9.0 * sin(2π * (t - 80) / 365)
+
+scenario_names = ["Current (17°C)", "RCP 4.5 (+1.5°C)", "RCP 8.5 (+3°C)"]
+scenario_funcs = [T_current, T_rcp45, T_rcp85]
+scenario_colors = [:steelblue, :darkorange, :firebrick]
+```
+
+    3-element Vector{Symbol}:
+     :steelblue
+     :darkorange
+     :firebrick
+
+## Simulation
+
+### Initial conditions
+
+A small founding population of 10 adult females is introduced on day 100
+(approximately mid-April, when Mediterranean spring temperatures first
+allow development). The `init_density` callback in `medfly` places
+uniform density in the first 20 % of adult physiological age, giving a
+total of 10 when integrated over the mesh.
+
+``` julia
+tspan = (100.0, 830.0)  # day 100 → day 830 (2 years from April)
+
+println("Simulation: t = $(tspan[1]) to $(tspan[2]) days")
+println("Initial population: 10 adult females (density 50 in [0, 0.2) of adult stage)")
+```
+
+    Simulation: t = 100.0 to 830.0 days
+    Initial population: 10 adult females (density 50 in [0, 0.2) of adult stage)
+
+### Solve for all scenarios
+
+``` julia
+solutions = []
+all_times  = []
+all_totals = []
+
+for (k, T_func) in enumerate(scenario_funcs)
+    env_func = make_medfly_env(T_func, NX)
+    prob = PSPMProblem(
+        species     = [medfly],
+        environment = env_func,
+        method      = FixedMeshUpwind(n_mesh = NX),
+        tspan       = tspan)
+    sol = solve_pspm(prob; reltol = 1e-8, abstol = 1e-8, saveat = 1.0)
+    totals = staged_species_stage_totals(sol, medfly, NX)
+    push!(solutions, sol)
+    push!(all_times, sol.t)
+    push!(all_totals, totals)
+    println("$(scenario_names[k]): solved, $(length(sol.t)) time points, retcode = $(sol.retcode)")
+end
+```
+
+## Results
+
+### Population time series across climate scenarios
+
+``` julia
+fig4 = Figure(size = (900, 500))
+ax4 = Axis(fig4[1, 1],
+    xlabel = "Day of year",
+    ylabel = "Total abundance (all stages)",
+    title = "Medfly Population Dynamics Under Climate Change")
+
+for k in 1:3
+    total_all = vec(sum(all_totals[k], dims = 2))
+    lines!(ax4, collect(all_times[k]), total_all,
+           label = scenario_names[k], linewidth = 2,
+           color = scenario_colors[k])
+end
+axislegend(ax4, position = :lt)
+fig4
+```
+
+<div id="fig-total-population">
+
+<img
+src="46_medfly_kolmogorov_files/figure-commonmark/fig-total-population-output-1.png"
+width="900" height="500" />
+
+Figure 4: Total medfly abundance (all stages) under three climate
+scenarios.
+
+</div>
+
+Under current climate, the population takes several weeks to build from
+the founding cohort and shows a strong seasonal peak in late summer.
+Warming scenarios produce faster initial growth (shorter generation
+times at higher temperatures) and earlier seasonal peaks.
+
+### Stage-specific dynamics (current climate)
+
+``` julia
+fig5 = Figure(size = (900, 500))
+ax5 = Axis(fig5[1, 1],
+    xlabel = "Day of year",
+    ylabel = "Abundance",
+    title = "Seasonal Stage Composition (Current Climate)")
+
+t1 = collect(all_times[1])
+tot1 = all_totals[1]
+
+# Stacked area: band from cumulative sum
+cum = zeros(length(t1))
+for i in 1:N_STAGES
+    prev_cum = copy(cum)
+    cum .+= tot1[:, i]
+    band!(ax5, t1, prev_cum, cum,
+          color = (stage_colors[i], 0.6),
+          label = STAGE_NAMES[i])
+end
+axislegend(ax5, position = :lt)
+fig5
+```
+
+<div id="fig-stage-composition">
+
+<img
+src="46_medfly_kolmogorov_files/figure-commonmark/fig-stage-composition-output-1.png"
+width="900" height="500" />
+
+Figure 5: Stage-specific population dynamics under current climate
+(stacked area plot).
+
+</div>
+
+The stage composition reveals the sequential wave of development: eggs
+appear first, followed by larvae and pupae, with adults emerging last to
+seed the next generation. Multiple overlapping generations are visible
+within a single season.
+
+### Comparing scenarios by stage
+
+``` julia
+fig6 = Figure(size = (900, 400))
+
+ax6a = Axis(fig6[1, 1],
+    xlabel = "Day of year",
+    ylabel = "Adult abundance",
+    title = "Adult Population")
+
+ax6b = Axis(fig6[1, 2],
+    xlabel = "Day of year",
+    ylabel = "Larval abundance",
+    title = "Larval Population")
+
+for k in 1:3
+    lines!(ax6a, collect(all_times[k]), all_totals[k][:, 4],
+           label = scenario_names[k], linewidth = 2,
+           color = scenario_colors[k])
+    lines!(ax6b, collect(all_times[k]), all_totals[k][:, 2],
+           label = scenario_names[k], linewidth = 2,
+           color = scenario_colors[k])
+end
+axislegend(ax6a, position = :lt)
+axislegend(ax6b, position = :lt)
+fig6
+```
+
+<div id="fig-scenario-stages">
+
+<img
+src="46_medfly_kolmogorov_files/figure-commonmark/fig-scenario-stages-output-1.png"
+width="900" height="400" />
+
+Figure 6: Adult and larval dynamics across the three climate scenarios.
+
+</div>
+
+Adult populations stabilise near $N^4_{\max} \approx 16$ per unit area
+due to density-dependent regulation, while larval populations
+equilibrate in the thousands — consistent with the calibrated carrying
+capacities.
+
+### Peak population vs mean annual temperature
+
+This is the paper’s central result: the nonlinear, hump-shaped response
+of peak population to warming.
+
+``` julia
+T_means = 14.0:0.5:24.0
+peak_pops = Float64[]
+
+for T_mean in T_means
+    T_func_scan(t) = T_mean + 9.0 * sin(2π * (t - 80) / 365)
+    env_func = make_medfly_env(T_func_scan, NX)
+    prob = PSPMProblem(
+        species     = [medfly],
+        environment = env_func,
+        method      = FixedMeshUpwind(n_mesh = NX),
+        tspan       = tspan)
+    sol = solve_pspm(prob; reltol = 1e-6, abstol = 1e-6, saveat = 1.0)
+    totals = staged_species_stage_totals(sol, medfly, NX)
+    total_all = vec(sum(totals, dims = 2))
+    push!(peak_pops, maximum(total_all))
+end
+
+fig7 = Figure(size = (700, 500))
+ax7 = Axis(fig7[1, 1],
+    xlabel = "Mean annual temperature (°C)",
+    ylabel = "Peak total abundance",
+    title = "Nonlinear Population Response to Warming")
+
+lines!(ax7, collect(T_means), peak_pops,
+       linewidth = 3, color = :firebrick)
+scatter!(ax7, collect(T_means), peak_pops,
+         markersize = 8, color = :firebrick)
+
+# Mark the three scenarios
+for (T_m, col, name) in zip([17.0, 18.5, 20.0], scenario_colors, scenario_names)
+    vlines!(ax7, [T_m], linestyle = :dash, color = col, label = name)
+end
+axislegend(ax7, position = :rt)
+fig7
+```
+
+<div id="fig-peak-vs-temperature">
+
+<img
+src="46_medfly_kolmogorov_files/figure-commonmark/fig-peak-vs-temperature-output-1.png"
+width="700" height="500" />
+
+Figure 7: Peak total abundance vs mean annual temperature — nonlinear
+response to warming.
+
+</div>
+
+The hump-shaped curve demonstrates the key finding of Gilioli et
+al. (2022): moderate warming increases population potential, but beyond
+a threshold (≈ 20–22 °C mean) the combined effects of heat mortality and
+reduced fecundity cause population decline.
+
+### Generations per year
+
+We estimate the number of generations by counting distinct peaks in the
+adult time series.
+
+``` julia
+"""
+    count_peaks(x; min_prominence = 0.1)
+
+Count local maxima in vector `x` that exceed `min_prominence` times
+the global maximum.
+"""
+function count_peaks(x; min_prominence = 0.1)
+    threshold = min_prominence * maximum(x)
+    n_peaks = 0
+    for i in 2:length(x)-1
+        if x[i] > x[i-1] && x[i] > x[i+1] && x[i] > threshold
+            n_peaks += 1
+        end
+    end
+    return n_peaks
+end
+
+fig8 = Figure(size = (600, 400))
+ax8 = Axis(fig8[1, 1],
+    xlabel = "Scenario",
+    ylabel = "Adult peaks per year (approx. generations)",
+    title = "Voltinism Under Climate Change",
+    xticks = (1:3, scenario_names))
+
+# Use first 365 days of simulation for each scenario
+gen_counts = Int[]
+for k in 1:3
+    adult_ts = all_totals[k][:, 4]
+    n_days = min(365, length(adult_ts))
+    n_gen = count_peaks(adult_ts[1:n_days])
+    push!(gen_counts, n_gen)
+    println("$(scenario_names[k]): ~$(n_gen) adult peaks in first year")
+end
+
+barplot!(ax8, 1:3, Float64.(gen_counts),
+         color = collect(scenario_colors),
+         bar_labels = :y,
+         label_size = 14)
+fig8
+```
+
+    Current (17°C): ~2 adult peaks in first year
+    RCP 4.5 (+1.5°C): ~2 adult peaks in first year
+    RCP 8.5 (+3°C): ~3 adult peaks in first year
+
+<div id="fig-generations">
+
+<img
+src="46_medfly_kolmogorov_files/figure-commonmark/fig-generations-output-2.png"
+width="600" height="400" />
+
+Figure 8: Estimated number of adult population peaks per year under each
+scenario.
+
+</div>
+
+The medfly is multivoltine in Mediterranean climates, with 3–5
+generations per year under current conditions. Warming increases the
+development rate, potentially adding 1–2 extra generations, but this is
+partially offset by higher heat-stress mortality.
+
+## Method Comparison
+
+The `PSPMProblem` supports multiple discretisation methods. We compare
+four mesh-based schemes under the current climate scenario to assess
+numerical consistency.
+
+``` julia
+methods_to_compare = [
+    ("Fixed-mesh upwind",      FixedMeshUpwind(n_mesh = NX)),
+    ("Lax–Friedrichs",         LaxFriedrichsUpwind(n_mesh = NX)),
+    ("Implicit upwind",        ImplicitFixedMeshUpwind(n_mesh = NX)),
+    ("Implicit Lax–Friedrichs", ImplicitLaxFriedrichsUpwind(n_mesh = NX)),
+]
+
+method_colors = [:steelblue, :darkorange, :forestgreen, :purple]
+
+env_func_current = make_medfly_env(T_current, NX)
+
+fig_mc = Figure(size = (900, 500))
+ax_mc = Axis(fig_mc[1, 1],
+    xlabel = "Day of year",
+    ylabel = "Total abundance (all stages)",
+    title = "Discretisation Method Comparison (Current Climate)")
+
+for (i, (mname, method)) in enumerate(methods_to_compare)
+    prob_m = PSPMProblem(
+        species     = [medfly],
+        environment = env_func_current,
+        method      = method,
+        tspan       = tspan)
+    sol_m = solve_pspm(prob_m; reltol = 1e-8, abstol = 1e-8, saveat = 1.0)
+    totals_m = staged_species_stage_totals(sol_m, medfly, NX)
+    total_all_m = vec(sum(totals_m, dims = 2))
+    lines!(ax_mc, collect(sol_m.t), total_all_m,
+           label = mname, linewidth = 2, color = method_colors[i])
+    println("$(mname): solved, peak = $(round(maximum(total_all_m), digits=1))")
+end
+axislegend(ax_mc, position = :lt)
+fig_mc
+```
+
+    Fixed-mesh upwind: solved, peak = 1435.7
+    Lax–Friedrichs: solved, peak = 1435.7
+    Implicit upwind: solved, peak = 1435.7
+    Implicit Lax–Friedrichs: solved, peak = 1435.7
+
+<div id="fig-method-comparison">
+
+<img
+src="46_medfly_kolmogorov_files/figure-commonmark/fig-method-comparison-output-2.png"
+width="900" height="500" />
+
+Figure 9: Total population dynamics under four discretisation methods
+(current climate).
+
+</div>
+
+All four methods converge to essentially the same dynamics at this mesh
+resolution ($N_x = 30$). The Lax–Friedrichs scheme introduces slight
+additional numerical diffusion, visible as a marginally smoother
+trajectory. The implicit variants use `Rosenbrock23` and are beneficial
+for stiff problems (e.g. very high density-dependent mortality), though
+for this parameter set the explicit `Tsit5`-based methods are
+sufficient.
+
+## Discussion
+
+### Key findings
+
+1.  **Nonlinear climate response** — The Kolmogorov PDE framework
+    captures the essential nonlinearity: moderate warming boosts medfly
+    populations, but severe warming pushes temperatures beyond thermal
+    optima, triggering higher mortality and reduced fecundity.
+
+2.  **Density dependence is crucial** — Without the calibrated
+    density-dependent mortality in larval and adult stages, the model
+    produces unrealistic exponential growth. The quadratic density term
+    with carrying capacities $N^2_{\max} \approx 15{,}000$ (larvae) and
+    $N^4_{\max} \approx 16$ (adults) provides biologically reasonable
+    equilibria.
+
+3.  **Multivoltinism** — The continuous-time PDE naturally produces
+    overlapping generations, consistent with Mediterranean medfly
+    biology where 3–6 generations per year are observed.
+
+4.  **Comparison with distributed-delay model** — The discrete-time
+    distributed-delay model in [vignette
+    13](../13_medfly_invasion/13_medfly_invasion.qmd) uses
+    Erlang-distributed maturation times, which is mathematically
+    equivalent to a linear chain of ODE substages. The Kolmogorov PDE
+    used here resolves within-stage age structure continuously and
+    accommodates nonlinear mortality that depends on the full population
+    state — a more mechanistic formulation for density-dependent
+    scenarios.
+
+5.  **Package API** — Using `StagedPSPMSpecies` with `PSPMProblem` and
+    `solve_pspm` eliminates the need to hand-roll a method-of-lines
+    discretisation. The environment closure pattern
+    `(u, t) → (T=…, stage_totals=…)` cleanly separates density-dependent
+    feedback from the per-cell growth and mortality callbacks. Multiple
+    discretisation methods (`FixedMeshUpwind`, `LaxFriedrichsUpwind`,
+    and their implicit counterparts) can be swapped in with a single
+    keyword change.
+
+### Limitations
+
+- **Spatial homogeneity** — The model assumes a single, well-mixed
+  population. Real medfly invasions involve spatial spread.
+- **No host-plant phenology** — Fruit availability is not modelled; we
+  assume continuous host access.
+- **Simplified fecundity** — The parabolic fecundity function is a
+  convenient approximation; the original paper uses a more detailed
+  age-by-temperature interaction.
+- **Fixed seasonal cycle** — We use a sinusoidal temperature proxy
+  rather than realistic daily weather series.
+
+### Extensions
+
+- Couple with a spatial diffusion–advection term for invasion spread.
+- Add stochastic weather (inter-annual variability) to assess population
+  persistence risk.
+- Include host-plant phenology and the sterile insect technique (SIT)
+  release schedule for integrated pest management.
+- Explore the `EscalatorBoxcarTrain` and `CharacteristicMethod`
+  discretisations, which track individual cohorts and can capture sharp
+  age distributions more accurately.
+
+## References
+
+<div id="refs" class="references csl-bib-body hanging-indent">
+
+<div id="ref-Gilioli2022CeratitisNonlinear" class="csl-entry">
+
+Gilioli, Gianni, Giorgio Sperandio, Michele Colturato, et al. 2022.
+“Nonlinear Physiological Responses to Climate Change: The Case of
+<span class="nocase">Ceratitis capitata</span> Distribution and
+Abundance in Europe.” *Ecological Modelling* 471: 110071.
+<https://doi.org/10.1016/j.ecolmodel.2022.110071>.
+
+</div>
+
+</div>

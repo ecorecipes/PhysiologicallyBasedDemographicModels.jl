@@ -1,0 +1,65 @@
+---
+title: "PhysiologicallyBasedDemographicModels.jl"
+---
+
+# Overview
+
+This book collects tutorial vignettes for **PhysiologicallyBasedDemographicModels.jl**, a Julia package for building and analyzing Physiologically Based Demographic Models (PBDMs).
+
+PBDMs are mechanistic, process-based simulation models that link individual physiology to population dynamics through temperature-driven development, resource acquisition (supply/demand), and distributed maturation delays.
+
+## Tutorials
+
+The tutorials progress from basic concepts to full bioeconomic systems:
+
+| # | Tutorial | System | Key Concepts |
+|---|----------|--------|-------------|
+| 1 | Getting Started | Generic insect | Degree-days, distributed delays, supply/demand |
+| 2 | Cotton Plant | *Gossypium* | Multi-organ plant model, metabolic pools |
+| 3 | Coffee Berry Borer | *Hypothenemus hampei* | Lactin development, 7-stage lifecycle |
+| 4 | Grapevine C/N | *Vitis vinifera* | Carbon/nitrogen allocation, Q₁₀ respiration |
+| 5 | Lobesia Overwintering | *Lobesia botrana* | 3-phase diapause, photoperiod |
+| 6 | Bt Cotton Resistance | Bt cotton + bollworm | Hardy-Weinberg genetics, refuges |
+| 7 | Pesticide Resistance | Generic pest | Economic optimization + resistance |
+| 8 | Screwworm SIT | *Cochliomyia* | Sterile insect technique, mating competition |
+| 9 | Indian Bt Cotton | Indian smallholders | Bioeconomics, rainfall-yield, NPV |
+| 10 | Tsetse Ecosocial | Tsetse-cattle-human | Vector-borne disease, trophic coupling, welfare |
+| 11 | Olive Climate | Mediterranean olive | Climate scenarios, regional economics |
+| 12 | Cassava Mealybug | *Phenacoccus manihoti* | Tritrophic plant–pest–parasitoid |
+| 13 | Mediterranean Fruit Fly | *Ceratitis capitata* | Climate-driven geographic range |
+| 14 | East Coast Fever | Tick–cattle–*Theileria* | Vector-borne disease epidemiology |
+| 15 | Rice–Weed Competition | Rice–*Echinochloa* | Resource competition for N and light |
+| 16 | Aedes albopictus | *Ae. albopictus* | Mosquito diapause, invasion risk |
+| 17 | Pink Bollworm | *Pectinophora gossypiella* | Climate-driven range limits |
+| 18 | Vine Mealybug | *Planococcus ficus* | Refuge effects, biocontrol + climate |
+| 19 | Brown Marmorated Stink Bug | *Halyomorpha halys* | Four-trophic-level, hyperparasitism |
+| 20 | Cabbage Root Fly | *Delia radicum* | Photoperiod-driven diapause |
+| 21 | Processing Tomato IPM | Tomato–pest complex | Integrated pest management decisions |
+| 22 | Tuta absoluta | *Tuta absoluta* | PBDM vs correlative range models |
+| 23 | Yellow Starthistle | *Centaurea solstitialis* | Weed biocontrol, supply-demand |
+| 24 | Asian Citrus Psyllid | *Diaphorina citri* | Tritrophic + HLB disease vector |
+| 25 | Bemisia tabaci | *Bemisia tabaci* | Whitefly invasion risk, climate warming |
+| 26 | Light Brown Apple Moth | *Epiphyas postvittana* | Polyphagous pest range limits |
+| 27 | Spotted Alfalfa Aphid | *Therioaphis maculata* | Multi-factor biocontrol deconstruction |
+| 28 | Olive–Olive Fly | *Bactrocera oleae* | Fruit phenology gate, climate warming |
+| 29 | Cowpea–Thrips | *Megalurothrips sjostedti* | Phenological synchrony, yield loss |
+| 30 | Bean Growth Types | *Phaseolus vulgaris* | Three growth types, metabolic pool, density |
+| 31 | Cotton–Boll Weevil | *Anthonomus grandis* | Fruit-feeding pest, economic threshold |
+| 32 | Oleander Scale | *Aspidiotus nerii* | Competing parasitoids, climate mediation |
+| 33 | Rice–Fish Agroecosystem | Rice + Tilapia | Aquatic-terrestrial coupling, nutrient cycling |
+| 34 | Plant–Aphid–Parasitoid | *Masonaphis maxima* | Foundational PBDM, supply-demand theory |
+| 35 | Apple Tree Growth | *Malus domestica* | Perennial crop physiology, dormancy, reserves |
+| 36 | Fusarium-Nematode Cotton | FOV + *Meloidogyne* | Soil-borne disease complex, symptom timing |
+| 37 | Whitefly Autoparasitoid | *Bemisia tabaci* | Heteronomous hyperparasitism, biocontrol |
+| 38 | Tropical Fruit Flies | Tephritidae guild | Comparative thermal biology, invasion risk |
+| 39 | China Bt Cotton | Bt cotton + mirids | Ecosystem disruption, secondary pest economics |
+| 40 | Fall Armyworm Risk | *Spodoptera frugiperda* | Kolmogorov PDE, density-dependent, invasion risk |
+| 41 | Olive Fly ODE | *Bactrocera oleae* | 8-coupled ODEs, Brière/Gumbel rates |
+| 42 | Beet Armyworm Biocontrol | *Spodoptera exigua* | Host–parasitoid, Type III functional response |
+| 43 | Spittlebug Phenology | *Philaenus spumarius* | Lactin development, Xylella vector timing |
+| 44 | Physiological Risk Index | Multi-species | Eigenvalue analysis, establishment thermal window |
+| 45 | *D. suzukii* PDE | *Drosophila suzukii* | Von Foerster PDE, method-of-lines |
+| 46 | Medfly Kolmogorov | *Ceratitis capitata* | Nonlinear PDE, climate change scenarios |
+| 47 | Consumer-Resource | Generic PSPM | De Roos biomass model, PSPM simplification |
+| 48 | Xylella Eco-Epi | *Xylella fastidiosa* | Vector–disease coupling, control scenarios |
+| 49 | Bombus HSP Engineering | *Bombus terrestris* | GM thermal tolerance, pleiotropic costs, pollination |
