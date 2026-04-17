@@ -1,0 +1,828 @@
+---
+title: "Olive Fruit Fly Population Dynamics"
+subtitle: "An 8-ODE Physiologically Based Model"
+author: "Simon Frost"
+format:
+  html:
+    code-fold: true
+    toc: true
+    toc-depth: 3
+    embed-resources: true
+  pdf:
+    documentclass: scrartcl
+    papersize: a4
+    mainfont: "STIX Two Text"
+    mathfont: "STIX Two Math"
+    monofont: "Menlo"
+    fontsize: 10pt
+    geometry:
+      - margin=1in
+    toc: true
+  gfm:
+    toc: true
+execute:
+  eval: true
+  echo: true
+  warning: false
+bibliography: ../references.bib
+---
+
+Primary reference: [@Rossini2022BactroceraODE].
+
+
+## Introduction
+
+The olive fruit fly (*Bactrocera oleae* Rossi) is the most economically
+damaging pest of olive cultivation worldwide, causing hundreds of millions of
+dollars in annual losses across the Mediterranean Basin. Females oviposit
+exclusively in olive fruit, and larvae feed inside the drupe, degrading both
+yield and oil quality. Understanding the temperature-driven population dynamics
+of this specialist pest is essential for predicting outbreak timing and
+designing effective integrated pest management (IPM) strategies.
+
+Rossini et al. (2022) developed a physiologically based ODE model for
+*B. oleae* that tracks eight life stages through a system of coupled ordinary
+differential equations. All demographic rates — development, mortality, and
+fecundity — are explicit functions of temperature, making the model suitable
+for climate-driven projections. The original implementation is available in
+Python at <https://github.com/lucaros1190/ODE-bactrocera>.
+
+This vignette reimplements the Rossini et al. (2022) 8-ODE system in Julia
+using `OrdinaryDiffEq.jl` for numerical integration. We parameterize the model
+from Tables 1–3 of the original paper, drive it with a sinusoidal temperature
+forcing representative of central Italy (Fara Sabina area), and compare this
+continuous ODE approach to the distributed-delay PBDM framework used in
+[vignette 28](../28_olive_bactrocera/28_olive_bactrocera.qmd).
+
+
+## Mathematical Model
+
+### State Variables
+
+The model tracks eight life stages:
+
+| Index | Variable          | Stage                   |
+|:-----:|:------------------|:------------------------|
+| 1     | $x_e$             | Egg                     |
+| 2     | $x_{L_1}$         | First-instar larva      |
+| 3     | $x_{L_2}$         | Second-instar larva     |
+| 4     | $x_{L_3}$         | Third-instar larva      |
+| 5     | $x_P$             | Pupa                    |
+| 6     | $x_{A_m}$         | Adult male              |
+| 7     | $x_{A_{nmf}}$     | Adult non-mated female  |
+| 8     | $x_{A_{mf}}$      | Adult mated female      |
+
+### ODE System (Eq. 3)
+
+$$
+\begin{aligned}
+\frac{dx_e}{dt}      &= \beta(T)\, x_{A_{mf}} - G(T)\, x_e - M_e(T)\, G(T)\, x_e \\[4pt]
+\frac{dx_{L_1}}{dt}  &= G(T)\, x_e     - G(T)\, x_{L_1}   - M_L(T)\, G(T)\, x_{L_1} \\[4pt]
+\frac{dx_{L_2}}{dt}  &= G(T)\, x_{L_1} - G(T)\, x_{L_2}   - M_L(T)\, G(T)\, x_{L_2} \\[4pt]
+\frac{dx_{L_3}}{dt}  &= G(T)\, x_{L_2} - G(T)\, x_{L_3}   - M_L(T)\, G(T)\, x_{L_3} \\[4pt]
+\frac{dx_P}{dt}      &= G(T)\, x_{L_3} - G(T)\, x_P       - M_P(T)\, G(T)\, x_P \\[4pt]
+\frac{dx_{A_m}}{dt}  &= (1-\text{SR})\, G(T)\, x_P - M_A(T)\, G(T)\, x_{A_m} \\[4pt]
+\frac{dx_{A_{nmf}}}{dt} &= \text{SR}\, G(T)\, x_P - \lambda(T)\, x_{A_{nmf}} \\[4pt]
+\frac{dx_{A_{mf}}}{dt}  &= \lambda(T)\, x_{A_{nmf}} - M_A(T)\, G(T)\, x_{A_{mf}}
+\end{aligned}
+$$
+
+where $\text{SR} = 0.5$ is the sex ratio and $\lambda(T) \approx G(T)$ is the
+mating rate. Adult males and mated females are terminal stages: they experience
+mortality but no development outflow.
+
+
+## Rate Functions
+
+### Development Rate (Brière Model, Eq. 6)
+
+The temperature-dependent development rate uses a Brière function:
+
+$$
+G(T) = a \cdot T \cdot (T - T_L) \cdot (T_M - T)^{1/m}
+$$
+
+with best-fit parameters from Rossini et al. (2022), Table 1:
+$a = 4.6 \times 10^{-5}$, $T_L = 7.23\,°\text{C}$,
+$T_M = 32.2\,°\text{C}$, $m = 2.5$.
+
+Note that the standard `BriereDevelopmentRate` in
+`PhysiologicallyBasedDemographicModels.jl` uses an exponent of $1/2$
+(i.e., $m = 2$). Since Rossini et al. use $m = 2.5$ (exponent $= 0.4$),
+we define a custom Brière function here.
+
+### Mortality Rate (Eqs. 7–8)
+
+Stage-specific daily mortality follows a Gumbel-like survival function:
+
+$$
+M_i(T) = 1 - k_i \cdot \exp\!\left(1 + \frac{T_{\max,i} - T}{\rho_{T,i}} - \exp\!\left(\frac{T_{\max,i} - T}{\rho_{T,i}}\right)\right)
+$$
+
+At $T = T_{\max}$, the exponent evaluates to $1 + 0 - 1 = 0$, giving
+$M = 1 - k$ (minimum mortality, maximum survival $= k$). As temperature
+deviates from the optimum, mortality increases toward 1.
+
+Stage-specific parameters (Table 2):
+
+| Stage  | $k$   | $\rho_T$ | $T_{\max}$ (°C) |
+|:-------|:-----:|:--------:|:---------------:|
+| Egg    | 0.87  | −4       | 25.0            |
+| Larva  | 0.80  | −4       | 22.0            |
+| Pupa   | 0.82  | −6       | 24.6            |
+| Adult  | 0.60  | −6       | 25.0            |
+
+The instantaneous daily mortality rate in the ODE is $M_i(T) \cdot G(T)$,
+where $M_i$ gives the fraction dying per unit of physiological development
+and $G(T)$ converts from developmental time to calendar time.
+
+### Fecundity (Eq. 9)
+
+The temperature-dependent fecundity component:
+
+$$
+\beta_{\text{temp}}(T) = \max\!\left(0,\; 1 - \left(\frac{T - \tau}{\delta}\right)^2\right)
+$$
+
+with $\tau = 25.6\,°\text{C}$ (optimal temperature) and $\delta = 7.0$ (width).
+
+The age-dependent component (from the Bieri function, Eq. 7) gives peak
+daily oviposition $\approx 4.6$ eggs/female/day. We use $\beta_{\max} = 5.0$
+eggs/mated-female/day as the peak fecundity:
+
+$$
+\beta(T) = \beta_{\max} \cdot \beta_{\text{temp}}(T)
+$$
+
+
+```{julia}
+using PhysiologicallyBasedDemographicModels
+using OrdinaryDiffEq
+using CairoMakie
+```
+
+
+## Implementation
+
+### Parameter Definitions
+
+```{julia}
+# --- Development rate: Brière with exponent 1/m (Eq. 6) ---
+struct BriereGeneralized{T<:Real}
+    a::T
+    T_L::T
+    T_M::T
+    inv_m::T  # 1/m
+end
+
+function briere_rate(p::BriereGeneralized, T)
+    (T <= p.T_L || T >= p.T_M) && return 0.0
+    return p.a * T * (T - p.T_L) * (p.T_M - T)^p.inv_m
+end
+
+# Best-fit parameters (Table 1)
+const dev_params = BriereGeneralized(4.6e-5, 7.23, 32.2, 1.0 / 2.5)
+
+# --- Mortality: Gumbel survival (Eqs. 7-8, Table 2) ---
+struct MortalityParams{T<:Real}
+    k::T
+    ρ_T::T
+    T_max::T
+end
+
+function mortality_fraction(p::MortalityParams, T)
+    z = (p.T_max - T) / p.ρ_T
+    return 1.0 - p.k * exp(1.0 + z - exp(z))
+end
+
+const mort_egg   = MortalityParams(0.87, -4.0, 25.0)
+const mort_larva = MortalityParams(0.80, -4.0, 22.0)
+const mort_pupa  = MortalityParams(0.82, -6.0, 24.6)
+const mort_adult = MortalityParams(0.60, -6.0, 25.0)
+
+# --- Fecundity (Eq. 9, Table 3) ---
+const β_max = 5.0   # peak eggs/mated-female/day
+const τ_fec = 25.6   # optimal temperature (°C)
+const δ_fec = 7.0    # temperature width
+
+function fecundity(T)
+    β_temp = max(0.0, 1.0 - ((T - τ_fec) / δ_fec)^2)
+    return β_max * β_temp
+end
+
+# --- Sex ratio and mating ---
+const SR = 0.5
+
+println("Parameters loaded: Brière a=$(dev_params.a), T_L=$(dev_params.T_L), T_M=$(dev_params.T_M)")
+```
+
+### Temperature-Dependent Rate Functions
+
+We first visualize how the three key rate functions vary with temperature.
+
+```{julia}
+#| label: fig-rate-functions
+#| fig-cap: "Temperature-dependent rate functions from Rossini et al. (2022). Top left: Brière development rate G(T). Top right: fecundity β(T). Bottom left: stage-specific mortality M(T). Bottom right: daily mortality rate M(T)·G(T)."
+
+T_range = 5.0:0.5:38.0
+
+fig_rates = Figure(size=(900, 700))
+
+# Panel A: Development rate G(T)
+ax1 = Axis(fig_rates[1, 1],
+    xlabel="Temperature (°C)",
+    ylabel="Development rate G(T) (1/day)",
+    title="Development Rate (Brière)")
+G_vals = [briere_rate(dev_params, T) for T in T_range]
+lines!(ax1, collect(T_range), G_vals, color=:steelblue, linewidth=2.5)
+vlines!(ax1, [dev_params.T_L], color=:gray, linestyle=:dash, linewidth=1)
+vlines!(ax1, [dev_params.T_M], color=:gray, linestyle=:dash, linewidth=1)
+text!(ax1, dev_params.T_L + 0.3, maximum(G_vals) * 0.9,
+    text="T_L=$(dev_params.T_L)°C", fontsize=9, color=:gray)
+text!(ax1, dev_params.T_M - 5.0, maximum(G_vals) * 0.9,
+    text="T_M=$(dev_params.T_M)°C", fontsize=9, color=:gray)
+
+# Panel B: Fecundity β(T)
+ax2 = Axis(fig_rates[1, 2],
+    xlabel="Temperature (°C)",
+    ylabel="Fecundity β(T) (eggs/female/day)",
+    title="Fecundity")
+β_vals = [fecundity(T) for T in T_range]
+lines!(ax2, collect(T_range), β_vals, color=:darkorange, linewidth=2.5)
+vlines!(ax2, [τ_fec], color=:gray, linestyle=:dot, linewidth=1)
+text!(ax2, τ_fec + 0.5, maximum(β_vals) * 0.9,
+    text="τ=$(τ_fec)°C", fontsize=9, color=:gray)
+
+# Panel C: Mortality fractions M(T) by stage
+ax3 = Axis(fig_rates[2, 1],
+    xlabel="Temperature (°C)",
+    ylabel="Mortality fraction M(T)",
+    title="Stage-Specific Mortality")
+for (mp, label, col) in [
+    (mort_egg,   "Egg",   :firebrick),
+    (mort_larva, "Larva", :teal),
+    (mort_pupa,  "Pupa",  :purple),
+    (mort_adult, "Adult", :goldenrod)]
+    M_vals = [mortality_fraction(mp, T) for T in T_range]
+    lines!(ax3, collect(T_range), M_vals, color=col, linewidth=2, label=label)
+end
+axislegend(ax3, position=:lt)
+
+# Panel D: Daily mortality rate M(T)·G(T)
+ax4 = Axis(fig_rates[2, 2],
+    xlabel="Temperature (°C)",
+    ylabel="Daily mortality rate M(T)·G(T)",
+    title="Effective Daily Mortality")
+for (mp, label, col) in [
+    (mort_egg,   "Egg",   :firebrick),
+    (mort_larva, "Larva", :teal),
+    (mort_pupa,  "Pupa",  :purple),
+    (mort_adult, "Adult", :goldenrod)]
+    MG_vals = [mortality_fraction(mp, T) * briere_rate(dev_params, T) for T in T_range]
+    lines!(ax4, collect(T_range), MG_vals, color=col, linewidth=2, label=label)
+end
+axislegend(ax4, position=:lt)
+
+fig_rates
+```
+
+```{julia}
+# Numerical check at representative temperatures
+println("Rate function values at key temperatures:")
+println("="^75)
+println("  T(°C)  | G(T)      | β(T)      | M_egg   | M_larva | M_pupa  | M_adult")
+println("-"^75)
+for T in [10.0, 15.0, 20.0, 25.0, 28.0, 30.0, 32.0]
+    G = briere_rate(dev_params, T)
+    β = fecundity(T)
+    Me = mortality_fraction(mort_egg, T)
+    Ml = mortality_fraction(mort_larva, T)
+    Mp = mortality_fraction(mort_pupa, T)
+    Ma = mortality_fraction(mort_adult, T)
+    println("  $(lpad(round(T, digits=1), 5))  | " *
+            "$(lpad(round(G, digits=5), 9)) | " *
+            "$(lpad(round(β, digits=3), 9)) | " *
+            "$(lpad(round(Me, digits=4), 7)) | " *
+            "$(lpad(round(Ml, digits=4), 7)) | " *
+            "$(lpad(round(Mp, digits=4), 7)) | " *
+            "$(lpad(round(Ma, digits=4), 7))")
+end
+```
+
+
+### ODE Right-Hand Side
+
+```{julia}
+"""
+    bactrocera_rhs!(du, u, p, t)
+
+8-coupled ODE system for *Bactrocera oleae* life cycle dynamics.
+
+State vector: [x_e, x_L1, x_L2, x_L3, x_P, x_Am, x_Anmf, x_Amf]
+
+Parameters `p` must contain:
+- `T_func`: function mapping time → temperature (°C)
+- `dev`: BriereGeneralized development parameters
+- `mort_e`, `mort_l`, `mort_p`, `mort_a`: MortalityParams per stage
+"""
+function bactrocera_rhs!(du, u, p, t)
+    T = p.T_func(t)
+
+    # Development rate
+    G = briere_rate(p.dev, T)
+
+    # Stage-specific mortality fractions (per developmental unit)
+    M_e = mortality_fraction(p.mort_e, T)
+    M_l = mortality_fraction(p.mort_l, T)
+    M_p = mortality_fraction(p.mort_p, T)
+    M_a = mortality_fraction(p.mort_a, T)
+
+    # Fecundity
+    β = fecundity(T)
+
+    # Mating rate (approximated as G)
+    λ = G
+
+    x_e, x_L1, x_L2, x_L3, x_P, x_Am, x_Anmf, x_Amf = u
+
+    # Egg: birth from mated females, development outflow, mortality
+    du[1] = β * x_Amf - G * x_e - M_e * G * x_e
+
+    # Larval instars: inflow from previous stage, outflow, mortality
+    du[2] = G * x_e   - G * x_L1 - M_l * G * x_L1
+    du[3] = G * x_L1  - G * x_L2 - M_l * G * x_L2
+    du[4] = G * x_L2  - G * x_L3 - M_l * G * x_L3
+
+    # Pupa: inflow from L3, outflow to adults, mortality
+    du[5] = G * x_L3  - G * x_P  - M_p * G * x_P
+
+    # Adult male: emergence (terminal stage — no development outflow)
+    du[6] = (1.0 - SR) * G * x_P - M_a * G * x_Am
+
+    # Non-mated female: emergence, mating outflow
+    du[7] = SR * G * x_P - λ * x_Anmf
+
+    # Mated female: mating inflow (terminal stage — no development outflow)
+    du[8] = λ * x_Anmf - M_a * G * x_Amf
+
+    return nothing
+end
+```
+
+
+### Temperature Forcing
+
+We use a sinusoidal temperature function representative of central Italy
+(Fara Sabina, Lazio), with mean ≈ 21°C, amplitude 9°C, and summer peak
+around late July (day 210):
+
+$$
+T(t) = 21 + 9 \sin\!\left(\frac{2\pi(t - 80)}{365}\right)
+$$
+
+```{julia}
+T_mean = 21.0
+T_amp  = 9.0
+T_phase = 80.0  # phase shift so peak ≈ day 170 (late June)
+
+T_forcing(t) = T_mean + T_amp * sin(2π * (t - T_phase) / 365.0)
+
+# Verify temperature profile
+println("Sinusoidal temperature forcing (central Italy):")
+println("  Mean: $(T_mean)°C, Amplitude: $(T_amp)°C")
+println("  Min ≈ $(T_mean - T_amp)°C (winter), Max ≈ $(T_mean + T_amp)°C (summer)")
+println()
+for (label, day) in [("Jan 1", 1), ("Apr 1", 91), ("Jul 1", 182),
+                      ("Jul 15", 196), ("Aug 15", 227), ("Sep 30", 273),
+                      ("Dec 31", 365)]
+    println("  $label (day $day): $(round(T_forcing(day), digits=1))°C")
+end
+```
+
+
+## Simulation
+
+### Summer Season (July 15 – September 30)
+
+Following the validation period in Rossini et al. (2022), we first simulate
+the ~77-day period from mid-July to end of September, corresponding to the
+main olive fly activity season. Initial conditions are based on Table 4:
+a small founding population of overwintering mated females and eggs.
+
+```{julia}
+# ODE parameters
+ode_params = (
+    T_func = T_forcing,
+    dev    = dev_params,
+    mort_e = mort_egg,
+    mort_l = mort_larva,
+    mort_p = mort_pupa,
+    mort_a = mort_adult,
+)
+
+# Summer simulation: July 15 (day 196) to September 30 (day 273)
+t_start_summer = 196.0
+t_end_summer   = 273.0
+
+# Initial conditions (Table 4): small overwintering population
+u0_summer = [
+    2.0,   # x_e: eggs
+    0.0,   # x_L1
+    0.0,   # x_L2
+    0.0,   # x_L3
+    0.0,   # x_P
+    0.0,   # x_Am: adult males
+    0.0,   # x_Anmf: non-mated females
+    4.0,   # x_Amf: mated females (overwintering)
+]
+
+prob_summer = ODEProblem(bactrocera_rhs!, u0_summer,
+                         (t_start_summer, t_end_summer), ode_params)
+sol_summer = solve(prob_summer, Tsit5(); saveat=0.5, abstol=1e-8, reltol=1e-8)
+
+println("Summer simulation (Jul 15 – Sep 30):")
+println("  Time span: day $(Int(t_start_summer)) to $(Int(t_end_summer)) " *
+        "($(Int(t_end_summer - t_start_summer)) days)")
+println("  Initial total: $(sum(u0_summer)) individuals")
+println("  Final total:   $(round(sum(sol_summer.u[end]), digits=1)) individuals")
+println()
+
+# Report stage populations at key dates
+stage_names = ["Egg", "L1", "L2", "L3", "Pupa", "Male", "NM Fem", "M Fem"]
+println("  Stage populations at selected dates:")
+println("  " * "-"^85)
+println("  Day  | T(°C) | " * join([lpad(s, 8) for s in stage_names], " | ") * " | Total")
+println("  " * "-"^85)
+for day in [196, 210, 227, 243, 258, 273]
+    idx = argmin(abs.(sol_summer.t .- day))
+    T = T_forcing(day)
+    vals = sol_summer.u[idx]
+    total = sum(vals)
+    println("  $(lpad(day, 4)) | $(lpad(round(T, digits=1), 5)) | " *
+            join([lpad(round(v, digits=1), 8) for v in vals], " | ") *
+            " | $(round(total, digits=1))")
+end
+```
+
+
+### Full-Year Simulation
+
+We extend the simulation to a full year, starting from a small founding
+population on January 1.
+
+```{julia}
+# Full year: day 1 to day 365
+u0_year = [
+    0.0,   # x_e
+    0.0,   # x_L1
+    0.0,   # x_L2
+    0.0,   # x_L3
+    0.0,   # x_P
+    0.0,   # x_Am
+    0.0,   # x_Anmf
+    2.0,   # x_Amf: small overwintering mated female population
+]
+
+prob_year = ODEProblem(bactrocera_rhs!, u0_year, (1.0, 365.0), ode_params)
+sol_year = solve(prob_year, Tsit5(); saveat=0.5, abstol=1e-8, reltol=1e-8)
+
+println("Full-year simulation:")
+println("  Initial total: $(sum(u0_year)) individuals")
+println("  Final total:   $(round(sum(sol_year.u[end]), digits=1)) individuals")
+println("  Peak total:    $(round(maximum(sum.(sol_year.u)), digits=1)) individuals")
+
+# Find peak day
+peak_idx = argmax(sum.(sol_year.u))
+println("  Peak day:      $(round(sol_year.t[peak_idx], digits=0)) " *
+        "(T = $(round(T_forcing(sol_year.t[peak_idx]), digits=1))°C)")
+```
+
+
+## Results
+
+### Time Series: Summer Season
+
+```{julia}
+#| label: fig-summer-timeseries
+#| fig-cap: "Olive fruit fly stage-specific population dynamics during the summer activity season (July 15 – September 30), driven by sinusoidal temperature forcing representative of central Italy."
+
+fig_summer = Figure(size=(900, 700))
+
+# Panel A: Temperature
+ax_t = Axis(fig_summer[1, 1],
+    ylabel="Temperature (°C)",
+    title="Summer Season: B. oleae Population Dynamics (Fara Sabina)")
+t_days = sol_summer.t
+T_vals = T_forcing.(t_days)
+lines!(ax_t, t_days, T_vals, color=:firebrick, linewidth=2)
+band!(ax_t, t_days, fill(dev_params.T_L, length(t_days)), fill(dev_params.T_M, length(t_days)),
+    color=(:steelblue, 0.1))
+hlines!(ax_t, [dev_params.T_L, dev_params.T_M], color=:gray, linestyle=:dash, linewidth=1)
+
+# Panel B: Immature stages
+ax_imm = Axis(fig_summer[2, 1],
+    ylabel="Population (individuals)")
+
+colors_imm = [:steelblue, :teal, :forestgreen, :olive, :purple]
+labels_imm = ["Egg", "L1", "L2", "L3", "Pupa"]
+for (i, (lab, col)) in enumerate(zip(labels_imm, colors_imm))
+    vals = [u[i] for u in sol_summer.u]
+    lines!(ax_imm, t_days, vals, color=col, linewidth=2, label=lab)
+end
+axislegend(ax_imm, position=:lt)
+
+# Panel C: Adult stages
+ax_ad = Axis(fig_summer[3, 1],
+    xlabel="Day of year",
+    ylabel="Population (individuals)")
+
+lines!(ax_ad, t_days, [u[6] for u in sol_summer.u],
+    color=:goldenrod, linewidth=2, label="Adult male")
+lines!(ax_ad, t_days, [u[7] for u in sol_summer.u],
+    color=:hotpink, linewidth=2, linestyle=:dash, label="Non-mated female")
+lines!(ax_ad, t_days, [u[8] for u in sol_summer.u],
+    color=:firebrick, linewidth=2.5, label="Mated female")
+axislegend(ax_ad, position=:lt)
+
+fig_summer
+```
+
+
+### Time Series: Full Year
+
+```{julia}
+#| label: fig-year-timeseries
+#| fig-cap: "Full-year population dynamics of B. oleae showing seasonal buildup during the warm season and collapse in winter. The sinusoidal temperature forcing drives development, mortality, and fecundity."
+
+fig_year = Figure(size=(900, 800))
+
+# Panel A: Temperature with development window
+ax_ty = Axis(fig_year[1, 1],
+    ylabel="Temperature (°C)",
+    title="Full-Year B. oleae Dynamics (Central Italy)")
+t_yr = sol_year.t
+T_yr = T_forcing.(t_yr)
+lines!(ax_ty, t_yr, T_yr, color=:firebrick, linewidth=2, label="T(t)")
+band!(ax_ty, t_yr, fill(dev_params.T_L, length(t_yr)), fill(dev_params.T_M, length(t_yr)),
+    color=(:steelblue, 0.1))
+hlines!(ax_ty, [dev_params.T_L, dev_params.T_M], color=:gray, linestyle=:dash, linewidth=1)
+text!(ax_ty, 10, dev_params.T_L + 0.5, text="T_L", fontsize=9, color=:gray)
+text!(ax_ty, 10, dev_params.T_M - 1.5, text="T_M", fontsize=9, color=:gray)
+
+# Month labels on x-axis
+month_days = [1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335]
+month_labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+# Panel B: All 8 stages (stacked area not needed — line plot is clearer)
+ax_all = Axis(fig_year[2, 1],
+    ylabel="Population (individuals)")
+
+stage_colors = [:steelblue, :teal, :forestgreen, :olive, :purple,
+                :goldenrod, :hotpink, :firebrick]
+for (i, (lab, col)) in enumerate(zip(stage_names, stage_colors))
+    vals = [u[i] for u in sol_year.u]
+    lw = i >= 6 ? 2.5 : 1.5
+    ls = i == 7 ? :dash : :solid
+    lines!(ax_all, t_yr, vals, color=col, linewidth=lw, linestyle=ls, label=lab)
+end
+axislegend(ax_all, position=:lt, nbanks=2)
+
+# Panel C: Total population
+ax_tot = Axis(fig_year[3, 1],
+    xlabel="Day of year",
+    ylabel="Total population")
+total_pop = sum.(sol_year.u)
+lines!(ax_tot, t_yr, total_pop, color=:black, linewidth=2.5)
+
+# Annotate peak
+peak_day = sol_year.t[peak_idx]
+peak_val = total_pop[peak_idx]
+scatter!(ax_tot, [peak_day], [peak_val], color=:red, markersize=8)
+text!(ax_tot, peak_day + 5, peak_val * 0.95,
+    text="Peak: day $(round(Int, peak_day))\n$(round(peak_val, digits=1)) ind.",
+    fontsize=9, color=:red)
+
+fig_year
+```
+
+
+### Adult Male Trap Catches
+
+In field monitoring programs, adult males are captured in pheromone traps.
+The model's adult male compartment provides a proxy for trap catch patterns.
+
+```{julia}
+#| label: fig-trap-catches
+#| fig-cap: "Simulated adult male population as a proxy for pheromone trap catches. The pattern should show buildup from late spring through a peak in August–September, consistent with field observations in central Italian olive groves."
+
+fig_trap = Figure(size=(800, 400))
+
+ax_trap = Axis(fig_trap[1, 1],
+    xlabel="Day of year",
+    ylabel="Adult males (trap catch proxy)",
+    title="Simulated Male Trap Catches — Central Italy")
+
+male_pop = [u[6] for u in sol_year.u]
+lines!(ax_trap, t_yr, male_pop, color=:goldenrod, linewidth=2.5)
+
+# Add temperature on right axis
+ax_trap_t = Axis(fig_trap[1, 1],
+    ylabel="Temperature (°C)",
+    yaxisposition=:right,
+    yticklabelcolor=:firebrick)
+hidespines!(ax_trap_t, :t, :l, :b)
+lines!(ax_trap_t, t_yr, T_yr, color=(:firebrick, 0.5), linewidth=1.5, linestyle=:dash)
+
+# Mark monitoring season (typically Jun–Nov)
+vlines!(ax_trap, [152.0, 335.0], color=:gray, linestyle=:dot, linewidth=1)
+text!(ax_trap, 155, maximum(male_pop) * 0.9,
+    text="Monitoring\nseason", fontsize=9, color=:gray)
+
+fig_trap
+```
+
+
+## Plausibility Checks
+
+```{julia}
+# Verify model behavior at key temperatures
+println("Plausibility checks:")
+println("="^60)
+
+# 1. Development rate at 25°C
+G25 = briere_rate(dev_params, 25.0)
+println("1. G(25°C) = $(round(G25, digits=5)) per day")
+println("   → Generation time ≈ $(round(1/G25, digits=0)) days (expect ~30-60)")
+
+# 2. Mortality at optimal temperature
+println("2. Mortality at T_max (optimal survival):")
+for (name, mp) in [("Egg", mort_egg), ("Larva", mort_larva),
+                    ("Pupa", mort_pupa), ("Adult", mort_adult)]
+    M_opt = mortality_fraction(mp, mp.T_max)
+    println("   $name: M($(mp.T_max)°C) = $(round(M_opt, digits=3)) (survival = $(round(1-M_opt, digits=3)))")
+end
+
+# 3. Fecundity at optimal temperature
+println("3. β(25.6°C) = $(round(fecundity(25.6), digits=2)) eggs/female/day")
+println("   β(20°C) = $(round(fecundity(20.0), digits=2)) eggs/female/day")
+println("   β(30°C) = $(round(fecundity(30.0), digits=2)) eggs/female/day")
+
+# 4. Population scale
+println("4. Peak total population: $(round(maximum(total_pop), digits=1)) individuals")
+println("   (expect 10s–100s per spatial unit, not millions)")
+
+# 5. Generations per season
+println("5. Summer DD accumulation:")
+dd_summer = sum(briere_rate(dev_params, T_forcing(d)) for d in 196:273)
+println("   Jul–Sep total development: $(round(dd_summer, digits=2))")
+println("   → Approx. $(round(dd_summer * G25 / G25, digits=1)) developmental units " *
+        "(expect 2–3 generations)")
+```
+
+
+## Comparison with Distributed-Delay PBDM
+
+[Vignette 28](../28_olive_bactrocera/28_olive_bactrocera.qmd) implements the
+olive fly lifecycle using the distributed-delay (Erlang chain trick) approach
+within the `PhysiologicallyBasedDemographicModels.jl` framework. That approach,
+following Gutierrez, Ponti, and colleagues, represents each life stage as a
+distributed-delay queue with $k$ substages and a mean duration $\tau$.
+
+The two approaches are conceptually related but differ in several key ways:
+
+| Feature | ODE Model (this vignette) | Distributed-Delay PBDM (vignette 28) |
+|:--------|:--------------------------|:--------------------------------------|
+| **Framework** | 8 coupled ODEs | Erlang chain with $k$ substages |
+| **Stage structure** | 3 larval instars explicit | Larvae lumped into single stage |
+| **Adult classes** | Male / non-mated / mated females | Single adult stage |
+| **Development** | Brière ($m = 2.5$) | Brière ($m = 2$, standard) |
+| **Mortality** | Gumbel survival function | U-shaped empirical function |
+| **Fecundity** | Temperature only | Temperature × fruit availability |
+| **Trophic coupling** | None (fly only) | Olive plant supply/demand |
+| **Solver** | `OrdinaryDiffEq.jl` (Tsit5) | `DirectIteration()` (discrete step) |
+| **Reference** | Rossini et al. (2022) | Ponti et al. (2009) |
+
+The ODE approach is more parsimonious — it uses fewer parameters and does not
+require the Erlang substage discretization — but it also lacks the variance
+control of the distributed delay, which better represents the natural spread
+of development times within a cohort. The PBDM approach additionally captures
+the trophic coupling between olive fruit availability and fly oviposition,
+which is a critical ecological constraint omitted in the standalone ODE model.
+
+Both approaches predict seasonal population buildup during summer with peak
+abundance in August–September, consistent with field trap catch data from
+Italian olive groves. The ODE model is better suited for rapid
+parameter estimation and sensitivity analysis, while the PBDM is preferred
+for scenario analysis involving crop management and climate projections.
+
+
+## Sensitivity to Temperature Regime
+
+We explore how the population dynamics change under three warming scenarios.
+
+```{julia}
+#| label: fig-warming-scenarios
+#| fig-cap: "B. oleae population dynamics under baseline and warming scenarios (+1°C, +2°C, +3°C). Warming shifts peak populations earlier and initially increases abundance, but extreme warming (+3°C) can reduce populations due to high-temperature mortality exceeding the upper developmental threshold."
+
+fig_warm = Figure(size=(900, 600))
+
+ax_wpop = Axis(fig_warm[1, 1],
+    xlabel="Day of year",
+    ylabel="Total population",
+    title="Population Response to Warming")
+
+ax_wt = Axis(fig_warm[2, 1],
+    xlabel="Day of year",
+    ylabel="Temperature (°C)",
+    title="Temperature Scenarios")
+
+scenarios = [(0.0, "Baseline", :steelblue),
+             (1.0, "+1°C",    :darkorange),
+             (2.0, "+2°C",    :firebrick),
+             (3.0, "+3°C",    :purple)]
+
+for (ΔT, label, col) in scenarios
+    T_func_w(t) = (T_mean + ΔT) + T_amp * sin(2π * (t - T_phase) / 365.0)
+
+    p_warm = (T_func = T_func_w, dev = dev_params,
+              mort_e = mort_egg, mort_l = mort_larva,
+              mort_p = mort_pupa, mort_a = mort_adult)
+
+    prob_w = ODEProblem(bactrocera_rhs!, u0_year, (1.0, 365.0), p_warm)
+    sol_w = solve(prob_w, Tsit5(); saveat=1.0, abstol=1e-8, reltol=1e-8)
+
+    tot_w = sum.(sol_w.u)
+    lines!(ax_wpop, sol_w.t, tot_w, color=col, linewidth=2.5, label=label)
+
+    T_w = T_func_w.(sol_w.t)
+    lines!(ax_wt, sol_w.t, T_w, color=col, linewidth=1.5, label=label)
+end
+
+axislegend(ax_wpop, position=:lt)
+hlines!(ax_wt, [dev_params.T_L, dev_params.T_M], color=:gray, linestyle=:dash, linewidth=1)
+axislegend(ax_wt, position=:lt)
+
+fig_warm
+```
+
+```{julia}
+# Summary statistics across scenarios
+println("Warming scenario summary:")
+println("="^70)
+println("  Scenario  | Peak pop. | Peak day | Season length | Total ind·days")
+println("-"^70)
+
+for (ΔT, label, _) in scenarios
+    T_func_w(t) = (T_mean + ΔT) + T_amp * sin(2π * (t - T_phase) / 365.0)
+    p_warm = (T_func = T_func_w, dev = dev_params,
+              mort_e = mort_egg, mort_l = mort_larva,
+              mort_p = mort_pupa, mort_a = mort_adult)
+    prob_w = ODEProblem(bactrocera_rhs!, u0_year, (1.0, 365.0), p_warm)
+    sol_w = solve(prob_w, Tsit5(); saveat=1.0, abstol=1e-8, reltol=1e-8)
+
+    tot_w = sum.(sol_w.u)
+    peak_val = maximum(tot_w)
+    peak_day = sol_w.t[argmax(tot_w)]
+    threshold = 1.0
+    active_days = count(x -> x > threshold, tot_w)
+    total_ind_days = sum(tot_w)
+
+    println("  $(rpad(label, 10)) | $(lpad(round(peak_val, digits=1), 9)) | " *
+            "day $(lpad(round(Int, peak_day), 3)) | $(lpad(active_days, 6)) days    | " *
+            "$(round(total_ind_days, digits=0))")
+end
+```
+
+
+## Discussion
+
+This vignette demonstrates the implementation of the Rossini et al. (2022)
+8-ODE system for *Bactrocera oleae* using Julia's `OrdinaryDiffEq.jl` solver.
+The model captures the essential temperature-driven dynamics of the olive fruit
+fly lifecycle: spring emergence as temperatures exceed the lower developmental
+threshold ($T_L = 7.23\,°\text{C}$), rapid population buildup during the warm
+season, and autumn collapse as temperatures drop below the developmental range.
+
+The explicit separation of adult males, non-mated females, and mated females
+allows the model to track mating dynamics and predict male trap catches —
+quantities directly observable in field monitoring programs. The Brière
+development rate with exponent $1/m = 0.4$ captures the asymmetric thermal
+response with rapid decline near the upper thermal limit ($T_M = 32.2\,°\text{C}$),
+which is ecologically important in hot Mediterranean summers.
+
+**Comparison with the PBDM approach:** The distributed-delay framework in
+vignette 28 offers several advantages for applied modeling: (1) the Erlang
+chain provides realistic variance in stage durations, (2) the Frazer-Gilbert
+functional response couples fly reproduction to fruit availability, and (3)
+the supply/demand paradigm naturally incorporates resource limitation.
+However, the ODE approach here is more transparent mathematically, easier to
+analyze for stability and bifurcations, and more directly connected to the
+parameter estimation literature. A complete modeling study would ideally
+validate both approaches against the same field dataset.
+
+**Code availability:** The original Python implementation by Rossini et al.
+is available at <https://github.com/lucaros1190/ODE-bactrocera>.
+
+
+## References

@@ -1,0 +1,464 @@
+---
+title: "Stage-Structured Consumer-Resource Dynamics"
+subtitle: "Simplifying PSPMs to Biomass Models (De Roos et al. 2008)"
+author: "Simon Frost"
+format:
+  html:
+    code-fold: true
+    toc: true
+    toc-depth: 3
+    embed-resources: true
+  pdf:
+    documentclass: scrartcl
+    papersize: a4
+    mainfont: "STIX Two Text"
+    mathfont: "STIX Two Math"
+    monofont: "Menlo"
+    fontsize: 10pt
+    geometry:
+      - margin=1in
+    toc: true
+  gfm:
+    toc: true
+execute:
+  eval: true
+  echo: true
+  warning: false
+bibliography: ../references.bib
+---
+
+Primary reference: [@DeRoos2008PSPM].
+
+## Introduction
+
+Physiologically structured population models (PSPMs) track individuals across a continuous size or physiological state, making them biologically detailed but analytically and computationally demanding. De Roos, Schellekens, Van Kooten, Van de Wolfshaar, Claessen, and Persson [-@DeRoos2008PSPM] showed that, under specific assumptions about individual energetics, a full size-structured consumer population can be **exactly collapsed** into a stage-structured biomass model with only two consumer compartments — juveniles and adults — without losing the key qualitative dynamics.
+
+The essential insight is that if all individuals within a stage share the same mass-specific rates (ingestion, maintenance, mortality), then the *total biomass* in each stage obeys a closed ODE system. The maturation flux from the juvenile to the adult stage is derived from the equilibrium size distribution of the underlying PSPM and depends on a single ratio $z = s_b / s_m$ (newborn size divided by maturation size).
+
+This approach bridges the gap between individual-based PSPMs and classical unstructured or stage-structured models, preserving phenomena like **juvenile–adult competition asymmetry**, **emergent Allee effects**, and **generation cycles** that unstructured models miss entirely.
+
+This vignette implements the three-variable stage-structured consumer-resource model (Equation 24 of the paper) and explores how the ratio of adult-to-juvenile competitive ability ($q$) shapes the dynamics.
+
+## Model Description
+
+### State Variables
+
+| Symbol | Description | Units |
+|--------|-------------|-------|
+| $R(t)$ | Resource density | biomass/volume |
+| $J(t)$ | Total juvenile consumer biomass | biomass/volume |
+| $A(t)$ | Total adult consumer biomass | biomass/volume |
+
+### Resource Dynamics
+
+The resource follows semi-chemostat (flow-through) dynamics with consumption by both juvenile and adult consumers:
+
+$$
+\frac{dR}{dt} = \delta (R_{\max} - R) - \frac{R}{H + R}\bigl(I_{\max} J + q\, I_{\max} A\bigr)
+$$
+
+where $\delta$ is the resource turnover rate, $R_{\max}$ is the maximum resource density (in the absence of consumers), $H$ is the half-saturation constant, $I_{\max}$ is the maximum mass-specific ingestion rate for juveniles, and $q$ is the ratio of adult-to-juvenile mass-specific ingestion rate.
+
+### Net Biomass Production
+
+Each stage has a net biomass production rate — the difference between assimilated intake and metabolic costs:
+
+$$
+\nu_j(R) = \sigma\, I_{\max}\, \frac{R}{H + R} - T, \qquad
+\nu_a(R) = \sigma\, q\, I_{\max}\, \frac{R}{H + R} - T
+$$
+
+where $\sigma$ is the assimilation efficiency and $T$ is the mass-specific metabolic (maintenance) rate. When net production is negative, individuals lose body mass; only the positive parts contribute to growth and reproduction:
+
+$$
+\nu_j^+(R) = \max\bigl(\nu_j(R),\, 0\bigr), \qquad
+\nu_a^+(R) = \max\bigl(\nu_a(R),\, 0\bigr)
+$$
+
+### Maturation Rate
+
+The maturation rate $\gamma$ converts juvenile biomass into adult biomass. It is derived from the equilibrium size distribution within the juvenile stage and depends on the ratio $z = s_b / s_m$ of newborn body size to maturation body size:
+
+$$
+\gamma\bigl(\nu_j^+, \mu_j\bigr) =
+\begin{cases}
+\dfrac{\nu_j^+(R) - \mu_j}{1 - z^{\,(\nu_j^+ - \mu_j)/\nu_j^+}} & \text{if } \nu_j^+ > 0 \\[6pt]
+0 & \text{if } \nu_j^+ = 0
+\end{cases}
+$$
+
+When $\nu_j^+ \to \mu_j$, the denominator approaches $1 - z^0 = 0$, but L'Hôpital's rule gives a finite limit $\gamma \to -\nu_j^+ / \ln z$. The implementation handles this numerically.
+
+### Consumer Dynamics
+
+$$
+\frac{dJ}{dt} = \nu_a^+(R)\, A + \nu_j(R)\, J - \gamma\, J - \mu_j\, J
+$$
+
+$$
+\frac{dA}{dt} = \gamma\, J + \nu_a(R)\, A - \nu_a^+(R)\, A - \mu_a\, A
+$$
+
+The first term in the juvenile equation ($\nu_a^+ A$) is **reproduction**: adults allocate their positive net production to producing newborn biomass. The $\nu_j J$ term captures juvenile somatic growth (positive or negative). The $\gamma J$ term is the maturation flux — biomass leaving the juvenile class. In the adult equation, $\nu_a A - \nu_a^+ A$ equals $\min(\nu_a, 0) \cdot A$, representing starvation-driven biomass loss when adult net production is negative.
+
+### Parameters
+
+| Symbol | Description | Default |
+|--------|-------------|---------|
+| $R_{\max}$ | Maximum resource density | 2.0 |
+| $\delta$ | Resource turnover rate | 1.0 |
+| $H$ | Half-saturation constant | 1.0 |
+| $I_{\max}$ | Maximum ingestion rate (juveniles) | 10.0 |
+| $\sigma$ | Assimilation efficiency | 0.5 |
+| $T$ | Mass-specific metabolic rate | 1.0 |
+| $\mu_j$ | Juvenile background mortality | 0.1 |
+| $\mu_a$ | Adult background mortality | 0.1 |
+| $z$ | Newborn-to-maturation size ratio | 0.01 |
+| $q$ | Adult/juvenile ingestion ratio | 1.0 |
+
+## Implementation
+
+```{julia}
+using PhysiologicallyBasedDemographicModels
+using OrdinaryDiffEq
+using CairoMakie
+```
+
+### ODE Right-Hand Side
+
+```{julia}
+function deroos_rhs!(du, u, p, t)
+    R, J, A = u
+    (; R_max, δ, H, I_max, σ, T_met, μ_j, μ_a, z, q) = p
+
+    # Functional response
+    f = R / (H + R)
+
+    # Net biomass production rates
+    v_j = σ * I_max * f - T_met
+    v_a = σ * q * I_max * f - T_met
+    v_j_pos = max(v_j, 0.0)
+    v_a_pos = max(v_a, 0.0)
+
+    # Maturation rate
+    if v_j_pos > 1e-10
+        ratio = (v_j_pos - μ_j) / v_j_pos
+        if abs(ratio) < 1e-10
+            # L'Hôpital limit: γ → -v_j_pos / ln(z)
+            γ = -v_j_pos / log(z)
+        else
+            γ = (v_j_pos - μ_j) / (1.0 - z^ratio)
+        end
+    else
+        γ = 0.0
+    end
+
+    # Resource dynamics (semi-chemostat supply)
+    du[1] = δ * (R_max - R) - f * (I_max * J + q * I_max * A)
+
+    # Juvenile biomass dynamics
+    du[2] = v_a_pos * A + v_j * J - γ * J - μ_j * J
+
+    # Adult biomass dynamics
+    du[3] = γ * J + v_a * A - v_a_pos * A - μ_a * A
+
+    return nothing
+end
+```
+
+### Default Parameters
+
+```{julia}
+function default_params(; q = 1.0)
+    return (
+        R_max = 2.0,
+        δ     = 1.0,
+        H     = 1.0,
+        I_max = 10.0,
+        σ     = 0.5,
+        T_met = 1.0,
+        μ_j   = 0.1,
+        μ_a   = 0.1,
+        z     = 0.01,
+        q     = q
+    )
+end
+```
+
+### Solver Wrapper
+
+```{julia}
+function run_deroos(p; u0 = [2.0, 0.1, 0.1], tspan = (0.0, 500.0), saveat = 0.5)
+    prob = ODEProblem(deroos_rhs!, u0, tspan, p)
+    sol = solve(prob, Tsit5(); abstol = 1e-9, reltol = 1e-9, saveat = saveat)
+    return sol
+end
+```
+
+## Baseline Dynamics ($q = 1$)
+
+With symmetric juvenile–adult competition ($q = 1$), both stages have identical mass-specific ingestion rates and the system typically reaches a stable equilibrium.
+
+```{julia}
+p_base = default_params(q = 1.0)
+sol_base = run_deroos(p_base)
+
+fig1 = Figure(size = (800, 600))
+ax_R = Axis(fig1[1, 1], xlabel = "Time", ylabel = "Resource density R",
+            title = "Resource")
+ax_J = Axis(fig1[2, 1], xlabel = "Time", ylabel = "Juvenile biomass J",
+            title = "Juvenile consumers")
+ax_A = Axis(fig1[3, 1], xlabel = "Time", ylabel = "Adult biomass A",
+            title = "Adult consumers")
+
+lines!(ax_R, sol_base.t, [u[1] for u in sol_base.u], color = :steelblue, linewidth = 1.5)
+lines!(ax_J, sol_base.t, [u[2] for u in sol_base.u], color = :firebrick, linewidth = 1.5)
+lines!(ax_A, sol_base.t, [u[3] for u in sol_base.u], color = :forestgreen, linewidth = 1.5)
+
+fig1
+```
+
+The resource equilibrium sits well below $R_{\max} = 2$, confirming that consumers substantially deplete the resource. Both juvenile and adult biomass reach steady values on the order of 1–10 units.
+
+## Effect of the Competition Ratio $q$
+
+The parameter $q$ controls the asymmetry between juvenile and adult feeding. When $q < 1$, juveniles are competitively superior (higher mass-specific intake); when $q > 1$, adults have the advantage. This asymmetry can fundamentally alter the qualitative dynamics, including the onset of population cycles.
+
+We sweep $q$ over a range and record the final-time values of all state variables to construct a bifurcation-like diagram.
+
+```{julia}
+q_vals = 0.5:0.025:2.0
+n_q = length(q_vals)
+
+R_final = zeros(n_q)
+J_final = zeros(n_q)
+A_final = zeros(n_q)
+
+R_min = zeros(n_q)
+R_max_vals = zeros(n_q)
+J_min = zeros(n_q)
+J_max_vals = zeros(n_q)
+A_min = zeros(n_q)
+A_max_vals = zeros(n_q)
+
+for (i, q) in enumerate(q_vals)
+    p = default_params(q = q)
+    sol = run_deroos(p; tspan = (0.0, 2000.0), saveat = 0.5)
+
+    # Use the last 25% of the time series to capture limit cycles
+    n_pts = length(sol.t)
+    idx_start = max(1, n_pts - n_pts ÷ 4)
+    R_tail = [sol.u[k][1] for k in idx_start:n_pts]
+    J_tail = [sol.u[k][2] for k in idx_start:n_pts]
+    A_tail = [sol.u[k][3] for k in idx_start:n_pts]
+
+    R_final[i] = sol.u[end][1]
+    J_final[i] = sol.u[end][2]
+    A_final[i] = sol.u[end][3]
+
+    R_min[i] = minimum(R_tail)
+    R_max_vals[i] = maximum(R_tail)
+    J_min[i] = minimum(J_tail)
+    J_max_vals[i] = maximum(J_tail)
+    A_min[i] = minimum(A_tail)
+    A_max_vals[i] = maximum(A_tail)
+end
+```
+
+```{julia}
+fig2 = Figure(size = (800, 700))
+
+ax2_R = Axis(fig2[1, 1], xlabel = "q (adult/juvenile ingestion ratio)",
+             ylabel = "Resource R", title = "Bifurcation diagram — Resource")
+ax2_J = Axis(fig2[2, 1], xlabel = "q",
+             ylabel = "Juvenile biomass J", title = "Bifurcation diagram — Juveniles")
+ax2_A = Axis(fig2[3, 1], xlabel = "q",
+             ylabel = "Adult biomass A", title = "Bifurcation diagram — Adults")
+
+for (ax, ymin, ymax, color) in [
+    (ax2_R, R_min, R_max_vals, :steelblue),
+    (ax2_J, J_min, J_max_vals, :firebrick),
+    (ax2_A, A_min, A_max_vals, :forestgreen)
+]
+    band!(ax, collect(q_vals), ymin, ymax, color = (color, 0.25))
+    lines!(ax, collect(q_vals), ymin, color = color, linewidth = 1.0, linestyle = :dash)
+    lines!(ax, collect(q_vals), ymax, color = color, linewidth = 1.0, linestyle = :dash)
+end
+
+fig2
+```
+
+When the envelope (band) between the min and max curves is thin, the system is at or near a stable equilibrium. Where it widens, the system exhibits sustained oscillations — consumer-resource cycles driven by the interplay of maturation delays and competitive asymmetry.
+
+## Phase Portrait: Consumer-Resource Cycles
+
+To visualize the limit cycle structure, we select a value of $q$ where oscillations are prominent and plot the trajectory in the $J$–$A$ phase plane.
+
+```{julia}
+# Find a q value with large oscillation amplitude
+osc_amplitude = J_max_vals .- J_min
+q_osc_idx = argmax(osc_amplitude)
+q_osc = q_vals[q_osc_idx]
+
+p_osc = default_params(q = q_osc)
+sol_osc = run_deroos(p_osc; tspan = (0.0, 2000.0), saveat = 0.5)
+
+# Use the last portion for a clean cycle
+n_pts = length(sol_osc.t)
+idx_start = max(1, n_pts - n_pts ÷ 4)
+
+J_phase = [sol_osc.u[k][2] for k in idx_start:n_pts]
+A_phase = [sol_osc.u[k][3] for k in idx_start:n_pts]
+
+fig3 = Figure(size = (700, 600))
+ax3 = Axis(fig3[1, 1],
+           xlabel = "Juvenile biomass J",
+           ylabel = "Adult biomass A",
+           title = "Phase portrait (q = $(round(q_osc, digits=3)))")
+
+lines!(ax3, J_phase, A_phase, color = :purple, linewidth = 1.2)
+scatter!(ax3, [J_phase[1]], [A_phase[1]], color = :red, markersize = 10,
+         label = "Start")
+
+axislegend(ax3, position = :rt)
+fig3
+```
+
+The closed (or nearly closed) orbit in the $J$–$A$ plane reflects generation cycles: cohorts of juveniles mature in pulses, temporarily boosting adult biomass while depleting the juvenile pool, then adult reproduction replenishes juveniles after a delay.
+
+## Oscillatory Time Series
+
+We also plot the time series for the oscillatory case to see the temporal structure of the cycles.
+
+```{julia}
+fig4 = Figure(size = (800, 600))
+ax4a = Axis(fig4[1, 1], xlabel = "Time", ylabel = "Density / Biomass",
+            title = "Oscillatory dynamics (q = $(round(q_osc, digits=3)))")
+
+t_plot = sol_osc.t[idx_start:end]
+R_plot = [sol_osc.u[k][1] for k in idx_start:n_pts]
+
+lines!(ax4a, t_plot, R_plot, color = :steelblue, linewidth = 1.2, label = "R (resource)")
+lines!(ax4a, t_plot, J_phase, color = :firebrick, linewidth = 1.2, label = "J (juveniles)")
+lines!(ax4a, t_plot, A_phase, color = :forestgreen, linewidth = 1.2, label = "A (adults)")
+
+axislegend(ax4a, position = :rt)
+fig4
+```
+
+## Comparison: Semi-Chemostat vs Logistic Resource
+
+The original model uses semi-chemostat resource supply $\delta(R_{\max} - R)$. An alternative is logistic growth $\delta R(1 - R/R_{\max})$. These differ in two key ways:
+
+1. **Low-resource behavior**: Chemostat supply is maximal when $R = 0$; logistic growth vanishes at $R = 0$.
+2. **Density regulation**: Logistic growth imposes intrinsic density dependence on the resource; chemostat supply depends only on deviation from $R_{\max}$.
+
+```{julia}
+function deroos_logistic_rhs!(du, u, p, t)
+    R, J, A = u
+    (; R_max, δ, H, I_max, σ, T_met, μ_j, μ_a, z, q) = p
+
+    f = R / (H + R)
+
+    v_j = σ * I_max * f - T_met
+    v_a = σ * q * I_max * f - T_met
+    v_j_pos = max(v_j, 0.0)
+    v_a_pos = max(v_a, 0.0)
+
+    if v_j_pos > 1e-10
+        ratio = (v_j_pos - μ_j) / v_j_pos
+        if abs(ratio) < 1e-10
+            γ = -v_j_pos / log(z)
+        else
+            γ = (v_j_pos - μ_j) / (1.0 - z^ratio)
+        end
+    else
+        γ = 0.0
+    end
+
+    # Logistic resource growth
+    du[1] = δ * R * (1.0 - R / R_max) - f * (I_max * J + q * I_max * A)
+
+    du[2] = v_a_pos * A + v_j * J - γ * J - μ_j * J
+    du[3] = γ * J + v_a * A - v_a_pos * A - μ_a * A
+
+    return nothing
+end
+
+function run_deroos_logistic(p; u0 = [2.0, 0.1, 0.1], tspan = (0.0, 500.0), saveat = 0.5)
+    prob = ODEProblem(deroos_logistic_rhs!, u0, tspan, p)
+    sol = solve(prob, Tsit5(); abstol = 1e-9, reltol = 1e-9, saveat = saveat,
+                isoutofdomain = (u, p, t) -> any(x -> x < 0, u))
+    return sol
+end
+```
+
+```{julia}
+p_comp = default_params(q = 1.0)
+sol_chemo = run_deroos(p_comp; tspan = (0.0, 500.0))
+sol_logistic = run_deroos_logistic(p_comp; tspan = (0.0, 500.0))
+
+fig5 = Figure(size = (800, 700))
+
+ax5_R = Axis(fig5[1, 1], xlabel = "Time", ylabel = "Resource R",
+             title = "Semi-chemostat vs logistic resource (q = 1.0)")
+ax5_J = Axis(fig5[2, 1], xlabel = "Time", ylabel = "Juvenile biomass J")
+ax5_A = Axis(fig5[3, 1], xlabel = "Time", ylabel = "Adult biomass A")
+
+for (ax, idx) in [(ax5_R, 1), (ax5_J, 2), (ax5_A, 3)]
+    lines!(ax, sol_chemo.t, [u[idx] for u in sol_chemo.u],
+           color = :steelblue, linewidth = 1.5, label = "Chemostat")
+    lines!(ax, sol_logistic.t, [u[idx] for u in sol_logistic.u],
+           color = :coral, linewidth = 1.5, linestyle = :dash, label = "Logistic")
+end
+
+axislegend(ax5_R, position = :rt)
+fig5
+```
+
+The logistic resource formulation typically yields lower equilibrium consumer biomass because resource renewal slows as $R$ declines, whereas the chemostat maintains a constant inflow rate regardless of current resource level. This can also affect the stability boundary — the onset of cycles may shift to different $q$ values under logistic resource dynamics.
+
+## Plausibility Checks
+
+We verify that the model produces biologically reasonable outputs:
+
+```{julia}
+R_eq = sol_base.u[end][1]
+J_eq = sol_base.u[end][2]
+A_eq = sol_base.u[end][3]
+
+println("Equilibrium values (q = 1.0, semi-chemostat):")
+println("  R = $(round(R_eq, digits=4))  (should be < R_max = 2.0)")
+println("  J = $(round(J_eq, digits=4))")
+println("  A = $(round(A_eq, digits=4))")
+println("  J + A = $(round(J_eq + A_eq, digits=4))  (total consumer biomass)")
+println()
+
+# Check resource depletion
+@assert R_eq < p_base.R_max "Resource should be depleted below R_max"
+@assert R_eq > 0 "Resource should remain positive"
+
+# Check consumer persistence
+@assert J_eq > 0 "Juveniles should persist"
+@assert A_eq > 0 "Adults should persist"
+
+# Check reasonable magnitude
+@assert J_eq + A_eq < 50.0 "Total biomass should not be extreme"
+
+println("All plausibility checks passed.")
+```
+
+## Summary
+
+This vignette demonstrated how a physiologically structured population model can be rigorously simplified to a stage-structured biomass ODE system following [@DeRoos2008PSPM]. The key findings from the analysis:
+
+1. **Equilibrium coexistence** is the typical outcome when juvenile and adult consumers have symmetric competitive abilities ($q = 1$).
+2. **Competitive asymmetry** ($q \neq 1$) can destabilize the equilibrium, generating consumer-resource cycles through a mechanism related to generation cycles in the underlying size-structured model [@DeRoos2003PSPM].
+3. **Resource supply mode** (chemostat vs logistic) qualitatively matters: it affects both the equilibrium biomass levels and the parameter regions supporting oscillatory dynamics.
+
+The stage-structured biomass model provides a computationally efficient yet mechanistically grounded framework for studying consumer-resource interactions with ontogenetic asymmetry — a middle ground between fully individual-based PSPMs and the lumped Lotka–Volterra tradition.
+
+## References
+
+::: {#refs}
+:::

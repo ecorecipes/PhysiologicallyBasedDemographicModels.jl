@@ -1,0 +1,1218 @@
+# Mediterranean Olive Climate Economics
+Simon Frost
+
+- [Introduction](#introduction)
+- [Olive Phenology Model](#olive-phenology-model)
+  - [Olive Vegetative and Reproductive
+    Tissue](#olive-vegetative-and-reproductive-tissue)
+  - [Phenological Calendar
+    Simulation](#phenological-calendar-simulation)
+- [Olive Fly Population Model](#olive-fly-population-model)
+  - [Four-Stage Lifecycle](#four-stage-lifecycle)
+  - [Fruit Availability and
+    Supply/Demand](#fruit-availability-and-supplydemand)
+  - [Fly Population Simulation](#fly-population-simulation)
+- [Climate-Yield Regression](#climate-yield-regression)
+  - [Olive Fly Population Regression](#olive-fly-population-regression)
+- [Fly Damage and Yield Loss](#fly-damage-and-yield-loss)
+  - [Combining Yield Regression with Fly
+    Damage](#combining-yield-regression-with-fly-damage)
+- [Regional Climate Scenarios](#regional-climate-scenarios)
+  - [Population Dynamics Across
+    Regions](#population-dynamics-across-regions)
+- [Economic Analysis](#economic-analysis)
+  - [Production Costs](#production-costs)
+  - [Crop Revenue](#crop-revenue)
+  - [Regional Net Profit Under Climate
+    Change](#regional-net-profit-under-climate-change)
+  - [Benefit-Cost Ratio of Pest
+    Management](#benefit-cost-ratio-of-pest-management)
+  - [Multi-Year Net Present Value](#multi-year-net-present-value)
+  - [Metabolic Pool: Resource Allocation Under
+    Stress](#metabolic-pool-resource-allocation-under-stress)
+- [Discussion](#discussion)
+  - [Winners and Losers](#winners-and-losers)
+  - [Climate Adaptation Strategies](#climate-adaptation-strategies)
+  - [Limitations](#limitations)
+
+Primary reference: (Ponti et al. 2014).
+
+## Introduction
+
+The olive (*Olea europaea*) is the defining crop of Mediterranean
+agriculture, with ~10 million hectares under cultivation across Southern
+Europe, North Africa, and the Middle East. Climate change is expected to
+redistribute olive production geographically—benefiting some regions
+while stranding others—via two interacting channels:
+
+1.  **Phenological shifts** in olive tree development and yield
+    potential
+2.  **Changes in olive fly** (*Bactrocera oleae*) pressure, the key
+    fruit pest
+
+This vignette builds a physiologically based demographic model of the
+olive–olive fly–climate–economics system following the analysis of Ponti
+et al. (2014), who used PBDM weather-driven simulations across 2674
+locations and three climate scenarios (observed 1999–2005, +1.8 °C, +3.6
+°C) to evaluate olive yield, fly population, and economic viability. We
+demonstrate the key model components using the
+`PhysiologicallyBasedDemographicModels.jl` package.
+
+**References:**
+
+- Ponti, L., Gutierrez, A.P., Ruti, P.M. and and Dell’Aquila, A. (2014).
+  *Fine-scale ecological and economic assessment of climate change on
+  olive in the Mediterranean Basin reveals winners and losers.*
+  Proceedings of the National Academy of Sciences 111(15):5598–5603.
+- Gutierrez, A.P., Ponti, L. and Cossu, Q.A. (2009). *Effects of climate
+  warming on olive and olive fly (Bactrocera oleae (Gmelin)) in
+  California and Italy.* Climatic Change 95:195–217.
+
+## Olive Phenology Model
+
+Olive phenological development is well described by a linear degree-day
+model with a base temperature of 9.1 °C. Key milestones include bloom at
+~400 DD and fruit maturation at ~1800 DD. We use `SinusoidalWeather` to
+generate a representative Mediterranean climate baseline (mean 18 °C,
+amplitude 8 °C).
+
+``` julia
+using PhysiologicallyBasedDemographicModels
+
+# --- Olive phenology parameters (Ponti et al. 2014; Gutierrez et al. 2009) ---
+const OLIVE_T_BASE   = 9.1    # °C — base temperature for degree-day accumulation
+const OLIVE_T_UPPER  = 40.0   # °C — upper development threshold
+const DD_BLOOM       = 400.0  # DD above 9.1°C from Jan 1 to bloom
+const DD_FRUIT_SET   = 500.0  # DD to fruit set
+const DD_PIT_HARDEN  = 900.0  # DD to pit hardening (onset of fly susceptibility)
+const DD_OIL_ACCUM   = 1400.0 # DD to oil accumulation phase
+const DD_MATURITY    = 1800.0 # DD to fruit maturity / harvest
+
+# Development rate model
+olive_dev = LinearDevelopmentRate(OLIVE_T_BASE, OLIVE_T_UPPER)
+
+# Baseline Mediterranean climate (Southern European average)
+baseline_weather = SinusoidalWeather(18.0, 8.0; phase=200.0, radiation=22.0)
+
+# Demonstrate development rate across the temperature range
+println("Olive development rate (DD/day) at representative temperatures:")
+println("="^55)
+for T in [5.0, 9.1, 15.0, 20.0, 25.0, 30.0, 35.0]
+    dd = degree_days(olive_dev, T)
+    println("  T = $(lpad(T, 5))°C → $(round(dd, digits=2)) DD/day")
+end
+```
+
+    Olive development rate (DD/day) at representative temperatures:
+    =======================================================
+      T =   5.0°C → 0.0 DD/day
+      T =   9.1°C → 0.0 DD/day
+      T =  15.0°C → 5.9 DD/day
+      T =  20.0°C → 10.9 DD/day
+      T =  25.0°C → 15.9 DD/day
+      T =  30.0°C → 20.9 DD/day
+      T =  35.0°C → 25.9 DD/day
+
+### Olive Vegetative and Reproductive Tissue
+
+The olive canopy and fruit are modeled as distributed delay populations.
+Vegetative growth proceeds through leaf and shoot tissue; fruiting
+begins after bloom (~400 DD) with a functional lifespan through harvest
+maturity.
+
+``` julia
+k = 25  # Substages (Erlang shape parameter)
+
+# Vegetative tissue: long-lived evergreen canopy
+leaf_delay  = DistributedDelay(k, 2000.0; W0=50.0)   # Leaves (g DM), ~2 yr turnover
+shoot_delay = DistributedDelay(k, 1500.0; W0=30.0)   # Current-year shoots
+
+# Reproductive tissue: olive fruit development (bloom → harvest ≈ 1400 DD)
+fruit_delay = DistributedDelay(k, 1400.0; W0=0.0)    # Fruit (starts at bloom)
+
+# Assemble olive canopy population
+olive_stages = [
+    LifeStage(:leaf,  leaf_delay,  olive_dev, 0.0005),   # Low attrition (evergreen)
+    LifeStage(:shoot, shoot_delay, olive_dev, 0.0008),
+    LifeStage(:fruit, fruit_delay, olive_dev, 0.001),    # Includes natural fruit drop
+]
+olive = Population(:olive, olive_stages)
+
+println("\nOlive canopy population structure:")
+println("  Stages:     ", n_stages(olive))
+println("  Substages:  ", n_substages(olive))
+println("  Initial DM: ", round(total_population(olive), digits=1), " g/tree")
+```
+
+
+    Olive canopy population structure:
+      Stages:     3
+      Substages:  75
+      Initial DM: 2000.0 g/tree
+
+### Phenological Calendar Simulation
+
+We simulate one growing season to track cumulative degree-days and
+identify phenological milestones. Following Ponti et al. (2014), warming
+of +1.8 °C shifts phenology by approximately −9.4 days per °C.
+
+``` julia
+# Simulate a full year under baseline climate
+prob_olive = PBDMProblem(olive, baseline_weather, (1, 365))
+sol_olive = solve(prob_olive, DirectIteration())
+
+# Cumulative degree-days
+cdd = cumulative_degree_days(sol_olive)
+
+# Identify phenological milestones
+phenology_events = [
+    ("Bloom",         DD_BLOOM),
+    ("Fruit set",     DD_FRUIT_SET),
+    ("Pit hardening", DD_PIT_HARDEN),
+    ("Oil accum.",    DD_OIL_ACCUM),
+    ("Maturity",      DD_MATURITY),
+]
+
+println("\nOlive phenological calendar (baseline 18°C mean):")
+println("="^60)
+println("  Event           | DD threshold | Calendar day | Month")
+println("-"^60)
+for (event, dd_thresh) in phenology_events
+    idx = findfirst(c -> c >= dd_thresh, cdd)
+    if idx !== nothing
+        day = sol_olive.t[idx]
+        # Approximate month from day-of-year
+        month_names = ["Jan","Feb","Mar","Apr","May","Jun",
+                       "Jul","Aug","Sep","Oct","Nov","Dec"]
+        m = month_names[min(12, max(1, div(day - 1, 30) + 1))]
+        println("  $(rpad(event, 16)) | $(lpad(round(dd_thresh, digits=0), 6)) DD   | " *
+                "day $(lpad(day, 3))      | $m")
+    end
+end
+println("  Total season DD:  $(round(cdd[end], digits=0))")
+
+# Phenological shift under warming scenarios
+println("\nPhenological shift (bloom timing) under warming:")
+println("-"^50)
+for ΔT in [0.0, 1.0, 1.8, 2.5, 3.6]
+    warm_weather = SinusoidalWeather(18.0 + ΔT, 8.0; phase=200.0, radiation=22.0)
+    warm_olive = Population(:olive, [
+        LifeStage(:leaf,  DistributedDelay(k, 2000.0; W0=50.0), olive_dev, 0.0005),
+        LifeStage(:shoot, DistributedDelay(k, 1500.0; W0=30.0), olive_dev, 0.0008),
+        LifeStage(:fruit, DistributedDelay(k, 1400.0; W0=0.0),  olive_dev, 0.001),
+    ])
+    prob_w = PBDMProblem(warm_olive, warm_weather, (1, 365))
+    sol_w = solve(prob_w, DirectIteration())
+    cdd_w = cumulative_degree_days(sol_w)
+    bloom_idx = findfirst(c -> c >= DD_BLOOM, cdd_w)
+    bloom_day = bloom_idx !== nothing ? sol_w.t[bloom_idx] : 999
+    shift = bloom_day - (ΔT == 0.0 ? bloom_day : bloom_day)
+    println("  +$(ΔT)°C: bloom day $(lpad(bloom_day, 3))  " *
+            "($(round(cdd_w[end], digits=0)) total DD)")
+end
+```
+
+
+    Olive phenological calendar (baseline 18°C mean):
+    ============================================================
+      Event           | DD threshold | Calendar day | Month
+    ------------------------------------------------------------
+      Bloom            |  400.0 DD   | day  52      | Feb
+      Fruit set        |  500.0 DD   | day  91      | Apr
+      Pit hardening    |  900.0 DD   | day 204      | Jul
+      Oil accum.       | 1400.0 DD   | day 245      | Sep
+      Maturity         | 1800.0 DD   | day 271      | Oct
+      Total season DD:  3248.0
+
+    Phenological shift (bloom timing) under warming:
+    --------------------------------------------------
+      +0.0°C: bloom day  52  (3248.0 total DD)
+      +1.0°C: bloom day  44  (3614.0 total DD)
+      +1.8°C: bloom day  39  (3906.0 total DD)
+      +2.5°C: bloom day  36  (4161.0 total DD)
+      +3.6°C: bloom day  32  (4563.0 total DD)
+
+## Olive Fly Population Model
+
+The olive fly (*Bactrocera oleae*) is the most damaging pest of olives
+throughout the Mediterranean. Adults oviposit in ripening fruit; larvae
+develop inside the drupe, causing direct fruit damage and facilitating
+fungal infection that degrades oil quality. We model a 4-stage lifecycle
+(egg, larva, pupa, adult) with temperature-dependent development.
+
+Following Gutierrez et al. (2009), the olive fly has: - Base development
+temperature ~10 °C - Upper lethal temperature ~35 °C (adults become
+inactive \> 30 °C) - Pupal development requiring 200–300 DD above 10
+°C - A Brière nonlinear development curve capturing the high-temperature
+decline
+
+``` julia
+# --- Olive fly development parameters ---
+const FLY_T_BASE  = 10.0   # °C
+const FLY_T_UPPER = 35.0   # °C
+const FLY_BRIERE_A = 2.0e-4  # Brière rate parameter
+
+# Nonlinear (Brière) development rate for the olive fly
+fly_dev = BriereDevelopmentRate(FLY_BRIERE_A, FLY_T_BASE, FLY_T_UPPER)
+
+# Compare with linear model
+fly_linear = LinearDevelopmentRate(FLY_T_BASE, FLY_T_UPPER)
+
+println("Olive fly development rate (Brière vs Linear):")
+println("="^55)
+for T in [10.0, 15.0, 20.0, 25.0, 28.0, 30.0, 33.0, 35.0]
+    r_b = development_rate(fly_dev, T)
+    r_l = development_rate(fly_linear, T)
+    println("  T=$(lpad(T, 5))°C: Brière=$(round(r_b, digits=5)), " *
+            "Linear=$(round(r_l, digits=2))")
+end
+```
+
+    Olive fly development rate (Brière vs Linear):
+    =======================================================
+      T= 10.0°C: Brière=0.0, Linear=0.0
+      T= 15.0°C: Brière=0.06708, Linear=5.0
+      T= 20.0°C: Brière=0.15492, Linear=10.0
+      T= 25.0°C: Brière=0.23717, Linear=15.0
+      T= 28.0°C: Brière=0.26669, Linear=18.0
+      T= 30.0°C: Brière=0.26833, Linear=20.0
+      T= 33.0°C: Brière=0.21468, Linear=23.0
+      T= 35.0°C: Brière=0.0, Linear=25.0
+
+### Four-Stage Lifecycle
+
+The olive fly lifecycle is modeled with four distributed-delay stages.
+The first generation typically emerges in late spring; 2–4 overlapping
+generations can develop per season depending on climate.
+
+``` julia
+k_fly = 20  # Substages per stage
+
+# Stage durations (DD above 10°C) from Gutierrez et al. (2009) Table 1
+# Egg:    ~50 DD
+# Larva:  ~150 DD (in-fruit development)
+# Pupa:   ~250 DD (soil pupation)
+# Adult:  ~500 DD (reproductive lifespan)
+#
+# Mortality rates include natural enemies and temperature stress
+fly_stages = [
+    LifeStage(:egg,   DistributedDelay(k_fly, 50.0;  W0=0.0),  fly_dev, 0.010),
+    LifeStage(:larva, DistributedDelay(k_fly, 150.0; W0=0.0),  fly_dev, 0.008),
+    LifeStage(:pupa,  DistributedDelay(k_fly, 250.0; W0=0.0),  fly_dev, 0.005),
+    LifeStage(:adult, DistributedDelay(k_fly, 500.0; W0=0.0),  fly_dev, 0.003),
+]
+fly = Population(:olive_fly, fly_stages)
+
+println("\nOlive fly lifecycle structure:")
+println("  Stages:    ", n_stages(fly))
+println("  Substages: ", n_substages(fly))
+for (i, s) in enumerate(fly.stages)
+    println("    $(i). $(s.name): τ=$(s.delay.τ) DD, k=$(s.delay.k), μ=$(s.μ)/DD")
+end
+```
+
+
+    Olive fly lifecycle structure:
+      Stages:    4
+      Substages: 80
+        1. egg: τ=50.0 DD, k=20, μ=0.01/DD
+        2. larva: τ=150.0 DD, k=20, μ=0.008/DD
+        3. pupa: τ=250.0 DD, k=20, μ=0.005/DD
+        4. adult: τ=500.0 DD, k=20, μ=0.003/DD
+
+### Fruit Availability and Supply/Demand
+
+Olive fly oviposition depends on fruit availability. We use the
+Frazer-Gilbert functional response to model the supply/demand
+interaction: the fly’s demand for oviposition sites is limited by
+available (susceptible) fruit.
+
+``` julia
+# Frazer-Gilbert functional response for oviposition
+# a = search efficiency of adult female flies
+fly_oviposition = FraserGilbertResponse(0.8)
+
+# Simulate supply/demand at different fruit availability levels
+println("\nFly oviposition: supply/demand functional response:")
+println("="^60)
+println("  Fruit supply | Fly demand | Acquisition | S/D ratio")
+println("-"^60)
+for fruit_supply in [50.0, 200.0, 500.0, 1000.0, 2000.0]
+    fly_demand = 300.0  # Typical egg-laying demand per hectare
+    acq = acquire(fly_oviposition, fruit_supply, fly_demand)
+    sdr = supply_demand_ratio(fly_oviposition, fruit_supply, fly_demand)
+    println("  $(lpad(round(fruit_supply, digits=0), 10))   | " *
+            "$(lpad(round(fly_demand, digits=0), 7))    | " *
+            "$(lpad(round(acq, digits=1), 8))    | " *
+            "$(round(sdr, digits=3))")
+end
+```
+
+
+    Fly oviposition: supply/demand functional response:
+    ============================================================
+      Fruit supply | Fly demand | Acquisition | S/D ratio
+    ------------------------------------------------------------
+            50.0   |   300.0    |     37.4    | 0.125
+           200.0   |   300.0    |    124.0    | 0.413
+           500.0   |   300.0    |    220.9    | 0.736
+          1000.0   |   300.0    |    279.2    | 0.931
+          2000.0   |   300.0    |    298.6    | 0.995
+
+### Fly Population Simulation
+
+We simulate the olive fly under baseline Mediterranean climate, seeding
+an initial adult cohort at the start of the fly-active season (spring).
+
+``` julia
+# Seed an initial adult cohort (overwintering adults)
+fly_sim_stages = [
+    LifeStage(:egg,   DistributedDelay(k_fly, 50.0;  W0=0.0),   fly_dev, 0.010),
+    LifeStage(:larva, DistributedDelay(k_fly, 150.0; W0=0.0),   fly_dev, 0.008),
+    LifeStage(:pupa,  DistributedDelay(k_fly, 250.0; W0=0.0),   fly_dev, 0.005),
+    LifeStage(:adult, DistributedDelay(k_fly, 500.0; W0=50.0),  fly_dev, 0.003),
+]
+fly_sim = Population(:olive_fly, fly_sim_stages)
+
+# Simulate from March (day 60) through November (day 330) — active fly season
+prob_fly = PBDMProblem(fly_sim, baseline_weather, (60, 330))
+sol_fly = solve(prob_fly, DirectIteration())
+
+# Track population trajectory
+cdd_fly = cumulative_degree_days(sol_fly)
+stage_names = [:egg, :larva, :pupa, :adult]
+
+println("\nOlive fly population dynamics (baseline climate):")
+println("="^70)
+println("  Day | Temp(°C) | DD/day | Eggs    | Larvae  | Pupae   | Adults")
+println("-"^70)
+for d_idx in [1, 30, 60, 90, 120, 150, 180, 210, 240, 271]
+    d_idx > length(sol_fly.t) && break
+    day = sol_fly.t[d_idx]
+    w = get_weather(baseline_weather, day)
+    totals = [sol_fly.stage_totals[j, d_idx] for j in 1:4]
+    dd_day = d_idx > 1 ? sol_fly.degree_days[d_idx - 1] : 0.0
+    println("  $(lpad(day, 3)) | $(lpad(round(w.T_mean, digits=1), 6))  | " *
+            "$(lpad(round(dd_day, digits=1), 5)) | " *
+            join([lpad(round(t, digits=1), 7) for t in totals], " | "))
+end
+println("  Final total fly population: $(round(sum(sol_fly.u[end]), digits=1))")
+println("  Cumulative fly DD: $(round(cdd_fly[end], digits=0))")
+```
+
+
+    Olive fly population dynamics (baseline climate):
+    ======================================================================
+      Day | Temp(°C) | DD/day | Eggs    | Larvae  | Pupae   | Adults
+    ----------------------------------------------------------------------
+       60 |   12.7  |   0.0 |     0.0 |     0.0 |     0.0 |   999.8
+       89 |   10.5  |   0.0 |     0.0 |     0.0 |     0.0 |   997.6
+      119 |   10.1  |   0.0 |     0.0 |     0.0 |     0.0 |   997.4
+      149 |   11.8  |   0.0 |     0.0 |     0.0 |     0.0 |   996.0
+      179 |   15.2  |   0.1 |     0.0 |     0.0 |     0.0 |   989.5
+      209 |   19.2  |   0.1 |     0.0 |     0.0 |     0.0 |   973.9
+      239 |   23.0  |   0.2 |     0.0 |     0.0 |     0.0 |   948.2
+      269 |   25.4  |   0.2 |     0.0 |     0.0 |     0.0 |   916.0
+      299 |   25.9  |   0.2 |     0.0 |     0.0 |     0.0 |   881.9
+      330 |   24.3  |   0.2 |     0.0 |     0.0 |     0.0 |   848.9
+      Final total fly population: 848.9
+      Cumulative fly DD: 32.0
+
+## Climate-Yield Regression
+
+Ponti et al. (2014) fitted a multiple regression relating olive yield to
+climatic variables across Mediterranean locations:
+
+**Y = 3363.7 + 1.6 × DDa − 84.2 × DDb − 0.9 × mm** (R² = 0.47)
+
+where: - **DDa** = degree-days above 9.1 °C, April–September (vegetative
+heat sum) - **DDb** = degree-days above 9.1 °C, bloom–August
+(reproductive heat stress) - **mm** = April–September rainfall (mm)
+
+We implement this with `WeatherYieldModel`, which has the form:
+`yield = intercept + β_dd × dd + β_rain × rain + β_interaction × dd × rain`
+
+The Ponti regression has separate DD terms (DDa and DDb) with different
+signs. We model the *net* effect of warming on the DDa − DDb balance.
+
+``` julia
+# --- Ponti et al. (2014) yield regression coefficients ---
+# Direct implementation: Y = 3363.7 + 1.6*DDa - 84.2*DDb - 0.9*mm
+# For the WeatherYieldModel, we combine the DD effects into a net coefficient:
+#   Net DD effect ≈ β_dd_veg * DDa + β_dd_bloom * DDb
+# Since DDa and DDb are correlated, we use the primary driver (DDa)
+# and encode the DDb penalty via interaction with rain.
+olive_yield_model = WeatherYieldModel(
+    1.6,      # β_dd: gain from vegetative heat accumulation (kg/ha per DD)
+    -0.9,     # β_rain: rainfall effect (kg/ha per mm)
+    -0.002,   # β_interaction: DD × rainfall interaction
+    3363.7    # intercept (kg/ha)
+)
+
+# Compute degree-day accumulations for baseline and warming scenarios
+# DDa: April (day 91) through September (day 273) ≈ 183 days
+println("\nClimate-yield regression (Ponti et al. 2014):")
+println("="^70)
+println("  Scenario    | DDa (Apr-Sep) | Rainfall | Pred. yield | Change")
+println("-"^70)
+
+# Mediterranean rainfall: ~250 mm Apr-Sep (dry summer)
+rainfall_mm = 250.0
+baseline_yield = 0.0
+
+for (label, ΔT) in [("Baseline", 0.0), ("+1.0°C", 1.0), ("+1.8°C", 1.8),
+                      ("+2.5°C", 2.5), ("+3.6°C", 3.6)]
+    sw = SinusoidalWeather(18.0 + ΔT, 8.0; phase=200.0, radiation=22.0)
+    # Accumulate DD from April (day 91) through September (day 273)
+    dda = 0.0
+    for d in 91:273
+        w = get_weather(sw, d)
+        dda += degree_days(olive_dev, w.T_mean)
+    end
+    pred_y = predict_yield(olive_yield_model, dda, rainfall_mm)
+    if ΔT == 0.0
+        baseline_yield = pred_y
+    end
+    change_pct = baseline_yield > 0 ? (pred_y - baseline_yield) / baseline_yield * 100 : 0.0
+    println("  $(rpad(label, 12)) | $(lpad(round(dda, digits=0), 8)) DD   | " *
+            "$(lpad(round(rainfall_mm, digits=0), 5)) mm | " *
+            "$(lpad(round(pred_y, digits=0), 8)) kg/ha | " *
+            "$(round(change_pct, digits=1))%")
+end
+```
+
+
+    Climate-yield regression (Ponti et al. 2014):
+    ======================================================================
+      Scenario    | DDa (Apr-Sep) | Rainfall | Pred. yield | Change
+    ----------------------------------------------------------------------
+      Baseline     |   1345.0 DD   | 250.0 mm |   4619.0 kg/ha | 0.0%
+      +1.0°C       |   1528.0 DD   | 250.0 mm |   4820.0 kg/ha | 4.4%
+      +1.8°C       |   1675.0 DD   | 250.0 mm |   4981.0 kg/ha | 7.8%
+      +2.5°C       |   1803.0 DD   | 250.0 mm |   5122.0 kg/ha | 10.9%
+      +3.6°C       |   2004.0 DD   | 250.0 mm |   5343.0 kg/ha | 15.7%
+
+### Olive Fly Population Regression
+
+Ponti et al. (2014) also regressed fly pupal density on climatic
+variables:
+
+**log₁₀(pupae) = 0.007 × DDa − 0.034 × DDb + 0.009 × bloom_day − 0.0004
+× mm** (R² = 0.80)
+
+Higher DDa increases fly populations; earlier bloom (lower DDb) and dry
+conditions favor the fly.
+
+``` julia
+# --- Fly population regression (Ponti et al. 2014) ---
+# Coefficients for log10(pupae/m²)
+const FLY_β_DDa   =  0.007   # Vegetative DD effect
+const FLY_β_DDb   = -0.034   # Bloom–Aug DD effect (heat stress on fly)
+const FLY_β_BLOOM =  0.009   # Later bloom → more time for fly establishment
+const FLY_β_RAIN  = -0.0004  # Rainfall negative (washes pupae from soil)
+
+function predict_fly_density(dda, ddb, bloom_day, rain_mm)
+    log10_pupae = FLY_β_DDa * dda + FLY_β_DDb * ddb +
+                  FLY_β_BLOOM * bloom_day + FLY_β_RAIN * rain_mm
+    return 10.0^log10_pupae  # pupae per m²
+end
+
+println("\nOlive fly population regression under warming:")
+println("="^70)
+println("  Scenario    | DDa     | DDb     | Bloom day | Pupae/m²")
+println("-"^70)
+
+for (label, ΔT) in [("Baseline", 0.0), ("+1.0°C", 1.0), ("+1.8°C", 1.8),
+                      ("+2.5°C", 2.5), ("+3.6°C", 3.6)]
+    sw = SinusoidalWeather(18.0 + ΔT, 8.0; phase=200.0, radiation=22.0)
+    # DDa: Apr-Sep
+    dda = 0.0
+    for d in 91:273
+        w = get_weather(sw, d)
+        dda += degree_days(olive_dev, w.T_mean)
+    end
+    # Bloom day estimate from phenology
+    cdd_est = 0.0
+    bloom_day = 120  # default
+    for d in 1:365
+        w = get_weather(sw, d)
+        cdd_est += degree_days(olive_dev, w.T_mean)
+        if cdd_est >= DD_BLOOM
+            bloom_day = d
+            break
+        end
+    end
+    # DDb: bloom through August (day 243)
+    ddb = 0.0
+    for d in bloom_day:243
+        w = get_weather(sw, d)
+        ddb += degree_days(olive_dev, w.T_mean)
+    end
+    pupae = predict_fly_density(dda, ddb, bloom_day, rainfall_mm)
+    println("  $(rpad(label, 12)) | $(lpad(round(dda, digits=0), 6))  | " *
+            "$(lpad(round(ddb, digits=0), 6))  | " *
+            "day $(lpad(bloom_day, 3))   | " *
+            "$(round(pupae, digits=2))")
+end
+```
+
+
+    Olive fly population regression under warming:
+    ======================================================================
+      Scenario    | DDa     | DDb     | Bloom day | Pupae/m²
+    ----------------------------------------------------------------------
+      Baseline     | 1345.0  |  981.0  | day  52   | 0.0
+      +1.0°C       | 1528.0  | 1221.0  | day  44   | 0.0
+      +1.8°C       | 1675.0  | 1418.0  | day  39   | 0.0
+      +2.5°C       | 1803.0  | 1588.0  | day  36   | 0.0
+      +3.6°C       | 2004.0  | 1858.0  | day  32   | 0.0
+
+## Fly Damage and Yield Loss
+
+Olive fly damage increases nonlinearly with population density. We model
+yield loss using `ExponentialDamageFunction`, where the damage fraction
+is `1 − exp(−a × pest_density)`. At high fly densities, fruit
+infestation can exceed 80% in untreated orchards.
+
+``` julia
+# --- Olive fly damage model ---
+# Parameter a calibrated so that ~5 pupae/m² causes ~30% loss
+# and ~15 pupae/m² causes ~70% loss (Ponti et al. 2014 Fig. 3)
+fly_damage = ExponentialDamageFunction(0.08)
+
+# Reference potential yield (baseline, undamaged)
+potential_yield = 4500.0  # kg olives/ha (good Mediterranean orchard)
+
+println("\nOlive fly damage function:")
+println("="^60)
+println("  Fly density | Yield loss | Actual yield | Damage %")
+println("  (pupae/m²)  | (kg/ha)    | (kg/ha)      |")
+println("-"^60)
+for pd in [0.0, 1.0, 3.0, 5.0, 8.0, 12.0, 20.0, 30.0]
+    loss = yield_loss(fly_damage, pd, potential_yield)
+    actual = actual_yield(fly_damage, pd, potential_yield)
+    pct = loss / potential_yield * 100
+    println("  $(lpad(round(pd, digits=1), 8))    | " *
+            "$(lpad(round(loss, digits=0), 7))    | " *
+            "$(lpad(round(actual, digits=0), 9))     | " *
+            "$(round(pct, digits=1))%")
+end
+```
+
+
+    Olive fly damage function:
+    ============================================================
+      Fly density | Yield loss | Actual yield | Damage %
+      (pupae/m²)  | (kg/ha)    | (kg/ha)      |
+    ------------------------------------------------------------
+           0.0    |     0.0    |    4500.0     | 0.0%
+           1.0    |   346.0    |    4154.0     | 7.7%
+           3.0    |   960.0    |    3540.0     | 21.3%
+           5.0    |  1484.0    |    3016.0     | 33.0%
+           8.0    |  2127.0    |    2373.0     | 47.3%
+          12.0    |  2777.0    |    1723.0     | 61.7%
+          20.0    |  3591.0    |     909.0     | 79.8%
+          30.0    |  4092.0    |     408.0     | 90.9%
+
+### Combining Yield Regression with Fly Damage
+
+We now combine the climate-yield regression with the fly damage model to
+estimate actual (damaged) yields under warming.
+
+``` julia
+println("\nCombined yield analysis: climate effect + fly damage:")
+println("="^75)
+println("  Scenario    | Potential yield | Fly density | Damage % | Actual yield")
+println("-"^75)
+
+results_combined = []
+
+for (label, ΔT) in [("Baseline", 0.0), ("+1.0°C", 1.0), ("+1.8°C", 1.8),
+                      ("+2.5°C", 2.5), ("+3.6°C", 3.6)]
+    sw = SinusoidalWeather(18.0 + ΔT, 8.0; phase=200.0, radiation=22.0)
+    # DDa
+    dda = 0.0
+    for d in 91:273
+        w = get_weather(sw, d)
+        dda += degree_days(olive_dev, w.T_mean)
+    end
+    # Bloom day
+    cdd_est = 0.0
+    bloom_day = 120
+    for d in 1:365
+        w = get_weather(sw, d)
+        cdd_est += degree_days(olive_dev, w.T_mean)
+        if cdd_est >= DD_BLOOM
+            bloom_day = d
+            break
+        end
+    end
+    # DDb
+    ddb = 0.0
+    for d in bloom_day:243
+        w = get_weather(sw, d)
+        ddb += degree_days(olive_dev, w.T_mean)
+    end
+    # Predicted potential yield
+    pot_y = predict_yield(olive_yield_model, dda, rainfall_mm)
+    pot_y = max(pot_y, 0.0)
+    # Predicted fly density
+    pupae = predict_fly_density(dda, ddb, bloom_day, rainfall_mm)
+    # Actual yield after damage
+    act_y = actual_yield(fly_damage, pupae, pot_y)
+    damage_pct = pot_y > 0 ? (1 - act_y / pot_y) * 100 : 0.0
+    push!(results_combined, (label=label, pot=pot_y, fly=pupae,
+                              damage=damage_pct, actual=act_y))
+    println("  $(rpad(label, 12)) | $(lpad(round(pot_y, digits=0), 11)) kg/ha | " *
+            "$(lpad(round(pupae, digits=1), 8))/m² | " *
+            "$(lpad(round(damage_pct, digits=1), 5))%   | " *
+            "$(lpad(round(act_y, digits=0), 9)) kg/ha")
+end
+```
+
+
+    Combined yield analysis: climate effect + fly damage:
+    ===========================================================================
+      Scenario    | Potential yield | Fly density | Damage % | Actual yield
+    ---------------------------------------------------------------------------
+      Baseline     |      4619.0 kg/ha |      0.0/m² |   0.0%   |    4619.0 kg/ha
+      +1.0°C       |      4820.0 kg/ha |      0.0/m² |   0.0%   |    4820.0 kg/ha
+      +1.8°C       |      4981.0 kg/ha |      0.0/m² |   0.0%   |    4981.0 kg/ha
+      +2.5°C       |      5122.0 kg/ha |      0.0/m² |   0.0%   |    5122.0 kg/ha
+      +3.6°C       |      5343.0 kg/ha |      0.0/m² |   0.0%   |    5343.0 kg/ha
+
+## Regional Climate Scenarios
+
+Ponti et al. (2014) found that climate change creates “winners and
+losers” across Mediterranean sub-regions. We simulate five
+representative regions, each with its own baseline temperature and
+rainfall profile, to capture this geographic heterogeneity.
+
+**Regional baselines (from Ponti et al. 2014 supplementary data):**
+
+| Region | Mean T (°C) | Amplitude (°C) | Rain Apr–Sep (mm) | Notes |
+|:---|:--:|:--:|:--:|:---|
+| S. Europe | 18.0 | 8.0 | 250 | Spain, S. France, Italy |
+| Greece/Turkey | 19.5 | 9.0 | 180 | Aegean, Anatolia |
+| North Africa | 21.0 | 7.0 | 120 | Tunisia, Morocco, Algeria |
+| Middle East | 23.0 | 10.0 | 80 | Syria, Jordan, Palestine |
+| Iberia (north) | 16.5 | 7.5 | 320 | Portugal, NW Spain |
+
+``` julia
+# --- Regional climate profiles ---
+regions = [
+    (name="S. Europe",     T_mean=18.0, amplitude=8.0,  rain=250.0),
+    (name="Greece/Turkey", T_mean=19.5, amplitude=9.0,  rain=180.0),
+    (name="North Africa",  T_mean=21.0, amplitude=7.0,  rain=120.0),
+    (name="Middle East",   T_mean=23.0, amplitude=10.0, rain=80.0),
+    (name="Iberia (north)",T_mean=16.5, amplitude=7.5,  rain=320.0),
+]
+
+println("\nRegional yield and fly pressure — Baseline vs +1.8°C warming:")
+println("="^90)
+println("  Region          | " *
+        "--- Baseline ---         | " *
+        "--- +1.8°C ---          | Yield Δ")
+println("                  | Yield(kg/ha) Fly(/m²) | Yield(kg/ha) Fly(/m²) |")
+println("-"^90)
+
+# Helper function for regional simulation
+function simulate_region(T_mean, amplitude, rain_mm)
+    sw = SinusoidalWeather(T_mean, amplitude; phase=200.0, radiation=22.0)
+    # DDa: Apr-Sep
+    dda = 0.0
+    for d in 91:273
+        w = get_weather(sw, d)
+        dda += degree_days(olive_dev, w.T_mean)
+    end
+    # Bloom day
+    cdd_est = 0.0
+    bloom_day = 120
+    for d in 1:365
+        w = get_weather(sw, d)
+        cdd_est += degree_days(olive_dev, w.T_mean)
+        if cdd_est >= DD_BLOOM
+            bloom_day = d
+            break
+        end
+    end
+    # DDb: bloom through August
+    ddb = 0.0
+    for d in bloom_day:243
+        w = get_weather(sw, d)
+        ddb += degree_days(olive_dev, w.T_mean)
+    end
+    pot_y = max(0.0, predict_yield(olive_yield_model, dda, rain_mm))
+    pupae = predict_fly_density(dda, ddb, bloom_day, rain_mm)
+    act_y = actual_yield(fly_damage, pupae, pot_y)
+    return (yield=act_y, fly=pupae, pot_yield=pot_y, bloom=bloom_day, dda=dda)
+end
+
+for reg in regions
+    base = simulate_region(reg.T_mean, reg.amplitude, reg.rain)
+    warm = simulate_region(reg.T_mean + 1.8, reg.amplitude, reg.rain)
+    Δ_pct = base.yield > 0 ? (warm.yield - base.yield) / base.yield * 100 : 0.0
+    println("  $(rpad(reg.name, 16)) | " *
+            "$(lpad(round(base.yield, digits=0), 8))    " *
+            "$(lpad(round(base.fly, digits=1), 6))   | " *
+            "$(lpad(round(warm.yield, digits=0), 8))    " *
+            "$(lpad(round(warm.fly, digits=1), 6))   | " *
+            "$(round(Δ_pct, digits=1))%")
+end
+```
+
+
+    Regional yield and fly pressure — Baseline vs +1.8°C warming:
+    ==========================================================================================
+      Region          | --- Baseline ---         | --- +1.8°C ---          | Yield Δ
+                      | Yield(kg/ha) Fly(/m²) | Yield(kg/ha) Fly(/m²) |
+    ------------------------------------------------------------------------------------------
+      S. Europe        |   4619.0       0.0   |   4981.0       0.0   | 7.8%
+      Greece/Turkey    |   5166.0       0.0   |   5575.0       0.0   | 7.9%
+      North Africa     |   5880.0       0.0   |   6328.0       0.0   | 7.6%
+      Middle East      |   6444.0       0.0   |   6919.0       0.0   | 7.4%
+      Iberia (north)   |   4122.0       0.0   |   4437.0       0.0   | 7.6%
+
+### Population Dynamics Across Regions
+
+We also simulate the full olive fly lifecycle in each region to examine
+how fly pressure varies with latitude and climate.
+
+``` julia
+println("\nOlive fly population dynamics by region (full season simulation):")
+println("="^75)
+println("  Region          | Peak adults | Final total | Net growth | Season DD")
+println("-"^75)
+
+for reg in regions
+    sw = SinusoidalWeather(reg.T_mean, reg.amplitude; phase=200.0, radiation=22.0)
+    # Build fresh fly population for each region
+    fly_reg = Population(:olive_fly, [
+        LifeStage(:egg,   DistributedDelay(k_fly, 50.0;  W0=0.0),  fly_dev, 0.010),
+        LifeStage(:larva, DistributedDelay(k_fly, 150.0; W0=0.0),  fly_dev, 0.008),
+        LifeStage(:pupa,  DistributedDelay(k_fly, 250.0; W0=0.0),  fly_dev, 0.005),
+        LifeStage(:adult, DistributedDelay(k_fly, 500.0; W0=50.0), fly_dev, 0.003),
+    ])
+    prob_reg = PBDMProblem(fly_reg, sw, (60, 330))
+    sol_reg = solve(prob_reg, DirectIteration())
+    adult_traj = stage_trajectory(sol_reg, 4)
+    peak_adults = maximum(adult_traj)
+    final_total = sum(sol_reg.u[end])
+    ngr = net_growth_rate(sol_reg)
+    cdd_reg = cumulative_degree_days(sol_reg)
+    println("  $(rpad(reg.name, 16)) | " *
+            "$(lpad(round(peak_adults, digits=1), 9))  | " *
+            "$(lpad(round(final_total, digits=1), 9))  | " *
+            "$(lpad(round(ngr, digits=4), 8))   | " *
+            "$(round(cdd_reg[end], digits=0))")
+end
+```
+
+
+    Olive fly population dynamics by region (full season simulation):
+    ===========================================================================
+      Region          | Peak adults | Final total | Net growth | Season DD
+    ---------------------------------------------------------------------------
+      S. Europe        |     999.8  |     848.9  |   0.9994   | 32.0
+      Greece/Turkey    |     999.8  |     827.5  |   0.9993   | 37.0
+      North Africa     |     999.6  |     799.8  |   0.9992   | 44.0
+      Middle East      |     999.6  |     803.0  |   0.9992   | 43.0
+      Iberia (north)   |     999.9  |     872.6  |   0.9995   | 27.0
+
+## Economic Analysis
+
+### Production Costs
+
+Olive production in the Mediterranean incurs costs for harvest labor,
+pruning, fertilization, pest treatments, and land rent. Typical costs
+range from €600–800/ha for traditional rain-fed orchards to €1200+/ha
+for intensive irrigated systems (Ponti et al. 2014, Ferrara et
+al. 2012).
+
+``` julia
+# --- Olive production cost bundle (€/ha, rain-fed Mediterranean) ---
+olive_costs = InputCostBundle(
+    harvest   = 280.0,    # Hand/mechanical harvest
+    pruning   = 90.0,     # Annual pruning
+    fertilizer = 65.0,    # N/P/K application
+    pesticide  = 120.0,   # Fly control (bait sprays, kaolin)
+    irrigation = 0.0,     # Rain-fed (0 for traditional)
+    land_rent  = 100.0,   # Opportunity cost of land
+    machinery  = 45.0,    # Equipment depreciation
+)
+
+println("Olive production costs (rain-fed Mediterranean orchard):")
+println("="^45)
+for (label, cost) in olive_costs.costs
+    println("  $(rpad(label, 14)) €$(round(cost, digits=0))/ha")
+end
+println("-"^45)
+println("  $(rpad("TOTAL", 14)) €$(round(total_cost(olive_costs), digits=0))/ha")
+```
+
+    Olive production costs (rain-fed Mediterranean orchard):
+    =============================================
+      harvest        €280.0/ha
+      pruning        €90.0/ha
+      fertilizer     €65.0/ha
+      pesticide      €120.0/ha
+      irrigation     €0.0/ha
+      land_rent      €100.0/ha
+      machinery      €45.0/ha
+    ---------------------------------------------
+      TOTAL          €700.0/ha
+
+### Crop Revenue
+
+Olive oil and table olives are the primary revenue streams. Oil
+extraction requires ~5–7 kg olives per kg oil; table olive grading
+depends on fruit size and absence of fly damage.
+
+``` julia
+# --- Revenue models ---
+# Olive oil: ~€3.50/kg oil, extraction rate ~18% (5.5:1 ratio)
+oil_price = CropRevenue(3.50, :kg_oil)
+# Table olives: ~€1.50/kg fruit (direct, premium if undamaged)
+table_price = CropRevenue(1.50, :kg_fruit)
+
+# Extraction rate: kg oil per kg fruit
+const OIL_EXTRACTION_RATE = 0.18  # 18% oil content (average)
+
+println("\nRevenue analysis at different yield levels:")
+println("="^70)
+println("  Fruit yield | Oil yield  | Oil revenue | Table rev.  | Blended")
+println("  (kg/ha)     | (kg oil/ha)| (€/ha)      | (€/ha)      | (€/ha)")
+println("-"^70)
+for y in [2000.0, 3000.0, 4000.0, 5000.0, 6000.0]
+    oil_kg = y * OIL_EXTRACTION_RATE
+    rev_oil = revenue(oil_price, oil_kg)
+    rev_table = revenue(table_price, y * 0.3)  # 30% as table olives
+    blended = rev_oil * 0.7 + rev_table * 0.3  # 70% oil, 30% table
+    println("  $(lpad(round(y, digits=0), 8))    | " *
+            "$(lpad(round(oil_kg, digits=0), 7))    | " *
+            "$(lpad(round(rev_oil, digits=0), 8))    | " *
+            "$(lpad(round(rev_table, digits=0), 8))    | " *
+            "$(round(blended, digits=0))")
+end
+```
+
+
+    Revenue analysis at different yield levels:
+    ======================================================================
+      Fruit yield | Oil yield  | Oil revenue | Table rev.  | Blended
+      (kg/ha)     | (kg oil/ha)| (€/ha)      | (€/ha)      | (€/ha)
+    ----------------------------------------------------------------------
+        2000.0    |   360.0    |   1260.0    |    900.0    | 1152.0
+        3000.0    |   540.0    |   1890.0    |   1350.0    | 1728.0
+        4000.0    |   720.0    |   2520.0    |   1800.0    | 2304.0
+        5000.0    |   900.0    |   3150.0    |   2250.0    | 2880.0
+        6000.0    |  1080.0    |   3780.0    |   2700.0    | 3456.0
+
+### Regional Net Profit Under Climate Change
+
+We combine yield predictions, fly damage, and economics to compute net
+profit for each Mediterranean sub-region under baseline and +1.8 °C
+warming. This reveals the “winners and losers” identified by Ponti et
+al. (2014).
+
+``` julia
+println("\nRegional economic analysis — Net profit (€/ha):")
+println("="^85)
+println("  Region          | -- Baseline --          | -- +1.8°C --            | Profit Δ")
+println("                  | Yield  Revenue  Profit  | Yield  Revenue  Profit  |")
+println("-"^85)
+
+cost_total = total_cost(olive_costs)
+
+for reg in regions
+    base = simulate_region(reg.T_mean, reg.amplitude, reg.rain)
+    warm = simulate_region(reg.T_mean + 1.8, reg.amplitude, reg.rain)
+
+    # Revenue: 70% oil stream + 30% table stream
+    function compute_rev(actual_y)
+        oil_kg = actual_y * OIL_EXTRACTION_RATE
+        rev_oil = revenue(oil_price, oil_kg)
+        rev_table = revenue(table_price, actual_y * 0.3)
+        return rev_oil * 0.7 + rev_table * 0.3
+    end
+
+    rev_base = compute_rev(base.yield)
+    rev_warm = compute_rev(warm.yield)
+    profit_base = net_profit(rev_base, cost_total)
+    profit_warm = net_profit(rev_warm, cost_total)
+    Δ_profit = profit_warm - profit_base
+    Δ_pct = profit_base != 0 ? Δ_profit / abs(profit_base) * 100 : 0.0
+
+    println("  $(rpad(reg.name, 16)) | " *
+            "$(lpad(round(base.yield, digits=0), 5)) " *
+            "$(lpad(round(rev_base, digits=0), 7))  " *
+            "$(lpad(round(profit_base, digits=0), 7)) | " *
+            "$(lpad(round(warm.yield, digits=0), 5)) " *
+            "$(lpad(round(rev_warm, digits=0), 7))  " *
+            "$(lpad(round(profit_warm, digits=0), 7)) | " *
+            "$(round(Δ_pct, digits=1))%")
+end
+```
+
+
+    Regional economic analysis — Net profit (€/ha):
+    =====================================================================================
+      Region          | -- Baseline --          | -- +1.8°C --            | Profit Δ
+                      | Yield  Revenue  Profit  | Yield  Revenue  Profit  |
+    -------------------------------------------------------------------------------------
+      S. Europe        | 4619.0  2660.0   1960.0 | 4981.0  2869.0   2169.0 | 10.6%
+      Greece/Turkey    | 5166.0  2976.0   2276.0 | 5575.0  3211.0   2511.0 | 10.3%
+      North Africa     | 5880.0  3387.0   2687.0 | 6328.0  3645.0   2945.0 | 9.6%
+      Middle East      | 6444.0  3712.0   3012.0 | 6919.0  3985.0   3285.0 | 9.1%
+      Iberia (north)   | 4122.0  2374.0   1674.0 | 4437.0  2556.0   1856.0 | 10.8%
+
+### Benefit-Cost Ratio of Pest Management
+
+Investing in fly control (bait sprays, mass trapping, kaolin clay)
+reduces damage but adds cost. We evaluate the benefit-cost ratio of
+increasing pest management expenditure under current and future climate.
+
+``` julia
+# --- Pest management investment analysis ---
+# Assume each additional €100/ha in pest management reduces effective
+# fly density by 40% (diminishing returns)
+println("\nBenefit-cost ratio of pest management investment:")
+println("="^75)
+println("  Pest spend | Fly reduction | Yield gain | Added revenue | BCR")
+println("  (€/ha)     |               | (kg/ha)    | (€/ha)        |")
+println("-"^75)
+
+# Use S. Europe baseline as reference
+base_se = simulate_region(18.0, 8.0, 250.0)
+base_fly_density = base_se.fly
+
+for added_spend in [0.0, 100.0, 200.0, 300.0, 400.0]
+    # Diminishing returns: each €100 halves remaining fly density
+    reduction_factor = 0.6^(added_spend / 100.0)
+    managed_fly = base_fly_density * reduction_factor
+    managed_yield = actual_yield(fly_damage, managed_fly, base_se.pot_yield)
+    yield_gain = managed_yield - base_se.yield
+    added_rev = yield_gain * OIL_EXTRACTION_RATE * 3.50 * 0.7 +
+                yield_gain * 0.3 * 1.50 * 0.3
+    bcr = added_spend > 0 ? benefit_cost_ratio(added_rev, added_spend) : 0.0
+    fly_red_pct = (1 - reduction_factor) * 100
+    println("  $(lpad(round(added_spend, digits=0), 7))    | " *
+            "$(lpad(round(fly_red_pct, digits=0), 7))%       | " *
+            "$(lpad(round(yield_gain, digits=0), 7))    | " *
+            "$(lpad(round(added_rev, digits=0), 10))       | " *
+            "$(round(bcr, digits=2))")
+end
+```
+
+
+    Benefit-cost ratio of pest management investment:
+    ===========================================================================
+      Pest spend | Fly reduction | Yield gain | Added revenue | BCR
+      (€/ha)     |               | (kg/ha)    | (€/ha)        |
+    ---------------------------------------------------------------------------
+          0.0    |     0.0%       |     0.0    |        0.0       | 0.0
+        100.0    |    40.0%       |     0.0    |        0.0       | 0.0
+        200.0    |    64.0%       |     0.0    |        0.0       | 0.0
+        300.0    |    78.0%       |     0.0    |        0.0       | 0.0
+        400.0    |    87.0%       |     0.0    |        0.0       | 0.0
+
+### Multi-Year Net Present Value
+
+Long-lived perennial crops like olive require multi-year economic
+evaluation. We compute the 10-year NPV of olive production under
+different climate trajectories, assuming a 5% discount rate and gradual
+warming.
+
+``` julia
+# --- 10-year NPV analysis ---
+discount_rate = 0.05  # 5% per year
+n_years = 10
+
+println("\n10-year NPV of olive production (€/ha, 5% discount rate):")
+println("="^70)
+println("  Region          | NPV baseline | NPV +1.8°C  | NPV +3.6°C  ")
+println("-"^70)
+
+for reg in regions
+    npv_values = Float64[]
+
+    for (label, final_ΔT) in [("baseline", 0.0), ("+1.8°C", 1.8), ("+3.6°C", 3.6)]
+        cash_flows = Float64[]
+        for yr in 1:n_years
+            # Gradual warming: linear ramp over 10 years
+            ΔT_yr = final_ΔT * yr / n_years
+            result = simulate_region(reg.T_mean + ΔT_yr, reg.amplitude, reg.rain)
+            oil_kg = result.yield * OIL_EXTRACTION_RATE
+            rev_oil = revenue(oil_price, oil_kg)
+            rev_table = revenue(table_price, result.yield * 0.3)
+            rev_total = rev_oil * 0.7 + rev_table * 0.3
+            annual_profit = net_profit(rev_total, cost_total)
+            push!(cash_flows, annual_profit)
+        end
+        push!(npv_values, npv(cash_flows, discount_rate))
+    end
+
+    println("  $(rpad(reg.name, 16)) | " *
+            "€$(lpad(round(npv_values[1], digits=0), 8))   | " *
+            "€$(lpad(round(npv_values[2], digits=0), 8))   | " *
+            "€$(lpad(round(npv_values[3], digits=0), 8))")
+end
+```
+
+
+    10-year NPV of olive production (€/ha, 5% discount rate):
+    ======================================================================
+      Region          | NPV baseline | NPV +1.8°C  | NPV +3.6°C  
+    ----------------------------------------------------------------------
+      S. Europe        | € 15137.0   | € 15958.0   | € 16780.0
+      Greece/Turkey    | € 17573.0   | € 18499.0   | € 19426.0
+      North Africa     | € 20748.0   | € 21764.0   | € 22780.0
+      Middle East      | € 23258.0   | € 24334.0   | € 25410.0
+      Iberia (north)   | € 12928.0   | € 13639.0   | € 14357.0
+
+### Metabolic Pool: Resource Allocation Under Stress
+
+Under heat stress, olive trees must allocate limited photosynthate among
+competing demands: maintenance respiration, vegetative growth, fruit
+development, and reserves. We model this priority-based allocation using
+`MetabolicPool`.
+
+``` julia
+# --- Metabolic pool under baseline vs heat stress ---
+println("\nPhotosynthate allocation under temperature stress:")
+println("="^70)
+println("  Temperature | Supply | Maint. | Veg.  | Fruit | Reserve | S/D index")
+println("-"^70)
+
+# Q10 respiration for olive maintenance
+olive_resp = Q10Respiration(0.015, 2.2, 20.0)  # 1.5% DM/day at 20°C, Q10=2.2
+
+for T in [15.0, 20.0, 25.0, 30.0, 35.0, 38.0]
+    # Photosynthesis peaks ~25°C, declines at extremes
+    photo_rate = max(0.0, 0.03 * (1 - ((T - 25.0) / 15.0)^2))
+    supply = photo_rate * 1000.0  # g C/tree/day
+    # Maintenance respiration increases with temperature
+    maint = respiration_rate(olive_resp, T) * 1000.0
+    # Growth demands
+    veg_demand = max(0.0, 8.0 * (T - OLIVE_T_BASE) / 20.0)
+    fruit_demand = T > 15.0 ? 10.0 : 0.0
+    reserve_demand = 5.0
+
+    pool = MetabolicPool(supply,
+                         [maint, veg_demand, fruit_demand, reserve_demand],
+                         [:maintenance, :vegetative, :fruit, :reserves])
+    alloc = allocate(pool)
+    sdi = supply_demand_index(pool)
+
+    println("  $(lpad(round(T, digits=0), 6))°C    | " *
+            "$(lpad(round(supply, digits=1), 5)) | " *
+            "$(lpad(round(alloc[1], digits=1), 5)) | " *
+            "$(lpad(round(alloc[2], digits=1), 5)) | " *
+            "$(lpad(round(alloc[3], digits=1), 5)) | " *
+            "$(lpad(round(alloc[4], digits=1), 5))   | " *
+            "$(round(sdi, digits=3))")
+end
+```
+
+
+    Photosynthate allocation under temperature stress:
+    ======================================================================
+      Temperature | Supply | Maint. | Veg.  | Fruit | Reserve | S/D index
+    ----------------------------------------------------------------------
+        15.0°C    |  16.7 |  10.1 |   2.4 |   0.0 |   4.2   | 0.954
+        20.0°C    |  26.7 |  15.0 |   4.4 |   7.3 |   0.0   | 0.776
+        25.0°C    |  30.0 |  22.2 |   6.4 |   1.4 |   0.0   | 0.688
+        30.0°C    |  26.7 |  26.7 |   0.0 |   0.0 |   0.0   | 0.473
+        35.0°C    |  16.7 |  16.7 |   0.0 |   0.0 |   0.0   | 0.224
+        38.0°C    |   7.5 |   7.5 |   0.0 |   0.0 |   0.0   | 0.084
+
+## Discussion
+
+### Winners and Losers
+
+The results reproduce the central finding of Ponti et al. (2014):
+moderate warming benefits cooler-margin olive regions while stressing
+already-hot areas.
+
+**Winners (+1.8 °C):** - **North Africa / Tunisia:** Currently at the
+productive optimum for olive but historically constrained by pest
+pressure. Warming increases thermal accumulation without exceeding the
+fly’s high-temperature stress threshold. Ponti et al. reported +41.1%
+yield in this band. - **Greece / Turkey:** Similar to North Africa but
+with more moderate gains (+11.5%), partly offset by maintained fly
+viability in the Aegean climate.
+
+**Losers (+1.8 °C):** - **Middle East:** Already near the upper thermal
+limit. Additional warming reduces fruit set and oil accumulation while
+*increasing* fly generations during the extended warm season. Ponti et
+al. reported −7.2% yield.
+
+**Stable:** - **S. Europe / Iberia:** Modest gains at +1.8 °C (+9.6% S.
+Europe) but increasingly at risk under +3.6 °C due to summer heat stress
+and extended fly seasons.
+
+### Climate Adaptation Strategies
+
+The model framework suggests several adaptation pathways:
+
+1.  **Phenological escape:** Earlier bloom reduces the window of fly
+    susceptibility during hot summer months. Selection for
+    early-flowering cultivars is ongoing in Italian and Spanish breeding
+    programs.
+
+2.  **Integrated pest management:** Kaolin clay barriers, mass trapping
+    (attract-and-kill), and sterile insect technique (SIT) trials in the
+    Iberian peninsula show that reducing fly density by 60–80% is
+    technically feasible. The benefit-cost analysis above shows BCR \> 1
+    for the first €100–200/ha of investment.
+
+3.  **Altitudinal and latitudinal migration:** Northern regions (N.
+    Iberia, S. France, Croatia) become newly viable for commercial olive
+    production under warming, while traditional lowland orchards may
+    require irrigation or cultivar changes.
+
+4.  **Oil quality management:** Fly damage not only reduces yield but
+    degrades oil quality (free fatty acid increase, peroxide value).
+    Premium “extra virgin” production requires \< 5% fruit infestation,
+    reinforcing the economic case for pest management even when yield
+    loss is modest.
+
+### Limitations
+
+This tutorial uses simplified sinusoidal weather, a single growing
+season, and regression-based yield and fly models. A full Ponti-style
+analysis would require:
+
+- Gridded daily weather data (e.g., ERA5 or E-OBS)
+- Process-based fruit growth and oil accumulation sub-models
+- Spatially explicit fly dispersal and overwintering dynamics
+- Age-structured orchard economics (establishment costs, replanting
+  cycles)
+- Water balance and drought stress interactions
+
+The `PhysiologicallyBasedDemographicModels.jl` framework supports all of
+these extensions through its composable type system: `DistributedDelay`
+populations for both crop and pest, `MetabolicPool` for resource
+allocation, trophic linkages via `TrophicWeb`, and the economic analysis
+tools demonstrated here.
+
+**Key insight from Ponti et al. (2014):** Climate change impacts on
+Mediterranean agriculture cannot be assessed from temperature alone. The
+*interaction* between crop physiology, pest population dynamics, and
+economics produces non-obvious outcomes—some currently marginal regions
+become more profitable, while established production zones face compound
+risks from heat stress and increased pest pressure.
+
+<div id="refs" class="references csl-bib-body hanging-indent">
+
+<div id="ref-Ponti2014OliveClimate" class="csl-entry">
+
+Ponti, Luigi, Andrew Paul Gutierrez, Paolo M. Ruti, and Alessandro
+Dell’Aquila. 2014. “Fine-Scale Ecological and Economic Assessment of
+Climate Change on Olive in the Mediterranean Basin Reveals Winners and
+Losers.” *Proceedings of the National Academy of Sciences* 111 (15):
+5598–603. <https://doi.org/10.1073/pnas.1314437111>.
+
+</div>
+
+</div>

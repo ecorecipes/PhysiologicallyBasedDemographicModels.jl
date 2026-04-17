@@ -1,0 +1,39 @@
+project:
+  type: default
+  render:
+    - "index.qmd"
+    - "*/*.qmd"
+
+engine: julia
+
+format:
+  html:
+    theme: cosmo
+    code-fold: false
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    embed-resources: true
+  pdf:
+    documentclass: scrartcl
+    papersize: a4
+    mainfont: "STIX Two Text"
+    sansfont: "STIX Two Text"
+    monofont: "Menlo"
+    mathfont: "STIX Two Math"
+    pdf-engine: lualatex
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    colorlinks: true
+    linkcolor: "blue"
+    urlcolor: "blue"
+    keep-tex: false
+  gfm:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+
+execute:
+  eval: true
+  echo: true

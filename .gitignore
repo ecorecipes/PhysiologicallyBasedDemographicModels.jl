@@ -1,0 +1,19 @@
+# Julia
+Manifest.toml
+*.jl.cov
+*.jl.mem
+docs/build/
+docs/site/
+
+# Quarto
+vignettes/.quarto/
+vignettes/**/*.html
+vignettes/**/*.pdf
+vignettes/**/*.tex
+
+# Render sweep artifacts (reproducible; keep top-level reports)
+vignettes/_reports/render-logs/
+
+# OS
+.DS_Store
+Thumbs.db

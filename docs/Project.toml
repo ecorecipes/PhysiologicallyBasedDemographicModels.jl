@@ -1,0 +1,7 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+PhysiologicallyBasedDemographicModels = "1f27deb3-efb8-4edc-a44b-7ee0f15251d5"
+StructuredPopulationCore = "33358fd2-7d60-4541-bded-caea801370e0"
+
+[compat]
+Documenter = "1"
