@@ -204,6 +204,26 @@ function fecundity(t_ac::Real, T::Real)
     return fecundity_age(t_ac) * fecundity_temp(T)
 end
 
+# ── Density-dependent fecundity ──
+# Rossini et al. 2020 do not include explicit density dependence, but the
+# pure Von Foerster equation with positive net reproduction (β > μ over a
+# substantial T range) leads to unbounded exponential growth and numerical
+# blow-up. We add a logistic-style cap on per-capita fecundity to represent
+# resource limitation (host-fruit availability, intraspecific competition):
+#   β_eff(N) = β · max(0, 1 - N / K)
+# K is set to a representative field-scale carrying capacity for adult males.
+const K_CARRYING = 1.0e4
+
+"""
+    fecundity_dd(t_ac, T, N_total)
+
+Density-dependent fecundity rate. Reduces to `fecundity(t_ac, T)` as
+`N_total → 0` and to zero as `N_total → K_CARRYING`.
+"""
+function fecundity_dd(t_ac::Real, T::Real, N_total::Real)
+    return fecundity(t_ac, T) * max(0.0, 1.0 - N_total / K_CARRYING)
+end
+
 println("\nFecundity components:")
 println("\nAge-dependent component β₁(t_ac):")
 for t in [1, 5, 10, 20, 30, 50]
@@ -409,7 +429,7 @@ function dsuzukii_reproduction(pop_state, weather_day, params, day)
     # duration at current temperature. For simplicity, use a fixed
     # characteristic age of 20 days (near peak fecundity).
     t_ac_eff = 20.0
-    eggs = fecundity(t_ac_eff, T) * N_adults
+    eggs = fecundity_dd(t_ac_eff, T, N_adults) * N_adults
     return max(0.0, eggs)
 end
 
@@ -501,10 +521,13 @@ dsuzukii_pspm = PSPMSpecies(:d_suzukii;
     x_max   = X_MAX,
     growth_rate    = (x, E, t) -> briere_dev(E.T),
     mortality_rate = (x, E, t) -> mortality(E.T),
-    fecundity_rate = (x, E, t) -> fecundity(x, E.T),
+    fecundity_rate = (x, E, t) -> fecundity_dd(x, E.T, E.N_pop),
     init_density   = x -> 2.0 < x < 25.0 ? 5.0 * exp(-0.5 * ((x - 10.0) / 4.0)^2) : 0.0)
 
-env_func = (u, t) -> (T = temperature(t),)
+# Environment provides T and the current total population so that
+# `fecundity_dd` can apply density dependence (logistic cap).
+env_func = (u, t) -> (T = temperature(t),
+                      N_pop = sum(@view u[1:N_MESH]) * DX)
 
 println("PSPMSpecies :d_suzukii")
 println("  Age domain: [0, $X_MAX] days")
