@@ -443,12 +443,24 @@ function simulate_biocontrol(;
         r_pe  = dd_par / τ_pe
         r_pp  = dd_par / τ_pp
 
-        # --- Parasitoid release ---
+        # --- CFL-safe substepping ---
+        # Manetsch (1976) Erlang box-car stability requires
+        # k_X * r_X * dt_sub ≤ 1 for every stage. At warm temperatures
+        # k_X * r_X can exceed 1/day (e.g. k=15, dd=14.6, τ=32.8 → 6.7),
+        # which produces negative populations and explosive blow-up.
+        # We substep within the day so the per-substage outflow fraction
+        # stays ≤ 1.
+        max_rate = max(k_egg * r_egg, k_sl * r_sl, k_ll * r_ll,
+                       k_pup * r_pup, k_pe * r_pe, k_pp * r_pp)
+        n_sub = max(1, ceil(Int, max_rate))
+        dt_sub = 1.0 / n_sub
+
+        # --- Parasitoid release (once per day) ---
         if day == parasitoid_release_day
             para_adults += parasitoid_release_size
         end
 
-        # --- Parasitoid attacks on small larvae (Type III) ---
+        # --- Parasitoid attacks on small larvae (Type III, once per day) ---
         N_sl = sum(host_sm_larva)
         attacks = type3_attack(N_sl, para_adults)
         # Cannot attack more than available
@@ -464,105 +476,118 @@ function simulate_biocontrol(;
             para_egglarva[1] += parasitized
         end
 
-        # --- Step host stages (distributed delay with mortality) ---
-        # Egg stage
-        μ_e = μ_egg(T)
-        emerging_egg = 0.0
-        for i in k_egg:-1:1
-            outflow = host_eggs[i] * k_egg * r_egg
-            host_eggs[i] -= outflow
-            host_eggs[i] *= (1.0 - μ_e)
-            if i < k_egg
-                host_eggs[i+1] += outflow
-            else
-                emerging_egg = outflow
+        # Pre-compute per-day mortalities; convert to per-substep survivals.
+        μ_e = μ_egg(T); s_e = (1.0 - μ_e)^dt_sub
+        μ_s = μ_sl(T);  s_s = (1.0 - μ_s)^dt_sub
+        μ_l = μ_ll(T);  s_l = (1.0 - μ_l)^dt_sub
+        μ_p = μ_pup(T); s_p = (1.0 - μ_p)^dt_sub
+        s_pe = (1.0 - 0.02)^dt_sub
+        s_pp = (1.0 - 0.02)^dt_sub
+        s_ad_host = (1.0 - μ_adult)^dt_sub
+        s_ad_para = (1.0 - 0.05)^dt_sub
+
+        # Fecundity per day; spread across substeps.
+        new_eggs_per_sub = host_adults > 0 ?
+            (host_adults * host_fecundity(T)) * dt_sub : 0.0
+        # NB: host_adults is updated each substep so this slightly
+        # under-counts, but the error is O(dt_sub) and acceptable.
+
+        for _sub in 1:n_sub
+            # --- Step host stages (distributed delay with mortality) ---
+            # Egg stage
+            emerging_egg = 0.0
+            for i in k_egg:-1:1
+                outflow = host_eggs[i] * k_egg * r_egg * dt_sub
+                host_eggs[i] -= outflow
+                host_eggs[i] *= s_e
+                if i < k_egg
+                    host_eggs[i+1] += outflow
+                else
+                    emerging_egg = outflow
+                end
             end
-        end
 
-        # Small larva stage
-        μ_s = μ_sl(T)
-        emerging_sl = 0.0
-        for i in k_sl:-1:1
-            outflow = host_sm_larva[i] * k_sl * r_sl
-            host_sm_larva[i] -= outflow
-            host_sm_larva[i] *= (1.0 - μ_s)
-            if i < k_sl
-                host_sm_larva[i+1] += outflow
-            else
-                emerging_sl = outflow
+            # Small larva stage
+            emerging_sl = 0.0
+            for i in k_sl:-1:1
+                outflow = host_sm_larva[i] * k_sl * r_sl * dt_sub
+                host_sm_larva[i] -= outflow
+                host_sm_larva[i] *= s_s
+                if i < k_sl
+                    host_sm_larva[i+1] += outflow
+                else
+                    emerging_sl = outflow
+                end
             end
-        end
-        host_sm_larva[1] += emerging_egg  # inflow from eggs
+            host_sm_larva[1] += emerging_egg  # inflow from eggs
 
-        # Large larva stage
-        μ_l = μ_ll(T)
-        emerging_ll = 0.0
-        for i in k_ll:-1:1
-            outflow = host_lg_larva[i] * k_ll * r_ll
-            host_lg_larva[i] -= outflow
-            host_lg_larva[i] *= (1.0 - μ_l)
-            if i < k_ll
-                host_lg_larva[i+1] += outflow
-            else
-                emerging_ll = outflow
+            # Large larva stage
+            emerging_ll = 0.0
+            for i in k_ll:-1:1
+                outflow = host_lg_larva[i] * k_ll * r_ll * dt_sub
+                host_lg_larva[i] -= outflow
+                host_lg_larva[i] *= s_l
+                if i < k_ll
+                    host_lg_larva[i+1] += outflow
+                else
+                    emerging_ll = outflow
+                end
             end
-        end
-        host_lg_larva[1] += emerging_sl  # inflow from small larvae
+            host_lg_larva[1] += emerging_sl  # inflow from small larvae
 
-        # Pupa stage
-        μ_p = μ_pup(T)
-        emerging_pup = 0.0
-        for i in k_pup:-1:1
-            outflow = host_pupae[i] * k_pup * r_pup
-            host_pupae[i] -= outflow
-            host_pupae[i] *= (1.0 - μ_p)
-            if i < k_pup
-                host_pupae[i+1] += outflow
-            else
-                emerging_pup = outflow
+            # Pupa stage
+            emerging_pup = 0.0
+            for i in k_pup:-1:1
+                outflow = host_pupae[i] * k_pup * r_pup * dt_sub
+                host_pupae[i] -= outflow
+                host_pupae[i] *= s_p
+                if i < k_pup
+                    host_pupae[i+1] += outflow
+                else
+                    emerging_pup = outflow
+                end
             end
-        end
-        host_pupae[1] += emerging_ll  # inflow from large larvae
+            host_pupae[1] += emerging_ll  # inflow from large larvae
 
-        # Adult stage (no delay structure — simple survival + fecundity)
-        host_adults += emerging_pup
-        host_adults *= (1.0 - μ_adult)
+            # Adult stage (no delay structure — simple survival + fecundity)
+            host_adults += emerging_pup
+            host_adults *= s_ad_host
 
-        # Fecundity: adults produce eggs
-        new_eggs = host_adults * host_fecundity(T)
-        host_eggs[1] += new_eggs
+            # Fecundity: adults produce eggs (spread across substeps)
+            host_eggs[1] += new_eggs_per_sub
 
-        # --- Step parasitoid stages ---
-        # Egg-larva stage
-        emerging_pe = 0.0
-        for i in k_pe:-1:1
-            outflow = para_egglarva[i] * k_pe * r_pe
-            para_egglarva[i] -= outflow
-            para_egglarva[i] *= (1.0 - 0.02)
-            if i < k_pe
-                para_egglarva[i+1] += outflow
-            else
-                emerging_pe = outflow
+            # --- Step parasitoid stages ---
+            # Egg-larva stage
+            emerging_pe = 0.0
+            for i in k_pe:-1:1
+                outflow = para_egglarva[i] * k_pe * r_pe * dt_sub
+                para_egglarva[i] -= outflow
+                para_egglarva[i] *= s_pe
+                if i < k_pe
+                    para_egglarva[i+1] += outflow
+                else
+                    emerging_pe = outflow
+                end
             end
-        end
 
-        # Pupa stage
-        emerging_pp = 0.0
-        for i in k_pp:-1:1
-            outflow = para_pupae[i] * k_pp * r_pp
-            para_pupae[i] -= outflow
-            para_pupae[i] *= (1.0 - 0.02)
-            if i < k_pp
-                para_pupae[i+1] += outflow
-            else
-                emerging_pp = outflow
+            # Pupa stage
+            emerging_pp = 0.0
+            for i in k_pp:-1:1
+                outflow = para_pupae[i] * k_pp * r_pp * dt_sub
+                para_pupae[i] -= outflow
+                para_pupae[i] *= s_pp
+                if i < k_pp
+                    para_pupae[i+1] += outflow
+                else
+                    emerging_pp = outflow
+                end
             end
-        end
-        para_pupae[1] += emerging_pe  # inflow from egg-larva
+            para_pupae[1] += emerging_pe  # inflow from egg-larva
 
-        # Parasitoid adults
-        para_adults += emerging_pp
-        para_adults *= (1.0 - 0.05)  # adult parasitoid mortality
+            # Parasitoid adults
+            para_adults += emerging_pp
+            para_adults *= s_ad_para
+        end
 
         # Record daily totals
         rec_egg[day]      = sum(host_eggs)
@@ -611,9 +636,9 @@ println("  Peak larvae (small+large): $(round(maximum(res_nocontrol.small_larva 
 ```
 
     --- Host Only (25°C, no parasitoid) ---
-      Peak total population: 9.618925025080456e90
-      Peak day: 119
-      Peak larvae (small+large): 5.596907087750059e92
+      Peak total population: 1.7724201095e10
+      Peak day: 120
+      Peak larvae (small+large): 1.0400855239e10
 
 ### Plot: Host Population by Stage
 
@@ -681,9 +706,9 @@ println("  Peak parasitoid adults: $(round(maximum(res_para30.para_adult), digit
 ```
 
     --- With Parasitoid (release day 30, n=50) ---
-      Peak total host: 9.618925025080456e90
-      Peak reduction: 0.0%
-      Peak parasitoid adults: 1.2169972886079964e30
+      Peak total host: 5343.0
+      Peak reduction: 100.0%
+      Peak parasitoid adults: 8399.0
 
 ### Plot: Host + Parasitoid Dynamics
 
@@ -777,10 +802,10 @@ end
 
     --- Release Timing Comparison ---
     Release day | Peak larvae | Cumulative larvae | Reduction vs no control
-      Day 20      | 5.596907087750059e92       | -1.9279040318890513e93           | 0.0%
-      Day 30      | 5.596907087750059e92       | -1.9279040318890513e93           | 0.0%
-      Day 40      | 5.596907087750059e92       | -1.9279040318890513e93           | 0.0%
-      Day 50      | 5.596907087750059e92       | -1.9279040318890513e93           | 0.0%
+      Day 20      | 1227.0       | 32173.0           | 100.0%
+      Day 30      | 2001.0       | 35483.0           | 100.0%
+      Day 40      | 59298.0       | 1.549315e6           | 100.0%
+      Day 50      | 1.209761e6       | 3.2037625e7           | 99.9%
 
 ### Plot: Small Larvae Under Different Release Timings
 
@@ -926,10 +951,10 @@ end
 ```
 
     --- Cumulative Damage Reduction ---
-      Release day 20: 0.0% reduction in cumulative larva-days
-      Release day 30: 0.0% reduction in cumulative larva-days
-      Release day 40: 0.0% reduction in cumulative larva-days
-      Release day 50: 0.0% reduction in cumulative larva-days
+      Release day 20: 100.0% reduction in cumulative larva-days
+      Release day 30: 100.0% reduction in cumulative larva-days
+      Release day 40: 100.0% reduction in cumulative larva-days
+      Release day 50: 99.9% reduction in cumulative larva-days
 
 ## Parameter Sources
 

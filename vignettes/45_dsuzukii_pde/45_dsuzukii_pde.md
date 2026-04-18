@@ -219,6 +219,26 @@ function fecundity(t_ac::Real, T::Real)
     return fecundity_age(t_ac) * fecundity_temp(T)
 end
 
+# ── Density-dependent fecundity ──
+# Rossini et al. 2020 do not include explicit density dependence, but the
+# pure Von Foerster equation with positive net reproduction (β > μ over a
+# substantial T range) leads to unbounded exponential growth and numerical
+# blow-up. We add a logistic-style cap on per-capita fecundity to represent
+# resource limitation (host-fruit availability, intraspecific competition):
+#   β_eff(N) = β · max(0, 1 - N / K)
+# K is set to a representative field-scale carrying capacity for adult males.
+const K_CARRYING = 1.0e4
+
+"""
+    fecundity_dd(t_ac, T, N_total)
+
+Density-dependent fecundity rate. Reduces to `fecundity(t_ac, T)` as
+`N_total → 0` and to zero as `N_total → K_CARRYING`.
+"""
+function fecundity_dd(t_ac::Real, T::Real, N_total::Real)
+    return fecundity(t_ac, T) * max(0.0, 1.0 - N_total / K_CARRYING)
+end
+
 println("\nFecundity components:")
 println("\nAge-dependent component β₁(t_ac):")
 for t in [1, 5, 10, 20, 30, 50]
@@ -456,7 +476,7 @@ function dsuzukii_reproduction(pop_state, weather_day, params, day)
     # duration at current temperature. For simplicity, use a fixed
     # characteristic age of 20 days (near peak fecundity).
     t_ac_eff = 20.0
-    eggs = fecundity(t_ac_eff, T) * N_adults
+    eggs = fecundity_dd(t_ac_eff, T, N_adults) * N_adults
     return max(0.0, eggs)
 end
 
@@ -475,7 +495,7 @@ println("  Peak day: $peak_day (T = $(round(temperature(peak_day), digits=1)) °
     PBDM simulation complete:
       Days: 365
       Return code: Success
-      Peak total population: 49112.0
+      Peak total population: 47382.4
       Peak day: 134 (T = 26.4 °C)
 
 ### PBDM Results
@@ -560,10 +580,13 @@ dsuzukii_pspm = PSPMSpecies(:d_suzukii;
     x_max   = X_MAX,
     growth_rate    = (x, E, t) -> briere_dev(E.T),
     mortality_rate = (x, E, t) -> mortality(E.T),
-    fecundity_rate = (x, E, t) -> fecundity(x, E.T),
+    fecundity_rate = (x, E, t) -> fecundity_dd(x, E.T, E.N_pop),
     init_density   = x -> 2.0 < x < 25.0 ? 5.0 * exp(-0.5 * ((x - 10.0) / 4.0)^2) : 0.0)
 
-env_func = (u, t) -> (T = temperature(t),)
+# Environment provides T and the current total population so that
+# `fecundity_dd` can apply density dependence (logistic cap).
+env_func = (u, t) -> (T = temperature(t),
+                      N_pop = sum(@view u[1:N_MESH]) * DX)
 
 println("PSPMSpecies :d_suzukii")
 println("  Age domain: [0, $X_MAX] days")
@@ -571,6 +594,13 @@ println("  Mesh cells: $N_MESH")
 println("  Cell width Δx: $(round(DX, digits=2)) days")
 ```
 
+    Precompiling packages...
+       2322.8 ms  ✓ SciMLBase → SciMLBaseDistributionsExt
+      1 dependency successfully precompiled in 3 seconds. 97 already precompiled.
+    Precompiling packages...
+       5182.6 ms  ✓ PhysiologicallyBasedDemographicModels → OrdinaryDiffEqExt
+       5275.9 ms  ✓ PhysiologicallyBasedDemographicModels → DelayDiffEqExt
+      2 dependencies successfully precompiled in 19 seconds. 463 already precompiled.
     PSPMSpecies :d_suzukii
       Age domain: [0, 120.0] days
       Mesh cells: 100
@@ -601,8 +631,8 @@ println("  Peak day: $(round(pde_times[peak_idx], digits=0)) ",
 
     PSPM simulation complete:
       Time steps saved: 365
-      Peak population: 5.758352719869651e23
-      Peak day: 327.0 (T = 12.8 °C)
+      Peak population: 9869.5
+      Peak day: 287.0 (T = 16.7 °C)
 
 ### PDE Total Population Dynamics
 
@@ -707,10 +737,10 @@ axislegend(ax_mc, position=:lt)
 fig_mc
 ```
 
-    Fixed-mesh upwind: peak = 5.758352719869651e23
-    Lax–Friedrichs: peak = 5.7583517674785324e23
-    Implicit upwind: peak = 5.764137661199218e23
-    Implicit Lax–Friedrichs: peak = 5.764137661199218e23
+    Fixed-mesh upwind: peak = 9869.5
+    Lax–Friedrichs: peak = 9869.5
+    Implicit upwind: peak = 9869.5
+    Implicit Lax–Friedrichs: peak = 9869.5
 
 <div id="fig-method-comparison">
 
@@ -827,12 +857,12 @@ println("\n", "═"^60)
 
     4. Peak population timing:
        PBDM peak: day 134 (T = 26.4 °C)
-       PDE peak:  day 327 (T = 12.8 °C)
+       PDE peak:  day 287 (T = 16.7 °C)
        Summer peak expected: Jul–Aug (days 180–240)
 
     5. Population magnitude:
-       PBDM peak: 49112.0
-       PDE peak:  5.758352719869651e23
+       PBDM peak: 47382.4
+       PDE peak:  9869.5
        Plausible range: 10s to low 1000s per unit area
 
     ════════════════════════════════════════════════════════════
