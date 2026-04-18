@@ -83,16 +83,10 @@ sec. 2.2 and Eqn. 4]:
   mortality whenever daily mean drops below 10 °C.
 
 ```{julia}
-"Concave reproduction temperature scalar (Eq. 1 in paper)."
-function ϕT(T; TL = 14.5, TU = 43.5, Topt = 28.0)
-    (T < TL || T > TU) && return 0.0
-    # symmetric concave triangle peaking at Topt scaled to 1.0
-    if T ≤ Topt
-        return (T - TL) / (Topt - TL)
-    else
-        return (TU - T) / (TU - Topt)
-    end
-end
+"Concave reproduction temperature scalar (Eq. 1 in paper) — uses the
+core `triangular_thermal_scalar` helper with screwworm parameters."
+ϕT(T; TL = 14.5, TU = 43.5, Topt = 28.0) =
+    triangular_thermal_scalar(T; θL = TL, θU = TU, Topt = Topt)
 
 "Cold-mortality penalty (extra daily death rate when T < 10 °C)."
 μ_cold(T; Tc = 10.0, β = 0.04) = T ≥ Tc ? 0.0 : β * (Tc - T)

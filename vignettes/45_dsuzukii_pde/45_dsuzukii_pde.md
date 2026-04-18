@@ -594,13 +594,6 @@ println("  Mesh cells: $N_MESH")
 println("  Cell width Δx: $(round(DX, digits=2)) days")
 ```
 
-    Precompiling packages...
-       2322.8 ms  ✓ SciMLBase → SciMLBaseDistributionsExt
-      1 dependency successfully precompiled in 3 seconds. 97 already precompiled.
-    Precompiling packages...
-       5182.6 ms  ✓ PhysiologicallyBasedDemographicModels → OrdinaryDiffEqExt
-       5275.9 ms  ✓ PhysiologicallyBasedDemographicModels → DelayDiffEqExt
-      2 dependencies successfully precompiled in 19 seconds. 463 already precompiled.
     PSPMSpecies :d_suzukii
       Age domain: [0, 120.0] days
       Mesh cells: 100

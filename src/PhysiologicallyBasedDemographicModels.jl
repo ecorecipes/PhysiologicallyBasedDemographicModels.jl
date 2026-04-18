@@ -46,6 +46,13 @@ export n_stages, n_substages, total_population
 # --- Layer 2: Utilities ---
 include("utils.jl")
 export photoperiod, degree_days_sine
+
+include("temperature_responses.jl")
+export triangular_thermal_scalar, phiT
+export briere_rate, fecundity_briere, fecundity_gaussian
+export daily_mortality_quadratic
+export diapause_fraction_logistic, diapause_fraction_linear
+export gilbert_fraser_attack
 export make_population
 
 # --- Layer 4: Weather/forcing ---
