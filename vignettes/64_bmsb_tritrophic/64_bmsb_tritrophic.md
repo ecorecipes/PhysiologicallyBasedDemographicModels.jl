@@ -172,12 +172,20 @@ numerical-response equilibrium calculation.
 "Per-generation BMSB egg suppression at observed standing parasitoid
 densities (classical biocontrol assessment, not numerical-response
 equilibrium). H, N_tj, N_tm, N_as are densities per m²; α* are search
-rates. Returns suppression fraction (0=none, 1=complete)."
+rates. Returns suppression fraction (0=none, 1=complete).
+
+The default standing densities (N_tj = N_tm = 5 females/m²) are chosen
+so that the *model's* α ≈ 0.2–0.3 maps to the paper's reported
+50–80 % native-range parasitism — i.e. the search-rate axis here is
+on the same scale as Gutierrez et al. 2023's. The absolute value of
+α is unit-dependent (it is rescaled by the choice of demand and host
+units); only the relationship between α and observed parasitism is
+intrinsic."
 function generation_suppression(α_tj, α_tm; α_as = 1.5,
                                 H = 200.0,         # BMSB eggs/m² over 60-day gen
-                                N_tj = 1.0,        # standing Tj females/m²
-                                N_tm = 1.0,        # standing Tm females/m²
-                                N_as = 0.10,       # standing As females/m²
+                                N_tj = 5.0,        # standing Tj females/m²
+                                N_tm = 5.0,        # standing Tm females/m²
+                                N_as = 0.50,       # standing As females/m²
                                 T = 25.0,
                                 hyper = true)
     # Per-generation parasitoid demand: egg load × females × thermal scalar
@@ -215,7 +223,7 @@ nothing
 ## 4 · Search-rate sweep
 
 ``` julia
-αs = 10.0 .^ range(-1, 1, length = 41)
+αs = 10.0 .^ range(-2, 1, length = 41)
 
 sup_tj_only   = [generation_suppression(α, 0.0; hyper = false).suppression for α in αs]
 sup_tm_only   = [generation_suppression(0.0, α; hyper = false).suppression for α in αs]
@@ -240,8 +248,8 @@ let
     text!(ax, "50% economic threshold"; position = (0.11, 0.51), fontsize = 11)
     text!(ax, "80% suppression target";  position = (0.11, 0.81), fontsize = 11)
     axislegend(ax; position = :rb)
-    ax.xticks = ([0.1, 0.5, 1.0, 2.0, 5.0, 10.0],
-                 ["0.1","0.5","1","2","5","10"])
+    ax.xticks = ([0.01, 0.05, 0.1, 0.5, 1.0, 5.0, 10.0],
+                 ["0.01","0.05","0.1","0.5","1","5","10"])
     ylims!(ax, 0, 1)
     fig
 end
@@ -254,13 +262,14 @@ src="64_bmsb_tritrophic_files/figure-commonmark/fig-sweep-output-1.png"
 width="820" height="440" />
 
 Figure 3: BMSB egg suppression vs primary parasitoid search rate α for
-three release scenarios at field-realistic standing parasitoid densities
-(1 female/m² each). The 50% (orange) and 80% (red) economic-control
-thresholds are marked. Single-species releases need α ≈ 2 to clear the
-50% benchmark; joint *T. japonicus* + *T. mitsukurii* release halves
-that requirement. Native-range parasitism rates of 50–80% (Zhang et
-al. 2017) correspond to α ≈ 2–5 in our model, consistent with
-above-random chemo-cued search.
+three release scenarios at outbreak-level standing parasitoid densities
+(5 females/m² each). The 50% (orange) and 80% (red) economic-control
+thresholds are marked. Native-range parasitism rates of 50–80% (Zhang et
+al. 2017; Gutierrez et al. 2023) correspond to α ≈ 0.2–0.4 in this
+calibration; the paper reports that values above α ≈ 0.5 deliver
+excellent suppression. The α-axis is dimensionless and its absolute
+scale depends on the choice of demand and host units; only the mapping
+α↔parasitism is intrinsic.
 
 </div>
 
@@ -294,16 +303,17 @@ end
     Minimum search rate α* required for various suppression targets:
     Scenario                    50% supp.   80% supp.   90% supp.
     ----------------------------------------------------------------------
-    Tj alone                    0.89        2.00        2.82
-    Tm alone                    0.89        2.00        2.82
-    Joint release               0.45        1.00        1.41
+    Tj alone                    0.19        0.38        0.63
+    Tm alone                    0.19        0.38        0.63
+    Joint release               0.09        0.19        0.32
 
 ## 5 · Sensitivity to hyperparasitoid search rate
 
 The paper’s central concern is whether the obligate hyperparasitoid *A.
 sinicus* substantially erodes biocontrol efficacy. We sweep
-$\alpha_{As}$ at fixed primary search $\alpha_{Tj} = \alpha_{Tm} = 2$
-(the field-realistic chemo-cued value).
+$\alpha_{As}$ at fixed primary search $\alpha_{Tj} = \alpha_{Tm} = 0.3$
+— the mid-range value that maps to ~60 % BMSB egg parasitism in this
+calibration, matching the paper’s native-range mean.
 
 ``` julia
 αAs_range = 10.0 .^ range(-1, 1, length = 31)
@@ -311,8 +321,8 @@ $\alpha_{As}$ at fixed primary search $\alpha_{Tj} = \alpha_{Tm} = 2$
 # host suppression — it reduces NEXT-generation primary parasitoid emergence.
 # We report relative emergence loss: 1 - net_primary_emergence(αAs) /
 # net_primary_emergence(αAs→0).
-baseline_emerg = generation_suppression(2.0, 2.0; α_as = 0.0, hyper = true).net_primary_emergence
-emerg_loss = [1.0 - generation_suppression(2.0, 2.0; α_as = αAs, hyper = true).net_primary_emergence /
+baseline_emerg = generation_suppression(0.3, 0.3; α_as = 0.0, hyper = true).net_primary_emergence
+emerg_loss = [1.0 - generation_suppression(0.3, 0.3; α_as = αAs, hyper = true).net_primary_emergence /
               baseline_emerg for αAs in αAs_range]
 nothing
 ```
@@ -342,14 +352,15 @@ width="640" height="380" />
 
 Figure 4: Fractional loss of next-generation primary parasitoid
 emergence as a function of hyperparasitoid search rate α_As, holding
-α_Tj = α_Tm = 2 and standing parasitoid densities at field-realistic
-levels. The hyperparasitoid does not affect this-generation host
-suppression (host eggs are killed irrespective of who later emerges from
-them), but it does erode the parasitoid stock that would otherwise carry
-suppression into the next generation. The reported field A. sinicus
-parasitism rate of ~7.5% on T. mitsukurii in N. Italy corresponds to
-α_As ≈ 0.5–1, which our model gives a 5–15% emergence loss — supporting
-the paper’s conclusion that A. sinicus has a ‘modest negative impact’ on
+α_Tj = α_Tm = 0.3 (the value that yields ~60 % BMSB egg parasitism,
+matching the paper’s native-range mean) and standing parasitoid
+densities at outbreak levels. The hyperparasitoid does not affect
+this-generation host suppression (host eggs are killed irrespective of
+who later emerges from them), but it does erode the parasitoid stock
+that would otherwise carry suppression into the next generation. The
+reported field A. sinicus parasitism rate of ~7.5% on T. mitsukurii in
+N. Italy is consistent with our model’s α_As ≈ 0.1, supporting the
+paper’s conclusion that A. sinicus has a ‘modest negative impact’ on
 biocontrol.
 
 </div>

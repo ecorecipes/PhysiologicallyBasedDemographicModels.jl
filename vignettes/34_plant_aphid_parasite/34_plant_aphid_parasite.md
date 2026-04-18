@@ -121,7 +121,7 @@ temperate aphids (~4.4 °C).
 
 ``` julia
 # Aphid thermal biology
-const APHID_T_BASE = 4.4   # °C — lower developmental threshold
+const APHID_T_BASE = 3.3   # °C — lower developmental threshold (38 °F, Gilbert & Gutierrez 1973)
 const APHID_T_MAX  = 32.0  # °C — upper lethal threshold
 
 aphid_dev = LinearDevelopmentRate(APHID_T_BASE, APHID_T_MAX)
@@ -154,7 +154,7 @@ own development time.
 
 ``` julia
 # Parasitoid thermal biology
-const PARA_T_BASE = 6.0    # °C — slightly higher base than aphid
+const PARA_T_BASE = 5.6    # °C — parasitoid lower threshold (42 °F, Gilbert & Gutierrez 1973)
 const PARA_T_MAX  = 33.0   # °C — upper threshold
 
 para_dev = LinearDevelopmentRate(PARA_T_BASE, PARA_T_MAX)
@@ -174,7 +174,7 @@ println("  Adult:  8 substages, τ ≈ 120 DD")
 ```
 
     Parasitoid population model:
-      Larva: 12 substages, τ ≈ 160 DD above 6.0°C
+      Larva: 12 substages, τ ≈ 160 DD above 5.6°C
       Adult:  8 substages, τ ≈ 120 DD
 
 ## 4. Tritrophic Coupling
@@ -277,7 +277,7 @@ println("  Final population: $(round(total_no[end], digits=1))")
 ```
 
     --- Aphid Without Parasitoid ---
-      Peak total population: 165.0
+      Peak total population: 164.0
       Peak day: 1
       Final population: 0.0
 
@@ -306,7 +306,7 @@ println("  Peak reduction: $(round(100 * peak_reduction, digits=1))%")
 ```
 
     --- Tritrophic System ---
-      Peak aphid (with parasitoid): 165.0
+      Peak aphid (with parasitoid): 164.0
       Peak reduction: 0.0%
 
 ## 8. Visualization

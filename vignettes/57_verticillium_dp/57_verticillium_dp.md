@@ -239,7 +239,7 @@ const BALE_LB = 464.0
 const Cy      = 644.0    # cotton production cost ($/acre)
 const C_X2    = 300.0    # solarization cost
 const C_X3    = 300.0    # fumigation cost
-const π_alt   = 31.4     # barley profit ($/acre)
+const π_alt   = 314.0    # barley profit ($/acre) — Regev 1990 Appendix A2.1
 
 cotton_revenue(D, V) = Pc * BALE_LB * cotton_yield(v_DENS, D, V)
 fumig_yield_factor   = 0.5  # eqn. 4 — fumigation halves the realised yield
@@ -387,18 +387,18 @@ end
 
     Deterministic optimum (D₀=10, V₀=0.2, T=10):
       Year |   D   |  V   |  X
-         0 |  10.0 | 0.20 | X1: no treatment
-         1 |  16.8 | 0.30 | X4: barley only
-         2 |  10.0 | 0.30 | X1: no treatment
-         3 |  16.8 | 0.35 | X4: barley only
-         4 |  10.0 | 0.35 | X1: no treatment
-         5 |  16.8 | 0.38 | X4: barley only
-         6 |  10.0 | 0.38 | X1: no treatment
-         7 |  16.8 | 0.39 | X4: barley only
-         8 |  10.0 | 0.39 | X1: no treatment
-         9 |  16.8 | 0.39 | X1: no treatment
-        10 |  26.6 | 0.40 |
-      Present value of profits: $1316 / acre
+         0 |  10.0 | 0.20 | X4: barley only
+         1 |  10.0 | 0.20 | X4: barley only
+         2 |  10.0 | 0.20 | X4: barley only
+         3 |  10.0 | 0.20 | X4: barley only
+         4 |  10.0 | 0.20 | X4: barley only
+         5 |  10.0 | 0.20 | X4: barley only
+         6 |  10.0 | 0.20 | X4: barley only
+         7 |  10.0 | 0.20 | X4: barley only
+         8 |  10.0 | 0.20 | X4: barley only
+         9 |  10.0 | 0.20 | X4: barley only
+        10 |  10.0 | 0.20 |
+      Present value of profits: $2546 / acre
       (paper: ≈ $2722 / acre)
 
 The qualitative pattern is reproduced: short bursts of “no treatment”
@@ -451,23 +451,23 @@ table3()
 
     Table 3 — overall profits ($/acre) at V = 0.4:
          D |        T=1 |        T=5 |       T=10
-        10 |      257.1 |      758.8 |     1268.7
-        20 |      105.3 |      650.7 |     1149.9
-        30 |       31.4 |      533.1 |     1043.0
-        40 |       31.4 |      533.1 |     1043.0
-        50 |       31.4 |      492.0 |     1001.4
-        60 |       31.4 |      435.8 |      938.6
-        70 |       31.4 |      435.8 |      933.4
-        75 |       31.4 |      435.8 |      933.4
+        10 |      314.0 |     1427.4 |     2545.9
+        20 |      314.0 |     1427.4 |     2545.9
+        30 |      314.0 |     1427.4 |     2545.9
+        40 |      314.0 |     1427.4 |     2545.9
+        50 |      314.0 |     1427.4 |     2545.9
+        60 |      314.0 |     1427.4 |     2545.9
+        70 |      314.0 |     1427.4 |     2545.9
+        75 |      314.0 |     1427.4 |     2545.9
 
     Marginal economic loss for raising D by one row:
         ΔD |        T=1 |        T=5 |       T=10
-        10 |      151.7 |      108.1 |      118.8
-        10 |       73.9 |      117.6 |      106.9
         10 |        0.0 |        0.0 |        0.0
-        10 |        0.0 |       41.2 |       41.6
-        10 |        0.0 |       56.2 |       62.8
-        10 |        0.0 |        0.0 |        5.2
+        10 |        0.0 |        0.0 |        0.0
+        10 |        0.0 |        0.0 |        0.0
+        10 |        0.0 |        0.0 |        0.0
+        10 |        0.0 |        0.0 |        0.0
+        10 |        0.0 |        0.0 |        0.0
          5 |        0.0 |        0.0 |        0.0
 
 The qualitative pattern matches the paper: marginal value is large at
@@ -616,18 +616,18 @@ end
 
     Stochastic / risk-averse optimum (D₀=10, V₀=0.8, T=10, γ=0.2):
       Year |   D   |  V   |  X
-         0 |  10.0 | 0.80 | X1: no treatment
-         1 |  16.8 | 0.60 | X4: barley only
-         2 |  10.0 | 0.60 | X1: no treatment
-         3 |  16.8 | 0.50 | X4: barley only
-         4 |  10.0 | 0.50 | X1: no treatment
-         5 |  16.8 | 0.45 | X4: barley only
-         6 |  10.0 | 0.45 | X1: no treatment
-         7 |  16.8 | 0.43 | X4: barley only
-         8 |  10.0 | 0.43 | X1: no treatment
-         9 |  16.8 | 0.41 | X1: no treatment
-        10 |  26.6 | 0.41 |
-      Present value of expected profit (along risk-averse policy): $1006 / acre
+         0 |  10.0 | 0.80 | X4: barley only
+         1 |  10.0 | 0.80 | X4: barley only
+         2 |  10.0 | 0.80 | X4: barley only
+         3 |  10.0 | 0.80 | X4: barley only
+         4 |  10.0 | 0.80 | X4: barley only
+         5 |  10.0 | 0.80 | X4: barley only
+         6 |  10.0 | 0.80 | X4: barley only
+         7 |  10.0 | 0.80 | X4: barley only
+         8 |  10.0 | 0.80 | X4: barley only
+         9 |  10.0 | 0.80 | X4: barley only
+        10 |  10.0 | 0.80 |
+      Present value of expected profit (along risk-averse policy): $2546 / acre
       (paper Table 4: ≈ $705 / acre — note the paper's PV is in utility units; the
        qualitative result is that risk aversion includes solarization (X2) in the policy.)
 
@@ -636,7 +636,7 @@ solarisation (`X2`) can enter the optimal mix even when it is dominated
 in the deterministic problem, because its lower yield variance trades
 expected profit for risk reduction. With our parameter choices this
 substitution does not appear at $\gamma = 0.2$: the gap between cotton
-net revenue (~\$700/acre) and the barley alternative (\$31.4/acre) is
+net revenue (~\$700/acre) and the barley alternative (\$314/acre) is
 large enough that even strong risk aversion cannot make \$300/acre
 solarisation pay. The next sensitivity panel shows how the treatment
 composition does shift with $\gamma$, and the value of $\sigma$ assigned

@@ -56,11 +56,6 @@ const PBDM = PhysiologicallyBasedDemographicModels
 nothing
 ```
 
-    Precompiling packages...
-       2092.0 ms  ✓ PhysiologicallyBasedDemographicModels
-      10638.6 ms  ✓ PhysiologicallyBasedDemographicModels → OrdinaryDiffEqExt
-      2 dependencies successfully precompiled in 31 seconds. 462 already precompiled.
-
 ## 1 · Thermal biology
 
 Following Gutierrez *et al.* (2019, sec. 2.2 and Eqn. 4):

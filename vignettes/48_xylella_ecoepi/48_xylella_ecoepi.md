@@ -27,6 +27,17 @@ Primary reference: (Weber et al. 2026).
 
 ## Introduction
 
+> **Note — simplified pedagogical reproduction.** This vignette
+> implements a **5-compartment ODE skeleton** (V_S, V_I, P_H, P_L, P_I)
+> of Weber et al.’s 14-compartment system (7 ODEs + 7 DDEs) that uses
+> delay differential equations for the slow within-host olive disease
+> progression and explicit pre-imaginal vector, herbaceous-vegetation,
+> non-host-shrub, and reservoir-plant compartments. Transmission and
+> recovery rates here are order-of-magnitude estimates, not the full
+> calibrated values from the paper’s Table S1. Use it for the
+> qualitative seasonal-forcing and control-scenario logic; for
+> production work, port the full DDE system using `DelayDiffEq.jl`.
+
 *Xylella fastidiosa* is a xylem-dwelling bacterium that has devastated
 olive production in the Puglia region of southern Italy since its first
 detection in 2013. The pathogen is transmitted by xylem-feeding insect

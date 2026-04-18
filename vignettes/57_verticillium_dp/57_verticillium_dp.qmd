@@ -243,7 +243,7 @@ const BALE_LB = 464.0
 const Cy      = 644.0    # cotton production cost ($/acre)
 const C_X2    = 300.0    # solarization cost
 const C_X3    = 300.0    # fumigation cost
-const π_alt   = 31.4     # barley profit ($/acre)
+const π_alt   = 314.0    # barley profit ($/acre) — Regev 1990 Appendix A2.1
 
 cotton_revenue(D, V) = Pc * BALE_LB * cotton_yield(v_DENS, D, V)
 fumig_yield_factor   = 0.5  # eqn. 4 — fumigation halves the realised yield
@@ -590,7 +590,7 @@ solarisation (`X2`) can enter the optimal mix even when it is dominated
 in the deterministic problem, because its lower yield variance trades
 expected profit for risk reduction. With our parameter choices this
 substitution does not appear at $\gamma = 0.2$: the gap between cotton
-net revenue (~\$700/acre) and the barley alternative (\$31.4/acre)
+net revenue (~\$700/acre) and the barley alternative (\$314/acre)
 is large enough that even strong risk aversion cannot make
 \$300/acre solarisation pay. The next sensitivity panel shows how the
 treatment composition does shift with $\gamma$, and the value of

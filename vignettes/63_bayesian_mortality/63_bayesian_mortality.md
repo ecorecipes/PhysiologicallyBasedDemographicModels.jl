@@ -198,8 +198,12 @@ J_true from these noisy observations.
 
 ### 3.1 Likelihood
 
-Following (Lanzarone et al. 2017, Eq. 18), the likelihood is
-log-Gaussian on each stage at each observation time:
+Following (Lanzarone et al. 2017, Eqs. 13–15), the paper’s likelihood is
+a **Gamma observation model** for each stage at each observation time.
+Here we use a **log-Gaussian (lognormal) approximation** as a
+pedagogical simplification — it yields the same point estimates to
+leading order when the CV is moderate (~20 %) and avoids the need to
+introduce a Gamma-shape hyperparameter:
 
 $$p(y_{i,k} \mid J) \;\propto\; \frac{1}{\sigma}
 \exp\!\Big(-\tfrac{1}{2\sigma^2}\,
@@ -230,7 +234,7 @@ nothing
 ### 3.2 Prior
 
 We adopt **broad uniform priors** $J_i \sim U(0, 0.15)$ d$^{-1}$
-following (Lanzarone et al. 2017, sec. 4.2) (the paper notes the priors
+following (Lanzarone et al. 2017, sec. 3.2) (the paper notes the priors
 encode “no preference within biologically plausible bounds”).
 
 ``` julia
