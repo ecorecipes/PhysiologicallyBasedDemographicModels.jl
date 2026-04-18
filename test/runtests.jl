@@ -10,6 +10,7 @@ using Statistics
     include("test_solve.jl")
     include("test_analysis.jl")
     include("test_utils.jl")
+    include("test_temperature_responses.jl")
     include("test_interactions.jl")
     include("test_economics.jl")
     include("test_genetics.jl")

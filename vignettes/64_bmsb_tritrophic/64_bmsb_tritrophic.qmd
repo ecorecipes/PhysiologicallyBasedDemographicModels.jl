@@ -77,21 +77,11 @@ Following [@Gutierrez2023BMSB, Table 1] and
 | *A. sinicus* (As)   | 12.65           | 35.0            | hyperparasitoid        |
 
 ```{julia}
-"Triangular thermal scalar peaking at the midpoint."
-function ϕT(T; θL, θU, Topt = (θL + θU)/2)
-    (T < θL || T > θU) && return 0.0
-    if T ≤ Topt
-        return (T - θL) / (Topt - θL)
-    else
-        return (θU - T) / (θU - Topt)
-    end
-end
-
-# Per-species thermal envelopes
-ϕ_bmsb(T) = ϕT(T; θL = 12.1,  θU = 33.5, Topt = 26.0)
-ϕ_tj(T)   = ϕT(T; θL = 11.16, θU = 34.0, Topt = 25.0)
-ϕ_tm(T)   = ϕT(T; θL = 12.25, θU = 34.0, Topt = 25.0)
-ϕ_as(T)   = ϕT(T; θL = 12.65, θU = 35.0, Topt = 26.0)
+# Per-species thermal envelopes (use the core triangular_thermal_scalar)
+ϕ_bmsb(T) = triangular_thermal_scalar(T; θL = 12.1,  θU = 33.5, Topt = 26.0)
+ϕ_tj(T)   = triangular_thermal_scalar(T; θL = 11.16, θU = 34.0, Topt = 25.0)
+ϕ_tm(T)   = triangular_thermal_scalar(T; θL = 12.25, θU = 34.0, Topt = 25.0)
+ϕ_as(T)   = triangular_thermal_scalar(T; θL = 12.65, θU = 35.0, Topt = 26.0)
 
 # Per-day egg loads (lifetime / lifespan)
 const E_BMSB = 250.0 / 60.0   # ~ 250 eggs over a 60-day adult life
@@ -134,8 +124,8 @@ load of all parasitoid females — and $\alpha$ is the
 $\alpha > 1$ chemo-cued / above-random).
 
 ```{julia}
-"Gilbert-Fraser proportion of host eggs attacked per day."
-gf(α, D, H) = H ≤ 0 ? 0.0 : 1.0 - exp(-α * D / max(H, 1e-9))
+# `gilbert_fraser_attack` is exported from the core package.
+const gf = gilbert_fraser_attack
 nothing
 ```
 
