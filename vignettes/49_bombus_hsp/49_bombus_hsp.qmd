@@ -29,6 +29,17 @@ bibliography: ../references.bib
 
 ## Introduction
 
+> **Status — speculative scenario, not a paper reproduction.**
+> Unlike most other vignettes in this gallery, this one is *not* a
+> reproduction of a published *Bombus* paper. It is a speculative
+> scenario that combines (i) established bumblebee colony biology
+> with (ii) hypothetical genetically-modified HSP70 promoter
+> engineering whose fitness costs are *adapted from Drosophila*
+> studies (Hoekstra & Montooth 2013; Silbermann & Tatar 2000;
+> Feder 1999). Use it as a methodological demonstration of how the
+> framework can host genetic-architecture and stress-physiology
+> extensions, not as a quantitative GM-bumblebee assessment.
+
 The buff-tailed bumblebee (*Bombus terrestris*) is the most commercially
 important managed pollinator in Europe, deployed in over 1 million
 greenhouse colonies annually for tomato, strawberry, and pepper

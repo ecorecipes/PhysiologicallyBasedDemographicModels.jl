@@ -50,6 +50,15 @@ Primary reference: (Gilioli et al. 2022).
 
 ## Background
 
+> **Note — pedagogical parameters.** The thermal-biology and mortality
+> parameters used below are illustrative values that reproduce the
+> *qualitative* shape of medfly responses, not the calibrated values
+> from Gilioli et al. (2022) Table 2 (e.g. egg Brière
+> `r=0.0000186, T_inf=7.7°C, T_sup=41.8°C`). For production risk
+> assessment use the calibrated parameter set; this vignette
+> demonstrates the model structure and the staged-PSPM solver machinery
+> rather than reproducing the paper’s spatial maps.
+
 The Mediterranean fruit fly (*Ceratitis capitata* Wiedemann), or medfly,
 is one of the world’s most destructive and invasive agricultural pests.
 Originating in sub-Saharan Africa, it has colonised the Mediterranean
