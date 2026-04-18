@@ -19,4 +19,5 @@ using Statistics
     include("test_vignette_outputs.jl")
     include("test_theory.jl")
     include("test_continuous.jl")
+    include("test_surrogates.jl")
 end
