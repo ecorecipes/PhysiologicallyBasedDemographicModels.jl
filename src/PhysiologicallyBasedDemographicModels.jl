@@ -173,4 +173,9 @@ export VectorBorneDisease, VectorState, total_vectors, step_vector_disease!
 include("scenarios.jl")
 export run_scenarios, compare_metrics
 
+# --- Layer 14: Surrogate predictive models ---
+include("surrogates.jl")
+export LogLinearSurrogate, predict_log, predict, marginal_effects
+export variables, enumerate_strategies, pareto_frontier
+
 end # module PhysiologicallyBasedDemographicModels

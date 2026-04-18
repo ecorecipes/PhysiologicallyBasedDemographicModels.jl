@@ -60,6 +60,7 @@ frontier across the $2^{10}$-strategy space.
 using Printf
 using Statistics
 using CairoMakie
+using PhysiologicallyBasedDemographicModels
 using Random
 Random.seed!(20250118)
 nothing
@@ -212,90 +213,70 @@ without the full PBDM pipeline.
 
 ### Colombia, all-factors model (Cure et al. 2020 Table 5)
 
-``` julia
-struct CBBRegression
-    intercept::Float64
-    main::Dict{Symbol, Float64}            # β_i
-    interactions::Dict{Tuple, Float64}     # β_ij or β_ijk on (sorted) tuples
-    locality::String
-end
+We embed the published coefficient tables in a
+[`LogLinearSurrogate`](@ref) — the package’s reusable helper for PBDM
+regression-summary models. The surrogate stores an intercept, a
+dictionary of main-effect coefficients keyed by variable name, and a
+dictionary of interaction coefficients keyed by sorted tuples of
+variable names.
 
+``` julia
 # Cure et al. 2020 Table 5 (Colombia, all-factors model).
 # Variables: H (harvest), CU (cleanup), C (chemical), Bb (B. bassiana),
 # Ma (M. anisopliae), Stei (Steinernema), Het (Heterorhabditis),
 # Cs (C. stephanoderis), Pn (P. nasuta), Pc (P. coffea).
-const COLOMBIA = CBBRegression(
+const COLOMBIA = LogLinearSurrogate(
     11.0481,
     Dict(
-        :Cs   => -0.0257,
-        :Pn   => -0.0286,
-        :H    => -1.5835,
-        :Pc   => -0.3751,
-        :Bb   => -0.3178,
-        :CU   => -0.6228,
-        :C    => -0.1381,
-        :Ma   => -0.0420,
-        :Het  => -0.1388,
-        :Stei => -0.1215,
+        :Cs   => -0.0257,  :Pn   => -0.0286,
+        :H    => -1.5835,  :Pc   => -0.3751,
+        :Bb   => -0.3178,  :CU   => -0.6228,
+        :C    => -0.1381,  :Ma   => -0.0420,
+        :Het  => -0.1388,  :Stei => -0.1215,
     ),
     Dict(
-        Tuple(sort([:Pn,  :H]))           =>  0.0285,
-        Tuple(sort([:Pc,  :Bb]))          =>  0.2960,
-        Tuple(sort([:Pc,  :H]))           =>  0.1864,
-        Tuple(sort([:Bb,  :H]))           =>  0.1514,
-        Tuple(sort([:Pc,  :C]))           =>  0.1580,
-        Tuple(sort([:H,   :Pc, :Bb]))     => -0.2084,
-    ),
-    "Colombia (all factors)"
+        Tuple(sort([:Pn,  :H]))         =>  0.0285,
+        Tuple(sort([:Pc,  :Bb]))        =>  0.2960,
+        Tuple(sort([:Pc,  :H]))         =>  0.1864,
+        Tuple(sort([:Bb,  :H]))         =>  0.1514,
+        Tuple(sort([:Pc,  :C]))         =>  0.1580,
+        Tuple(sort([:H,   :Pc, :Bb]))   => -0.2084,
+    );
+    label = "Colombia (all factors)"
 )
 
 # Cure et al. 2020 Table 6 (Brazil, all-factors model).
-const BRAZIL = CBBRegression(
+const BRAZIL = LogLinearSurrogate(
     11.633713,
     Dict(
-        :Cs   => -0.0363631,
-        :Pc   => -0.1199346,
-        :C    => -0.0859333,
-        :Bb   => -0.0954134,
-        :H    => -4.3176702,
-        :Ma   => -0.1249867,
-        :Het  => -0.0782117,
-        :Stei => -0.0737914,
+        :Cs   => -0.0363631,  :Pc   => -0.1199346,
+        :C    => -0.0859333,  :Bb   => -0.0954134,
+        :H    => -4.3176702,  :Ma   => -0.1249867,
+        :Het  => -0.0782117,  :Stei => -0.0737914,
     ),
     Dict(
         Tuple(sort([:Pc, :C]))  =>  0.1090624,
         Tuple(sort([:Bb, :H]))  => -0.1718035,
-    ),
-    "Brazil (all factors)"
+    );
+    label = "Brazil (all factors)"
 )
 nothing
 ```
 
 ### Surrogate predictor
 
+`predict_log(s, on)` evaluates the regression on the log scale, adding
+the intercept, all main-effect terms whose key is in `on`, and all
+interaction terms whose entire key is contained in `on`.
+`predict(s, on)` returns the natural-scale prediction
+`exp(predict_log(s, on))`.
+
 ``` julia
-"""
-    log_infestation(reg, on::AbstractSet{Symbol})
-
-Predicted log_e I given the set `on` of switched-on control tactics.
-Includes main effects and any interactions whose constituent variables
-are all in `on`.
-"""
-function log_infestation(reg::CBBRegression, on::AbstractSet{Symbol})
-    s = reg.intercept
-    for (k, β) in reg.main
-        k in on && (s += β)
-    end
-    for (key, β) in reg.interactions
-        all(v -> v in on, key) && (s += β)
-    end
-    return s
-end
-
-infestation(reg, on) = exp(log_infestation(reg, on))
+# Convenience aliases for readability in this vignette.
+log_infestation(reg, on) = predict_log(reg, on)
+infestation(reg, on)     = predict(reg, on)
+nothing
 ```
-
-    infestation (generic function with 1 method)
 
 ### Reproduce marginal proportions $A_X$ (Colombia)
 
@@ -309,7 +290,7 @@ is
 
 ``` julia
 let
-    AX = sort([(k, exp(β)) for (k, β) in COLOMBIA.main]; by = last)
+    AX = marginal_effects(COLOMBIA)
     @printf "Colombia marginal proportions A_X = exp(β_X):\n"
     @printf "  %-5s   %s\n" "X" "A_X"
     for (k, A) in AX
@@ -355,7 +336,7 @@ Londrina producing fewer overlapping cohorts than in Colombia.
 
 ``` julia
 let
-    AX = sort([(k, exp(β)) for (k, β) in BRAZIL.main]; by = last)
+    AX = marginal_effects(BRAZIL)
     @printf "\nBrazil marginal proportions A_X = exp(β_X):\n"
     for (k, A) in AX
         @printf "  %-5s   %.4f\n" string(k) A
@@ -431,10 +412,10 @@ Revenue:
 Cost:
   cost = production cost + Σ tactic costs
 """
-function profit(reg::CBBRegression, on::AbstractSet{Symbol};
+function profit(reg::LogLinearSurrogate, on::AbstractSet{Symbol};
                 baseline_loss::Float64 = 0.30)
-    I_none = infestation(reg, Set{Symbol}())
-    I      = infestation(reg, on)
+    I_none = predict(reg, Set{Symbol}())
+    I      = predict(reg, on)
     p_lost = clamp(baseline_loss * I / I_none, 0.0, 1.0)
     healthy = N_BERRIES_HEALTHY * (1 - p_lost)
     rev  = PRICE_USD_PER_KG * KG_PER_BERRY * GREEN_PER_CHERRY * healthy
@@ -453,14 +434,16 @@ nothing
 ### Sweep all 1,024 combinations
 
 ``` julia
-function sweep_all(reg::CBBRegression)
-    n = length(ALL_TACTICS)
-    rows = Vector{NamedTuple}()
-    for mask in 0:(2^n - 1)
-        on = Set{Symbol}()
-        for (i, k) in enumerate(ALL_TACTICS)
-            (mask >> (i-1)) & 1 == 1 && push!(on, k)
-        end
+"""
+    sweep_all(reg)
+
+Sweep every binary tactic combination using
+`enumerate_strategies` and return a vector of named tuples
+suitable for ranking and Pareto analysis.
+"""
+function sweep_all(reg::LogLinearSurrogate)
+    rows = NamedTuple[]
+    for on in enumerate_strategies(ALL_TACTICS)
         p = profit(reg, on)
         push!(rows, (
             on = sort(collect(on)),
@@ -510,18 +493,8 @@ end
 
 ``` julia
 let
-    # Pareto frontier on (cost, profit): keep points not strictly
-    # dominated by any other.
-    pts = [(r.cost, r.profit, r.on) for r in results_col]
-    sort!(pts; by = first)
-    frontier = NamedTuple[]
-    best_profit = -Inf
-    for (c, p, on) in pts
-        if p > best_profit
-            push!(frontier, (cost=c, profit=p, on=on))
-            best_profit = p
-        end
-    end
+    frontier = pareto_frontier(results_col;
+        cost = r -> r.cost, value = r -> r.profit)
 
     fig = Figure(size=(900, 460))
     ax = Axis(fig[1,1];
