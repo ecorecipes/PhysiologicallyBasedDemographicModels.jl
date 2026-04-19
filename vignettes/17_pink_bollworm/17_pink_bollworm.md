@@ -472,15 +472,15 @@ end
 ```
 
     Phoenix, AZ:
-      Winter cold DD (below 10°C): 582.0
+      Winter cold DD (below 10°C): 580.0
       Diapause larval survival:    0.0%
 
     Bakersfield, CA:
-      Winter cold DD (below 10°C): 1176.0
+      Winter cold DD (below 10°C): 1191.0
       Diapause larval survival:    0.0%
 
     Fresno, CA:
-      Winter cold DD (below 10°C): 1458.0
+      Winter cold DD (below 10°C): 1457.0
       Diapause larval survival:    0.0%
 
 ## Seasonal Population Dynamics
