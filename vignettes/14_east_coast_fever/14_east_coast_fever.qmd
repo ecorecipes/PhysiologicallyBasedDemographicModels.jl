@@ -336,14 +336,14 @@ the vector–host disease cycle using `VectorBorneDisease`.
 const SIGMA_TICK_TO_HOST = 0.005591     # σ, day⁻¹ — tick→cattle transmission (Table 1)
 const EPSILON_HOST_TO_TICK = 0.08271    # ε, ha day⁻¹ — cattle→tick transmission (Table 1)
 const RECOVERED_TRANSMIT_EFF = 0.009035 # transmission efficiency, recovered→tick (Table 1)
-const THETA_RECOVERY = 0.004087         # ϑ, day⁻¹ — host recovery rate (Table 1)
-const ECF_MORTALITY_COEFF = 1.8869      # ρ — disease mortality coefficient (Table 1)
-const ECF_DISEASE_MORTALITY = ECF_MORTALITY_COEFF * CATTLE_DEATH_RATE  # ρ×ω ≈ 0.001487 day⁻¹
+const THETA_RECOVERY = 0.008087         # ϑ, day⁻¹ — host recovery rate (Gilioli et al. 2009 Table 1; Gitau et al. 1999)
+const ECF_MORTALITY_COEFF = 1.18869     # ρ — disease mortality coefficient (Gilioli et al. 2009 Table 1)
+const ECF_DISEASE_MORTALITY = ECF_MORTALITY_COEFF * CATTLE_DEATH_RATE  # ρ×ω day⁻¹
 
 ecf = VectorBorneDisease(
     SIGMA_TICK_TO_HOST,      # β_vh — tick→cattle transmission rate (σ)
     EPSILON_HOST_TO_TICK,    # β_hv — cattle→tick transmission rate (ε)
-    THETA_RECOVERY,          # γ_h  — host recovery rate (mean ~245 days infectious)
+    THETA_RECOVERY,          # γ_h  — host recovery rate (mean ~124 days infectious)
     ECF_DISEASE_MORTALITY,   # μ_h  — disease-induced mortality (ρ × ω)
     21.0                     # extrinsic incubation period (trans-stadial; assumed)
 )
@@ -933,8 +933,8 @@ model consistency.
 | σ | Tick→host transmission rate | 0.005591 | day⁻¹ | O'Callaghan et al. (1998) | |
 | γ | Cattle reproductive rate | 0.0009772 | day⁻¹ | Bebe et al. (2003) | |
 | ω | Natural cattle mortality | 0.000788 | day⁻¹ | Reynolds et al. (1996) | |
-| ρ | Disease mortality coefficient | 1.8869 | — | Gitau et al. (1999) | |
-| ϑ | Host recovery rate | 0.004087 | day⁻¹ | Gitau et al. (1999) | |
+| ρ | Disease mortality coefficient | 1.18869 | — | Gilioli et al. (2009) Table 1 | |
+| ϑ | Host recovery rate | 0.008087 | day⁻¹ | Gilioli et al. (2009) Table 1 | |
 | ρ×ω | Disease-induced mortality | ≈0.001487 | day⁻¹ | Derived | ρ × ω |
 | — | Critical cattle density | ≈0.68 | cattle ha⁻¹ | Gilioli et al. (2009) | Eq. (4) |
 | — | Optimal tick temperature | 24–28 | °C | Cumming (2002) | |

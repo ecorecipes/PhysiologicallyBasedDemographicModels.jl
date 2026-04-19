@@ -35,6 +35,16 @@ Primary reference: (Tamò et al. 1993).
 
 ## Introduction
 
+> **Note — pedagogical simplifications.** Stage durations are calibrated
+> to Tamò et al. (1993) Table 2 (egg–adult ≈ 91 DD pupa, ≈ 571 DD
+> adult). However the development functional form here is Brière (rather
+> than the paper’s Logan z(T)=p₁·exp(p₂(T−T₀))), stage mortality is
+> modelled as a constant μ rather than the paper’s T-dependent quartic
+> Ξ_j(T) plus extrinsic survival table, and the fecundity temperature
+> scalar uses a 4x(1−x) quadratic in place of the paper’s cubic (Eq.
+> 11). These simplifications preserve qualitative phenology but
+> understate temperature-driven mortality at thermal extremes.
+
 Cowpea (*Vigna unguiculata* (L.) Walp.) is the most important grain
 legume in sub-Saharan Africa, providing a critical source of dietary
 protein for over 200 million people. West Africa accounts for roughly
@@ -299,8 +309,8 @@ const THRIPS_T_UPPER_ADULT = 30.0   # Topt for adults (Eq. 6)
 # Total egg-adult ≈ 220 DD (~15 days at 25°C)
 const THRIPS_DD_EGG   = 70.0    # ~4.7 days at 25°C (Table 2)
 const THRIPS_DD_LARVA = 87.0    # ~5.8 days at 25°C (instars 1+2 combined)
-const THRIPS_DD_PUPA  = 63.0    # ~4.2 days at 25°C (prepupa + pupa)
-const THRIPS_DD_ADULT = 250.0   # Adult female lifespan: β₁₂=0.00175/°C/day
+const THRIPS_DD_PUPA  = 91.4    # Tamò et al. 1993 Table 2: 6.091 d at 25 °C → ≈91 DD
+const THRIPS_DD_ADULT = 571.0   # Tamò et al. 1993: β₁₂=0.00175/°C/day → ~48 d at 25 °C → ≈571 DD
 
 # Brière coefficients fitted to match observed development times (Table 2)
 # r(25) ≈ 1/4.7 (egg), 1/5.8 (larva), 1/4.2 (pupa)
@@ -404,8 +414,8 @@ println("  Egg-to-adult at 25°C: ~$(round((THRIPS_DD_EGG + THRIPS_DD_LARVA + TH
       Life stages: 4
       Total substages: 90
       Initial adult females: 75.0
-      Egg-to-adult DD: 220.0
-      Egg-to-adult at 25°C: ~14.7 days
+      Egg-to-adult DD: 248.4
+      Egg-to-adult at 25°C: ~16.6 days
 
 ### Fecundity
 
@@ -820,10 +830,10 @@ println("  Cumulative thrips·days: $(round(result.cum_thrips_days[end], digits=
     Baseline simulation (ξ=0.14):
       Final leaf biomass:  0.0 g/plant
       Final pod biomass:   0.0 g/plant
-      Peak thrips adults:  11.9
+      Peak thrips adults:  22.6
       Peak thrips larvae:  0.0
       Cumulative DD: 1199.0
-      Cumulative thrips·days: 119.0
+      Cumulative thrips·days: 166.0
 
 ## Simulation Results
 
@@ -1092,9 +1102,9 @@ for (offset, label) in zip(planting_offsets, planting_labels)
 end
 ```
 
-    Early (Aug 15): pod=0.0 g, peak adults=10.8, ξ=0.14
-    Mid (Sep 13): pod=0.0 g, peak adults=16.7, ξ=0.21
-    Late (Oct 15): pod=0.0 g, peak adults=22.8, ξ=0.28
+    Early (Aug 15): pod=0.0 g, peak adults=20.7, ξ=0.14
+    Mid (Sep 13): pod=0.0 g, peak adults=31.7, ξ=0.21
+    Late (Oct 15): pod=0.0 g, peak adults=36.9, ξ=0.28
 
 ### Planting Date Comparison
 
