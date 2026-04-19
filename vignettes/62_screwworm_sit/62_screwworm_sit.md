@@ -33,7 +33,7 @@ idiom**:
   sterile-male flooding;
 - a **per-location critical sterile-release rate** $W_s^\star(W_m, T)$
   derived from $R_0(T)\cdot
-  W_m/(W_m + 0.5\,\phi_\text{comp}\,W_s) = 1$ and
+  W_m/(W_m + \phi_\text{comp}\,W_s) = 1$ and
 - a comparison to the empirical release rates from the actual 1962–1982
   SW US eradication programme (Novy 1991), reproducing the Gutierrez *et
   al.* (2019) finding that observed release rates were $\sim 100\times$

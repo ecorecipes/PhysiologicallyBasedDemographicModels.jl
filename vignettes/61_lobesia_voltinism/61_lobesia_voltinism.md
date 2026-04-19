@@ -60,21 +60,22 @@ $$R(T) \;=\; \frac{a\,(T - \theta_L)}{1 + b^{\,T - \theta_U}},$$
 
 with the published values:
 
-| Stage           | $\theta_L$ (°C) | $\theta_U$ (°C) |       mean dd in stage |
-|-----------------|----------------:|----------------:|-----------------------:|
-| Egg             |             8.9 |              33 |                   80.1 |
-| Larva           |             8.9 |              33 |                  317.2 |
-| Pupa            |            11.5 |              33 |                  128.5 |
-| Adult longevity |            11.5 |              33 |                  166.8 |
-| Diapause pupa   |            11.5 |              33 | 109.2 (= 0.85 × 128.5) |
+| Stage | $\theta_L$ (°C) | $\theta_U$ (°C) | mean dd in stage |
+|----|---:|---:|---:|
+| Egg | 8.9 | 33 | 80.1 |
+| Larva | 8.9 | 33 | 317.2 |
+| Pupa | 11.5 | 33 | 128.5 |
+| Adult longevity | 11.5 | 33 | 166.8 |
+| Diapause pupa | 11.5 | 33 | 115.0 (Table 1; emergence-window CDF mean ≈ 0.85 × 128.5 ≈ 109 dd) |
 
 The fitted slope and curvature constants are absorbed into the single
 shape factor needed to make the dd accumulation self-consistent at the
 published mean stage temperatures (see (Gutierrez et al. 2018, App. A)).
 
 ``` julia
-"Generalised Briere developmental rate."
-function briere(T; θL, θU=33.0, a=0.0024, b=3.95)
+"Generalised Briere developmental rate. Stage-specific paper constants
+(Gutierrez et al. 2018 Table 1): egg–larva (a=0.00225, b=5), pupa (a=0.00785, b=4.5)."
+function briere(T; θL, θU=33.0, a=0.00225, b=5.0)
     T ≤ θL && return 0.0
     num = a * (T - θL)
     den = 1.0 + b^(T - θU)
@@ -86,7 +87,7 @@ const ΔE = 80.1   # egg, dd > 8.9°C
 const ΔL = 317.2  # larva, dd > 8.9°C
 const ΔP = 128.5  # pupa, dd > 11.5°C
 const ΔA = 166.8  # adult longevity, dd > 11.5°C
-const ΔDP = 0.85 * ΔP  # diapause pupa, dd > 11.5°C
+const ΔDP = 115.0  # diapause pupa, dd > 11.5°C (Gutierrez et al. 2018 Table 1)
 const θL_egg   = 8.9
 const θL_larva = 8.9
 const θL_pupa  = 11.5
@@ -108,8 +109,8 @@ the form $\phi_\text{ovi}(T) = \exp(-((T-T_m)/c_s)^2)$ with $T_m=21.5$°C
 and $c_s = 2.0$ for adults.
 
 ``` julia
-"Eq. 4i Gaussian temperature scalar for oviposition (widened from cs=2.0; the published narrow form clips most of the field season at southern Iberian temperatures)."
-ϕ_ovi(T; Tm=22.0, c=8.0) = exp(-((T - Tm)/c)^2)
+"Eq. 4i Gaussian temperature scalar for oviposition. Paper values: Tm=21.5°C, c=2.0."
+ϕ_ovi(T; Tm=21.5, c=2.0) = exp(-((T - Tm)/c)^2)
 
 "Per-female lifetime egg load 80, distributed Bieri-style on adult age d (days)."
 F_age(d; max_eggs=80.0, peak_d=4.0, decay=2.0) =
@@ -136,7 +137,7 @@ function _erf(x)
 end
 
 "Cumulative-emergence CDF for diapause pupae as a function of accumulated dd>11.5°C."
-function emergence_cdf(dd; mean=109.2, sd=23.0)
+function emergence_cdf(dd; mean=115.0, sd=23.0)
     z = (dd - mean) / sd
     return 0.5 * (1.0 + _erf(z / sqrt(2.0)))
 end
@@ -150,7 +151,7 @@ let
     ax1 = Axis(fig[1, 1]; title = "(a) R_egg (T)", xlabel="T (°C)", ylabel="1/d")
     lines!(ax1, Ts, briere.(Ts; θL=θL_egg); color=:steelblue, linewidth=2)
     ax2 = Axis(fig[1, 2]; title = "(b) R_pupa (T)", xlabel="T (°C)", ylabel="1/d")
-    lines!(ax2, Ts, briere.(Ts; θL=θL_pupa); color=:darkorange, linewidth=2)
+    lines!(ax2, Ts, briere.(Ts; θL=θL_pupa, a=0.00785, b=4.5); color=:darkorange, linewidth=2)
     ax3 = Axis(fig[2, 1]; title = "(c) φ_ovi (T)", xlabel="T (°C)", ylabel="scalar")
     lines!(ax3, Ts, ϕ_ovi.(Ts); color=:seagreen, linewidth=2)
     vlines!(ax3, [21.5]; color=:grey, linestyle=:dash)
@@ -158,7 +159,7 @@ let
                xlabel = "Accumulated dd > 11.5°C since 1 Jan", ylabel="prop. emerged")
     dds = range(0, 250, length=251)
     lines!(ax4, dds, emergence_cdf.(dds); color=:firebrick, linewidth=2)
-    vlines!(ax4, [69, 109.2, 161]; color=:grey, linestyle=:dash)
+    vlines!(ax4, [69, 115.0, 161]; color=:grey, linestyle=:dash)
     fig
 end
 ```
@@ -387,7 +388,7 @@ function run_location(loc; ΔT = 0.0, years_total = 4)
     # where Δ_cycle = ΔE+ΔL+ΔP+ΔA (referenced to >8.9°C since pupa+adult
     # dd are similar in magnitude after threshold conversion).
     cum_p = cumsum(ddP.(Tyr))
-    spring_doy = findfirst(>=(109.2), cum_p)
+    spring_doy = findfirst(>=(115.0), cum_p)
     spring_doy === nothing && (spring_doy = 60)
     diapause_doy = 258
     dd_window = sum(ddE.(Tyr[spring_doy:diapause_doy]))
@@ -428,7 +429,7 @@ end
 
     Location    lat     dda(>8.9)   gens  ΔT=+1.8C gens
     ------------------------------------------------------------
-    Cantabria   43.5    1793        2     2
+    Cantabria   43.5    1793        1     2
     Burgos      42.0    1674        1     2
     Madrid      40.5    2470        2     3
     Albacete    39.0    2520        2     3
@@ -515,8 +516,8 @@ let
 end
 ```
 
-    Mean Δgenerations under +1.8°C across the gradient: 0.667
-    Locations with at least one extra generation: 4 of 6
+    Mean Δgenerations under +1.8°C across the gradient: 0.833
+    Locations with at least one extra generation: 5 of 6
 
 The mean across the gradient is $\sim 0.7$ extra generations per year
 under +1.8 °C, with 4 of the 6 sites gaining at least one full extra

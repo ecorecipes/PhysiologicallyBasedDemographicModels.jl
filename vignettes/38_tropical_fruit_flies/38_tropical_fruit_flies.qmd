@@ -186,7 +186,11 @@ fly is the most cold-tolerant (T_base ≈ 7.5 °C), while the melon and
 oriental fruit flies have the highest lower thresholds (~10–11 °C):
 
 ```{julia}
-# Linear development rate models (degree-day accumulation)
+# Linear development rate models (degree-day accumulation).
+# NOTE: this is a deliberate pedagogical simplification — Gutierrez et al.
+# (2021) use full Brière BDFs (Table 2, Figs 5–8 of the paper); the
+# stage-specific DD totals in the supplementary Excel files S1–S4 are
+# approximated here by accumulating temperature above T_base.
 dev_rates = Dict{String, LinearDevelopmentRate}()
 for sp in all_species
     dev_rates[sp.abbrev] = LinearDevelopmentRate(sp.T_base_egg_larva, sp.T_max)

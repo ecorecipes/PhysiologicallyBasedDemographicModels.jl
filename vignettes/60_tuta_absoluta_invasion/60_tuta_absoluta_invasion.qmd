@@ -120,9 +120,12 @@ or a corrected coefficient from the original Pincebourde–Casas
 heat budget regression.
 
 ```{julia}
-"Eq. 4 mine microclimate offset (W_m2 in W·m⁻², RH in 0–1), capped at 2°C."
-ΔTm(T, RH, Wm2) = clamp(-1.574 - 0.07*T + 1.42*RH + 0.035*Wm2, 0.0, 2.0)
-Tmine(T, RH, Wm2) = T + ΔTm(T, RH, Wm2)
+"Eq. 4 mine microclimate offset (W_m2 in W·m⁻², RH in 0–1).
+Capped at `cap` °C (default +2 °C; Pincebourde–Casas raw coefficient
+0.035 W⁻¹·m² produces ΔT_m ≈ +18 °C at midday irradiance, so a
+physically-motivated cap is applied. Pass `cap = Inf` to disable."
+ΔTm(T, RH, Wm2; cap = 2.0) = clamp(-1.574 - 0.07*T + 1.42*RH + 0.035*Wm2, 0.0, cap)
+Tmine(T, RH, Wm2; cap = 2.0) = T + ΔTm(T, RH, Wm2; cap = cap)
 nothing
 ```
 
