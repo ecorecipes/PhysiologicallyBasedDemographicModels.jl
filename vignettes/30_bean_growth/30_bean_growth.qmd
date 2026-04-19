@@ -109,27 +109,37 @@ masses are taken from Table 1 of Gutierrez et al. [-@Gutierrez1993Bean].
 ```{julia}
 # Organ substages (k=25 for numerical integration)
 const K_ORGAN = 25
-const BEAN_LEAF_TAU = 900.0
-const BEAN_STEM_TAU = 1200.0
-const BEAN_ROOT_TAU = 700.0
+
+# Type-specific organ lifetimes (degree-days) from Gutierrez et al. 1993 Table 1.
+# Type I (determinate, e.g. Goiano precoce) has shorter leaf lifetime than the
+# indeterminate Types II–III.
+const BEAN_LEAF_TAU_I    = 600.0
+const BEAN_LEAF_TAU_II   = 650.0
+const BEAN_LEAF_TAU_III  = 650.0
+const BEAN_STEM_TAU_I    = 1000.0
+const BEAN_STEM_TAU_II   = 1200.0
+const BEAN_STEM_TAU_III  = 1200.0
+const BEAN_ROOT_TAU_I    = 1000.0
+const BEAN_ROOT_TAU_II   = 1200.0
+const BEAN_ROOT_TAU_III  = 1200.0
 const BEAN_FRUIT_TAU = 500.0
 
 # ── Type I (Goiano precoce): determinate, compact ─────────────────
-type1_leaf = LifeStage(:leaf,  DistributedDelay(K_ORGAN, BEAN_LEAF_TAU; W0=0.007), bean_dev, 0.001)
-type1_stem = LifeStage(:stem,  DistributedDelay(K_ORGAN, BEAN_STEM_TAU; W0=0.0066), bean_dev, 0.001)
-type1_root = LifeStage(:root,  DistributedDelay(K_ORGAN, BEAN_ROOT_TAU; W0=0.003), bean_dev, 0.001)
+type1_leaf = LifeStage(:leaf,  DistributedDelay(K_ORGAN, BEAN_LEAF_TAU_I; W0=0.007), bean_dev, 0.001)
+type1_stem = LifeStage(:stem,  DistributedDelay(K_ORGAN, BEAN_STEM_TAU_I; W0=0.0066), bean_dev, 0.001)
+type1_root = LifeStage(:root,  DistributedDelay(K_ORGAN, BEAN_ROOT_TAU_I; W0=0.003), bean_dev, 0.001)
 type1_fruit = LifeStage(:fruit, DistributedDelay(K_ORGAN, BEAN_FRUIT_TAU; W0=0.0), bean_dev, 0.0)
 
 # ── Type II (Porrillo sintetico): indeterminate, semi-erect ──────
-type2_leaf = LifeStage(:leaf,  DistributedDelay(K_ORGAN, BEAN_LEAF_TAU; W0=0.008221), bean_dev, 0.001)
-type2_stem = LifeStage(:stem,  DistributedDelay(K_ORGAN, BEAN_STEM_TAU; W0=0.01859), bean_dev, 0.001)
-type2_root = LifeStage(:root,  DistributedDelay(K_ORGAN, BEAN_ROOT_TAU; W0=0.005), bean_dev, 0.001)
+type2_leaf = LifeStage(:leaf,  DistributedDelay(K_ORGAN, BEAN_LEAF_TAU_II; W0=0.008221), bean_dev, 0.001)
+type2_stem = LifeStage(:stem,  DistributedDelay(K_ORGAN, BEAN_STEM_TAU_II; W0=0.01859), bean_dev, 0.001)
+type2_root = LifeStage(:root,  DistributedDelay(K_ORGAN, BEAN_ROOT_TAU_II; W0=0.005), bean_dev, 0.001)
 type2_fruit = LifeStage(:fruit, DistributedDelay(K_ORGAN, BEAN_FRUIT_TAU; W0=0.0), bean_dev, 0.0)
 
 # ── Type III (Carioca): indeterminate, climbing ──────────────────
-type3_leaf = LifeStage(:leaf,  DistributedDelay(K_ORGAN, BEAN_LEAF_TAU; W0=0.008), bean_dev, 0.001)
-type3_stem = LifeStage(:stem,  DistributedDelay(K_ORGAN, BEAN_STEM_TAU; W0=0.001), bean_dev, 0.001)
-type3_root = LifeStage(:root,  DistributedDelay(K_ORGAN, BEAN_ROOT_TAU; W0=0.004), bean_dev, 0.001)
+type3_leaf = LifeStage(:leaf,  DistributedDelay(K_ORGAN, BEAN_LEAF_TAU_III; W0=0.008), bean_dev, 0.001)
+type3_stem = LifeStage(:stem,  DistributedDelay(K_ORGAN, BEAN_STEM_TAU_III; W0=0.001), bean_dev, 0.001)
+type3_root = LifeStage(:root,  DistributedDelay(K_ORGAN, BEAN_ROOT_TAU_III; W0=0.004), bean_dev, 0.001)
 type3_fruit = LifeStage(:fruit, DistributedDelay(K_ORGAN, BEAN_FRUIT_TAU; W0=0.0), bean_dev, 0.0)
 
 pop_type1 = Population(:bean_type1, [type1_leaf, type1_stem, type1_root, type1_fruit])
@@ -281,7 +291,8 @@ function simulate_bean(params::BeanParams, weather, n_days; density=20.0)
         supply = photosynthesis(W_L, rad_d; density=p.density)
 
         total_mass = W_L + W_S + W_R + W_F
-        maint = 0.017 * 2.0^((T - 5.0) / 10.0) * total_mass * dd / (T - T_BASE + 1e-6)
+        # Gutierrez et al. 1993 Eq. 7: r = 0.017 · 2^((T−5)/10) per day
+        maint = 0.017 * 2.0^((T - 5.0) / 10.0) * total_mass
         net = max(0.0, supply - maint) * 0.72
 
         d_L = p.params.γ_L * W_L * dd

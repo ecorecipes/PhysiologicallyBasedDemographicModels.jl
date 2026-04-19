@@ -439,14 +439,14 @@ vector–host disease cycle using `VectorBorneDisease`.
 const SIGMA_TICK_TO_HOST = 0.005591     # σ, day⁻¹ — tick→cattle transmission (Table 1)
 const EPSILON_HOST_TO_TICK = 0.08271    # ε, ha day⁻¹ — cattle→tick transmission (Table 1)
 const RECOVERED_TRANSMIT_EFF = 0.009035 # transmission efficiency, recovered→tick (Table 1)
-const THETA_RECOVERY = 0.004087         # ϑ, day⁻¹ — host recovery rate (Table 1)
-const ECF_MORTALITY_COEFF = 1.8869      # ρ — disease mortality coefficient (Table 1)
-const ECF_DISEASE_MORTALITY = ECF_MORTALITY_COEFF * CATTLE_DEATH_RATE  # ρ×ω ≈ 0.001487 day⁻¹
+const THETA_RECOVERY = 0.008087         # ϑ, day⁻¹ — host recovery rate (Gilioli et al. 2009 Table 1; Gitau et al. 1999)
+const ECF_MORTALITY_COEFF = 1.18869     # ρ — disease mortality coefficient (Gilioli et al. 2009 Table 1)
+const ECF_DISEASE_MORTALITY = ECF_MORTALITY_COEFF * CATTLE_DEATH_RATE  # ρ×ω day⁻¹
 
 ecf = VectorBorneDisease(
     SIGMA_TICK_TO_HOST,      # β_vh — tick→cattle transmission rate (σ)
     EPSILON_HOST_TO_TICK,    # β_hv — cattle→tick transmission rate (ε)
-    THETA_RECOVERY,          # γ_h  — host recovery rate (mean ~245 days infectious)
+    THETA_RECOVERY,          # γ_h  — host recovery rate (mean ~124 days infectious)
     ECF_DISEASE_MORTALITY,   # μ_h  — disease-induced mortality (ρ × ω)
     21.0                     # extrinsic incubation period (trans-stadial; assumed)
 )
@@ -468,11 +468,11 @@ println("  Case fatality (approx):       $(round(ecf.μ_h / (ecf.γ_h + ecf.μ_h
       Tick→cattle transmission (σ): 0.005591 day⁻¹
       Cattle→tick transmission (ε): 0.08271 ha day⁻¹
       Recovered→tick efficiency:    0.009035
-      Recovery rate (ϑ):            0.004087 day⁻¹ (245.0 days)
-      Disease mortality (ρ×ω):      0.001487 day⁻¹
-      Mortality coefficient (ρ):    1.8869
+      Recovery rate (ϑ):            0.008087 day⁻¹ (124.0 days)
+      Disease mortality (ρ×ω):      0.000937 day⁻¹
+      Mortality coefficient (ρ):    1.18869
       Extrinsic incubation:         21.0 days
-      Case fatality (approx):       26.7%
+      Case fatality (approx):       10.4%
 
 ### Initial Disease States
 
@@ -595,11 +595,11 @@ end
     ===========================================================================
     Year | Cattle prev | Vector inf | Cattle alive | Cum deaths | Ticks/ha
     ---------------------------------------------------------------------------
-      1    | 7.7%        | 7.0%       | 213.0        | 7.0        | 24358.0
-      2    | 9.4%        | 10.0%      | 233.0        | 17.0       | 24574.0
-      3    | 9.7%        | 13.2%      | 263.0        | 30.0       | 24582.0
-      4    | 9.2%        | 16.3%      | 304.0        | 44.0       | 24570.0
-      5    | 8.4%        | 19.2%      | 360.0        | 59.0       | 24561.0
+      1    | 4.9%        | 6.5%       | 218.0        | 3.0        | 24358.0
+      2    | 4.9%        | 8.2%       | 245.0        | 7.0        | 24574.0
+      3    | 4.5%        | 9.9%       | 285.0        | 11.0       | 24582.0
+      4    | 4.0%        | 11.3%      | 338.0        | 15.0       | 24570.0
+      5    | 3.6%        | 12.6%      | 407.0        | 20.0       | 24561.0
 
 ``` julia
 fig_endemic = Figure(size=(800, 700))
@@ -687,18 +687,18 @@ end
     Monthly dynamics — Year 3:
     Month | Mean T | Ticks/ha | Cattle prev | New inf/day | Vec inf
     ---------------------------------------------------------------------------
-      Jan   | 15.5   | 23798.0  | 9.3%        | 0.12        | 10.1%
-      Feb   | 16.5   | 22661.0  | 9.2%        | 0.12        | 10.4%
-      Mar   | 18.6   | 22372.0  | 9.1%        | 0.12        | 10.7%
-      Apr   | 20.2   | 23041.0  | 9.0%        | 0.12        | 10.9%
-      May   | 20.8   | 24324.0  | 9.0%        | 0.13        | 11.2%
-      Jun   | 20.8   | 25738.0  | 9.1%        | 0.14        | 11.4%
-      Jul   | 20.6   | 26954.0  | 9.2%        | 0.15        | 11.7%
-      Aug   | 20.5   | 27777.0  | 9.4%        | 0.15        | 12.0%
-      Sep   | 20.5   | 28064.0  | 9.6%        | 0.16        | 12.2%
-      Oct   | 19.9   | 27756.0  | 9.7%        | 0.16        | 12.5%
-      Nov   | 18.3   | 26887.0  | 9.8%        | 0.15        | 12.8%
-      Dec   | 16.3   | 25565.0  | 9.8%        | 0.15        | 13.0%
+      Jan   | 15.5   | 23798.0  | 4.8%        | 0.1         | 8.3%
+      Feb   | 16.5   | 22661.0  | 4.7%        | 0.1         | 8.4%
+      Mar   | 18.6   | 22372.0  | 4.5%        | 0.1         | 8.6%
+      Apr   | 20.2   | 23041.0  | 4.4%        | 0.1         | 8.7%
+      May   | 20.8   | 24324.0  | 4.4%        | 0.11        | 8.8%
+      Jun   | 20.8   | 25738.0  | 4.4%        | 0.11        | 9.0%
+      Jul   | 20.6   | 26954.0  | 4.5%        | 0.12        | 9.1%
+      Aug   | 20.5   | 27777.0  | 4.5%        | 0.12        | 9.2%
+      Sep   | 20.5   | 28064.0  | 4.6%        | 0.12        | 9.4%
+      Oct   | 19.9   | 27756.0  | 4.7%        | 0.12        | 9.5%
+      Nov   | 18.3   | 26887.0  | 4.7%        | 0.12        | 9.6%
+      Dec   | 16.3   | 25565.0  | 4.6%        | 0.11        | 9.8%
 
 ``` julia
 yr3 = (2*365+1):(3*365)
@@ -806,23 +806,23 @@ end
     Endemic:
       Year | Prevalence | Alive  | Cumulative deaths
       -------------------------------------------------------
-        1  | 3.4%       | 253.0  | 4.5
-        2  | 3.6%       | 313.0  | 9.9
-        3  | 3.7%       | 381.0  | 16.7
+        1  | 2.1%       | 256.0  | 2.1
+        2  | 2.1%       | 320.0  | 4.1
+        3  | 2.1%       | 395.0  | 6.7
 
     Epidemic:
       Year | Prevalence | Alive  | Cumulative deaths
       -------------------------------------------------------
-        1  | 10.1%      | 213.0  | 8.3
-        2  | 10.7%      | 234.0  | 21.1
-        3  | 9.9%       | 267.0  | 35.2
+        1  | 6.4%       | 218.0  | 3.9
+        2  | 5.7%       | 249.0  | 8.7
+        3  | 4.7%       | 294.0  | 13.5
 
     Post-acaricide:
       Year | Prevalence | Alive  | Cumulative deaths
       -------------------------------------------------------
-        1  | 6.1%       | 216.0  | 4.7
-        2  | 7.3%       | 237.0  | 13.0
-        3  | 7.5%       | 266.0  | 23.1
+        1  | 4.0%       | 219.0  | 2.2
+        2  | 4.0%       | 246.0  | 5.4
+        3  | 3.7%       | 284.0  | 8.9
 
 ``` julia
 fig_scen = Figure(size=(800, 500))
@@ -962,14 +962,14 @@ end
     ----------------------------------------------------------------------
       14.0        | 2800         | 0.0032   | 60.0    | 0.0    | minimal
       16.0        | 2400         | 0.007    | 60.0    | 0.0    | minimal
-      18.0        | 2000         | 0.0111   | 48.0    | 0.01   | minimal
+      18.0        | 2000         | 0.0111   | 48.0    | 0.0    | minimal
       20.0        | 1800         | 0.0155   | 35.0    | 0.01   | minimal
-      22.0        | 1600         | 0.0198   | 27.0    | 0.02   | minimal
-      24.0        | 1400         | 0.0239   | 23.0    | 0.02   | minimal
-      26.0        | 1200         | 0.0273   | 20.0    | 0.03   | minimal
-      28.0        | 1000         | 0.0296   | 18.0    | 0.03   | minimal
-      30.0        | 800          | 0.0302   | 18.0    | 0.03   | minimal
-      32.0        | 600          | 0.0277   | 19.0    | 0.03   | minimal
+      22.0        | 1600         | 0.0198   | 27.0    | 0.01   | minimal
+      24.0        | 1400         | 0.0239   | 23.0    | 0.01   | minimal
+      26.0        | 1200         | 0.0273   | 20.0    | 0.02   | minimal
+      28.0        | 1000         | 0.0296   | 18.0    | 0.02   | minimal
+      30.0        | 800          | 0.0302   | 18.0    | 0.02   | minimal
+      32.0        | 600          | 0.0277   | 19.0    | 0.02   | minimal
 
 ``` julia
 T_sweep = 12.0:0.5:34.0
@@ -1064,12 +1064,12 @@ end
     Climate change impact on R₀:
     Altitude | Current T | R₀ now | +2°C T | R₀ +2°C | Change
     -----------------------------------------------------------------
-      2400     | 16.0      | 0.0    | 18.0   | 0.01    | 84.0%
-      2000     | 18.0      | 0.01   | 20.0   | 0.01    | 69.0%
-      1800     | 20.0      | 0.01   | 22.0   | 0.02    | 45.0%
-      1600     | 22.0      | 0.02   | 24.0   | 0.02    | 31.0%
-      1400     | 24.0      | 0.02   | 26.0   | 0.03    | 21.0%
-      1200     | 26.0      | 0.03   | 28.0   | 0.03    | 12.0%
+      2400     | 16.0      | 0.0    | 18.0   | 0.0     | 84.0%
+      2000     | 18.0      | 0.0    | 20.0   | 0.01    | 69.0%
+      1800     | 20.0      | 0.01   | 22.0   | 0.01    | 45.0%
+      1600     | 22.0      | 0.01   | 24.0   | 0.01    | 31.0%
+      1400     | 24.0      | 0.01   | 26.0   | 0.02    | 21.0%
+      1200     | 26.0      | 0.02   | 28.0   | 0.02    | 12.0%
 
 ## Tick Control Strategies
 
@@ -1139,13 +1139,13 @@ end
     1. Acaricide dipping (increasing η):
        η × 1.0  → R₀ = 0.01  ✓ disease eliminated
        η × 1.5  → R₀ = 0.01  ✓ disease eliminated
-       η × 2.0  → R₀ = 0.01  ✓ disease eliminated
+       η × 2.0  → R₀ = 0.0  ✓ disease eliminated
        η × 3.0  → R₀ = 0.0  ✓ disease eliminated
        η × 5.0  → R₀ = 0.0  ✓ disease eliminated
 
     2. Breed resistance (reducing a):
        a = 1.0  → R₀ = 0.01  ✓ disease eliminated
-       a = 0.7  → R₀ = 0.01  ✓ disease eliminated
+       a = 0.7  → R₀ = 0.0  ✓ disease eliminated
        a = 0.5  → R₀ = 0.0  ✓ disease eliminated
        a = 0.3  → R₀ = 0.0  ✓ disease eliminated
        a = 0.1  → R₀ = 0.0  ✓ disease eliminated
@@ -1225,8 +1225,8 @@ measured but chosen for model consistency.
 | σ | Tick→host transmission rate | 0.005591 | day⁻¹ | O’Callaghan et al. (1998) |  |
 | γ | Cattle reproductive rate | 0.0009772 | day⁻¹ | Bebe et al. (2003) |  |
 | ω | Natural cattle mortality | 0.000788 | day⁻¹ | Reynolds et al. (1996) |  |
-| ρ | Disease mortality coefficient | 1.8869 | — | Gitau et al. (1999) |  |
-| ϑ | Host recovery rate | 0.004087 | day⁻¹ | Gitau et al. (1999) |  |
+| ρ | Disease mortality coefficient | 1.18869 | — | Gilioli et al. (2009) Table 1 |  |
+| ϑ | Host recovery rate | 0.008087 | day⁻¹ | Gilioli et al. (2009) Table 1 |  |
 | ρ×ω | Disease-induced mortality | ≈0.001487 | day⁻¹ | Derived | ρ × ω |
 | — | Critical cattle density | ≈0.68 | cattle ha⁻¹ | Gilioli et al. (2009) | Eq. (4) |
 | — | Optimal tick temperature | 24–28 | °C | Cumming (2002) |  |
