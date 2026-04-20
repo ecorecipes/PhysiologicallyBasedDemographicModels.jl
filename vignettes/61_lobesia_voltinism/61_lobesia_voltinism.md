@@ -332,11 +332,12 @@ Two complementary diagnostics are used:
 2.  An **analytical voltinism count**, following Gutierrez *et al.*
     (2018, sec. 4 and Eqn. 11): the integer ratio of degree-days
     accumulated between spring diapause emergence (the spring 95 % CDF
-    point at \$$109 dd>11.5°C) and the diapause-
-    induction cutoff (here doy 258, paper uses daylength × fruit-stage)
-    to the per-generation degree-day budget$\_ = \_E + \_L + \_P +
-    \_A\$. This is what the paper actually reports, and it is robust to
-    the peak-overlap problem that arises in any direct adult-flight
+    point at ~109 dd\>11.5°C) and the diapause- induction cutoff (here
+    doy 258, paper uses daylength × fruit-stage) to the per-generation
+    degree-day budget
+    $\Delta_\text{cycle} = \Delta_E + \Delta_L + \Delta_P + \Delta_A$.
+    This is what the paper actually reports, and it is robust to the
+    peak-overlap problem that arises in any direct adult-flight
     peak-counter when generations begin to merge.
 
 ``` julia

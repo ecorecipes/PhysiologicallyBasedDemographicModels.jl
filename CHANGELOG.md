@@ -9,6 +9,15 @@ semantic versioning once a `1.0` is tagged.
 
 ### Added
 
+- **`docs/`** — Documenter.jl site that surfaces all 64 vignettes as
+  tutorial pages alongside the API reference. The driver
+  (`docs/make.jl`) syncs the pre-rendered GFM markdown and figure
+  directories from `vignettes/<n>/` into `docs/src/tutorials/`,
+  rewrites Quarto's multi-line `<img …>` blocks to standard markdown
+  image syntax, and produces an HTML site under `docs/build/`. Set
+  `PBDM_BUILD_PDF=true` to additionally produce a LaTeX/PDF build,
+  or `PBDM_RERENDER=true` to re-run `quarto render` per vignette.
+  Convenience wrapper: `bash scripts/build_docs.sh`.
 - **`vignettes/README.md`** — index of all 64 vignettes with title, source
   paper bib-key, and post-audit fidelity grade.
 - **`src/temperature_responses.jl`** — eight reusable temperature-response
