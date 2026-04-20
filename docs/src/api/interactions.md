@@ -12,6 +12,7 @@ functional_response
 
 ```@docs
 TrophicLink
+TrophicLevel
 TrophicWeb
 add_link!
 find_links
