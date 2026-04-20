@@ -45,7 +45,7 @@ by reproducing published PBDM studies end-to-end.
 
 ### Vignettes
 
-Forty-nine vignettes cover the full PBDM corpus, ranging from introductory
+Sixty-four vignettes cover the full PBDM corpus, ranging from introductory
 tutorials through classical reference models (cotton, coffee berry borer,
 grapevine, olive fly, screwworm SIT) to recent applications (Bt resistance,
 Spodoptera frugiperda, Drosophila suzukii PDE, Xylella eco-epidemiology). All
@@ -81,6 +81,9 @@ sol = solve(prob, DirectIteration())
 ```
 
 See the [`vignettes/`](vignettes/) directory for fully worked examples.
+The annotated index — title, source paper, and post-audit fidelity grade
+for all 64 vignettes — is in [`vignettes/README.md`](vignettes/README.md).
+Recent fixes and refactors are listed in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Related
 
