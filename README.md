@@ -83,6 +83,9 @@ sol = solve(prob, DirectIteration())
 See the [`vignettes/`](vignettes/) directory for fully worked examples.
 The annotated index — title, source paper, and post-audit fidelity grade
 for all 64 vignettes — is in [`vignettes/README.md`](vignettes/README.md).
+A browseable [Documenter.jl site](docs/) (HTML + KaTeX, with all 64
+vignettes as tutorial pages and an API reference) can be built locally
+with `bash scripts/build_docs.sh`; output lands in `docs/build/`.
 Recent fixes and refactors are listed in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Related
