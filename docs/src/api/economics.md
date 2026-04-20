@@ -58,3 +58,18 @@ predict_log
 predict
 marginal_effects
 ```
+
+## Management & Optimal Control
+
+```@docs
+AbstractManagementAction
+AbstractManagementObjective
+BiologicalReleaseControl
+HarvestControl
+PesticideControl
+MaximizeProfit
+MinimizeDamage
+PBDMControlProblem
+ManagementSolution
+optimize_management
+```

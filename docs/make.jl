@@ -186,6 +186,7 @@ const API_PAGES = [
     "Genetics"                  => "api/genetics.md",
     "Epidemiology"              => "api/epidemiology.md",
     "Utilities"                 => "api/utilities.md",
+    "Core Abstractions"         => "api/core.md",
 ]
 
 makedocs(;
