@@ -44,3 +44,17 @@ RainfallYieldModel
 WeatherYieldModel
 predict_yield
 ```
+
+## Surrogate Models
+
+[`LogLinearSurrogate`](@ref) packages an offline-fit log-linear regression
+surrogate for PBDM-derived yield, pest pressure, or treatment-utility
+maps. It is used by vignettes 58 (CBB bioeconomics) and 60
+(Tuta absoluta invasion) to summarise multi-parameter sweeps.
+
+```@docs
+LogLinearSurrogate
+predict_log
+predict
+marginal_effects
+```

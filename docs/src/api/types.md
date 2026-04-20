@@ -62,6 +62,10 @@ AbstractFunctionalResponse
 FraserGilbertResponse
 acquire
 supply_demand_ratio
+apparency
+is_ratio_dependent
+consumer_isocline
+resource_isocline
 ```
 
 ## Metabolic Pool
@@ -84,7 +88,7 @@ respiration_rate
 ```@docs
 LifeStage
 Population
+BulkPopulation
 n_stages
 n_substages
-total_population
 ```

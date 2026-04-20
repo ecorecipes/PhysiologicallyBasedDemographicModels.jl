@@ -7,8 +7,32 @@ including crop damage functions, input costs, and net present value.
 
 # --- Abstract types ---
 
+"""
+    AbstractCostFunction
+
+Supertype for per-hectare cost components in a PBDM bioeconomic model
+(e.g. [`FixedCost`](@ref), [`VariableCost`](@ref), [`InputCostBundle`](@ref)).
+Concrete subtypes must support `total_cost(::AbstractCostFunction, ctx)`.
+"""
 abstract type AbstractCostFunction end
+
+"""
+    AbstractRevenueFunction
+
+Supertype for revenue components in a bioeconomic model (e.g.
+[`CropRevenue`](@ref)). Concrete subtypes implement
+`revenue(::AbstractRevenueFunction, yield)`.
+"""
 abstract type AbstractRevenueFunction end
+
+"""
+    AbstractDamageFunction
+
+Supertype for crop-damage models that map a pest pressure to a fractional
+yield loss (e.g. [`LinearDamageFunction`](@ref),
+[`ExponentialDamageFunction`](@ref)). Concrete subtypes implement
+`yield_loss(::AbstractDamageFunction, pressure)`.
+"""
 abstract type AbstractDamageFunction end
 
 # --- Cost functions ---
@@ -212,6 +236,13 @@ struct RainfallYieldModel{T<:Real}
     c::T
 end
 
+"""
+    predict_yield(m, args...)
+
+Apply a yield-prediction model to weather/management drivers.
+Methods exist for [`RainfallYieldModel`](@ref) (rainfall only) and
+[`WeatherYieldModel`](@ref) (degree-days × rainfall).
+"""
 function predict_yield(m::RainfallYieldModel, rainfall_mm::Real)
     return m.a * rainfall_mm^2 + m.b * rainfall_mm + m.c
 end

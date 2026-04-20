@@ -109,6 +109,16 @@ function sync_tutorials_from_vignettes(; force_rerender::Bool = false)
         # Documenter's CommonMark parser escapes these as text, so rewrite
         # them to standard `![](path)` markdown image syntax.
         normalize_img_tags!(dst_md)
+
+        # Some vignettes embed figures from `scripts/figures/...` via
+        # relative paths that escape the docs build directory. Copy those
+        # assets next to the tutorial and rewrite the path.
+        externalize_assets!(dst_md, repo_root, tutorial_dir, base)
+
+        # Cross-vignette links written as `(../<n>_*/<n>_*.qmd)` need to
+        # become `(<n>_*.md)` so Documenter can resolve them in the flat
+        # `docs/src/tutorials/` directory.
+        normalize_cross_links!(dst_md)
     end
 end
 
@@ -121,6 +131,42 @@ function normalize_img_tags!(path::AbstractString)
         srcm === nothing && return m
         "![]($(srcm.captures[1]))"
     end)
+    fixed === text || write(path, fixed)
+    return nothing
+end
+
+function externalize_assets!(path::AbstractString, repo_root::AbstractString,
+                              tutorial_dir::AbstractString, base::AbstractString)
+    text = read(path, String)
+    asset_dir = joinpath(tutorial_dir, base * "_files", "external")
+    rx = r"!\[([^\]]*)\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)(?:\{[^}]*\})?"
+    changed = Ref(false)
+    fixed = replace(text, rx => function (m)
+        cap = match(rx, m).captures
+        alt, src = cap[1], cap[2]
+        # Skip URLs and already-local refs
+        (startswith(src, "http://") || startswith(src, "https://") ||
+         startswith(src, "data:") || !startswith(src, "..")) && return m
+        # Resolve against the source vignette directory
+        candidate = normpath(joinpath(repo_root, "vignettes", base, src))
+        isfile(candidate) || return m
+        mkpath(asset_dir)
+        dest_name = replace(relpath(candidate, repo_root), Base.Filesystem.path_separator => "__")
+        dest = joinpath(asset_dir, dest_name)
+        cp(candidate, dest; force = true)
+        changed[] = true
+        rel = joinpath(base * "_files", "external", dest_name)
+        return "![$alt]($rel)"
+    end)
+    changed[] && write(path, fixed)
+    return nothing
+end
+
+function normalize_cross_links!(path::AbstractString)
+    text = read(path, String)
+    # `(../12_xxx/12_xxx.qmd)`  →  `(12_xxx.md)`
+    rx = r"\]\(\.\./(\d{2}_[\w-]+)/\1\.qmd\)"
+    fixed = replace(text, rx => s"](\1.md)")
     fixed === text || write(path, fixed)
     return nothing
 end
