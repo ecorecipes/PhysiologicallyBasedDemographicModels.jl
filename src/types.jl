@@ -46,6 +46,13 @@ approach_family(::AbstractHybridPBDMApproach) = :hybrid
 
 # --- Structure traits (PBDM-specific) ---
 
+"""
+    AbstractPBDMStructure <: AbstractProjectionStructure
+
+Supertype for PBDM topology tags ([`SingleSpeciesPBDM`](@ref),
+[`MultiSpeciesPBDM`](@ref)). Concrete subtypes select the dispatch path
+through `solve(::PBDMProblem, ...)`.
+"""
 abstract type AbstractPBDMStructure <: AbstractProjectionStructure end
 
 """
@@ -370,8 +377,28 @@ function BiodemographicFunctions(development::D, acquisition::F, respiration::R;
     BiodemographicFunctions{D,F,R}(development, acquisition, respiration, label)
 end
 
+"""
+    development_component(model::BiodemographicFunctions)
+
+Return the [`AbstractDevelopmentRate`](@ref) layer of a
+[`BiodemographicFunctions`](@ref).
+"""
 development_component(model::BiodemographicFunctions) = model.development
+
+"""
+    acquisition_component(model::BiodemographicFunctions)
+
+Return the [`AbstractFunctionalResponse`](@ref) layer of a
+[`BiodemographicFunctions`](@ref).
+"""
 acquisition_component(model::BiodemographicFunctions) = model.acquisition
+
+"""
+    respiration_component(model::BiodemographicFunctions)
+
+Return the [`AbstractRespirationModel`](@ref) layer of a
+[`BiodemographicFunctions`](@ref).
+"""
 respiration_component(model::BiodemographicFunctions) = model.respiration
 
 """
@@ -396,7 +423,20 @@ function CoupledPBDMModel(bdf::B, allocation::A;
     CoupledPBDMModel{B,A}(bdf, allocation, label)
 end
 
+"""
+    biodemography(model::CoupledPBDMModel)
+
+Return the BDF (biodemographic-functions) layer of a
+[`CoupledPBDMModel`](@ref).
+"""
 biodemography(model::CoupledPBDMModel) = model.bdf
+
+"""
+    allocation_model(model::CoupledPBDMModel)
+
+Return the metabolic-pool [`AbstractAllocationModel`](@ref) layer of a
+[`CoupledPBDMModel`](@ref).
+"""
 allocation_model(model::CoupledPBDMModel) = model.allocation
 
 # --- Respiration ---

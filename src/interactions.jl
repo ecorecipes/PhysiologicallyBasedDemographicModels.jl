@@ -93,6 +93,11 @@ end
 
 TrophicWeb() = TrophicWeb{Float64}(TrophicLink{Float64}[])
 
+"""
+    add_link!(web::TrophicWeb, link::TrophicLink) -> TrophicWeb
+
+Append a [`TrophicLink`](@ref) to `web` in place and return the web.
+"""
 function add_link!(web::TrophicWeb, link::TrophicLink)
     push!(web.links, link)
     return web

@@ -7,6 +7,14 @@ PBDM population dynamics for host-vector-pathogen systems.
 
 # --- Types ---
 
+"""
+    AbstractDiseaseModel
+
+Supertype for compartmental disease models in the epidemiology module
+(e.g. [`SIRDisease`](@ref), [`VectorBorneDisease`](@ref)). Concrete
+subtypes are advanced via [`step_disease!`](@ref) /
+[`step_vector_disease!`](@ref).
+"""
 abstract type AbstractDiseaseModel end
 
 """
@@ -50,7 +58,19 @@ end
 DiseaseState(S::Real, I::Real) = DiseaseState(float(S), float(I), 0.0, 0.0)
 DiseaseState(N::Real) = DiseaseState(float(N), 0.0, 0.0, 0.0)
 
+"""
+    total_alive(ds::DiseaseState) -> Real
+
+Sum of `S + I + R` (excludes disease-induced deaths `D`).
+"""
 total_alive(ds::DiseaseState) = ds.S + ds.I + ds.R
+
+"""
+    prevalence(ds::DiseaseState) -> Real
+
+Fraction of the alive sub-population currently infected: `I / (S+I+R)`.
+Returns `0.0` if the alive sub-population is empty.
+"""
 prevalence(ds::DiseaseState) = total_alive(ds) > 0 ? ds.I / total_alive(ds) : 0.0
 
 """
@@ -125,6 +145,12 @@ mutable struct VectorState{T<:Real}
 end
 
 VectorState(N::Real) = VectorState(float(N), 0.0, 0.0)
+
+"""
+    total_vectors(vs::VectorState) -> Real
+
+Total vector population `S + E + I` for a [`VectorState`](@ref).
+"""
 total_vectors(vs::VectorState) = vs.S + vs.E + vs.I
 
 """

@@ -191,6 +191,13 @@ function BulkPopulation(name::Symbol, init::Real; growth_fn=nothing, K::Real=Inf
 end
 
 total_population(bp::BulkPopulation) = max(bp.value[], 0.0)
+"""
+    n_stages(pop) -> Int
+
+Number of life stages tracked in a population carrier.
+Returns `1` for [`BulkPopulation`](@ref) and `length(pop.stages)` for a
+stage-structured [`Population`](@ref).
+"""
 n_stages(::BulkPopulation) = 1
 
 """Set the absolute value of a BulkPopulation."""
