@@ -1,0 +1,362 @@
+---
+title: "PBDM → MPM Coarse-Graining Bridge"
+subtitle: "Cross-package integration: PhysiologicallyBasedDemographicModels.jl × MatrixProjectionModels.jl"
+format:
+  gfm:
+    fig-format: svg
+    fig-dpi: 150
+  html:
+    code-fold: false
+    fig-format: svg
+    fig-dpi: 150
+  pdf:
+    fig-format: png
+    fig-dpi: 200
+execute:
+  echo: true
+  warning: false
+engine: julia
+julia:
+  exeflags: ["--project=/Users/sdwfrost/Projects/ipm/integration_test/unified"]
+---
+
+## Introduction
+
+Physiologically-based demographic models (PBDMs) and matrix projection models
+(MPMs) represent two different levels of resolution for structured population
+dynamics.  A PBDM tracks individuals through $k$-substage distributed delays
+driven by physiological time (degree-days), while a Lefkovitch MPM
+approximates each life stage as a single compartment with geometric
+stage-duration distributions.
+
+This vignette shows how to **coarse-grain** a PBDM into an equivalent
+Lefkovitch matrix, compare growth rates, and understand the approximation
+error introduced by collapsing the Erlang-distributed stage durations to
+geometric ones.
+
+We demonstrate two levels of bridge:
+
+1. **Exact substage MPM**: a $(k_1 + k_2 + \cdots + k_S)$-dimensional matrix
+   that preserves the PBDM's Erlang delay structure — this yields an exact
+   correspondence.
+2. **Collapsed Lefkovitch MPM**: an $S$-dimensional matrix that approximates
+   the PBDM — this introduces a known approximation error.
+
+```{julia}
+using PhysiologicallyBasedDemographicModels
+using MatrixProjectionModels
+using StructuredPopulationCore
+using LinearAlgebra
+
+const PBDM = PhysiologicallyBasedDemographicModels
+const MPM  = MatrixProjectionModels
+const SPC  = StructuredPopulationCore
+```
+
+## A three-stage insect PBDM
+
+We model a generic holometabolous insect with three life stages
+(egg, larva, adult) at a constant temperature of 15°C.
+
+```{julia}
+# Fixed temperature
+T_const = 15.0
+T_base  = 10.0   # lower developmental threshold
+T_max   = 35.0   # upper developmental threshold
+
+# Stage parameters:  name, substages(k), duration(τ DD), mortality(μ per DD)
+stage_params = [
+    (:egg,    5,  80.0, 0.005),
+    (:larva, 10, 200.0, 0.008),
+    (:adult,  3, 150.0, 0.012),
+]
+
+# Reproduction: adults produce eggs at rate β per degree-day
+β_fecundity = 0.5  # eggs per DD per adult
+```
+
+### Build the PBDM
+
+```{julia}
+dev = PBDM.LinearDevelopmentRate(T_base, T_max)
+dd_per_day = PBDM.degree_days(dev, T_const)
+println("Degree-days per day at $(T_const)°C: ", dd_per_day)
+
+stages = [
+    PBDM.LifeStage(name,
+        PBDM.DistributedDelay(k, τ; W0 = (name == :egg ? 100.0 : 0.0)),
+        dev, μ)
+    for (name, k, τ, μ) in stage_params
+]
+
+pop = PBDM.Population(:insect, stages)
+println("Total substages: ", sum(s.delay.k for s in pop.stages))
+```
+
+### Run the PBDM simulation
+
+We run for 500 days with reproduction feeding maturation output
+(adults) back as egg inflow, creating a closed life cycle.
+
+```{julia}
+using Statistics
+
+weather = PBDM.WeatherSeries(fill(T_const, 500); day_offset = 1)
+
+n_days = 500
+stage_history = zeros(length(stages), n_days)
+total_history = zeros(n_days)
+growth_rates  = zeros(n_days)
+
+for d in 1:n_days
+    wd = PBDM.get_weather(weather, d)
+    dd = PBDM.degree_days(dev, wd.T_mean)
+
+    # Reproduction: total adult population × fecundity × dd → egg inflow
+    adult_total = PBDM.delay_total(pop.stages[end].delay)
+    egg_inflow = β_fecundity * dd * adult_total
+
+    result = PBDM.step_population!(pop, wd; inflow = egg_inflow)
+
+    for j in eachindex(stages)
+        stage_history[j, d] = result.stage_totals[j]
+    end
+    total_history[d] = sum(result.stage_totals)
+    if d > 1 && total_history[d-1] > 0
+        growth_rates[d] = total_history[d] / total_history[d-1]
+    end
+end
+
+println("Final populations:")
+for (i, (name, _, _, _)) in enumerate(stage_params)
+    println("  $(name): $(round(stage_history[i, end]; digits=1))")
+end
+println("  Total: $(round(total_history[end]; digits=1))")
+
+# Asymptotic daily growth rate (geometric mean over last 100 days)
+λ_pbdm = exp(mean(log.(growth_rates[end-99:end])))
+println("\nPBDM asymptotic daily λ ≈ ", round(λ_pbdm; digits=6))
+```
+
+## Bridge 1: Exact substage MPM
+
+At constant temperature $T$, the daily degree-days $d = r(T)$ are constant.
+Each substage $i$ within stage $s$ has:
+
+- **Transition rate** out of substage: $\alpha_s = k_s \cdot d / \tau_s$
+- **Mortality rate**: $\mu_s \cdot d$
+- **Survival and stasis probability**: $\sigma_s = 1 - \alpha_s - \mu_s d$
+  (for $\alpha_s + \mu_s d < 1$)
+
+The full substage transition matrix is block-bidiagonal:
+
+```{julia}
+function build_substage_mpm(stage_params, dd_per_day, β_fecundity)
+    n_total = sum(p[2] for p in stage_params)
+    A = zeros(n_total, n_total)
+
+    offset = 0
+    for (s, (name, k, τ, μ)) in enumerate(stage_params)
+        α = k * dd_per_day / τ     # substage transition rate
+        d_mort = μ * dd_per_day    # daily mortality
+        σ = 1.0 - α - d_mort      # stasis probability
+
+        if σ < 0
+            @warn "Negative stasis for stage $name: σ=$σ. Clamping to 0."
+            σ = 0.0
+        end
+
+        for i in 1:k
+            row = offset + i
+            A[row, row] = σ  # stay in substage
+
+            if i < k
+                A[row + 1, row] = α  # advance to next substage (within stage)
+            elseif s < length(stage_params)
+                # Interstage transition: last substage → first of next stage
+                A[offset + k + 1, row] = α
+            end
+        end
+
+        offset += k
+    end
+
+    # Reproduction: ALL adult substages → first egg substage
+    adult_offset = sum(p[2] for p in stage_params[1:end-1])
+    k_adult = stage_params[end][2]
+    for i in 1:k_adult
+        A[1, adult_offset + i] += β_fecundity * dd_per_day
+    end
+
+    return A
+end
+
+A_sub = build_substage_mpm(stage_params, dd_per_day, β_fecundity)
+println("Substage matrix size: ", size(A_sub))
+
+mpm_sub = MPM.MatrixProjectionModel(A_sub)
+λ_sub = MPM.lambda(mpm_sub)
+println("Substage MPM λ = ", round(λ_sub; digits=6))
+println("PBDM λ         = ", round(λ_pbdm; digits=6))
+println("Relative error  = ", round(abs(λ_sub - λ_pbdm)/λ_pbdm * 100; digits=3), "%")
+```
+
+The substage MPM should match the PBDM growth rate closely because it
+represents the **same Erlang delay dynamics** as the distributed-delay
+equations.
+
+## Bridge 2: Collapsed Lefkovitch MPM
+
+The standard Lefkovitch approximation collapses all substages of each life
+stage into a single compartment.  This introduces geometric (memoryless)
+stage-duration distributions in place of the Erlang distributions.
+
+For each stage $s$ at constant temperature:
+
+- **Mean duration** in days: $T_s = \tau_s / d$ where $d$ = DD per day
+- **Daily survival**: $\sigma_s = \exp(-\mu_s \cdot d)$
+- **Daily development probability**: $\gamma_s = 1 / T_s$
+- **Stasis probability**: $p_s = \sigma_s \cdot (1 - \gamma_s)$
+- **Transition probability**: $g_s = \sigma_s \cdot \gamma_s$
+
+```{julia}
+function build_lefkovitch_mpm(stage_params, dd_per_day, β_fecundity)
+    S = length(stage_params)
+    L = zeros(S, S)
+
+    for (s, (name, k, τ, μ)) in enumerate(stage_params)
+        T_days = τ / dd_per_day
+        σ_daily = exp(-μ * dd_per_day)
+        γ = 1.0 / T_days
+        p = σ_daily * (1 - γ)   # stasis
+        g = σ_daily * γ          # transition
+
+        L[s, s] = p
+
+        if s < S
+            L[s+1, s] = g
+        end
+    end
+
+    # Reproduction: adults → eggs (all adults contribute)
+    L[1, S] += β_fecundity * dd_per_day
+
+    return L
+end
+
+L = build_lefkovitch_mpm(stage_params, dd_per_day, β_fecundity)
+println("Lefkovitch matrix:")
+display(round.(L; digits=4))
+
+mpm_lef = MPM.MatrixProjectionModel(L)
+λ_lef = MPM.lambda(mpm_lef)
+println("\nLefkovitch MPM λ = ", round(λ_lef; digits=6))
+println("Substage  MPM λ  = ", round(λ_sub; digits=6))
+println("PBDM λ           = ", round(λ_pbdm; digits=6))
+println("Lefkovitch error  = ", round(abs(λ_lef - λ_pbdm)/λ_pbdm * 100; digits=3), "%")
+println("Substage error    = ", round(abs(λ_sub - λ_pbdm)/λ_pbdm * 100; digits=3), "%")
+```
+
+## Comparison of eigenanalysis
+
+```{julia}
+println("="^60)
+println("Eigenanalysis comparison")
+println("="^60)
+println()
+println("Growth rate λ:")
+println("  PBDM (simulation)  = ", round(λ_pbdm; digits=6))
+println("  Substage MPM       = ", round(λ_sub; digits=6))
+println("  Lefkovitch MPM     = ", round(λ_lef; digits=6))
+println()
+println("Damping ratio (time to convergence):")
+println("  Substage MPM  = ", round(SPC.damping_ratio(A_sub); digits=4))
+println("  Lefkovitch    = ", round(SPC.damping_ratio(L); digits=4))
+println()
+
+# Stable stage distribution (collapsed to life stages)
+w_sub = SPC.stable_distribution(A_sub)
+offset = 0
+w_collapsed = zeros(length(stage_params))
+for (s, (_, k, _, _)) in enumerate(stage_params)
+    w_collapsed[s] = sum(w_sub[offset+1:offset+k])
+    offset += k
+end
+w_collapsed ./= sum(w_collapsed)
+
+w_lef = SPC.stable_distribution(L)
+
+println("Stable stage distribution:")
+for (i, (name, _, _, _)) in enumerate(stage_params)
+    println("  $(name): substage=$(round(w_collapsed[i]; digits=4))  " *
+            "lefkovitch=$(round(w_lef[i]; digits=4))")
+end
+```
+
+## Life-history metrics
+
+Since we have the U/F decomposition for the Lefkovitch matrix, we can
+compute life-history metrics that are not directly available from the PBDM.
+
+```{julia}
+S = length(stage_params)
+U_lef = copy(L)
+U_lef[1, S] = 0.0   # zero out reproduction = U matrix
+F_lef = zeros(S, S)
+F_lef[1, S] = β_fecundity * dd_per_day
+
+R0_lef = MPM.net_repro_rate(U_lef, F_lef)
+T_lef  = MPM.gen_time(U_lef, F_lef)
+
+println("Lefkovitch life-history metrics:")
+println("  R₀ (net reproductive rate) = ", round(R0_lef; digits=4))
+println("  T  (generation time, days) = ", round(T_lef; digits=2))
+println()
+# Euler–Lotka check: λ ≈ R0^(1/T)
+λ_euler = R0_lef^(1/T_lef)
+println("Euler–Lotka check: R₀^(1/T) = ", round(λ_euler; digits=6),
+        "  (vs λ = ", round(λ_lef; digits=6), ")")
+```
+
+## Why the Lefkovitch approximation is lossy
+
+The Lefkovitch matrix assumes **geometric** (memoryless) stage durations.  An
+individual that has been in a stage for many days is just as likely to
+transition as one that just entered.  The PBDM's distributed delay uses **Erlang
+($k$-substage)** distributions, where stage durations are more tightly
+concentrated around the mean.
+
+The practical effect is:
+
+- The Lefkovitch model overestimates variance in stage duration.
+- This broadens the transient dynamics and can shift λ relative to the
+  Erlang-based model.
+- The error shrinks as the number of substages $k \to 1$ (both models agree in
+  the geometric limit) and is largest when $k$ is large (tight Erlang
+  distribution, far from geometric).
+
+The substage MPM preserves the Erlang structure exactly by keeping all $k$
+substages as separate matrix rows/columns.
+
+## Summary
+
+| Model | λ | Substages | Duration distribution |
+|-------|---|-----------|----------------------|
+| PBDM simulation | ≈ observed | $\sum k_s$ | Erlang |
+| Substage MPM | exact match | $\sum k_s$ | Erlang |
+| Lefkovitch MPM | approximate | $S$ | Geometric |
+
+**Key insight:** The PBDM ↔ MPM bridge is **exact** when the matrix preserves
+the substage structure, and **approximate** when stages are collapsed.  The
+collapsed Lefkovitch model is a convenient low-dimensional summary, but its
+growth rate can deviate from the PBDM when stage durations are strongly
+non-geometric ($k \gg 1$).
+
+## References
+
+- Manetsch, T. J. (1976). Time-varying distributed delays and their use in
+  aggregative models of large systems. *IEEE Trans. Syst. Man Cybern.*, 6,
+  547–553.
+- Vansickle, J. (1977). Attrition in distributed delay models. *IEEE Trans.
+  Syst. Man Cybern.*, 7, 635–638.
+- Caswell, H. (2001). *Matrix Population Models*. Sinauer.
