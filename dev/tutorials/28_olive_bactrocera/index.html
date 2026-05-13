@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Olive–Olive Fly System Under Climate Warming · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Olive–Olive Fly System Under Climate Warming · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Olive–Olive Fly System Under Climate Warming · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Olive–Olive Fly System Under Climate Warming · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/28_olive_bactrocera/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/28_olive_bactrocera/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/28_olive_bactrocera/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li class="is-active"><a class="tocitem" href>Olive–Olive Fly System Under Climate Warming</a><ul class="internal"><li><a class="tocitem" href="#Introduction"><span>Introduction</span></a></li><li><a class="tocitem" href="#Olive-Plant-Model"><span>Olive Plant Model</span></a></li><li><a class="tocitem" href="#Olive-Fly-Model"><span>Olive Fly Model</span></a></li><li><a class="tocitem" href="#Implementation"><span>Implementation</span></a></li><li><a class="tocitem" href="#Seasonal-Dynamics"><span>Seasonal Dynamics</span></a></li><li><a class="tocitem" href="#Climate-Warming-Analysis"><span>Climate Warming Analysis</span></a></li><li><a class="tocitem" href="#Parameter-Sources"><span>Parameter Sources</span></a></li><li><a class="tocitem" href="#Discussion"><span>Discussion</span></a></li><li><a class="tocitem" href="#References"><span>References</span></a></li></ul></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Olive–Olive Fly System Under Climate Warming</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Olive–Olive Fly System Under Climate Warming</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Olive–Olive-Fly-System-Under-Climate-Warming"><a class="docs-heading-anchor" href="#Olive–Olive-Fly-System-Under-Climate-Warming">Olive–Olive Fly System Under Climate Warming</a><a id="Olive–Olive-Fly-System-Under-Climate-Warming-1"></a><a class="docs-heading-anchor-permalink" href="#Olive–Olive-Fly-System-Under-Climate-Warming" title="Permalink"></a></h1><p>PhysiologicallyBasedDemographicModels.jl</p><ul><li><a href="#introduction">Introduction</a></li><li><a href="#olive-plant-model">Olive Plant Model</a><ul><li><a href="#phenology-and-vernalization">Phenology and Vernalization</a></li><li><a href="#carbon-balance-photosynthesis-and-respiration">Carbon Balance: Photosynthesis and Respiration</a></li><li><a href="#vegetative-and-reproductive-tissue">Vegetative and Reproductive Tissue</a></li><li><a href="#metabolic-pool-supply-demand-carbon-allocation">Metabolic Pool: Supply-Demand Carbon Allocation</a></li><li><a href="#vernalization-and-flowering">Vernalization and Flowering</a></li></ul></li><li><a href="#olive-fly-model">Olive Fly Model</a><ul><li><a href="#development-nonlinear-temperature-response">Development: Nonlinear Temperature Response</a></li><li><a href="#temperature-dependent-mortality">Temperature-Dependent Mortality</a></li><li><a href="#four-stage-lifecycle">Four-Stage Lifecycle</a></li><li><a href="#fruit-availability-and-supplydemand">Fruit Availability and Supply/Demand</a></li></ul></li><li><a href="#implementation">Implementation</a><ul><li><a href="#coupled-plantpest-system">Coupled Plant–Pest System</a></li><li><a href="#fly-population-dynamics">Fly Population Dynamics</a></li></ul></li><li><a href="#seasonal-dynamics">Seasonal Dynamics</a><ul><li><a href="#olive-phenology-and-biomass-accumulation">Olive Phenology and Biomass Accumulation</a></li><li><a href="#fly-development-rate-curves">Fly Development Rate Curves</a></li><li><a href="#fly-population-overlaid-with-fruit-availability">Fly Population Overlaid with Fruit Availability</a></li></ul></li><li><a href="#climate-warming-analysis">Climate Warming Analysis</a><ul><li><a href="#phenological-shift-under-warming">Phenological Shift Under Warming</a></li><li><a href="#yield-regression-under-warming">Yield Regression Under Warming</a></li><li><a href="#fly-population-under-warming">Fly Population Under Warming</a></li><li><a href="#fruit-damage-and-yield-loss">Fruit Damage and Yield Loss</a></li><li><a href="#climate-scenario-comparison">Climate Scenario Comparison</a></li><li><a href="#vernalization-under-warming">Vernalization Under Warming</a></li><li><a href="#sardinian-sub-regional-analysis">Sardinian Sub-Regional Analysis</a></li><li><a href="#fly-population-dynamics-by-sub-region">Fly Population Dynamics by Sub-Region</a></li></ul></li><li><a href="#parameter-sources">Parameter Sources</a></li><li><a href="#discussion">Discussion</a><ul><li><a href="#winners-and-losers-in-sardinia">Winners and Losers in Sardinia</a></li><li><a href="#climate-adaptation-strategies">Climate Adaptation Strategies</a></li><li><a href="#limitations">Limitations</a></li></ul></li><li><a href="#references">References</a></li></ul><p>Primary reference: (Ponti et al. 2009).</p><h2 id="Introduction"><a class="docs-heading-anchor" href="#Introduction">Introduction</a><a id="Introduction-1"></a><a class="docs-heading-anchor-permalink" href="#Introduction" title="Permalink"></a></h2><p>The olive (<em>Olea europaea</em> L.) is the iconic crop of the Mediterranean Basin, with approximately 10 million hectares in cultivation across Southern Europe, North Africa, and the Middle East. Olive production is tightly coupled to climate — the tree requires mild, wet winters for vernalization and warm, dry summers for fruit maturation and oil accumulation. Climate change threatens to reorganize the geography of olive cultivation by altering both plant physiology and pest pressure simultaneously.</p><p>The olive fly (<em>Bactrocera oleae</em> Gmelin) is the most economically important pest of olives worldwide, causing an estimated <span>$</span>800 million in annual losses globally. The fly is host-specific: females oviposit exclusively in olive fruit, and larvae develop inside the drupe, causing direct yield loss and degrading oil quality through elevated free fatty acids and peroxide values. Because the fly’s lifecycle is intimately linked to fruit phenology, any climate-driven shift in olive development directly reshapes the temporal window of pest vulnerability.</p><p>This vignette builds a physiologically based demographic model (PBDM) of the <strong>olive–olive fly bitrophic system</strong> in the context of Mediterranean island climates, following the analysis of Ponti, Cossu, and Gutierrez (2009) who used weather-driven simulations across 48 Sardinian weather stations and three warming scenarios (+1 °C, +2 °C, +3 °C) to evaluate olive yield, fly population dynamics, and fruit infestation risk. Sardinia, the second-largest Mediterranean island, provides an ideal bounded geographic system with strong climate gradients — from maritime-buffered coasts to continental-influenced interior mountains — for studying crop–pest interactions under warming.</p><p><strong>Key references:</strong></p><ul><li>Ponti, L., Cossu, Q.A., and Gutierrez, A.P. (2009). Climate warming effects on the <em>Olea europaea</em> – <em>Bactrocera oleae</em> system in Mediterranean islands: Sardinia as an example. <em>Global Change Biology</em> 15:2874–2884.</li><li>Gutierrez, A.P., Ponti, L., and Cossu, Q.A. (2009). Effects of climate warming on olive and olive fly (<em>Bactrocera oleae</em> (Gmelin)) in California and Italy. <em>Climatic Change</em> 95:195–217.</li><li>Ponti, L., Gutierrez, A.P., Ruti, P.M., and Dell’Aquila, A. (2014). Fine-scale ecological and economic assessment of climate change on olive in the Mediterranean Basin reveals winners and losers. <em>PNAS</em> 111:5598–5603.</li><li>Tzanakakis, M.E. (2003). Seasonal development and dormancy of insects and mites feeding on olive: a review. <em>Netherlands Journal of Zoology</em> 52:87–224.</li><li>Wang, J.Y., Gutierrez, A.P., Ponti, L., and Cossu, Q.A. (2009). Modeling the biology and ecology of <em>Bactrocera oleae</em>: a physiologically based approach. In: <em>Proceedings of the International Olive Council</em>.</li></ul><h2 id="Olive-Plant-Model"><a class="docs-heading-anchor" href="#Olive-Plant-Model">Olive Plant Model</a><a id="Olive-Plant-Model-1"></a><a class="docs-heading-anchor-permalink" href="#Olive-Plant-Model" title="Permalink"></a></h2><h3 id="Phenology-and-Vernalization"><a class="docs-heading-anchor" href="#Phenology-and-Vernalization">Phenology and Vernalization</a><a id="Phenology-and-Vernalization-1"></a><a class="docs-heading-anchor-permalink" href="#Phenology-and-Vernalization" title="Permalink"></a></h3><p>Olive phenological development follows a degree-day model with a base temperature of 9.1 °C (Ponti et al. 2009). Key milestones from budburst through harvest are tracked as cumulative thermal time. Critically, olive flowering requires prior vernalization — accumulated chilling below 7.2 °C during winter dormancy. In Sardinia, vernalization is typically satisfied across all locations (600–1000 chill hours), but warming may erode this margin at low-elevation coastal sites.</p><p>Bloom timing shifts approximately 9 days earlier per 1 °C warming, which has cascading effects: earlier bloom exposes flowers to spring frost risk, and earlier fruit set extends the window of fly susceptibility during the hottest summer months.</p><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+using CairoMakie
+
+# --- Olive phenology parameters (Ponti et al. 2009; Gutierrez et al. 2009) ---
+const OLIVE_T_BASE    = 9.1    # °C — base temperature for degree-day accumulation
+const OLIVE_T_UPPER   = 40.0   # °C — upper development threshold
+const DD_BLOOM        = 400.0  # DD above 9.1°C from Jan 1 to bloom
+const DD_FRUIT_SET    = 500.0  # DD to fruit set
+const DD_PIT_HARDEN   = 900.0  # DD to pit hardening (onset of fly susceptibility)
+const DD_OIL_ACCUM    = 1400.0 # DD to oil accumulation phase
+const DD_MATURITY     = 1800.0 # DD to fruit maturity / harvest
+
+# Vernalization parameters
+const VERN_T_THRESHOLD = 7.2   # °C — chill accumulation threshold
+const VERN_REQUIREMENT = 700.0 # Chill hours below threshold for flowering
+
+# Development rate model
+olive_dev = LinearDevelopmentRate(OLIVE_T_BASE, OLIVE_T_UPPER)
+
+# Sardinia baseline climate: Alghero (representative coastal site)
+# Mean 15.9°C, amplitude 7.0°C (Min avg 11.6°C, Max avg 20.1°C)
+sardinia_weather = SinusoidalWeather(15.9, 7.0; phase=200.0, radiation=20.0)
+
+# Demonstrate development rate across the temperature range
+println(&quot;Olive development rate (DD/day) at representative temperatures:&quot;)
+println(&quot;=&quot;^55)
+for T in [5.0, 9.1, 15.0, 20.0, 25.0, 30.0, 35.0]
+    dd = degree_days(olive_dev, T)
+    println(&quot;  T = $(lpad(T, 5))°C → $(round(dd, digits=2)) DD/day&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Olive development rate (DD/day) at representative temperatures:
+=======================================================
+  T =   5.0°C → 0.0 DD/day
+  T =   9.1°C → 0.0 DD/day
+  T =  15.0°C → 5.9 DD/day
+  T =  20.0°C → 10.9 DD/day
+  T =  25.0°C → 15.9 DD/day
+  T =  30.0°C → 20.9 DD/day
+  T =  35.0°C → 25.9 DD/day</code></pre><h3 id="Carbon-Balance:-Photosynthesis-and-Respiration"><a class="docs-heading-anchor" href="#Carbon-Balance:-Photosynthesis-and-Respiration">Carbon Balance: Photosynthesis and Respiration</a><a id="Carbon-Balance:-Photosynthesis-and-Respiration-1"></a><a class="docs-heading-anchor-permalink" href="#Carbon-Balance:-Photosynthesis-and-Respiration" title="Permalink"></a></h3><p>Olive carbon assimilation follows a Frazer-Gilbert functional response to photosynthetically active radiation (PAR), where the demand for carbon is set by potential growth rate and the supply comes from intercepted light. Net photosynthesis peaks near 25 °C and declines at temperature extremes.</p><p>Maintenance respiration follows a Q10 relationship (Q10 ≈ 2.0, reference temperature 20 °C), meaning respiration doubles for every 10 °C increase. This creates a critical carbon balance constraint under warming: higher temperatures simultaneously increase respiratory demand and (above the optimum) decrease photosynthetic supply.</p><pre><code class="language-julia hljs"># --- Carbon balance components ---
+
+# Frazer-Gilbert functional response for light acquisition
+olive_light = FraserGilbertResponse(0.75)
+
+# Q10 respiration for olive maintenance
+# 1.5% of dry matter per day at 20°C, Q10 = 2.0
+olive_resp = Q10Respiration(0.015, 2.0, 20.0)
+
+# Demonstrate carbon balance across temperatures
+println(&quot;\nOlive carbon balance components:&quot;)
+println(&quot;=&quot;^70)
+println(&quot;  Temp (°C) | Photo rate | Resp rate  | Net C gain | Resp/Photo&quot;)
+println(&quot;-&quot;^70)
+for T in [10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 38.0]
+    # Photosynthesis: bell curve peaking at ~25°C
+    photo_rate = max(0.0, 0.035 * (1 - ((T - 25.0) / 15.0)^2))
+    supply = photo_rate * 1000.0  # g C/tree/day
+
+    # PAR acquisition via Frazer-Gilbert
+    par_supply = 20.0 * (T &gt; 5.0 ? 1.0 : 0.0)
+    par_demand = 25.0
+    par_acquired = acquire(olive_light, par_supply, par_demand)
+
+    # Respiration
+    resp = respiration_rate(olive_resp, T) * 1000.0
+    net = supply - resp
+    ratio = supply &gt; 0 ? resp / supply : Inf
+
+    println(&quot;  $(lpad(round(T, digits=0), 6))     | &quot; *
+            &quot;$(lpad(round(supply, digits=1), 8))   | &quot; *
+            &quot;$(lpad(round(resp, digits=1), 8))   | &quot; *
+            &quot;$(lpad(round(net, digits=1), 8))   | &quot; *
+            &quot;$(round(ratio, digits=3))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Olive carbon balance components:
+======================================================================
+  Temp (°C) | Photo rate | Resp rate  | Net C gain | Resp/Photo
+----------------------------------------------------------------------
+    10.0     |      0.0   |      7.5   |     -7.5   | Inf
+    15.0     |     19.4   |     10.6   |      8.8   | 0.545
+    20.0     |     31.1   |     15.0   |     16.1   | 0.482
+    25.0     |     35.0   |     21.2   |     13.8   | 0.606
+    30.0     |     31.1   |     30.0   |      1.1   | 0.964
+    35.0     |     19.4   |     42.4   |    -23.0   | 2.182
+    38.0     |      8.7   |     52.2   |    -43.5   | 5.996</code></pre><h3 id="Vegetative-and-Reproductive-Tissue"><a class="docs-heading-anchor" href="#Vegetative-and-Reproductive-Tissue">Vegetative and Reproductive Tissue</a><a id="Vegetative-and-Reproductive-Tissue-1"></a><a class="docs-heading-anchor-permalink" href="#Vegetative-and-Reproductive-Tissue" title="Permalink"></a></h3><p>The olive canopy and fruit are modeled as distributed-delay populations with age–mass structure. Vegetative tissue (leaves and shoots) represents the long-lived evergreen canopy with slow turnover. Reproductive tissue (fruit) develops from bloom through harvest over approximately 1400 DD.</p><p>Carbon allocation follows a priority hierarchy using <code>MetabolicPool</code>: maintenance respiration → vegetative growth → fruit development → reserves. Under heat or drought stress, fruit allocation is curtailed first, which is the physiological mechanism underlying yield reduction in hot years.</p><pre><code class="language-julia hljs">k = 25  # Substages (Erlang shape parameter)
+
+# Vegetative tissue: long-lived evergreen canopy
+leaf_delay  = DistributedDelay(k, 2000.0; W0=50.0)  # Leaves (g DM), ~2 yr turnover
+shoot_delay = DistributedDelay(k, 1500.0; W0=30.0)  # Current-year shoots
+root_delay  = DistributedDelay(k, 2500.0; W0=40.0)  # Root system
+
+# Reproductive tissue: olive fruit development (bloom → harvest ≈ 1400 DD)
+fruit_delay = DistributedDelay(k, 1400.0; W0=0.0)   # Fruit (starts at bloom)
+
+# Assemble olive canopy population
+olive_stages = [
+    LifeStage(:leaf,  leaf_delay,  olive_dev, 0.0005),  # Low attrition (evergreen)
+    LifeStage(:shoot, shoot_delay, olive_dev, 0.0008),
+    LifeStage(:root,  root_delay,  olive_dev, 0.0003),
+    LifeStage(:fruit, fruit_delay, olive_dev, 0.001),   # Includes natural fruit drop
+]
+olive = Population(:olive, olive_stages)
+
+println(&quot;\nOlive canopy population structure:&quot;)
+println(&quot;  Stages:     &quot;, n_stages(olive))
+println(&quot;  Substages:  &quot;, n_substages(olive))
+println(&quot;  Initial DM: &quot;, round(total_population(olive), digits=1), &quot; g/tree&quot;)</code></pre><pre><code class="nohighlight hljs">Olive canopy population structure:
+  Stages:     4
+  Substages:  100
+  Initial DM: 3000.0 g/tree</code></pre><h3 id="Metabolic-Pool:-Supply-Demand-Carbon-Allocation"><a class="docs-heading-anchor" href="#Metabolic-Pool:-Supply-Demand-Carbon-Allocation">Metabolic Pool: Supply-Demand Carbon Allocation</a><a id="Metabolic-Pool:-Supply-Demand-Carbon-Allocation-1"></a><a class="docs-heading-anchor-permalink" href="#Metabolic-Pool:-Supply-Demand-Carbon-Allocation" title="Permalink"></a></h3><p>Under heat stress, olive trees must allocate limited photosynthate among competing sinks. We model this priority-based allocation using <code>MetabolicPool</code> to demonstrate how warming progressively starves fruit development.</p><pre><code class="language-julia hljs"># --- Metabolic pool under temperature stress ---
+println(&quot;\nPhotosynthate allocation under temperature stress:&quot;)
+println(&quot;=&quot;^75)
+println(&quot;  Temp  | Supply | Maint. | Veg.  | Root  | Fruit | Reserve | S/D&quot;)
+println(&quot;-&quot;^75)
+
+for T in [12.0, 18.0, 22.0, 25.0, 30.0, 35.0, 38.0]
+    # Photosynthesis peaks ~25°C, declines at extremes
+    photo_rate = max(0.0, 0.035 * (1 - ((T - 25.0) / 15.0)^2))
+    supply = photo_rate * 1000.0  # g C/tree/day
+
+    # Maintenance respiration (Q10)
+    maint = respiration_rate(olive_resp, T) * 1000.0
+
+    # Growth demands scaled by temperature
+    veg_demand   = max(0.0, 8.0 * (T - OLIVE_T_BASE) / 20.0)
+    root_demand  = max(0.0, 4.0 * (T - OLIVE_T_BASE) / 20.0)
+    fruit_demand = T &gt; 15.0 ? 12.0 : 0.0
+    reserve      = 3.0
+
+    pool = MetabolicPool(supply,
+                         [maint, veg_demand, root_demand, fruit_demand, reserve],
+                         [:maintenance, :vegetative, :root, :fruit, :reserves])
+    alloc = allocate(pool)
+    sdi = supply_demand_index(pool)
+
+    println(&quot;  $(lpad(round(T, digits=0), 4))°C | &quot; *
+            &quot;$(lpad(round(supply, digits=1), 5)) | &quot; *
+            &quot;$(lpad(round(alloc[1], digits=1), 5)) | &quot; *
+            &quot;$(lpad(round(alloc[2], digits=1), 5)) | &quot; *
+            &quot;$(lpad(round(alloc[3], digits=1), 5)) | &quot; *
+            &quot;$(lpad(round(alloc[4], digits=1), 5)) | &quot; *
+            &quot;$(lpad(round(alloc[5], digits=1), 5))   | &quot; *
+            &quot;$(round(sdi, digits=3))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Photosynthate allocation under temperature stress:
+===========================================================================
+  Temp  | Supply | Maint. | Veg.  | Root  | Fruit | Reserve | S/D
+---------------------------------------------------------------------------
+  12.0°C |   8.7 |   8.6 |   0.1 |   0.0 |   0.0 |   0.0   | 0.652
+  18.0°C |  27.4 |  13.1 |   3.6 |   1.8 |   9.0 |   0.0   | 0.82
+  22.0°C |  33.6 |  17.2 |   5.2 |   2.6 |   8.6 |   0.0   | 0.841
+  25.0°C |  35.0 |  21.2 |   6.4 |   3.2 |   4.2 |   0.0   | 0.765
+  30.0°C |  31.1 |  30.0 |   1.1 |   0.0 |   0.0 |   0.0   | 0.541
+  35.0°C |  19.4 |  19.4 |   0.0 |   0.0 |   0.0 |   0.0   | 0.266
+  38.0°C |   8.7 |   8.7 |   0.0 |   0.0 |   0.0 |   0.0   | 0.103</code></pre><h3 id="Vernalization-and-Flowering"><a class="docs-heading-anchor" href="#Vernalization-and-Flowering">Vernalization and Flowering</a><a id="Vernalization-and-Flowering-1"></a><a class="docs-heading-anchor-permalink" href="#Vernalization-and-Flowering" title="Permalink"></a></h3><p>Olive flower bud initiation requires sufficient winter chilling. We track cumulative chill hours below 7.2 °C across the dormant season (November– February) and evaluate how warming erodes the vernalization margin.</p><pre><code class="language-julia hljs"># --- Vernalization accumulation under warming scenarios ---
+println(&quot;\nVernalization: chill hour accumulation (Nov–Feb):&quot;)
+println(&quot;=&quot;^65)
+println(&quot;  Scenario     | Chill hours | % of requirement | Status&quot;)
+println(&quot;-&quot;^65)
+
+for (label, ΔT) in [(&quot;Baseline&quot;, 0.0), (&quot;+1°C&quot;, 1.0), (&quot;+2°C&quot;, 2.0), (&quot;+3°C&quot;, 3.0)]
+    sw = SinusoidalWeather(15.9 + ΔT, 7.0; phase=200.0, radiation=20.0)
+    chill_hours = 0.0
+    # Dormant season: November (day 305) through February (day 59 next year)
+    for d in vcat(305:365, 1:59)
+        w = get_weather(sw, d)
+        # Approximate hourly temperatures from daily mean
+        for h in 1:24
+            T_hour = w.T_mean + 3.0 * sin(2π * (h - 6) / 24)
+            if T_hour &lt; VERN_T_THRESHOLD
+                chill_hours += 1.0
+            end
+        end
+    end
+    pct = chill_hours / VERN_REQUIREMENT * 100
+    status = chill_hours &gt;= VERN_REQUIREMENT ? &quot;✓ Satisfied&quot; : &quot;✗ Insufficient&quot;
+    println(&quot;  $(rpad(label, 13)) | $(lpad(round(chill_hours, digits=0), 8))    | &quot; *
+            &quot;$(lpad(round(pct, digits=1), 12))%    | $status&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Vernalization: chill hour accumulation (Nov–Feb):
+=================================================================
+  Scenario     | Chill hours | % of requirement | Status
+-----------------------------------------------------------------
+  Baseline      |      0.0    |          0.0%    | ✗ Insufficient
+  +1°C          |      0.0    |          0.0%    | ✗ Insufficient
+  +2°C          |      0.0    |          0.0%    | ✗ Insufficient
+  +3°C          |      0.0    |          0.0%    | ✗ Insufficient</code></pre><h2 id="Olive-Fly-Model"><a class="docs-heading-anchor" href="#Olive-Fly-Model">Olive Fly Model</a><a id="Olive-Fly-Model-1"></a><a class="docs-heading-anchor-permalink" href="#Olive-Fly-Model" title="Permalink"></a></h2><h3 id="Development:-Nonlinear-Temperature-Response"><a class="docs-heading-anchor" href="#Development:-Nonlinear-Temperature-Response">Development: Nonlinear Temperature Response</a><a id="Development:-Nonlinear-Temperature-Response-1"></a><a class="docs-heading-anchor-permalink" href="#Development:-Nonlinear-Temperature-Response" title="Permalink"></a></h3><p>The olive fly (<em>B. oleae</em>) has four developmental stages: egg, three larval instars (combined), pupa, and adult. Development follows a Brière nonlinear curve, which captures the characteristic left-skewed response with a sharp decline near the upper lethal temperature. The fly has a lower developmental threshold of approximately 10 °C and an upper threshold near 35 °C, with optimal development around 25 °C (Tzanakakis 2003; Wang et al. 2009).</p><p>Degree-day requirements (above 10 °C) from Gutierrez et al. (2009):</p><table><tr><th style="text-align: left">Stage</th><th style="text-align: center">DD requirement</th><th style="text-align: center">Duration at 25°C</th></tr><tr><td style="text-align: left">Egg</td><td style="text-align: center">~50 DD</td><td style="text-align: center">~3 days</td></tr><tr><td style="text-align: left">Larva</td><td style="text-align: center">~170 DD</td><td style="text-align: center">~11 days</td></tr><tr><td style="text-align: left">Pupa</td><td style="text-align: center">~200 DD</td><td style="text-align: center">~13 days</td></tr><tr><td style="text-align: left">Adult</td><td style="text-align: center">~500 DD</td><td style="text-align: center">~33 days</td></tr><tr><td style="text-align: left"><strong>Total</strong></td><td style="text-align: center"><strong>~920 DD</strong></td><td style="text-align: center"><strong>~60 days</strong></td></tr></table><pre><code class="language-julia hljs"># --- Olive fly development parameters ---
+const FLY_T_BASE   = 10.0    # °C — lower developmental threshold
+const FLY_T_UPPER  = 35.0    # °C — upper lethal temperature
+const FLY_T_OPT    = 25.0    # °C — optimal development temperature
+const FLY_BRIERE_A = 2.0e-4  # Brière rate parameter
+
+# Degree-day requirements (above 10°C)
+const FLY_DD_EGG   = 50.0
+const FLY_DD_LARVA = 170.0
+const FLY_DD_PUPA  = 200.0
+const FLY_DD_ADULT = 500.0
+
+# Nonlinear (Brière) development rate for the olive fly
+fly_dev = BriereDevelopmentRate(FLY_BRIERE_A, FLY_T_BASE, FLY_T_UPPER)
+
+# Compare with linear model
+fly_linear = LinearDevelopmentRate(FLY_T_BASE, FLY_T_UPPER)
+
+println(&quot;Olive fly development rate (Brière vs Linear):&quot;)
+println(&quot;=&quot;^60)
+println(&quot;  Temp (°C) | Brière rate | Linear rate | Ratio&quot;)
+println(&quot;-&quot;^60)
+for T in [10.0, 15.0, 20.0, 25.0, 28.0, 30.0, 33.0, 35.0]
+    r_b = development_rate(fly_dev, T)
+    r_l = development_rate(fly_linear, T)
+    ratio = r_l &gt; 0 ? r_b / r_l : 0.0
+    println(&quot;  $(lpad(T, 6))    | $(lpad(round(r_b, digits=5), 9))   | &quot; *
+            &quot;$(lpad(round(r_l, digits=4), 9))   | $(round(ratio, digits=3))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Olive fly development rate (Brière vs Linear):
+============================================================
+  Temp (°C) | Brière rate | Linear rate | Ratio
+------------------------------------------------------------
+    10.0    |       0.0   |       0.0   | 0.0
+    15.0    |   0.06708   |       5.0   | 0.013
+    20.0    |   0.15492   |      10.0   | 0.015
+    25.0    |   0.23717   |      15.0   | 0.016
+    28.0    |   0.26669   |      18.0   | 0.015
+    30.0    |   0.26833   |      20.0   | 0.013
+    33.0    |   0.21468   |      23.0   | 0.009
+    35.0    |       0.0   |      25.0   | 0.0</code></pre><h3 id="Temperature-Dependent-Mortality"><a class="docs-heading-anchor" href="#Temperature-Dependent-Mortality">Temperature-Dependent Mortality</a><a id="Temperature-Dependent-Mortality-1"></a><a class="docs-heading-anchor-permalink" href="#Temperature-Dependent-Mortality" title="Permalink"></a></h3><p>High summer temperatures are a key mortality factor for the olive fly, especially for eggs and larvae developing inside sun-exposed fruit. Temperatures above 30 °C substantially increase immature mortality, and sustained periods above 35 °C can eliminate entire cohorts within fruit. This is the primary mechanism by which warming <em>reduces</em> fly pressure in already-hot Mediterranean lowlands such as the Campidano Valley in southern Sardinia.</p><pre><code class="language-julia hljs"># --- Temperature-dependent mortality functions ---
+# Immature mortality (eggs and larvae in fruit): U-shaped, low at 20-28°C
+function fly_immature_mortality(T)
+    if T &lt; FLY_T_BASE
+        return 0.05  # Cold mortality
+    elseif T &gt; 33.0
+        return 0.02 * (T - 30.0)^2  # Rapid increase above 30°C
+    else
+        T_opt_mort = 24.0
+        return 0.005 + 0.001 * ((T - T_opt_mort) / 10.0)^2
+    end
+end
+
+# Adult mortality: increases at extremes, reproductive dormancy &gt; 30°C
+function fly_adult_mortality(T)
+    if T &lt; FLY_T_BASE
+        return 0.02
+    elseif T &gt; 30.0
+        return 0.008 + 0.003 * (T - 30.0)  # Gradual increase
+    else
+        return 0.003 + 0.0005 * abs(T - 22.0)
+    end
+end
+
+println(&quot;\nOlive fly temperature-dependent mortality:&quot;)
+println(&quot;=&quot;^55)
+println(&quot;  Temp (°C) | Immature μ/day | Adult μ/day | Ratio&quot;)
+println(&quot;-&quot;^55)
+for T in [10.0, 15.0, 20.0, 25.0, 28.0, 30.0, 33.0, 35.0, 38.0]
+    μ_i = fly_immature_mortality(T)
+    μ_a = fly_adult_mortality(T)
+    println(&quot;  $(lpad(round(T, digits=0), 6))    | &quot; *
+            &quot;$(lpad(round(μ_i, digits=4), 12))  | &quot; *
+            &quot;$(lpad(round(μ_a, digits=4), 9))   | &quot; *
+            &quot;$(round(μ_i / μ_a, digits=2))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Olive fly temperature-dependent mortality:
+=======================================================
+  Temp (°C) | Immature μ/day | Adult μ/day | Ratio
+-------------------------------------------------------
+    10.0    |        0.007  |     0.009   | 0.77
+    15.0    |       0.0058  |    0.0065   | 0.89
+    20.0    |       0.0052  |     0.004   | 1.29
+    25.0    |        0.005  |    0.0045   | 1.11
+    28.0    |       0.0052  |     0.006   | 0.86
+    30.0    |       0.0054  |     0.007   | 0.77
+    33.0    |       0.0058  |     0.017   | 0.34
+    35.0    |          0.5  |     0.023   | 21.74
+    38.0    |         1.28  |     0.032   | 40.0</code></pre><h3 id="Four-Stage-Lifecycle"><a class="docs-heading-anchor" href="#Four-Stage-Lifecycle">Four-Stage Lifecycle</a><a id="Four-Stage-Lifecycle-1"></a><a class="docs-heading-anchor-permalink" href="#Four-Stage-Lifecycle" title="Permalink"></a></h3><p>The olive fly lifecycle is modeled with four distributed-delay stages. The overwintering generation emerges as adults in spring; 2–4 overlapping generations can develop per season depending on climate. Fecundity is temperature-dependent (200–400 eggs per female) but is gated by fruit availability — oviposition can only occur when olive fruit is present and susceptible (post pit-hardening, ~900 DD above 9.1 °C on the olive phenology scale).</p><pre><code class="language-julia hljs">k_fly = 20  # Substages per stage
+
+# Stage durations (DD above 10°C) from Gutierrez et al. (2009) / Wang et al. (2009)
+fly_stages = [
+    LifeStage(:egg,   DistributedDelay(k_fly, FLY_DD_EGG;   W0=0.0),  fly_dev, 0.010),
+    LifeStage(:larva, DistributedDelay(k_fly, FLY_DD_LARVA; W0=0.0),  fly_dev, 0.008),
+    LifeStage(:pupa,  DistributedDelay(k_fly, FLY_DD_PUPA;  W0=0.0),  fly_dev, 0.005),
+    LifeStage(:adult, DistributedDelay(k_fly, FLY_DD_ADULT; W0=0.0),  fly_dev, 0.003),
+]
+fly = Population(:olive_fly, fly_stages)
+
+println(&quot;\nOlive fly lifecycle structure:&quot;)
+println(&quot;  Stages:    &quot;, n_stages(fly))
+println(&quot;  Substages: &quot;, n_substages(fly))
+for (i, s) in enumerate(fly.stages)
+    println(&quot;    $(i). $(s.name): τ=$(s.delay.τ) DD, k=$(s.delay.k), μ=$(s.μ)/DD&quot;)
+end
+
+# Fecundity: temperature-dependent, 200–400 eggs/female
+function fly_fecundity(T)
+    if T &lt; 15.0 || T &gt; 33.0
+        return 0.0
+    else
+        # Bell curve centered at ~25°C, peak ~10 eggs/day/female
+        return 10.0 * exp(-0.5 * ((T - 25.0) / 5.0)^2)
+    end
+end
+
+println(&quot;\nFecundity (eggs/female/day) vs temperature:&quot;)
+for T in [15.0, 18.0, 20.0, 22.0, 25.0, 28.0, 30.0, 33.0]
+    f = fly_fecundity(T)
+    println(&quot;  T=$(lpad(T, 5))°C: $(round(f, digits=2)) eggs/day &quot; *
+            &quot;(≈$(round(f * 40, digits=0)) lifetime at $(round(T, digits=0))°C)&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Olive fly lifecycle structure:
+  Stages:    4
+  Substages: 80
+    1. egg: τ=50.0 DD, k=20, μ=0.01/DD
+    2. larva: τ=170.0 DD, k=20, μ=0.008/DD
+    3. pupa: τ=200.0 DD, k=20, μ=0.005/DD
+    4. adult: τ=500.0 DD, k=20, μ=0.003/DD
+
+Fecundity (eggs/female/day) vs temperature:
+  T= 15.0°C: 1.35 eggs/day (≈54.0 lifetime at 15.0°C)
+  T= 18.0°C: 3.75 eggs/day (≈150.0 lifetime at 18.0°C)
+  T= 20.0°C: 6.07 eggs/day (≈243.0 lifetime at 20.0°C)
+  T= 22.0°C: 8.35 eggs/day (≈334.0 lifetime at 22.0°C)
+  T= 25.0°C: 10.0 eggs/day (≈400.0 lifetime at 25.0°C)
+  T= 28.0°C: 8.35 eggs/day (≈334.0 lifetime at 28.0°C)
+  T= 30.0°C: 6.07 eggs/day (≈243.0 lifetime at 30.0°C)
+  T= 33.0°C: 2.78 eggs/day (≈111.0 lifetime at 33.0°C)</code></pre><h3 id="Fruit-Availability-and-Supply/Demand"><a class="docs-heading-anchor" href="#Fruit-Availability-and-Supply/Demand">Fruit Availability and Supply/Demand</a><a id="Fruit-Availability-and-Supply/Demand-1"></a><a class="docs-heading-anchor-permalink" href="#Fruit-Availability-and-Supply/Demand" title="Permalink"></a></h3><p>Olive fly oviposition depends critically on fruit availability. We use the Frazer-Gilbert functional response to model the supply/demand interaction: adult female demand for oviposition sites is limited by available susceptible fruit. This coupling is the key mechanism linking olive phenology to fly population dynamics — the fruit phenology gates pest reproduction.</p><pre><code class="language-julia hljs"># Frazer-Gilbert functional response for oviposition
+fly_oviposition = FraserGilbertResponse(0.8)
+
+println(&quot;\nFly oviposition: supply/demand functional response:&quot;)
+println(&quot;=&quot;^65)
+println(&quot;  Fruit supply | Fly demand | Acquisition | S/D ratio | Infested %&quot;)
+println(&quot;-&quot;^65)
+for fruit_supply in [20.0, 100.0, 300.0, 500.0, 1000.0, 2000.0]
+    fly_demand = 200.0  # Typical egg-laying demand per hectare
+    acq = acquire(fly_oviposition, fruit_supply, fly_demand)
+    sdr = supply_demand_ratio(fly_oviposition, fruit_supply, fly_demand)
+    infested_pct = fruit_supply &gt; 0 ? acq / fruit_supply * 100 : 0.0
+    println(&quot;  $(lpad(round(fruit_supply, digits=0), 10))   | &quot; *
+            &quot;$(lpad(round(fly_demand, digits=0), 7))    | &quot; *
+            &quot;$(lpad(round(acq, digits=1), 8))    | &quot; *
+            &quot;$(lpad(round(sdr, digits=3), 7))   | &quot; *
+            &quot;$(round(infested_pct, digits=1))%&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Fly oviposition: supply/demand functional response:
+=================================================================
+  Fruit supply | Fly demand | Acquisition | S/D ratio | Infested %
+-----------------------------------------------------------------
+        20.0   |   200.0    |     15.4    |   0.077   | 76.9%
+       100.0   |   200.0    |     65.9    |    0.33   | 65.9%
+       300.0   |   200.0    |    139.8    |   0.699   | 46.6%
+       500.0   |   200.0    |    172.9    |   0.865   | 34.6%
+      1000.0   |   200.0    |    196.3    |   0.982   | 19.6%
+      2000.0   |   200.0    |    199.9    |     1.0   | 10.0%</code></pre><h2 id="Implementation"><a class="docs-heading-anchor" href="#Implementation">Implementation</a><a id="Implementation-1"></a><a class="docs-heading-anchor-permalink" href="#Implementation" title="Permalink"></a></h2><h3 id="Coupled-Plant–Pest-System"><a class="docs-heading-anchor" href="#Coupled-Plant–Pest-System">Coupled Plant–Pest System</a><a id="Coupled-Plant–Pest-System-1"></a><a class="docs-heading-anchor-permalink" href="#Coupled-Plant–Pest-System" title="Permalink"></a></h3><p>We now assemble the full bitrophic system: the olive plant population coupled to the olive fly population through fruit availability. The simulation runs over a full year, with the olive phenology controlling when fruit becomes available for fly oviposition.</p><pre><code class="language-julia hljs"># --- Coupled olive–olive fly simulation ---
+
+# Fresh olive population for simulation
+olive_sim = Population(:olive, [
+    LifeStage(:leaf,  DistributedDelay(k, 2000.0; W0=50.0),  olive_dev, 0.0005),
+    LifeStage(:shoot, DistributedDelay(k, 1500.0; W0=30.0),  olive_dev, 0.0008),
+    LifeStage(:root,  DistributedDelay(k, 2500.0; W0=40.0),  olive_dev, 0.0003),
+    LifeStage(:fruit, DistributedDelay(k, 1400.0; W0=0.0),   olive_dev, 0.001),
+])
+
+# Olive fly with overwintering adults
+fly_sim = Population(:olive_fly, [
+    LifeStage(:egg,   DistributedDelay(k_fly, FLY_DD_EGG;   W0=0.0),   fly_dev, 0.010),
+    LifeStage(:larva, DistributedDelay(k_fly, FLY_DD_LARVA; W0=0.0),   fly_dev, 0.008),
+    LifeStage(:pupa,  DistributedDelay(k_fly, FLY_DD_PUPA;  W0=0.0),   fly_dev, 0.005),
+    LifeStage(:adult, DistributedDelay(k_fly, FLY_DD_ADULT; W0=50.0),  fly_dev, 0.003),
+])
+
+# Simulate full year under Sardinia baseline climate
+prob_olive = PBDMProblem(olive_sim, sardinia_weather, (1, 365))
+sol_olive = solve(prob_olive, DirectIteration())
+
+prob_fly = PBDMProblem(fly_sim, sardinia_weather, (1, 365))
+sol_fly = solve(prob_fly, DirectIteration())
+
+# Track olive phenological milestones
+cdd_olive = cumulative_degree_days(sol_olive)
+
+phenology_events = [
+    (&quot;Bloom&quot;,         DD_BLOOM),
+    (&quot;Fruit set&quot;,     DD_FRUIT_SET),
+    (&quot;Pit hardening&quot;, DD_PIT_HARDEN),
+    (&quot;Oil accum.&quot;,    DD_OIL_ACCUM),
+    (&quot;Maturity&quot;,      DD_MATURITY),
+]
+
+println(&quot;\nOlive phenological calendar (Sardinia baseline, 15.9°C mean):&quot;)
+println(&quot;=&quot;^65)
+println(&quot;  Event           | DD threshold | Calendar day | Month&quot;)
+println(&quot;-&quot;^65)
+for (event, dd_thresh) in phenology_events
+    idx = findfirst(c -&gt; c &gt;= dd_thresh, cdd_olive)
+    if idx !== nothing
+        day = sol_olive.t[idx]
+        month_names = [&quot;Jan&quot;,&quot;Feb&quot;,&quot;Mar&quot;,&quot;Apr&quot;,&quot;May&quot;,&quot;Jun&quot;,
+                       &quot;Jul&quot;,&quot;Aug&quot;,&quot;Sep&quot;,&quot;Oct&quot;,&quot;Nov&quot;,&quot;Dec&quot;]
+        m = month_names[min(12, max(1, div(day - 1, 30) + 1))]
+        println(&quot;  $(rpad(event, 16)) | $(lpad(round(dd_thresh, digits=0), 6)) DD   | &quot; *
+                &quot;day $(lpad(day, 3))      | $m&quot;)
+    end
+end
+println(&quot;  Total season DD:  $(round(cdd_olive[end], digits=0))&quot;)</code></pre><pre><code class="nohighlight hljs">Olive phenological calendar (Sardinia baseline, 15.9°C mean):
+=================================================================
+  Event           | DD threshold | Calendar day | Month
+-----------------------------------------------------------------
+  Bloom            |  400.0 DD   | day 166      | Jun
+  Fruit set        |  500.0 DD   | day 190      | Jul
+  Pit hardening    |  900.0 DD   | day 237      | Aug
+  Oil accum.       | 1400.0 DD   | day 277      | Oct
+  Maturity         | 1800.0 DD   | day 306      | Nov
+  Total season DD:  2486.0</code></pre><h3 id="Fly-Population-Dynamics"><a class="docs-heading-anchor" href="#Fly-Population-Dynamics">Fly Population Dynamics</a><a id="Fly-Population-Dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Fly-Population-Dynamics" title="Permalink"></a></h3><p>We simulate the olive fly lifecycle under the Sardinia baseline climate, tracking stage-specific populations across the active season.</p><pre><code class="language-julia hljs"># Track fly population trajectory
+cdd_fly = cumulative_degree_days(sol_fly)
+
+println(&quot;\nOlive fly population dynamics (Sardinia baseline):&quot;)
+println(&quot;=&quot;^70)
+println(&quot;  Day | Temp(°C) | DD/day | Eggs    | Larvae  | Pupae   | Adults&quot;)
+println(&quot;-&quot;^70)
+for d_idx in [1, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 365]
+    d_idx &gt; length(sol_fly.t) &amp;&amp; break
+    day = sol_fly.t[d_idx]
+    w = get_weather(sardinia_weather, day)
+    totals = [sol_fly.stage_totals[j, d_idx] for j in 1:4]
+    dd_day = d_idx &gt; 1 ? sol_fly.degree_days[d_idx - 1] : 0.0
+    println(&quot;  $(lpad(day, 3)) | $(lpad(round(w.T_mean, digits=1), 6))  | &quot; *
+            &quot;$(lpad(round(dd_day, digits=1), 5)) | &quot; *
+            join([lpad(round(t, digits=1), 7) for t in totals], &quot; | &quot;))
+end
+println(&quot;  Final total fly population: $(round(sum(sol_fly.u[end]), digits=1))&quot;)
+println(&quot;  Cumulative fly DD: $(round(cdd_fly[end], digits=0))&quot;)</code></pre><pre><code class="nohighlight hljs">Olive fly population dynamics (Sardinia baseline):
+======================================================================
+  Day | Temp(°C) | DD/day | Eggs    | Larvae  | Pupae   | Adults
+----------------------------------------------------------------------
+    1 |   17.9  |   0.0 |     0.0 |     0.0 |     0.0 |   999.4
+   30 |   14.4  |   0.1 |     0.0 |     0.0 |     0.0 |   987.1
+   60 |   11.2  |   0.0 |     0.0 |     0.0 |     0.0 |   982.3
+   90 |    9.3  |   0.0 |     0.0 |     0.0 |     0.0 |   981.8
+  120 |    9.0  |   0.0 |     0.0 |     0.0 |     0.0 |   981.8
+  150 |   10.6  |   0.0 |     0.0 |     0.0 |     0.0 |   981.7
+  180 |   13.5  |   0.0 |     0.0 |     0.0 |     0.0 |   978.2
+  210 |   17.1  |   0.1 |     0.0 |     0.0 |     0.0 |   967.4
+  240 |   20.3  |   0.2 |     0.0 |     0.0 |     0.0 |   948.0
+  270 |   22.4  |   0.2 |     0.0 |     0.0 |     0.0 |   922.1
+  300 |   22.8  |   0.2 |     0.0 |     0.0 |     0.0 |   893.9
+  365 |   18.0  |   0.1 |     0.0 |     0.0 |     0.0 |   844.6
+  Final total fly population: 844.6
+  Cumulative fly DD: 33.0</code></pre><h2 id="Seasonal-Dynamics"><a class="docs-heading-anchor" href="#Seasonal-Dynamics">Seasonal Dynamics</a><a id="Seasonal-Dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Seasonal-Dynamics" title="Permalink"></a></h2><h3 id="Olive-Phenology-and-Biomass-Accumulation"><a class="docs-heading-anchor" href="#Olive-Phenology-and-Biomass-Accumulation">Olive Phenology and Biomass Accumulation</a><a id="Olive-Phenology-and-Biomass-Accumulation-1"></a><a class="docs-heading-anchor-permalink" href="#Olive-Phenology-and-Biomass-Accumulation" title="Permalink"></a></h3><p>We visualize the seasonal progression of olive leaf and fruit biomass alongside temperature, illustrating how the phenological calendar determines the temporal window of pest vulnerability.</p><pre><code class="language-julia hljs">fig1 = Figure(size=(900, 600))
+
+# Panel A: Temperature and degree-days
+ax1a = Axis(fig1[1, 1],
+    ylabel=&quot;Temperature (°C)&quot;,
+    title=&quot;Olive Phenology — Sardinia Baseline (15.9°C mean)&quot;)
+
+days = collect(1:365)
+temps_daily = [get_weather(sardinia_weather, d).T_mean for d in days]
+lines!(ax1a, days, temps_daily, color=:firebrick, linewidth=2, label=&quot;Daily T&quot;)
+hlines!(ax1a, [OLIVE_T_BASE], color=:gray, linestyle=:dash, linewidth=1)
+text!(ax1a, 10, OLIVE_T_BASE + 0.5, text=&quot;T_base=9.1°C&quot;, fontsize=9, color=:gray)
+
+ax1b = Axis(fig1[1, 1], ylabel=&quot;Cumulative DD&quot;, yaxisposition=:right,
+    yticklabelcolor=:steelblue)
+hidespines!(ax1b, :t, :l, :b)
+cdd_vals = cumsum([max(0.0, t - OLIVE_T_BASE) for t in temps_daily])
+lines!(ax1b, days, cdd_vals, color=:steelblue, linewidth=2, linestyle=:dot)
+
+# Panel B: Biomass trajectories
+ax2 = Axis(fig1[2, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Biomass (g DM / tree)&quot;,
+    title=&quot;Leaf and Fruit Biomass&quot;)
+
+# Extract stage trajectories from solution
+leaf_traj  = stage_trajectory(sol_olive, 1)
+fruit_traj = stage_trajectory(sol_olive, 4)
+
+lines!(ax2, sol_olive.t, leaf_traj,
+    color=:forestgreen, linewidth=2.5, label=&quot;Leaf&quot;)
+lines!(ax2, sol_olive.t, fruit_traj,
+    color=:darkorange, linewidth=2.5, label=&quot;Fruit&quot;)
+
+# Phenological milestones
+milestone_colors = [:purple, :blue, :teal, :olive, :brown]
+for (i, (event, dd_thresh)) in enumerate(phenology_events)
+    idx = findfirst(c -&gt; c &gt;= dd_thresh, cdd_olive)
+    if idx !== nothing
+        day = sol_olive.t[idx]
+        vlines!(ax2, [day], color=milestone_colors[i], linestyle=:dash, linewidth=1)
+        text!(ax2, day + 2, maximum(leaf_traj) * (0.95 - 0.12 * i),
+            text=event, fontsize=8, color=milestone_colors[i])
+    end
+end
+
+axislegend(ax2, position=:lt)
+
+fig1</code></pre><p>&lt;div id=&quot;fig-olive-phenology&quot;&gt;</p><p><img src="../28_olive_bactrocera_files/figure-commonmark/fig-olive-phenology-output-1.png" alt/></p><p>Figure 1: Olive phenology over one growing season under Sardinia baseline climate. Top: daily temperature and cumulative degree-days. Bottom: leaf and fruit biomass accumulation. Vertical dashed lines mark key phenological milestones.</p><p>&lt;/div&gt;</p><h3 id="Fly-Development-Rate-Curves"><a class="docs-heading-anchor" href="#Fly-Development-Rate-Curves">Fly Development Rate Curves</a><a id="Fly-Development-Rate-Curves-1"></a><a class="docs-heading-anchor-permalink" href="#Fly-Development-Rate-Curves" title="Permalink"></a></h3><p>We compare the Brière nonlinear development rate with the simpler linear model, highlighting the characteristic high-temperature decline that governs olive fly population dynamics in warm Mediterranean climates.</p><pre><code class="language-julia hljs">fig2 = Figure(size=(900, 400))
+
+# Panel A: Development rate curves
+ax3 = Axis(fig2[1, 1],
+    xlabel=&quot;Temperature (°C)&quot;,
+    ylabel=&quot;Development rate (1/day)&quot;,
+    title=&quot;Olive Fly Development Rate&quot;)
+
+temps = 5.0:0.5:40.0
+r_briere = [development_rate(fly_dev, T) for T in temps]
+r_linear = [development_rate(fly_linear, T) for T in temps]
+
+lines!(ax3, collect(temps), r_briere,
+    color=:firebrick, linewidth=2.5, label=&quot;Brière&quot;)
+lines!(ax3, collect(temps), r_linear,
+    color=:steelblue, linewidth=2, linestyle=:dash, label=&quot;Linear&quot;)
+
+vlines!(ax3, [FLY_T_BASE], color=:gray, linestyle=:dash, linewidth=1)
+vlines!(ax3, [FLY_T_UPPER], color=:gray, linestyle=:dash, linewidth=1)
+vlines!(ax3, [FLY_T_OPT], color=:gray, linestyle=:dot, linewidth=1)
+
+text!(ax3, FLY_T_BASE + 0.3, maximum(r_briere) * 0.9,
+    text=&quot;T_L=10°C&quot;, fontsize=9, color=:gray)
+text!(ax3, FLY_T_UPPER - 4.0, maximum(r_briere) * 0.9,
+    text=&quot;T_U=35°C&quot;, fontsize=9, color=:gray)
+
+axislegend(ax3, position=:lt)
+
+# Panel B: Generation time vs temperature
+ax4 = Axis(fig2[1, 2],
+    xlabel=&quot;Temperature (°C)&quot;,
+    ylabel=&quot;Generation time (days)&quot;,
+    title=&quot;Egg-to-Adult Duration&quot;)
+
+gen_temps = 12.0:0.5:34.0
+total_dd = FLY_DD_EGG + FLY_DD_LARVA + FLY_DD_PUPA
+gen_simple = [T &gt; FLY_T_BASE ? total_dd / (T - FLY_T_BASE) : Inf for T in gen_temps]
+
+lines!(ax4, collect(gen_temps), gen_simple,
+    color=:darkorange, linewidth=2.5, label=&quot;DD / (T − T_base)&quot;)
+
+hlines!(ax4, [30.0, 60.0], color=:gray, linestyle=:dot, linewidth=1)
+text!(ax4, 28.0, 32.0, text=&quot;30 days&quot;, fontsize=8, color=:gray)
+text!(ax4, 28.0, 62.0, text=&quot;60 days&quot;, fontsize=8, color=:gray)
+
+axislegend(ax4, position=:rt)
+
+fig2</code></pre><p>&lt;div id=&quot;fig-fly-development&quot;&gt;</p><p><img src="../28_olive_bactrocera_files/figure-commonmark/fig-fly-development-output-1.png" alt/></p><p>Figure 2: Olive fly development rate curves. Left: Brière nonlinear model (solid) versus linear approximation (dashed) for temperature-dependent development rate. Right: estimated egg-to-adult generation time as a function of temperature.</p><p>&lt;/div&gt;</p><h3 id="Fly-Population-Overlaid-with-Fruit-Availability"><a class="docs-heading-anchor" href="#Fly-Population-Overlaid-with-Fruit-Availability">Fly Population Overlaid with Fruit Availability</a><a id="Fly-Population-Overlaid-with-Fruit-Availability-1"></a><a class="docs-heading-anchor-permalink" href="#Fly-Population-Overlaid-with-Fruit-Availability" title="Permalink"></a></h3><p>This key figure shows how fruit phenology gates pest reproduction. The fly population can only grow when fruit is available for oviposition, creating a temporal bottleneck that is the foundation of phenological escape as a climate adaptation strategy.</p><pre><code class="language-julia hljs">fig3 = Figure(size=(900, 500))
+
+ax5 = Axis(fig3[1, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Population / Biomass&quot;,
+    title=&quot;Fly–Fruit Coupling: Population Dynamics and Fruit Availability&quot;)
+
+# Fruit availability (from olive simulation)
+fruit_norm = fruit_traj ./ max(1.0, maximum(fruit_traj))
+band!(ax5, sol_olive.t, zeros(length(sol_olive.t)),
+    fruit_norm .* maximum(stage_trajectory(sol_fly, 4)) .* 1.5,
+    color=(:orange, 0.25), label=&quot;Fruit availability&quot;)
+
+# Fly stage trajectories
+fly_eggs   = stage_trajectory(sol_fly, 1)
+fly_larvae = stage_trajectory(sol_fly, 2)
+fly_pupae  = stage_trajectory(sol_fly, 3)
+fly_adults = stage_trajectory(sol_fly, 4)
+
+lines!(ax5, sol_fly.t, fly_eggs,
+    color=:steelblue, linewidth=1.5, label=&quot;Eggs&quot;)
+lines!(ax5, sol_fly.t, fly_larvae,
+    color=:teal, linewidth=1.5, label=&quot;Larvae&quot;)
+lines!(ax5, sol_fly.t, fly_pupae,
+    color=:purple, linewidth=1.5, label=&quot;Pupae&quot;)
+lines!(ax5, sol_fly.t, fly_adults,
+    color=:firebrick, linewidth=2.5, label=&quot;Adults&quot;)
+
+# Mark pit hardening (onset of fly susceptibility)
+pit_idx = findfirst(c -&gt; c &gt;= DD_PIT_HARDEN, cdd_olive)
+if pit_idx !== nothing
+    pit_day = sol_olive.t[pit_idx]
+    vlines!(ax5, [pit_day], color=:black, linestyle=:dash, linewidth=1.5)
+    text!(ax5, pit_day + 3, maximum(fly_adults) * 0.9,
+        text=&quot;Pit hardening\n(fly suscept.)&quot;, fontsize=9)
+end
+
+axislegend(ax5, position=:lt)
+
+fig3</code></pre><p>&lt;div id=&quot;fig-fly-fruit-coupling&quot;&gt;</p><p><img src="../28_olive_bactrocera_files/figure-commonmark/fig-fly-fruit-coupling-output-1.png" alt/></p><p>Figure 3: Olive fly population dynamics overlaid with fruit availability (Sardinia baseline). Fly adult abundance (red) tracks the availability of susceptible fruit (orange shading). The fly population cannot build until after pit hardening (~900 DD), and declines as fruit is harvested or abscised.</p><p>&lt;/div&gt;</p><h2 id="Climate-Warming-Analysis"><a class="docs-heading-anchor" href="#Climate-Warming-Analysis">Climate Warming Analysis</a><a id="Climate-Warming-Analysis-1"></a><a class="docs-heading-anchor-permalink" href="#Climate-Warming-Analysis" title="Permalink"></a></h2><h3 id="Phenological-Shift-Under-Warming"><a class="docs-heading-anchor" href="#Phenological-Shift-Under-Warming">Phenological Shift Under Warming</a><a id="Phenological-Shift-Under-Warming-1"></a><a class="docs-heading-anchor-permalink" href="#Phenological-Shift-Under-Warming" title="Permalink"></a></h3><p>We simulate olive bloom timing and total degree-day accumulation under baseline and warming scenarios. Following Ponti et al. (2009), bloom advances approximately 9 days per 1 °C warming.</p><pre><code class="language-julia hljs"># --- Phenological shifts under warming ---
+println(&quot;\nPhenological shift (bloom timing) under Sardinia warming scenarios:&quot;)
+println(&quot;=&quot;^65)
+println(&quot;  Scenario  | Bloom day | Shift | Total DD | Pit harden | Maturity&quot;)
+println(&quot;-&quot;^65)
+
+baseline_bloom = 0
+
+for (label, ΔT) in [(&quot;Baseline&quot;, 0.0), (&quot;+1°C&quot;, 1.0), (&quot;+2°C&quot;, 2.0), (&quot;+3°C&quot;, 3.0)]
+    sw = SinusoidalWeather(15.9 + ΔT, 7.0; phase=200.0, radiation=20.0)
+    olive_w = Population(:olive, [
+        LifeStage(:leaf,  DistributedDelay(k, 2000.0; W0=50.0), olive_dev, 0.0005),
+        LifeStage(:shoot, DistributedDelay(k, 1500.0; W0=30.0), olive_dev, 0.0008),
+        LifeStage(:root,  DistributedDelay(k, 2500.0; W0=40.0), olive_dev, 0.0003),
+        LifeStage(:fruit, DistributedDelay(k, 1400.0; W0=0.0),  olive_dev, 0.001),
+    ])
+    prob_w = PBDMProblem(olive_w, sw, (1, 365))
+    sol_w = solve(prob_w, DirectIteration())
+    cdd_w = cumulative_degree_days(sol_w)
+
+    bloom_idx = findfirst(c -&gt; c &gt;= DD_BLOOM, cdd_w)
+    pit_idx   = findfirst(c -&gt; c &gt;= DD_PIT_HARDEN, cdd_w)
+    mat_idx   = findfirst(c -&gt; c &gt;= DD_MATURITY, cdd_w)
+
+    bloom_day = bloom_idx !== nothing ? sol_w.t[bloom_idx] : 999
+    pit_day   = pit_idx   !== nothing ? sol_w.t[pit_idx]   : 999
+    mat_day   = mat_idx   !== nothing ? sol_w.t[mat_idx]   : 999
+
+    if ΔT == 0.0
+        baseline_bloom = bloom_day
+    end
+    shift = bloom_day - baseline_bloom
+
+    println(&quot;  $(rpad(label, 10)) | day $(lpad(bloom_day, 3))  | &quot; *
+            &quot;$(lpad(shift, 4))d  | &quot; *
+            &quot;$(lpad(round(cdd_w[end], digits=0), 6))  | &quot; *
+            &quot;day $(lpad(pit_day, 3))    | &quot; *
+            &quot;day $(lpad(mat_day, 3))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Phenological shift (bloom timing) under Sardinia warming scenarios:
+=================================================================
+  Scenario  | Bloom day | Shift | Total DD | Pit harden | Maturity
+-----------------------------------------------------------------
+  Baseline   | day 166  |    0d  | 2486.0  | day 237    | day 306
+  +1°C       | day  68  |  -98d  | 2847.0  | day 216    | day 286
+  +2°C       | day  52  | -114d  | 3212.0  | day 193    | day 268
+  +3°C       | day  44  | -122d  | 3577.0  | day 167    | day 251</code></pre><h3 id="Yield-Regression-Under-Warming"><a class="docs-heading-anchor" href="#Yield-Regression-Under-Warming">Yield Regression Under Warming</a><a id="Yield-Regression-Under-Warming-1"></a><a class="docs-heading-anchor-permalink" href="#Yield-Regression-Under-Warming" title="Permalink"></a></h3><p>Following Ponti et al. (2009), olive yield is modeled using the multiple regression:</p><p><strong>Yield = 3363.7 + 1.6 × DDa − 84.2 × DDb − 0.9 × mm</strong> (R² = 0.47)</p><p>where DDa is degree-days ≥ 9.1 °C (positive effect from thermal accumulation), DDb is total degree-days \&lt; 0 °C (cold damage), and mm is annual rainfall.</p><pre><code class="language-julia hljs"># --- Ponti et al. (2009) yield regression ---
+olive_yield_model = WeatherYieldModel(
+    1.6,      # β_dd: vegetative heat accumulation (g/tree per DD)
+    -0.9,     # β_rain: rainfall effect (g/tree per mm)
+    -0.002,   # β_interaction: DD × rainfall interaction
+    3363.7    # intercept (g/tree)
+)
+
+# Sardinia average rainfall: 589 mm/year
+const SARDINIA_RAIN = 589.0
+
+println(&quot;\nOlive yield regression under warming (Sardinia):&quot;)
+println(&quot;=&quot;^70)
+println(&quot;  Scenario  | DDa (Apr-Sep) | Predicted yield | Change from baseline&quot;)
+println(&quot;-&quot;^70)
+
+baseline_yield = 0.0
+
+for (label, ΔT) in [(&quot;Baseline&quot;, 0.0), (&quot;+1°C&quot;, 1.0), (&quot;+2°C&quot;, 2.0), (&quot;+3°C&quot;, 3.0)]
+    sw = SinusoidalWeather(15.9 + ΔT, 7.0; phase=200.0, radiation=20.0)
+    dda = 0.0
+    for d in 91:273  # April through September
+        w = get_weather(sw, d)
+        dda += degree_days(olive_dev, w.T_mean)
+    end
+    pred_y = predict_yield(olive_yield_model, dda, SARDINIA_RAIN)
+    if ΔT == 0.0
+        baseline_yield = pred_y
+    end
+    change_pct = baseline_yield &gt; 0 ? (pred_y - baseline_yield) / baseline_yield * 100 : 0.0
+    println(&quot;  $(rpad(label, 10)) | $(lpad(round(dda, digits=0), 8)) DD   | &quot; *
+            &quot;$(lpad(round(pred_y, digits=0), 10)) g/tree | &quot; *
+            &quot;$(round(change_pct, digits=1))%&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Olive yield regression under warming (Sardinia):
+======================================================================
+  Scenario  | DDa (Apr-Sep) | Predicted yield | Change from baseline
+----------------------------------------------------------------------
+  Baseline   |   1000.0 DD   |     3256.0 g/tree | 0.0%
+  +1°C       |   1179.0 DD   |     3331.0 g/tree | 2.3%
+  +2°C       |   1362.0 DD   |     3409.0 g/tree | 4.7%
+  +3°C       |   1545.0 DD   |     3486.0 g/tree | 7.1%</code></pre><h3 id="Fly-Population-Under-Warming"><a class="docs-heading-anchor" href="#Fly-Population-Under-Warming">Fly Population Under Warming</a><a id="Fly-Population-Under-Warming-1"></a><a class="docs-heading-anchor-permalink" href="#Fly-Population-Under-Warming" title="Permalink"></a></h3><p>The olive fly population regression from Ponti et al. (2009) captures the complex interaction between thermal accumulation and bloom timing:</p><p><strong>log₁₀(pupae) = 0.00073 × DDa − 0.034 × DDb + 0.0087 × bloom_day − 0.00036 × mm</strong> (R² = 0.80)</p><pre><code class="language-julia hljs"># --- Fly population regression (Ponti et al. 2009) ---
+const FLY_β_DDa   =  0.00073  # Vegetative DD effect
+const FLY_β_DDb   = -0.034    # Cold-stress DD effect
+const FLY_β_BLOOM =  0.0087   # Later bloom → more fly establishment
+const FLY_β_RAIN  = -0.00036  # Rainfall negative (washes pupae)
+
+function predict_fly_density(dda, ddb, bloom_day, rain_mm)
+    log10_pupae = FLY_β_DDa * dda + FLY_β_DDb * ddb +
+                  FLY_β_BLOOM * bloom_day + FLY_β_RAIN * rain_mm
+    return 10.0^log10_pupae
+end
+
+println(&quot;\nOlive fly population under warming (Sardinia):&quot;)
+println(&quot;=&quot;^70)
+println(&quot;  Scenario  | DDa     | Bloom day | Pupae/tree | Change&quot;)
+println(&quot;-&quot;^70)
+
+baseline_pupae = 0.0
+
+for (label, ΔT) in [(&quot;Baseline&quot;, 0.0), (&quot;+1°C&quot;, 1.0), (&quot;+2°C&quot;, 2.0), (&quot;+3°C&quot;, 3.0)]
+    sw = SinusoidalWeather(15.9 + ΔT, 7.0; phase=200.0, radiation=20.0)
+    dda = 0.0
+    for d in 91:273
+        w = get_weather(sw, d)
+        dda += degree_days(olive_dev, w.T_mean)
+    end
+    cdd_est = 0.0
+    bloom_day = 120
+    for d in 1:365
+        w = get_weather(sw, d)
+        cdd_est += degree_days(olive_dev, w.T_mean)
+        if cdd_est &gt;= DD_BLOOM
+            bloom_day = d
+            break
+        end
+    end
+    ddb = 0.0
+    for d in 1:365
+        w = get_weather(sw, d)
+        if w.T_mean &lt; 0.0
+            ddb += abs(w.T_mean)
+        end
+    end
+    pupae = predict_fly_density(dda, ddb, bloom_day, SARDINIA_RAIN)
+    if ΔT == 0.0
+        baseline_pupae = pupae
+    end
+    change_pct = baseline_pupae &gt; 0 ? (pupae - baseline_pupae) / baseline_pupae * 100 : 0.0
+    println(&quot;  $(rpad(label, 10)) | $(lpad(round(dda, digits=0), 6))  | &quot; *
+            &quot;day $(lpad(bloom_day, 3))   | &quot; *
+            &quot;$(lpad(round(pupae, digits=0), 8))   | $(round(change_pct, digits=1))%&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Olive fly population under warming (Sardinia):
+======================================================================
+  Scenario  | DDa     | Bloom day | Pupae/tree | Change
+----------------------------------------------------------------------
+  Baseline   | 1000.0  | day 166   |     92.0   | 0.0%
+  +1°C       | 1179.0  | day  68   |     17.0   | -81.0%
+  +2°C       | 1362.0  | day  52   |     17.0   | -81.3%
+  +3°C       | 1545.0  | day  44   |     20.0   | -78.3%</code></pre><h3 id="Fruit-Damage-and-Yield-Loss"><a class="docs-heading-anchor" href="#Fruit-Damage-and-Yield-Loss">Fruit Damage and Yield Loss</a><a id="Fruit-Damage-and-Yield-Loss-1"></a><a class="docs-heading-anchor-permalink" href="#Fruit-Damage-and-Yield-Loss" title="Permalink"></a></h3><p>Olive fly damage increases nonlinearly with population density. We combine the yield regression and fly population model to compute actual damaged yields under each warming scenario.</p><pre><code class="language-julia hljs"># --- Olive fly damage model ---
+fly_damage = ExponentialDamageFunction(0.08)
+
+println(&quot;\nCombined yield analysis: climate effect + fly damage (Sardinia):&quot;)
+println(&quot;=&quot;^80)
+println(&quot;  Scenario  | Pot. yield  | Fly density | Damage % | Actual yield | Net change&quot;)
+println(&quot;-&quot;^80)
+
+results = []
+
+for (label, ΔT) in [(&quot;Baseline&quot;, 0.0), (&quot;+1°C&quot;, 1.0), (&quot;+2°C&quot;, 2.0), (&quot;+3°C&quot;, 3.0)]
+    sw = SinusoidalWeather(15.9 + ΔT, 7.0; phase=200.0, radiation=20.0)
+    dda = 0.0
+    for d in 91:273
+        w = get_weather(sw, d)
+        dda += degree_days(olive_dev, w.T_mean)
+    end
+    cdd_est = 0.0
+    bloom_day = 120
+    for d in 1:365
+        w = get_weather(sw, d)
+        cdd_est += degree_days(olive_dev, w.T_mean)
+        if cdd_est &gt;= DD_BLOOM
+            bloom_day = d
+            break
+        end
+    end
+    ddb = 0.0
+    for d in 1:365
+        w = get_weather(sw, d)
+        if w.T_mean &lt; 0.0
+            ddb += abs(w.T_mean)
+        end
+    end
+    pot_y = max(0.0, predict_yield(olive_yield_model, dda, SARDINIA_RAIN))
+    pupae = predict_fly_density(dda, ddb, bloom_day, SARDINIA_RAIN)
+    pupae_m2 = pupae / 100.0
+    act_y = actual_yield(fly_damage, pupae_m2, pot_y)
+    damage_pct = pot_y &gt; 0 ? (1 - act_y / pot_y) * 100 : 0.0
+    push!(results, (label=label, ΔT=ΔT, pot=pot_y, fly=pupae,
+                    damage=damage_pct, actual=act_y))
+    net_chg = length(results) &gt; 1 ?
+        (act_y - results[1].actual) / results[1].actual * 100 : 0.0
+    println(&quot;  $(rpad(label, 10)) | $(lpad(round(pot_y, digits=0), 7)) g/tree | &quot; *
+            &quot;$(lpad(round(pupae, digits=0), 8))/tree | &quot; *
+            &quot;$(lpad(round(damage_pct, digits=1), 5))%  | &quot; *
+            &quot;$(lpad(round(act_y, digits=0), 8)) g/tree | &quot; *
+            &quot;$(round(net_chg, digits=1))%&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Combined yield analysis: climate effect + fly damage (Sardinia):
+================================================================================
+  Scenario  | Pot. yield  | Fly density | Damage % | Actual yield | Net change
+--------------------------------------------------------------------------------
+  Baseline   |  3256.0 g/tree |     92.0/tree |   7.1%  |   3025.0 g/tree | 0.0%
+  +1°C       |  3331.0 g/tree |     17.0/tree |   1.4%  |   3285.0 g/tree | 8.6%
+  +2°C       |  3409.0 g/tree |     17.0/tree |   1.4%  |   3362.0 g/tree | 11.1%
+  +3°C       |  3486.0 g/tree |     20.0/tree |   1.6%  |   3431.0 g/tree | 13.4%</code></pre><h3 id="Climate-Scenario-Comparison"><a class="docs-heading-anchor" href="#Climate-Scenario-Comparison">Climate Scenario Comparison</a><a id="Climate-Scenario-Comparison-1"></a><a class="docs-heading-anchor-permalink" href="#Climate-Scenario-Comparison" title="Permalink"></a></h3><p>This summary figure compares yield loss and fly pressure across the four climate scenarios, illustrating the paper’s central finding: warming increases olive yield potential but has a complex, non-monotonic effect on fly pressure due to the upper thermal threshold of <em>B. oleae</em>.</p><pre><code class="language-julia hljs">fig4 = Figure(size=(900, 450))
+
+scenarios = [&quot;Baseline&quot;, &quot;+1°C&quot;, &quot;+2°C&quot;, &quot;+3°C&quot;]
+pot_yields    = [r.pot    for r in results]
+act_yields    = [r.actual for r in results]
+fly_densities = [r.fly    for r in results]
+damage_pcts   = [r.damage for r in results]
+
+# Panel A: Yield comparison
+ax6 = Axis(fig4[1, 1],
+    xlabel=&quot;Climate scenario&quot;,
+    ylabel=&quot;Yield (g DM / tree)&quot;,
+    title=&quot;Olive Yield Under Warming&quot;,
+    xticks=(1:4, scenarios))
+
+barplot!(ax6, 1:4, pot_yields, color=:forestgreen, label=&quot;Potential yield&quot;,
+    dodge=repeat([1], 4), width=0.35, offset=-0.2)
+barplot!(ax6, 1:4, act_yields, color=:darkorange, label=&quot;Actual (after fly)&quot;,
+    dodge=repeat([1], 4), width=0.35, offset=0.2)
+
+axislegend(ax6, position=:lt)
+
+# Panel B: Fly pressure and infestation
+ax7 = Axis(fig4[1, 2],
+    xlabel=&quot;Climate scenario&quot;,
+    ylabel=&quot;Cumulative pupae / tree&quot;,
+    title=&quot;Olive Fly Pressure Under Warming&quot;,
+    xticks=(1:4, scenarios))
+
+barplot!(ax7, 1:4, fly_densities, color=:firebrick, label=&quot;Pupae/tree&quot;, width=0.4)
+
+ax7b = Axis(fig4[1, 2], ylabel=&quot;Fruit infestation (%)&quot;, yaxisposition=:right,
+    yticklabelcolor=:steelblue)
+hidespines!(ax7b, :t, :l, :b)
+scatterlines!(ax7b, 1:4, damage_pcts, color=:steelblue, linewidth=2.5,
+    markersize=12, label=&quot;Infestation %&quot;)
+
+axislegend(ax7, position=:lt)
+
+fig4</code></pre><p>&lt;div id=&quot;fig-climate-scenarios&quot;&gt;</p><p><img src="../28_olive_bactrocera_files/figure-commonmark/fig-climate-scenarios-output-1.png" alt/></p><p>Figure 4: Climate warming scenario comparison for the olive–olive fly system in Sardinia. Left: potential yield (green) and actual yield after fly damage (orange) under baseline, +1°C, +2°C, and +3°C scenarios. Right: olive fly cumulative pupae per tree (red) and fruit infestation percentage (blue) across scenarios.</p><p>&lt;/div&gt;</p><h3 id="Vernalization-Under-Warming"><a class="docs-heading-anchor" href="#Vernalization-Under-Warming">Vernalization Under Warming</a><a id="Vernalization-Under-Warming-1"></a><a class="docs-heading-anchor-permalink" href="#Vernalization-Under-Warming" title="Permalink"></a></h3><p>As temperatures rise, the number of chill hours accumulated during winter decreases. This figure shows the progressive erosion of the vernalization requirement under warming, which could eventually limit flowering in the warmest coastal sites.</p><pre><code class="language-julia hljs">fig5 = Figure(size=(700, 400))
+
+ax8 = Axis(fig5[1, 1],
+    xlabel=&quot;Day of dormant season (Nov 1 → Feb 28)&quot;,
+    ylabel=&quot;Cumulative chill hours (&lt; 7.2°C)&quot;,
+    title=&quot;Vernalization Accumulation Under Warming&quot;)
+
+scenario_colors = [:black, :steelblue, :darkorange, :firebrick]
+scenario_labels = [&quot;Baseline&quot;, &quot;+1°C&quot;, &quot;+2°C&quot;, &quot;+3°C&quot;]
+
+for (i, ΔT) in enumerate([0.0, 1.0, 2.0, 3.0])
+    sw = SinusoidalWeather(15.9 + ΔT, 7.0; phase=200.0, radiation=20.0)
+    dormant_days = vcat(305:365, 1:59)
+    chill_cumul = Float64[]
+    running_chill = 0.0
+    for d in dormant_days
+        w = get_weather(sw, d)
+        for h in 1:24
+            T_hour = w.T_mean + 3.0 * sin(2π * (h - 6) / 24)
+            if T_hour &lt; VERN_T_THRESHOLD
+                running_chill += 1.0
+            end
+        end
+        push!(chill_cumul, running_chill)
+    end
+    lines!(ax8, 1:length(chill_cumul), chill_cumul,
+        color=scenario_colors[i], linewidth=2.5, label=scenario_labels[i])
+end
+
+hlines!(ax8, [VERN_REQUIREMENT], color=:gray, linestyle=:dash, linewidth=1.5)
+text!(ax8, 5, VERN_REQUIREMENT + 30,
+    text=&quot;Minimum requirement (700 h)&quot;, fontsize=10, color=:gray)
+
+axislegend(ax8, position=:lt)
+
+fig5</code></pre><p>&lt;div id=&quot;fig-vernalization&quot;&gt;</p><p><img src="../28_olive_bactrocera_files/figure-commonmark/fig-vernalization-output-1.png" alt/></p><p>Figure 5: Vernalization (chill hour accumulation) under warming scenarios. The horizontal dashed line marks the minimum chill requirement (~700 hours) for olive flower bud initiation. Warming progressively reduces the vernalization margin, with +3°C approaching the critical threshold at low-elevation coastal Sardinian sites.</p><p>&lt;/div&gt;</p><h3 id="Sardinian-Sub-Regional-Analysis"><a class="docs-heading-anchor" href="#Sardinian-Sub-Regional-Analysis">Sardinian Sub-Regional Analysis</a><a id="Sardinian-Sub-Regional-Analysis-1"></a><a class="docs-heading-anchor-permalink" href="#Sardinian-Sub-Regional-Analysis" title="Permalink"></a></h3><p>Sardinia’s climate varies sharply from maritime-buffered coasts (milder maxima, lower variability) to continental-influenced interior mountains (colder winters, more variable). We simulate three representative sub-regions to capture the geographic heterogeneity of climate change impacts:</p><table><tr><th style="text-align: left">Sub-region</th><th style="text-align: center">Mean T (°C)</th><th style="text-align: center">Amplitude (°C)</th><th style="text-align: center">Elevation</th><th style="text-align: left">Character</th></tr><tr><td style="text-align: left">NW Coast (Alghero)</td><td style="text-align: center">15.9</td><td style="text-align: center">7.0</td><td style="text-align: center">Low</td><td style="text-align: left">Maritime, mild</td></tr><tr><td style="text-align: left">Interior mountains</td><td style="text-align: center">12.5</td><td style="text-align: center">9.0</td><td style="text-align: center">High</td><td style="text-align: left">Continental, cold</td></tr><tr><td style="text-align: left">SW lowland (Campidano)</td><td style="text-align: center">17.5</td><td style="text-align: center">8.0</td><td style="text-align: center">Low</td><td style="text-align: left">Hot, dry, little sea buffering</td></tr></table><pre><code class="language-julia hljs"># --- Sub-regional analysis ---
+sardinia_regions = [
+    (name=&quot;NW Coast (Alghero)&quot;,     T_mean=15.9, amplitude=7.0,  rain=589.0),
+    (name=&quot;Interior mountains&quot;,     T_mean=12.5, amplitude=9.0,  rain=700.0),
+    (name=&quot;SW lowland (Campidano)&quot;, T_mean=17.5, amplitude=8.0,  rain=450.0),
+]
+
+function simulate_sardinia_region(T_mean, amplitude, rain_mm)
+    sw = SinusoidalWeather(T_mean, amplitude; phase=200.0, radiation=20.0)
+    dda = 0.0
+    for d in 91:273
+        w = get_weather(sw, d)
+        dda += degree_days(olive_dev, w.T_mean)
+    end
+    cdd_est = 0.0
+    bloom_day = 120
+    for d in 1:365
+        w = get_weather(sw, d)
+        cdd_est += degree_days(olive_dev, w.T_mean)
+        if cdd_est &gt;= DD_BLOOM
+            bloom_day = d
+            break
+        end
+    end
+    ddb = 0.0
+    for d in 1:365
+        w = get_weather(sw, d)
+        if w.T_mean &lt; 0.0
+            ddb += abs(w.T_mean)
+        end
+    end
+    pot_y = max(0.0, predict_yield(olive_yield_model, dda, rain_mm))
+    pupae = predict_fly_density(dda, ddb, bloom_day, rain_mm)
+    pupae_m2 = pupae / 100.0
+    act_y = actual_yield(fly_damage, pupae_m2, pot_y)
+    return (yield=act_y, fly=pupae, pot_yield=pot_y, bloom=bloom_day,
+            dda=dda, damage=(pot_y &gt; 0 ? (1 - act_y / pot_y) * 100 : 0.0))
+end
+
+println(&quot;\nSardinian sub-regional analysis — Baseline vs warming:&quot;)
+println(&quot;=&quot;^95)
+println(&quot;  Region                  | &quot; *
+        &quot;--- Baseline ---              | &quot; *
+        &quot;--- +2°C ---                 | Yield Δ&quot;)
+println(&quot;                          | Yield    Fly/tree  Dmg%  | Yield    Fly/tree  Dmg%  |&quot;)
+println(&quot;-&quot;^95)
+
+for reg in sardinia_regions
+    base = simulate_sardinia_region(reg.T_mean, reg.amplitude, reg.rain)
+    warm = simulate_sardinia_region(reg.T_mean + 2.0, reg.amplitude, reg.rain)
+    Δ_pct = base.yield &gt; 0 ? (warm.yield - base.yield) / base.yield * 100 : 0.0
+    println(&quot;  $(rpad(reg.name, 24)) | &quot; *
+            &quot;$(lpad(round(base.yield, digits=0), 6))  &quot; *
+            &quot;$(lpad(round(base.fly, digits=0), 8))  &quot; *
+            &quot;$(lpad(round(base.damage, digits=1), 5))  | &quot; *
+            &quot;$(lpad(round(warm.yield, digits=0), 6))  &quot; *
+            &quot;$(lpad(round(warm.fly, digits=0), 8))  &quot; *
+            &quot;$(lpad(round(warm.damage, digits=1), 5))  | &quot; *
+            &quot;$(round(Δ_pct, digits=1))%&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Sardinian sub-regional analysis — Baseline vs warming:
+===============================================================================================
+  Region                  | --- Baseline ---              | --- +2°C ---                 | Yield Δ
+                          | Yield    Fly/tree  Dmg%  | Yield    Fly/tree  Dmg%  |
+-----------------------------------------------------------------------------------------------
+  NW Coast (Alghero)       | 3025.0      92.0    7.1  | 3362.0      17.0    1.4  | 11.1%
+  Interior mountains       | 2438.0     201.0   14.9  | 2531.0     173.0   12.9  | 3.8%
+  SW lowland (Campidano)   | 3779.0      19.0    1.5  | 4015.0      24.0    1.9  | 6.3%</code></pre><h3 id="Fly-Population-Dynamics-by-Sub-Region"><a class="docs-heading-anchor" href="#Fly-Population-Dynamics-by-Sub-Region">Fly Population Dynamics by Sub-Region</a><a id="Fly-Population-Dynamics-by-Sub-Region-1"></a><a class="docs-heading-anchor-permalink" href="#Fly-Population-Dynamics-by-Sub-Region" title="Permalink"></a></h3><p>We simulate full-season olive fly lifecycle dynamics in each Sardinian sub-region to examine how geographic position affects generation count, peak abundance, and the timing of population buildup.</p><pre><code class="language-julia hljs">println(&quot;\nOlive fly population dynamics by Sardinian sub-region:&quot;)
+println(&quot;=&quot;^80)
+println(&quot;  Region                  | Peak adults | Final total | Season DD | Net growth&quot;)
+println(&quot;-&quot;^80)
+
+for reg in sardinia_regions
+    sw = SinusoidalWeather(reg.T_mean, reg.amplitude; phase=200.0, radiation=20.0)
+    fly_reg = Population(:olive_fly, [
+        LifeStage(:egg,   DistributedDelay(k_fly, FLY_DD_EGG;   W0=0.0),  fly_dev, 0.010),
+        LifeStage(:larva, DistributedDelay(k_fly, FLY_DD_LARVA; W0=0.0),  fly_dev, 0.008),
+        LifeStage(:pupa,  DistributedDelay(k_fly, FLY_DD_PUPA;  W0=0.0),  fly_dev, 0.005),
+        LifeStage(:adult, DistributedDelay(k_fly, FLY_DD_ADULT; W0=50.0), fly_dev, 0.003),
+    ])
+    prob_reg = PBDMProblem(fly_reg, sw, (60, 330))
+    sol_reg = solve(prob_reg, DirectIteration())
+    adult_traj = stage_trajectory(sol_reg, 4)
+    peak_adults = maximum(adult_traj)
+    final_total = sum(sol_reg.u[end])
+    ngr = net_growth_rate(sol_reg)
+    cdd_reg = cumulative_degree_days(sol_reg)
+    println(&quot;  $(rpad(reg.name, 24)) | &quot; *
+            &quot;$(lpad(round(peak_adults, digits=1), 9))  | &quot; *
+            &quot;$(lpad(round(final_total, digits=1), 9))  | &quot; *
+            &quot;$(lpad(round(cdd_reg[end], digits=0), 7))  | &quot; *
+            &quot;$(round(ngr, digits=4))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Olive fly population dynamics by Sardinian sub-region:
+================================================================================
+  Region                  | Peak adults | Final total | Season DD | Net growth
+--------------------------------------------------------------------------------
+  NW Coast (Alghero)       |     999.9  |     883.7  |    24.0  | 0.9995
+  Interior mountains       |    1000.0  |     912.3  |    18.0  | 0.9997
+  SW lowland (Campidano)   |     999.9  |     856.4  |    31.0  | 0.9994</code></pre><h2 id="Parameter-Sources"><a class="docs-heading-anchor" href="#Parameter-Sources">Parameter Sources</a><a id="Parameter-Sources-1"></a><a class="docs-heading-anchor-permalink" href="#Parameter-Sources" title="Permalink"></a></h2><p>The following table summarizes the key model parameters, their literature ranges, and the values used in this vignette.</p><p>&lt;div id=&quot;tbl-parameters&quot;&gt;</p><p>Table 1: Key model parameters with literature sources and status.</p><table><tr><th style="text-align: left">Parameter</th><th style="text-align: center">Symbol</th><th style="text-align: center">Value used</th><th style="text-align: center">Literature range</th><th style="text-align: left">Source</th></tr><tr><td style="text-align: left"><strong>Olive phenology</strong></td><td style="text-align: center"></td><td style="text-align: center"></td><td style="text-align: center"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Base temperature</td><td style="text-align: center">T_base</td><td style="text-align: center">9.1 °C</td><td style="text-align: center">9.0–10.0 °C</td><td style="text-align: left">Ponti et al. 2009</td></tr><tr><td style="text-align: left">DD to bloom</td><td style="text-align: center">DD_bloom</td><td style="text-align: center">400 DD</td><td style="text-align: center">350–450 DD</td><td style="text-align: left">Ponti et al. 2009</td></tr><tr><td style="text-align: left">DD to maturity</td><td style="text-align: center">DD_mat</td><td style="text-align: center">1800 DD</td><td style="text-align: center">1600–2000 DD</td><td style="text-align: left">Gutierrez et al. 2009</td></tr><tr><td style="text-align: left">Vernalization threshold</td><td style="text-align: center">T_vern</td><td style="text-align: center">7.2 °C</td><td style="text-align: center">7.0–7.5 °C</td><td style="text-align: left">Ponti et al. 2009</td></tr><tr><td style="text-align: left">Chill requirement</td><td style="text-align: center">CH_req</td><td style="text-align: center">700 h</td><td style="text-align: center">600–1000 h</td><td style="text-align: left">Tzanakakis 2003</td></tr><tr><td style="text-align: left">Bloom shift per °C</td><td style="text-align: center">—</td><td style="text-align: center">9 d/°C</td><td style="text-align: center">8–11 d/°C</td><td style="text-align: left">Ponti et al. 2009</td></tr><tr><td style="text-align: left"><strong>Olive carbon balance</strong></td><td style="text-align: center"></td><td style="text-align: center"></td><td style="text-align: center"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Q10 respiration</td><td style="text-align: center">Q10</td><td style="text-align: center">2.0</td><td style="text-align: center">1.8–2.5</td><td style="text-align: left">Wang et al. 2009</td></tr><tr><td style="text-align: left">Reference temperature</td><td style="text-align: center">T_ref</td><td style="text-align: center">20 °C</td><td style="text-align: center">—</td><td style="text-align: left">Standard</td></tr><tr><td style="text-align: left"><strong>Olive fly development</strong></td><td style="text-align: center"></td><td style="text-align: center"></td><td style="text-align: center"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Lower threshold</td><td style="text-align: center">T_L</td><td style="text-align: center">10 °C</td><td style="text-align: center">8–12 °C</td><td style="text-align: left">Tzanakakis 2003</td></tr><tr><td style="text-align: left">Upper threshold</td><td style="text-align: center">T_U</td><td style="text-align: center">35 °C</td><td style="text-align: center">33–37 °C</td><td style="text-align: left">Gutierrez et al. 2009</td></tr><tr><td style="text-align: left">Optimal temperature</td><td style="text-align: center">T_opt</td><td style="text-align: center">25 °C</td><td style="text-align: center">20–27 °C</td><td style="text-align: left">Wang et al. 2009</td></tr><tr><td style="text-align: left">Egg DD</td><td style="text-align: center">DD_egg</td><td style="text-align: center">50 DD</td><td style="text-align: center">40–60 DD</td><td style="text-align: left">Gutierrez et al. 2009</td></tr><tr><td style="text-align: left">Larva DD</td><td style="text-align: center">DD_larva</td><td style="text-align: center">170 DD</td><td style="text-align: center">130–200 DD</td><td style="text-align: left">Gutierrez et al. 2009</td></tr><tr><td style="text-align: left">Pupa DD</td><td style="text-align: center">DD_pupa</td><td style="text-align: center">200 DD</td><td style="text-align: center">180–300 DD</td><td style="text-align: left">Gutierrez et al. 2009</td></tr><tr><td style="text-align: left">Egg-to-adult</td><td style="text-align: center">DD_total</td><td style="text-align: center">420 DD</td><td style="text-align: center">350–560 DD</td><td style="text-align: left">Wang et al. 2009</td></tr><tr><td style="text-align: left">Generation time (25°C)</td><td style="text-align: center">—</td><td style="text-align: center">~28 d</td><td style="text-align: center">30–70 d</td><td style="text-align: left">Tzanakakis 2003</td></tr><tr><td style="text-align: left">Fecundity</td><td style="text-align: center">F</td><td style="text-align: center">200–400 eggs</td><td style="text-align: center">200–400</td><td style="text-align: left">Tzanakakis 2003</td></tr><tr><td style="text-align: left"><strong>Fruit infestation</strong></td><td style="text-align: center"></td><td style="text-align: center"></td><td style="text-align: center"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Observed range</td><td style="text-align: center">—</td><td style="text-align: center">—</td><td style="text-align: center">10–90 %</td><td style="text-align: left">Ponti et al. 2009</td></tr><tr><td style="text-align: left">Sardinia average</td><td style="text-align: center">—</td><td style="text-align: center">~38–87 %</td><td style="text-align: center">38–87 %</td><td style="text-align: left">Ponti et al. 2009</td></tr><tr><td style="text-align: left"><strong>Yield regression</strong></td><td style="text-align: center"></td><td style="text-align: center"></td><td style="text-align: center"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">β_DDa</td><td style="text-align: center">β₁</td><td style="text-align: center">+1.6 g/DD</td><td style="text-align: center">—</td><td style="text-align: left">Ponti et al. 2009</td></tr><tr><td style="text-align: left">β_DDb</td><td style="text-align: center">β₂</td><td style="text-align: center">−84.2 g/DD</td><td style="text-align: center">—</td><td style="text-align: left">Ponti et al. 2009</td></tr><tr><td style="text-align: left">β_rain</td><td style="text-align: center">β₃</td><td style="text-align: center">−0.9 g/mm</td><td style="text-align: center">—</td><td style="text-align: left">Ponti et al. 2009</td></tr><tr><td style="text-align: left">Intercept</td><td style="text-align: center">α</td><td style="text-align: center">3363.7 g</td><td style="text-align: center">—</td><td style="text-align: left">Ponti et al. 2009</td></tr><tr><td style="text-align: left">R² (yield model)</td><td style="text-align: center">—</td><td style="text-align: center">0.47</td><td style="text-align: center">—</td><td style="text-align: left">Ponti et al. 2009</td></tr><tr><td style="text-align: left">R² (fly model)</td><td style="text-align: center">—</td><td style="text-align: center">0.80</td><td style="text-align: center">—</td><td style="text-align: left">Ponti et al. 2009</td></tr><tr><td style="text-align: left"><strong>Sardinia climate</strong></td><td style="text-align: center"></td><td style="text-align: center"></td><td style="text-align: center"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Mean annual rainfall</td><td style="text-align: center">mm</td><td style="text-align: center">589 mm</td><td style="text-align: center">—</td><td style="text-align: left">Ponti et al. 2009</td></tr><tr><td style="text-align: left">Alghero mean T</td><td style="text-align: center">T̄</td><td style="text-align: center">15.9 °C</td><td style="text-align: center">Max 20.1, Min 11.6</td><td style="text-align: left">Ponti et al. 2009</td></tr><tr><td style="text-align: left">Historical warming rate</td><td style="text-align: center">—</td><td style="text-align: center">+0.90 °C/105 yr</td><td style="text-align: center">—</td><td style="text-align: left">Ponti et al. 2009</td></tr><tr><td style="text-align: left">Min T warming rate</td><td style="text-align: center">—</td><td style="text-align: center">+1.56 °C/105 yr</td><td style="text-align: center">—</td><td style="text-align: left">Ponti et al. 2009</td></tr></table><p>&lt;/div&gt;</p><h2 id="Discussion"><a class="docs-heading-anchor" href="#Discussion">Discussion</a><a id="Discussion-1"></a><a class="docs-heading-anchor-permalink" href="#Discussion" title="Permalink"></a></h2><h3 id="Winners-and-Losers-in-Sardinia"><a class="docs-heading-anchor" href="#Winners-and-Losers-in-Sardinia">Winners and Losers in Sardinia</a><a id="Winners-and-Losers-in-Sardinia-1"></a><a class="docs-heading-anchor-permalink" href="#Winners-and-Losers-in-Sardinia" title="Permalink"></a></h3><p>The results reproduce the central finding of Ponti, Cossu, and Gutierrez (2009): warming has asymmetric effects across Sardinia’s diverse micro-climates.</p><p><strong>Winners (warming beneficial):</strong></p><ul><li><strong>Interior mountains:</strong> Currently at the cold margin for olive cultivation. Warming increases degree-day accumulation, enables more reliable fruit maturation, and extends the growing season. Cold-stressed fly populations benefit less than the crop because the fly’s thermal optimum is narrower. Ponti et al. (2009) found that these previously marginal areas become suitable for commercial olive production under +2–3 °C.</li></ul><p><strong>Losers (warming detrimental):</strong></p><ul><li><strong>SW lowlands (Campidano):</strong> Already at the warm edge. Further warming pushes summer temperatures above the fly’s upper lethal threshold (reducing pest pressure — a benefit) but also reduces net carbon assimilation and oil accumulation (a cost). The net effect depends on the magnitude of warming: moderate warming (+1 °C) may reduce pest damage, but strong warming (+3 °C) risks crop failure from insufficient vernalization and heat stress.</li></ul><p><strong>Stable:</strong></p><ul><li><strong>NW coast (Alghero):</strong> Maritime buffering moderates both warming and its effects. Fly pressure changes modestly, and yield gains from increased DD are partially offset by earlier bloom exposing flowers to late frost risk.</li></ul><h3 id="Climate-Adaptation-Strategies"><a class="docs-heading-anchor" href="#Climate-Adaptation-Strategies">Climate Adaptation Strategies</a><a id="Climate-Adaptation-Strategies-1"></a><a class="docs-heading-anchor-permalink" href="#Climate-Adaptation-Strategies" title="Permalink"></a></h3><p>The model framework suggests several adaptation pathways specific to Mediterranean island systems:</p><ol><li><p><strong>Phenological escape:</strong> Earlier bloom under warming reduces the  window of fly susceptibility during peak summer temperatures.  Selecting for early- flowering cultivars amplifies this natural  shift.</p></li><li><p><strong>Altitudinal migration:</strong> As interior mountain areas warm,  previously marginal olive zones become viable for commercial  production, while traditional lowland orchards face compound heat  and pest stress.</p></li><li><p><strong>Integrated pest management:</strong> The model’s finding that fly  pressure may <em>decrease</em> in the hottest areas implies that pest  management investments should be geographically targeted — focusing  on mid-altitude zones where warming brings fly populations closer to  their thermal optimum.</p></li><li><p><strong>Cultivar matching:</strong> Late-maturing cultivars (e.g., Bosana,  dominant in Sardinia, harvested November–December) experience  different fly dynamics than early cultivars (e.g., Pizz’e carroga,  harvested September). Climate change may alter the relative  advantage of these maturity groups.</p></li></ol><h3 id="Limitations"><a class="docs-heading-anchor" href="#Limitations">Limitations</a><a id="Limitations-1"></a><a class="docs-heading-anchor-permalink" href="#Limitations" title="Permalink"></a></h3><p>This vignette uses simplified sinusoidal weather (single-year, no rainfall seasonality) and regression-based yield and fly models. A full Ponti-style analysis would require:</p><ul><li>Gridded daily weather data from 48+ Sardinian stations (1997–2007)</li><li>Explicit process-based fruit growth with age–mass structure</li><li>Spatially explicit fly dispersal and overwintering pupae dynamics</li><li>Inter-annual variability capturing crop failure events (observed in the 105-year Alghero scenario for years 2028 and 2049)</li><li>Olive variety-specific calibration (Bosana, Pizz’e carroga, Nera di Oliena)</li><li>Water balance and summer drought stress interactions</li></ul><p>The <code>PhysiologicallyBasedDemographicModels.jl</code> framework supports these extensions through its composable type system: <code>DistributedDelay</code> populations for both crop and pest, <code>MetabolicPool</code> for priority-based carbon allocation, <code>FraserGilbertResponse</code> for supply-demand interactions, <code>Q10Respiration</code> for temperature-dependent respiration, <code>BriereDevelopmentRate</code> for nonlinear insect development, and <code>PBDMProblem</code> / <code>DirectIteration()</code> for simulation.</p><p><strong>Key insight from Ponti et al. (2009):</strong> In Mediterranean island systems, climate change impacts on agriculture emerge from the <em>interaction</em> between crop physiology, pest biology, and geographic heterogeneity. The olive–olive fly system cannot be understood by analyzing either organism in isolation — it is the phenological coupling between fruit availability and pest reproduction, modulated by temperature, that determines agricultural outcomes under warming.</p><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><ul><li>Ponti, L., Cossu, Q.A., and Gutierrez, A.P. (2009). Climate warming effects on the <em>Olea europaea</em> – <em>Bactrocera oleae</em> system in Mediterranean islands: Sardinia as an example. <em>Global Change Biology</em> 15:2874–2884.</li><li>Gutierrez, A.P., Ponti, L., and Cossu, Q.A. (2009). Effects of climate warming on olive and olive fly (<em>Bactrocera oleae</em> (Gmelin)) in California and Italy. <em>Climatic Change</em> 95:195–217.</li><li>Ponti, L., Gutierrez, A.P., Ruti, P.M., and Dell’Aquila, A. (2014). Fine-scale ecological and economic assessment of climate change on olive in the Mediterranean Basin reveals winners and losers. <em>Proceedings of the National Academy of Sciences</em> 111:5598–5603.</li><li>Tzanakakis, M.E. (2003). Seasonal development and dormancy of insects and mites feeding on olive: a review. <em>Netherlands Journal of Zoology</em> 52:87–224.</li><li>Wang, J.Y., Gutierrez, A.P., Ponti, L., and Cossu, Q.A. (2009). Modeling the biology and ecology of <em>Bactrocera oleae</em>: a physiologically based approach. In: <em>Proceedings of the International Olive Council</em>.</li></ul><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Ponti2009OliveFly&quot; class=&quot;csl-entry&quot;&gt;</p><p>Ponti, Luigi, Quirico A. Cossu, and Andrew Paul Gutierrez. 2009. “Climate Warming Effects on the &lt;span class=&quot;nocase&quot;&gt;Olea europaea&lt;/span&gt;–&lt;span class=&quot;nocase&quot;&gt;Bactrocera oleae&lt;/span&gt; System in Mediterranean Islands: Sardinia as an Example.” <em>Global Change Biology</em> 15: 2874–84. <a href="https://doi.org/10.1111/j.1365-2486.2009.01938.x">https://doi.org/10.1111/j.1365-2486.2009.01938.x</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../27_spotted_alfalfa_aphid/">« Spotted Alfalfa Aphid Biological Control</a><a class="docs-footer-nextpage" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

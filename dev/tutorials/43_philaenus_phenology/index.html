@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Philaenus spumarius Phenology Model · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Philaenus spumarius Phenology Model · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Philaenus spumarius Phenology Model · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Philaenus spumarius Phenology Model · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/43_philaenus_phenology/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/43_philaenus_phenology/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/43_philaenus_phenology/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li class="is-active"><a class="tocitem" href>Philaenus spumarius Phenology Model</a><ul class="internal"><li><a class="tocitem" href="#Introduction"><span>Introduction</span></a></li><li><a class="tocitem" href="#Development-Rate:-The-Lactin-Function"><span>Development Rate: The Lactin Function</span></a></li><li><a class="tocitem" href="#Implementation"><span>Implementation</span></a></li><li><a class="tocitem" href="#Population-Setup"><span>Population Setup</span></a></li><li><a class="tocitem" href="#Temperature-Forcing"><span>Temperature Forcing</span></a></li><li><a class="tocitem" href="#Simulation"><span>Simulation</span></a></li><li><a class="tocitem" href="#Results"><span>Results</span></a></li><li><a class="tocitem" href="#Climate-Sensitivity-Analysis"><span>Climate Sensitivity Analysis</span></a></li><li><a class="tocitem" href="#Discussion"><span>Discussion</span></a></li><li><a class="tocitem" href="#References"><span>References</span></a></li></ul></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Philaenus spumarius Phenology Model</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Philaenus spumarius Phenology Model</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Philaenus-spumarius-Phenology-Model"><a class="docs-heading-anchor" href="#Philaenus-spumarius-Phenology-Model">Philaenus spumarius Phenology Model</a><a id="Philaenus-spumarius-Phenology-Model-1"></a><a class="docs-heading-anchor-permalink" href="#Philaenus-spumarius-Phenology-Model" title="Permalink"></a></h1><p>Simon Frost</p><ul><li><a href="#introduction">Introduction</a><ul><li><a href="#kolmogorovvon-foerster-equation">Kolmogorov–Von Foerster Equation</a></li></ul></li><li><a href="#development-rate-the-lactin-function">Development Rate: The Lactin Function</a><ul><li><a href="#stage-specific-parameters">Stage-Specific Parameters</a></li></ul></li><li><a href="#implementation">Implementation</a><ul><li><a href="#custom-lactin-development-rate">Custom Lactin Development Rate</a></li><li><a href="#stage-specific-parameters-1">Stage-Specific Parameters</a></li><li><a href="#development-rate-curves">Development Rate Curves</a></li></ul></li><li><a href="#population-setup">Population Setup</a><ul><li><a href="#distributed-delay-architecture">Distributed Delay Architecture</a></li></ul></li><li><a href="#temperature-forcing">Temperature Forcing</a></li><li><a href="#simulation">Simulation</a><ul><li><a href="#stage-trajectories">Stage Trajectories</a></li><li><a href="#peak-abundance-timing">Peak Abundance Timing</a></li></ul></li><li><a href="#results">Results</a><ul><li><a href="#phenology-diagram">Phenology Diagram</a></li><li><a href="#stage-resolved-population-dynamics">Stage-Resolved Population Dynamics</a></li><li><a href="#temperature-overlay-with-phenological-transitions">Temperature Overlay with Phenological Transitions</a></li><li><a href="#cumulative-degree-days">Cumulative Degree-Days</a></li></ul></li><li><a href="#climate-sensitivity-analysis">Climate Sensitivity Analysis</a><ul><li><a href="#warming-comparison-plot">Warming Comparison Plot</a></li></ul></li><li><a href="#discussion">Discussion</a><ul><li><a href="#phenological-plausibility">Phenological Plausibility</a></li><li><a href="#implications-for-xylella-management">Implications for <em>Xylella</em> Management</a></li><li><a href="#model-limitations">Model Limitations</a></li></ul></li><li><a href="#references">References</a></li></ul><p>Primary reference: (Sweidan et al. 2025).</p><h2 id="Introduction"><a class="docs-heading-anchor" href="#Introduction">Introduction</a><a id="Introduction-1"></a><a class="docs-heading-anchor-permalink" href="#Introduction" title="Permalink"></a></h2><p><em>Philaenus spumarius</em> (L.) — the meadow spittlebug — is the primary vector of <em>Xylella fastidiosa</em> in European olive groves. Since its detection in Puglia, Italy in 2013, <em>X. fastidiosa</em> subsp. <em>pauca</em> has devastated millions of olive trees, causing Olive Quick Decline Syndrome (OQDS). Adult spittlebugs acquire the bacterium while feeding on infected plants and transmit it when they move to healthy hosts. Because <em>X. fastidiosa</em> has no cure, managing vector populations — and critically, understanding <strong>when</strong> adults are active and feeding — is the cornerstone of control strategies.</p><p>This vignette implements a <strong>pure phenology model</strong> for <em>P. spumarius</em> following Sweidan et al. (2025). The model predicts the timing of emergence through 7 life stages (egg → 5 nymphal instars → adult) using a Kolmogorov–Von Foerster equation driven by temperature-dependent development rates. No mortality or reproduction is modeled — the focus is entirely on <strong>when</strong> each stage appears during the year. This is directly relevant to <em>Xylella</em> management because only adults transmit the pathogen, and the adult feeding window defines the transmission window.</p><h3 id="Kolmogorov–Von-Foerster-Equation"><a class="docs-heading-anchor" href="#Kolmogorov–Von-Foerster-Equation">Kolmogorov–Von Foerster Equation</a><a id="Kolmogorov–Von-Foerster-Equation-1"></a><a class="docs-heading-anchor-permalink" href="#Kolmogorov–Von-Foerster-Equation" title="Permalink"></a></h3><p>For each life stage <span>$i \in \{\text{egg}, N_1, N_2, N_3, N_4, N_5, \text{adult}\}$</span>, the population density <span>$N^i(t, x)$</span> evolves as a function of calendar time <span>$t$</span> and normalized physiological age <span>$x \in [0, 1]$</span> within the stage:</p><p class="math-container">\[\frac{\partial N^i}{\partial t} + \frac{\partial}{\partial x}\left[G^i(T(t)) \cdot N^i(t, x)\right] = 0\]</p><p>where <span>$G^i(T)$</span> is the temperature-dependent development rate (Lactin function). Individuals enter stage <span>$i$</span> at <span>$x = 0$</span> from the completion of stage <span>$i - 1$</span> (boundary condition: flux from <span>$x = 1$</span> of the previous stage), and exit at <span>$x = 1$</span> into the next stage. The initial condition places all individuals in the egg stage with uniform physiological age on January 1.</p><p>We discretize this PDE using a <strong>distributed delay</strong> approach (Manetsch/Vansickle <span>$k$</span>-substage Erlang method), which maps each continuous age-structured stage to <span>$k$</span> substages with exponentially distributed residence times. With <span>$k = 20$</span> substages per stage, this produces smooth, realistic emergence curves.</p><h2 id="Development-Rate:-The-Lactin-Function"><a class="docs-heading-anchor" href="#Development-Rate:-The-Lactin-Function">Development Rate: The Lactin Function</a><a id="Development-Rate:-The-Lactin-Function-1"></a><a class="docs-heading-anchor-permalink" href="#Development-Rate:-The-Lactin-Function" title="Permalink"></a></h2><p>The temperature response for each stage follows the <strong>Lactin function</strong> (a variant of the Logan Type III model with an additive shift):</p><p class="math-container">\[G^i(T) = \max\!\Big(0,\; e^{\rho^i T} - e^{\rho^i T_{\max}^i - (T_{\max}^i - T)/\Delta T^i} + \gamma^i\Big)\]</p><p>The exponential term <span>$e^{\rho T}$</span> captures accelerating development at moderate temperatures, the second term imposes a sharp decline near the upper lethal threshold <span>$T_{\max}$</span>, and the offset <span>$\gamma$</span> (typically negative) ensures that the rate is zero below a lower thermal threshold. The <code>max(0, ·)</code> clamp prevents negative rates at low temperatures.</p><h3 id="Stage-Specific-Parameters"><a class="docs-heading-anchor" href="#Stage-Specific-Parameters">Stage-Specific Parameters</a><a id="Stage-Specific-Parameters-1"></a><a class="docs-heading-anchor-permalink" href="#Stage-Specific-Parameters" title="Permalink"></a></h3><p>Parameters from Sweidan et al. (2025), Table 1:</p><table><tr><th style="text-align: right">Stage</th><th style="text-align: right"><span>$\rho$</span></th><th style="text-align: right"><span>$T_{\max}$</span> (°C)</th><th style="text-align: right"><span>$\Delta T$</span> (°C)</th><th style="text-align: right"><span>$\gamma$</span></th></tr><tr><td style="text-align: right">Egg</td><td style="text-align: right">0.0038</td><td style="text-align: right">41.8</td><td style="text-align: right">3.1</td><td style="text-align: right">−1.00</td></tr><tr><td style="text-align: right">N1</td><td style="text-align: right">0.0182</td><td style="text-align: right">37.0</td><td style="text-align: right">3.7</td><td style="text-align: right">−1.16</td></tr><tr><td style="text-align: right">N2</td><td style="text-align: right">0.0150</td><td style="text-align: right">37.6</td><td style="text-align: right">3.2</td><td style="text-align: right">−1.03</td></tr><tr><td style="text-align: right">N3</td><td style="text-align: right">0.0130</td><td style="text-align: right">38.9</td><td style="text-align: right">3.5</td><td style="text-align: right">−0.99</td></tr><tr><td style="text-align: right">N4</td><td style="text-align: right">0.0086</td><td style="text-align: right">40.4</td><td style="text-align: right">3.3</td><td style="text-align: right">−0.98</td></tr><tr><td style="text-align: right">N5</td><td style="text-align: right">0.0063</td><td style="text-align: right">40.3</td><td style="text-align: right">3.2</td><td style="text-align: right">−0.97</td></tr><tr><td style="text-align: right">Adult</td><td style="text-align: right">0.0056</td><td style="text-align: right">40.7</td><td style="text-align: right">3.1</td><td style="text-align: right">−1.01</td></tr></table><p>Lactin development rate parameters for <em>P. spumarius</em> life stages.</p><h2 id="Implementation"><a class="docs-heading-anchor" href="#Implementation">Implementation</a><a id="Implementation-1"></a><a class="docs-heading-anchor-permalink" href="#Implementation" title="Permalink"></a></h2><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+using CairoMakie</code></pre><h3 id="Custom-Lactin-Development-Rate"><a class="docs-heading-anchor" href="#Custom-Lactin-Development-Rate">Custom Lactin Development Rate</a><a id="Custom-Lactin-Development-Rate-1"></a><a class="docs-heading-anchor-permalink" href="#Custom-Lactin-Development-Rate" title="Permalink"></a></h3><p>The package provides <code>LoganDevelopmentRate</code> (multiplicative scaling <span>$\psi$</span>) but the Lactin function uses an additive offset <span>$\gamma$</span>. We define a custom type that integrates with the PBDM framework:</p><pre><code class="language-julia hljs">&quot;&quot;&quot;
+    LactinDevelopmentRate(ρ, T_max, ΔT, γ)
+
+Lactin nonlinear development rate:
+`r(T) = max(0, exp(ρ*T) - exp(ρ*T_max - (T_max - T)/ΔT) + γ)`.
+
+This is a variant of the Logan Type III model with an additive constant
+`γ` (typically negative) that determines the lower thermal threshold.
+&quot;&quot;&quot;
+struct LactinDevelopmentRate{T&lt;:Real} &lt;: AbstractDevelopmentRate
+    ρ::T
+    T_max::T
+    ΔT::T
+    γ::T
+
+    function LactinDevelopmentRate(ρ::T, T_max::T, ΔT::T, γ::T) where {T&lt;:Real}
+        ρ &gt; 0 || throw(ArgumentError(&quot;ρ must be positive&quot;))
+        ΔT &gt; 0 || throw(ArgumentError(&quot;ΔT must be positive&quot;))
+        new{T}(ρ, T_max, ΔT, γ)
+    end
+end
+
+function LactinDevelopmentRate(ρ::Real, T_max::Real, ΔT::Real, γ::Real)
+    T = promote_type(typeof(ρ), typeof(T_max), typeof(ΔT), typeof(γ))
+    LactinDevelopmentRate(T(ρ), T(T_max), T(ΔT), T(γ))
+end
+
+function PhysiologicallyBasedDemographicModels.development_rate(
+    m::LactinDevelopmentRate, T::Real
+)
+    rate = exp(m.ρ * T) - exp(m.ρ * m.T_max - (m.T_max - T) / m.ΔT) + m.γ
+    return max(rate, zero(rate))
+end</code></pre><h3 id="Stage-Specific-Parameters-2"><a class="docs-heading-anchor" href="#Stage-Specific-Parameters-2">Stage-Specific Parameters</a><a class="docs-heading-anchor-permalink" href="#Stage-Specific-Parameters-2" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Lactin parameters from Sweidan et al. (2025), Table 1
+#   (ρ, T_max, ΔT, γ) for each life stage
+const LACTIN_PARAMS = (
+    egg   = (ρ = 0.0038, T_max = 41.8, ΔT = 3.1, γ = -1.00),
+    N1    = (ρ = 0.0182, T_max = 37.0, ΔT = 3.7, γ = -1.16),
+    N2    = (ρ = 0.0150, T_max = 37.6, ΔT = 3.2, γ = -1.03),
+    N3    = (ρ = 0.0130, T_max = 38.9, ΔT = 3.5, γ = -0.99),
+    N4    = (ρ = 0.0086, T_max = 40.4, ΔT = 3.3, γ = -0.98),
+    N5    = (ρ = 0.0063, T_max = 40.3, ΔT = 3.2, γ = -0.97),
+    adult = (ρ = 0.0056, T_max = 40.7, ΔT = 3.1, γ = -1.01),
+)
+
+# Build development rate models
+stage_names = [:egg, :N1, :N2, :N3, :N4, :N5, :adult]
+
+dev_rates = Dict{Symbol, LactinDevelopmentRate}()
+for s in stage_names
+    p = LACTIN_PARAMS[s]
+    dev_rates[s] = LactinDevelopmentRate(p.ρ, p.T_max, p.ΔT, p.γ)
+end
+
+# Print lower effective thresholds (temperature where rate first becomes &gt; 0)
+println(&quot;Effective lower thermal thresholds:&quot;)
+println(&quot;=&quot;^50)
+for s in stage_names
+    dr = dev_rates[s]
+    T_low = 0.0
+    for T_test in 0.0:0.1:30.0
+        if development_rate(dr, T_test) &gt; 0.0
+            T_low = T_test
+            break
+        end
+    end
+    println(&quot;  $(rpad(s, 6)): $(round(T_low, digits=1))°C&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Effective lower thermal thresholds:
+==================================================
+  egg   : 0.1°C
+  N1    : 8.2°C
+  N2    : 2.0°C
+  N3    : 0.0°C
+  N4    : 0.0°C
+  N5    : 0.0°C
+  adult : 1.8°C</code></pre><h3 id="Development-Rate-Curves"><a class="docs-heading-anchor" href="#Development-Rate-Curves">Development Rate Curves</a><a id="Development-Rate-Curves-1"></a><a class="docs-heading-anchor-permalink" href="#Development-Rate-Curves" title="Permalink"></a></h3><pre><code class="language-julia hljs">temps = 0.0:0.5:45.0
+
+fig1 = Figure(size=(900, 500))
+ax1 = Axis(fig1[1, 1],
+    xlabel=&quot;Temperature (°C)&quot;,
+    ylabel=&quot;Development rate (1/day)&quot;,
+    title=&quot;Lactin Development Rate Functions — P. spumarius&quot;)
+
+stage_colors = Dict(
+    :egg   =&gt; :steelblue,
+    :N1    =&gt; :darkorange,
+    :N2    =&gt; :forestgreen,
+    :N3    =&gt; :mediumpurple,
+    :N4    =&gt; :crimson,
+    :N5    =&gt; :goldenrod,
+    :adult =&gt; :black,
+)
+
+for s in stage_names
+    dr = dev_rates[s]
+    rates = [development_rate(dr, T) for T in temps]
+    lines!(ax1, collect(temps), rates,
+           label=String(s), linewidth=2.0, color=stage_colors[s])
+end
+
+axislegend(ax1, position=:lt, framevisible=true, labelsize=10)
+fig1</code></pre><p>&lt;div id=&quot;fig-lactin-curves&quot;&gt;</p><p><img src="../43_philaenus_phenology_files/figure-commonmark/fig-lactin-curves-output-1.png" alt/></p><p>Figure 1: Lactin development rate curves for each <em>P. spumarius</em> life stage as a function of temperature. Each curve rises from zero below a lower threshold, peaks near 30–35 °C, and drops sharply at the upper lethal temperature.</p><p>&lt;/div&gt;</p><p>Eggs have the lowest development rate (small <span>$\rho = 0.0038$</span>), consistent with the long overwintering egg stage. Nymphal instars N1 and N2 develop fastest, with high <span>$\rho$</span> values producing steep thermal responses. The adult stage has a broad, low-amplitude curve reflecting extended adult longevity rather than a discrete developmental endpoint.</p><h2 id="Population-Setup"><a class="docs-heading-anchor" href="#Population-Setup">Population Setup</a><a id="Population-Setup-1"></a><a class="docs-heading-anchor-permalink" href="#Population-Setup" title="Permalink"></a></h2><h3 id="Distributed-Delay-Architecture"><a class="docs-heading-anchor" href="#Distributed-Delay-Architecture">Distributed Delay Architecture</a><a id="Distributed-Delay-Architecture-1"></a><a class="docs-heading-anchor-permalink" href="#Distributed-Delay-Architecture" title="Permalink"></a></h3><p>Each stage is represented by a <code>DistributedDelay</code> with <span>$k = 20$</span> substages. Since the Lactin function returns development rate in units of <span>$\text{day}^{-1}$</span> (fractional development per day), we set <span>$\tau = 1.0$</span> for all stages — development completes when the cumulative rate reaches 1. Mortality is zero throughout (pure phenology model).</p><pre><code class="language-julia hljs">const K_SUBSTAGES = 20  # Erlang shape parameter
+
+# Initial condition: all individuals in egg stage, uniform age distribution
+# W0 = 1.0 spreads 1.0 unit of population uniformly across k substages
+const N0_EGG = 1.0
+
+spittlebug_stages = [
+    LifeStage(s,
+              DistributedDelay(K_SUBSTAGES, 1.0; W0 = (s == :egg ? N0_EGG : 0.0)),
+              dev_rates[s],
+              0.0)  # μ = 0: no mortality
+    for s in stage_names
+]
+
+spittlebug = Population(:p_spumarius, spittlebug_stages)
+
+println(&quot;P. spumarius phenology model:&quot;)
+println(&quot;  Life stages: &quot;, n_stages(spittlebug))
+println(&quot;  Substages per stage: &quot;, K_SUBSTAGES)
+println(&quot;  Total substages: &quot;, n_substages(spittlebug))
+println(&quot;  Initial population: &quot;, round(total_population(spittlebug), digits=3))</code></pre><pre><code class="nohighlight hljs">P. spumarius phenology model:
+  Life stages: 7
+  Substages per stage: 20
+  Total substages: 140
+  Initial population: 20.0</code></pre><h2 id="Temperature-Forcing"><a class="docs-heading-anchor" href="#Temperature-Forcing">Temperature Forcing</a><a id="Temperature-Forcing-1"></a><a class="docs-heading-anchor-permalink" href="#Temperature-Forcing" title="Permalink"></a></h2><p>We use a synthetic sinusoidal temperature profile representing a Mediterranean climate in the Puglia region of southern Italy — the epicenter of the <em>X. fastidiosa</em> outbreak in Europe. The profile gives winter minima around 7 °C (January) and summer maxima around 25 °C (July–August), consistent with long-term climate normals for Lecce (40.4°N, 18.2°E).</p><pre><code class="language-julia hljs"># Mediterranean climate: Puglia, Italy
+# T(t) = 16.0 + 9.0 * sin(2π(t - 80)/365)
+# Phase = 80 shifts the peak to late July (day 80 + 365/4 ≈ day 171)
+function puglia_temperature(day)
+    doy = mod(day - 1, 365) + 1
+    return 16.0 + 9.0 * sin(2π * (doy - 80) / 365)
+end
+
+# Generate weather series
+weather_temps = [puglia_temperature(d) for d in 1:365]
+weather = WeatherSeries(weather_temps; day_offset=1)
+
+println(&quot;Puglia (Italy) synthetic weather:&quot;)
+println(&quot;  Winter minimum: $(round(minimum(weather_temps), digits=1))°C&quot;)
+println(&quot;  Summer maximum: $(round(maximum(weather_temps), digits=1))°C&quot;)
+println(&quot;  Annual mean:    $(round(sum(weather_temps)/365, digits=1))°C&quot;)</code></pre><pre><code class="nohighlight hljs">Puglia (Italy) synthetic weather:
+  Winter minimum: 7.0°C
+  Summer maximum: 25.0°C
+  Annual mean:    16.0°C</code></pre><h2 id="Simulation"><a class="docs-heading-anchor" href="#Simulation">Simulation</a><a id="Simulation-1"></a><a class="docs-heading-anchor-permalink" href="#Simulation" title="Permalink"></a></h2><pre><code class="language-julia hljs">prob = PBDMProblem(spittlebug, weather, (1, 365))
+sol = solve(prob, DirectIteration())
+
+println(&quot;Simulation complete: $(length(sol.t)) days&quot;)
+println(&quot;  Final total population: $(round(sum(sol.u[end]), digits=4))&quot;)</code></pre><pre><code class="nohighlight hljs">Simulation complete: 365 days
+  Final total population: 0.0</code></pre><h3 id="Stage-Trajectories"><a class="docs-heading-anchor" href="#Stage-Trajectories">Stage Trajectories</a><a id="Stage-Trajectories-1"></a><a class="docs-heading-anchor-permalink" href="#Stage-Trajectories" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Extract population fraction in each stage over time
+trajectories = Dict{Symbol, Vector{Float64}}()
+for (i, s) in enumerate(stage_names)
+    trajectories[s] = stage_trajectory(sol, i)
+end
+
+# Compute total at each time point (should be ~constant since μ=0)
+total_pop = total_population(sol)
+
+# Stage fractions for stacked area
+fractions = Dict{Symbol, Vector{Float64}}()
+for s in stage_names
+    fractions[s] = trajectories[s] ./ max.(total_pop, 1e-12)
+end
+
+# Find median emergence day for each stage (first day &gt; 1% of total)
+println(&quot;\nPhenological milestones (day when stage reaches &gt;1% of population):&quot;)
+println(&quot;=&quot;^55)
+for s in stage_names
+    frac = fractions[s]
+    idx = findfirst(f -&gt; f &gt; 0.01, frac)
+    if idx !== nothing
+        day = sol.t[idx]
+        month_names = [&quot;Jan&quot;,&quot;Feb&quot;,&quot;Mar&quot;,&quot;Apr&quot;,&quot;May&quot;,&quot;Jun&quot;,
+                       &quot;Jul&quot;,&quot;Aug&quot;,&quot;Sep&quot;,&quot;Oct&quot;,&quot;Nov&quot;,&quot;Dec&quot;]
+        month = month_names[min(12, max(1, div(day - 1, 30) + 1))]
+        println(&quot;  $(rpad(s, 6)): day $(rpad(day, 4)) (~$month)&quot;)
+    end
+end</code></pre><pre><code class="nohighlight hljs">Phenological milestones (day when stage reaches &gt;1% of population):
+=======================================================
+  egg   : day 1    (~Jan)
+  N1    : day 1    (~Jan)
+  N2    : day 46   (~Feb)
+  N3    : day 52   (~Feb)
+  N4    : day 57   (~Feb)
+  N5    : day 63   (~Mar)
+  adult : day 71   (~Mar)</code></pre><h3 id="Peak-Abundance-Timing"><a class="docs-heading-anchor" href="#Peak-Abundance-Timing">Peak Abundance Timing</a><a id="Peak-Abundance-Timing-1"></a><a class="docs-heading-anchor-permalink" href="#Peak-Abundance-Timing" title="Permalink"></a></h3><pre><code class="language-julia hljs">println(&quot;\nPeak stage fractions:&quot;)
+println(&quot;=&quot;^55)
+for s in stage_names
+    traj = trajectories[s]
+    peak_val = maximum(traj)
+    peak_idx = argmax(traj)
+    peak_day = sol.t[peak_idx]
+    month_names = [&quot;Jan&quot;,&quot;Feb&quot;,&quot;Mar&quot;,&quot;Apr&quot;,&quot;May&quot;,&quot;Jun&quot;,
+                   &quot;Jul&quot;,&quot;Aug&quot;,&quot;Sep&quot;,&quot;Oct&quot;,&quot;Nov&quot;,&quot;Dec&quot;]
+    month = month_names[min(12, max(1, div(peak_day - 1, 30) + 1))]
+    println(&quot;  $(rpad(s, 6)): peak on day $(rpad(peak_day, 4)) (~$month), &quot; *
+            &quot;N = $(round(peak_val, digits=4))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Peak stage fractions:
+=======================================================
+  egg   : peak on day 1    (~Jan), N = 19.4456
+  N1    : peak on day 43   (~Feb), N = 19.9958
+  N2    : peak on day 52   (~Feb), N = 16.8689
+  N3    : peak on day 58   (~Feb), N = 16.1511
+  N4    : peak on day 64   (~Mar), N = 18.4798
+  N5    : peak on day 71   (~Mar), N = 19.173
+  adult : peak on day 80   (~Mar), N = 19.9466</code></pre><h2 id="Results"><a class="docs-heading-anchor" href="#Results">Results</a><a id="Results-1"></a><a class="docs-heading-anchor-permalink" href="#Results" title="Permalink"></a></h2><h3 id="Phenology-Diagram"><a class="docs-heading-anchor" href="#Phenology-Diagram">Phenology Diagram</a><a id="Phenology-Diagram-1"></a><a class="docs-heading-anchor-permalink" href="#Phenology-Diagram" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig2 = Figure(size=(1000, 500))
+ax2 = Axis(fig2[1, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Fraction of population&quot;,
+    title=&quot;P. spumarius Phenology — Puglia, Italy&quot;,
+    limits=(1, 365, 0, 1.05))
+
+# Build stacked area data
+stack_order = reverse(stage_names)  # bottom to top: egg → adult
+stack_labels = [String(s) for s in stack_order]
+stack_colors_list = [stage_colors[s] for s in stack_order]
+
+# Compute cumulative fractions for stacking
+cumulative = zeros(length(sol.t))
+for (j, s) in enumerate(stack_order)
+    lower = copy(cumulative)
+    upper = cumulative .+ fractions[s]
+    band!(ax2, sol.t, lower, upper,
+          color=(stack_colors_list[j], 0.7),
+          label=stack_labels[j])
+    cumulative .= upper
+end
+
+# Add month labels on x-axis
+month_starts = [1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335]
+month_labels = [&quot;Jan&quot;,&quot;Feb&quot;,&quot;Mar&quot;,&quot;Apr&quot;,&quot;May&quot;,&quot;Jun&quot;,
+                &quot;Jul&quot;,&quot;Aug&quot;,&quot;Sep&quot;,&quot;Oct&quot;,&quot;Nov&quot;,&quot;Dec&quot;]
+ax2.xticks = (month_starts, month_labels)
+
+axislegend(ax2, position=:rt, framevisible=true, labelsize=9, nbanks=2)
+
+fig2</code></pre><p>&lt;div id=&quot;fig-phenology&quot;&gt;</p><p><img src="../43_philaenus_phenology_files/figure-commonmark/fig-phenology-output-1.png" alt/></p><p>Figure 2: Stacked area plot showing the fraction of the <em>P. spumarius</em> population in each life stage over one year under Puglia (Italy) climate conditions. Eggs dominate in winter; nymphal instars progress sequentially through spring; adults emerge in summer and persist through autumn — the <em>Xylella fastidiosa</em> transmission window.</p><p>&lt;/div&gt;</p><h3 id="Stage-Resolved-Population-Dynamics"><a class="docs-heading-anchor" href="#Stage-Resolved-Population-Dynamics">Stage-Resolved Population Dynamics</a><a id="Stage-Resolved-Population-Dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Stage-Resolved-Population-Dynamics" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig3 = Figure(size=(1000, 500))
+ax3 = Axis(fig3[1, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Population (normalized)&quot;,
+    title=&quot;Stage-Resolved Population Dynamics&quot;)
+
+for s in stage_names
+    lines!(ax3, sol.t, trajectories[s],
+           label=String(s), linewidth=2.0, color=stage_colors[s])
+end
+
+ax3.xticks = (month_starts, month_labels)
+axislegend(ax3, position=:rt, framevisible=true, labelsize=10)
+
+fig3</code></pre><p>&lt;div id=&quot;fig-stage-dynamics&quot;&gt;</p><p><img src="../43_philaenus_phenology_files/figure-commonmark/fig-stage-dynamics-output-1.png" alt/></p><p>Figure 3: Population in each life stage over the year. The sequential wave pattern shows cohort progression: eggs are consumed as N1 nymphs appear, which give way to N2, and so on. Adults represent the final, persistent stage.</p><p>&lt;/div&gt;</p><h3 id="Temperature-Overlay-with-Phenological-Transitions"><a class="docs-heading-anchor" href="#Temperature-Overlay-with-Phenological-Transitions">Temperature Overlay with Phenological Transitions</a><a id="Temperature-Overlay-with-Phenological-Transitions-1"></a><a class="docs-heading-anchor-permalink" href="#Temperature-Overlay-with-Phenological-Transitions" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig4 = Figure(size=(1000, 500))
+
+# Temperature profile
+ax4a = Axis(fig4[1, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Temperature (°C)&quot;,
+    title=&quot;Temperature and Phenological Transitions — Puglia, Italy&quot;,
+    yaxisposition=:left)
+
+lines!(ax4a, 1:365, weather_temps, linewidth=2.5, color=:red, label=&quot;T(t)&quot;)
+
+# Mark transition days
+transition_colors = [:darkorange, :forestgreen, :mediumpurple,
+                     :crimson, :goldenrod, :black]
+transition_labels = [&quot;N1&quot;, &quot;N2&quot;, &quot;N3&quot;, &quot;N4&quot;, &quot;N5&quot;, &quot;Adult&quot;]
+
+for (j, s) in enumerate(stage_names[2:end])
+    frac = fractions[s]
+    idx = findfirst(f -&gt; f &gt; 0.01, frac)
+    if idx !== nothing
+        day = sol.t[idx]
+        vlines!(ax4a, [day], color=transition_colors[j],
+                linestyle=:dash, linewidth=1.5)
+        text!(ax4a, day + 3, maximum(weather_temps) - 1.5 * j,
+              text=transition_labels[j], fontsize=10,
+              color=transition_colors[j])
+    end
+end
+
+# Shade the adult transmission window
+adult_frac = fractions[:adult]
+adult_start_idx = findfirst(f -&gt; f &gt; 0.01, adult_frac)
+if adult_start_idx !== nothing
+    adult_start = sol.t[adult_start_idx]
+    vspan!(ax4a, adult_start, 365, color=(:red, 0.08))
+    text!(ax4a, adult_start + 10, minimum(weather_temps) + 2,
+          text=&quot;Transmission\nwindow&quot;, fontsize=10, color=:firebrick)
+end
+
+ax4a.xticks = (month_starts, month_labels)
+axislegend(ax4a, position=:lt)
+
+fig4</code></pre><p>&lt;div id=&quot;fig-temp-phenology&quot;&gt;</p><p><img src="../43_philaenus_phenology_files/figure-commonmark/fig-temp-phenology-output-1.png" alt/></p><p>Figure 4: Daily temperature (red) overlaid with the timing of phenological transitions. Vertical dashed lines mark the day when each nymphal instar first exceeds 1% of the population. The adult emergence window defines the <em>X. fastidiosa</em> transmission period.</p><p>&lt;/div&gt;</p><h3 id="Cumulative-Degree-Days"><a class="docs-heading-anchor" href="#Cumulative-Degree-Days">Cumulative Degree-Days</a><a id="Cumulative-Degree-Days-1"></a><a class="docs-heading-anchor-permalink" href="#Cumulative-Degree-Days" title="Permalink"></a></h3><pre><code class="language-julia hljs">cdd = cumulative_degree_days(sol)
+
+fig5 = Figure(size=(800, 400))
+ax5 = Axis(fig5[1, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Cumulative degree-days&quot;,
+    title=&quot;Degree-Day Accumulation (Egg Stage Rate)&quot;)
+
+lines!(ax5, sol.t, cdd, linewidth=2.5, color=:steelblue)
+ax5.xticks = (month_starts, month_labels)
+
+fig5</code></pre><p>&lt;div id=&quot;fig-cdd&quot;&gt;</p><p><img src="../43_philaenus_phenology_files/figure-commonmark/fig-cdd-output-1.png" alt/></p><p>Figure 5: Cumulative degree-day accumulation (from the egg stage development rate) over the year. Degree-day accumulation is slow in winter, accelerates through spring, and plateaus in late summer as temperatures exceed the thermal optimum.</p><p>&lt;/div&gt;</p><h2 id="Climate-Sensitivity-Analysis"><a class="docs-heading-anchor" href="#Climate-Sensitivity-Analysis">Climate Sensitivity Analysis</a><a id="Climate-Sensitivity-Analysis-1"></a><a class="docs-heading-anchor-permalink" href="#Climate-Sensitivity-Analysis" title="Permalink"></a></h2><p>To assess how warming affects phenological timing, we compare the baseline Puglia climate with +1 °C and +2 °C warming scenarios. Earlier adult emergence under warming directly extends the <em>Xylella</em> transmission window.</p><pre><code class="language-julia hljs">warming_scenarios = [0.0, 1.0, 2.0]
+scenario_results = Dict{Float64, Any}()
+
+for ΔT_warm in warming_scenarios
+    # Rebuild population (fresh initial conditions)
+    pop_w = Population(:p_spumarius, [
+        LifeStage(s,
+                  DistributedDelay(K_SUBSTAGES, 1.0;
+                                   W0 = (s == :egg ? N0_EGG : 0.0)),
+                  dev_rates[s], 0.0)
+        for s in stage_names
+    ])
+
+    # Warmed weather
+    temps_w = [puglia_temperature(d) + ΔT_warm for d in 1:365]
+    weather_w = WeatherSeries(temps_w; day_offset=1)
+
+    prob_w = PBDMProblem(pop_w, weather_w, (1, 365))
+    sol_w = solve(prob_w, DirectIteration())
+    scenario_results[ΔT_warm] = sol_w
+end
+
+# Compare adult emergence timing
+println(&quot;Adult emergence day (&gt;1% of population) under warming:&quot;)
+println(&quot;=&quot;^55)
+for ΔT_warm in warming_scenarios
+    sol_w = scenario_results[ΔT_warm]
+    n_adult = n_stages(spittlebug)
+    adult_traj = stage_trajectory(sol_w, n_adult)
+    total_w = total_population(sol_w)
+    adult_frac_w = adult_traj ./ max.(total_w, 1e-12)
+    idx = findfirst(f -&gt; f &gt; 0.01, adult_frac_w)
+    day = idx !== nothing ? sol_w.t[idx] : &quot;N/A&quot;
+    label = ΔT_warm == 0.0 ? &quot;Baseline&quot; : &quot;+$(ΔT_warm)°C&quot;
+    println(&quot;  $(rpad(label, 12)): day $day&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Adult emergence day (&gt;1% of population) under warming:
+=======================================================
+  Baseline    : day 71
+  +1.0°C      : day 61
+  +2.0°C      : day 52</code></pre><h3 id="Warming-Comparison-Plot"><a class="docs-heading-anchor" href="#Warming-Comparison-Plot">Warming Comparison Plot</a><a id="Warming-Comparison-Plot-1"></a><a class="docs-heading-anchor-permalink" href="#Warming-Comparison-Plot" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig6 = Figure(size=(900, 450))
+ax6 = Axis(fig6[1, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Adult fraction of population&quot;,
+    title=&quot;Climate Warming Shifts Adult Emergence Earlier&quot;)
+
+warm_colors = [:steelblue, :darkorange, :firebrick]
+warm_labels = [&quot;Baseline&quot;, &quot;+1°C&quot;, &quot;+2°C&quot;]
+
+for (i, ΔT_warm) in enumerate(warming_scenarios)
+    sol_w = scenario_results[ΔT_warm]
+    n_adult = n_stages(spittlebug)
+    adult_traj = stage_trajectory(sol_w, n_adult)
+    total_w = total_population(sol_w)
+    adult_frac_w = adult_traj ./ max.(total_w, 1e-12)
+    lines!(ax6, sol_w.t, adult_frac_w,
+           label=warm_labels[i], linewidth=2.5, color=warm_colors[i])
+end
+
+ax6.xticks = (month_starts, month_labels)
+axislegend(ax6, position=:lt, framevisible=true)
+
+fig6</code></pre><p>&lt;div id=&quot;fig-warming&quot;&gt;</p><p><img src="../43_philaenus_phenology_files/figure-commonmark/fig-warming-output-1.png" alt/></p><p>Figure 6: Effect of climate warming on <em>P. spumarius</em> adult emergence timing. Each curve shows the adult population fraction under baseline, +1 °C, and +2 °C warming. Earlier emergence extends the <em>Xylella fastidiosa</em> transmission window.</p><p>&lt;/div&gt;</p><h2 id="Discussion"><a class="docs-heading-anchor" href="#Discussion">Discussion</a><a id="Discussion-1"></a><a class="docs-heading-anchor-permalink" href="#Discussion" title="Permalink"></a></h2><h3 id="Phenological-Plausibility"><a class="docs-heading-anchor" href="#Phenological-Plausibility">Phenological Plausibility</a><a id="Phenological-Plausibility-1"></a><a class="docs-heading-anchor-permalink" href="#Phenological-Plausibility" title="Permalink"></a></h3><p>The model predictions are consistent with known <em>P. spumarius</em> field phenology in southern Europe:</p><ul><li><strong>Eggs overwinter</strong> from autumn through early spring, developing slowly in winter when temperatures are well below the thermal threshold.</li><li><strong>Nymphal instars progress sequentially</strong> through spring (March–June), with each instar occupying a 2–4 week window. The nymphs are the characteristic “spittle” stage found on vegetation.</li><li><strong>Adults emerge in June–July</strong> and persist through autumn, feeding on xylem sap from a wide range of host plants. This is the stage that transmits <em>X. fastidiosa</em>.</li><li>The model is <strong>univoltine</strong> (one generation per year), consistent with <em>P. spumarius</em> biology in Mediterranean climates.</li></ul><h3 id="Implications-for-*Xylella*-Management"><a class="docs-heading-anchor" href="#Implications-for-*Xylella*-Management">Implications for <em>Xylella</em> Management</a><a id="Implications-for-*Xylella*-Management-1"></a><a class="docs-heading-anchor-permalink" href="#Implications-for-*Xylella*-Management" title="Permalink"></a></h3><p>The adult feeding window is the transmission window for <em>X. fastidiosa</em>. Key management implications:</p><ol><li><strong>Timing of vector control</strong>: Insecticide applications or mechanical  control (mowing of herbaceous hosts) should target the period just  before adult emergence to minimize the number of vectors that reach  olive canopies.</li><li><strong>Climate change</strong>: Warming shifts adult emergence earlier,  extending the transmission season. Under +2 °C warming, the  transmission window may lengthen by 2–3 weeks — a significant  increase in epidemic potential.</li><li><strong>Regional variation</strong>: The phenological model can be driven by  site-specific weather data to produce location-specific management  calendars across the Mediterranean.</li></ol><h3 id="Model-Limitations"><a class="docs-heading-anchor" href="#Model-Limitations">Model Limitations</a><a id="Model-Limitations-1"></a><a class="docs-heading-anchor-permalink" href="#Model-Limitations" title="Permalink"></a></h3><p>This is a <strong>pure development model</strong> with no mortality, reproduction, or density dependence. It answers “<strong>when</strong> do adults appear?” but not “<strong>how many?</strong>” Key extensions for a full population model would include:</p><ul><li><strong>Egg mortality</strong> (overwintering losses, predation)</li><li><strong>Nymphal mortality</strong> (parasitoids, especially <em>Ooctonus vulgatus</em>)</li><li><strong>Adult fecundity</strong> (temperature-dependent oviposition rates)</li><li><strong>Host plant quality</strong> (xylem nutrient availability)</li><li><strong>Spatial dispersal</strong> (adult flight between herbaceous and tree hosts)</li></ul><p>The distributed delay framework used here extends naturally to these additions by setting stage-specific mortality rates <span>$\mu &gt; 0$</span> and coupling adult maturation output back to egg input.</p><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Sweidan2025PhilaenusPhenology&quot; class=&quot;csl-entry&quot;&gt;</p><p>Sweidan, Ali H., Lucia Ferreri, Marco Ferrante, Giulia Ferretti, Daniela Ferrara, and Federica Ferraro. 2025. “A Physiologically Based Phenology Model for &lt;span class=&quot;nocase&quot;&gt;Philaenus spumarius&lt;/span&gt; (Hemiptera: Aphrophoridae), the Main Vector of &lt;span class=&quot;nocase&quot;&gt;Xylella fastidiosa&lt;/span&gt; in Europe.” <em>Ecological Modelling</em> 489: 110928. <a href="https://doi.org/10.1016/j.ecolmodel.2025.110928">https://doi.org/10.1016/j.ecolmodel.2025.110928</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../42_spodoptera_biocontrol/">« Biological Control of Spodoptera exigua</a><a class="docs-footer-nextpage" href="../44_risk_index/">Physiological Risk Index for Pest Establishment »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

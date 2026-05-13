@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Bemisia tabaci Invasion Risk in Europe · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Bemisia tabaci Invasion Risk in Europe · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Bemisia tabaci Invasion Risk in Europe · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Bemisia tabaci Invasion Risk in Europe · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/25_bemisia_tabaci/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/25_bemisia_tabaci/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/25_bemisia_tabaci/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li class="is-active"><a class="tocitem" href>Bemisia tabaci Invasion Risk in Europe</a><ul class="internal"><li><a class="tocitem" href="#Introduction"><span>Introduction</span></a></li><li><a class="tocitem" href="#Model-Description"><span>Model Description</span></a></li><li><a class="tocitem" href="#Implementation"><span>Implementation</span></a></li><li><a class="tocitem" href="#Temperature-Response-Curves"><span>Temperature Response Curves</span></a></li><li><a class="tocitem" href="#Stage-Structured-PBDM"><span>Stage-Structured PBDM</span></a></li><li><a class="tocitem" href="#Population-Dynamics:-Mediterranean-vs-Temperate-Europe"><span>Population Dynamics: Mediterranean vs Temperate Europe</span></a></li><li><a class="tocitem" href="#Climate-Warming-Analysis"><span>Climate Warming Analysis</span></a></li><li><a class="tocitem" href="#Key-Insights"><span>Key Insights</span></a></li><li><a class="tocitem" href="#Parameter-Sources"><span>Parameter Sources</span></a></li><li><a class="tocitem" href="#References"><span>References</span></a></li></ul></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Bemisia tabaci Invasion Risk in Europe</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Bemisia tabaci Invasion Risk in Europe</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Bemisia-tabaci-Invasion-Risk-in-Europe"><a class="docs-heading-anchor" href="#Bemisia-tabaci-Invasion-Risk-in-Europe">Bemisia tabaci Invasion Risk in Europe</a><a id="Bemisia-tabaci-Invasion-Risk-in-Europe-1"></a><a class="docs-heading-anchor-permalink" href="#Bemisia-tabaci-Invasion-Risk-in-Europe" title="Permalink"></a></h1><p>PhysiologicallyBasedDemographicModels.jl</p><ul><li><a href="#introduction">Introduction</a><ul><li><a href="#quarantine-status-in-europe">Quarantine status in Europe</a></li><li><a href="#invasion-timeline">Invasion timeline</a></li><li><a href="#the-gilioli-et-al-2014-pbdm-approach">The Gilioli et al. (2014) PBDM approach</a></li></ul></li><li><a href="#model-description">Model Description</a><ul><li><a href="#development-rate">Development rate</a></li><li><a href="#mortality">Mortality</a></li><li><a href="#fecundity">Fecundity</a></li></ul></li><li><a href="#implementation">Implementation</a><ul><li><a href="#development-rate-functions">Development rate functions</a></li><li><a href="#mortality-functions">Mortality functions</a></li><li><a href="#fecundity-function">Fecundity function</a></li></ul></li><li><a href="#temperature-response-curves">Temperature Response Curves</a></li><li><a href="#stage-structured-pbdm">Stage-Structured PBDM</a></li><li><a href="#population-dynamics-mediterranean-vs-temperate-europe">Population Dynamics: Mediterranean vs Temperate Europe</a><ul><li><a href="#population-dynamics-figure">Population dynamics figure</a></li></ul></li><li><a href="#climate-warming-analysis">Climate Warming Analysis</a><ul><li><a href="#latitudinal-transect">Latitudinal transect</a></li><li><a href="#climate-warming-comparison-figure">Climate warming comparison figure</a></li><li><a href="#invasion-risk-index-across-latitudes">Invasion risk index across latitudes</a></li></ul></li><li><a href="#key-insights">Key Insights</a></li><li><a href="#parameter-sources">Parameter Sources</a></li><li><a href="#references">References</a></li></ul><p>Primary reference: (Gilioli et al. 2014).</p><h2 id="Introduction"><a class="docs-heading-anchor" href="#Introduction">Introduction</a><a id="Introduction-1"></a><a class="docs-heading-anchor-permalink" href="#Introduction" title="Permalink"></a></h2><p>The silverleaf whitefly (<em>Bemisia tabaci</em>, Hemiptera: Aleyrodidae) is one of the most damaging invasive agricultural pests worldwide. Originally from tropical and subtropical regions, the species complex comprises over 40 cryptic species, of which the Middle East–Asia Minor 1 (MEAM1, formerly biotype B) is the most invasive and economically important. MEAM1 feeds on over 600 plant species, transmits more than 100 plant viruses (including tomato yellow leaf curl virus), and causes direct feeding damage through phloem sap extraction and honeydew contamination.</p><h3 id="Quarantine-status-in-Europe"><a class="docs-heading-anchor" href="#Quarantine-status-in-Europe">Quarantine status in Europe</a><a id="Quarantine-status-in-Europe-1"></a><a class="docs-heading-anchor-permalink" href="#Quarantine-status-in-Europe" title="Permalink"></a></h3><p><em>Bemisia tabaci</em> is listed as a quarantine pest in the European Union (EFSA, 2013). While the whitefly is established in Mediterranean greenhouse production and in some outdoor habitats in southern Europe, its potential for northward range expansion under climate change is a significant concern. The species cannot survive prolonged freezing, making winter severity the primary limiting factor for outdoor establishment in northern Europe.</p><h3 id="Invasion-timeline"><a class="docs-heading-anchor" href="#Invasion-timeline">Invasion timeline</a><a id="Invasion-timeline-1"></a><a class="docs-heading-anchor-permalink" href="#Invasion-timeline" title="Permalink"></a></h3><table><tr><th style="text-align: right">Year</th><th style="text-align: right">Event</th></tr><tr><td style="text-align: right">1889</td><td style="text-align: right">First described from tobacco in Greece</td></tr><tr><td style="text-align: right">1980s</td><td style="text-align: right">MEAM1 biotype recognized as highly invasive</td></tr><tr><td style="text-align: right">1987–1990</td><td style="text-align: right">MEAM1 invades Americas and Europe</td></tr><tr><td style="text-align: right">1990s</td><td style="text-align: right">Established in Mediterranean greenhouses</td></tr><tr><td style="text-align: right">2000s</td><td style="text-align: right">Outdoor populations in S. Spain, S. Italy, Greece</td></tr><tr><td style="text-align: right">2014</td><td style="text-align: right">Gilioli et al. model European distribution under climate change</td></tr></table><h3 id="The-Gilioli-et-al.-(2014)-PBDM-approach"><a class="docs-heading-anchor" href="#The-Gilioli-et-al.-(2014)-PBDM-approach">The Gilioli et al. (2014) PBDM approach</a><a id="The-Gilioli-et-al.-(2014)-PBDM-approach-1"></a><a class="docs-heading-anchor-permalink" href="#The-Gilioli-et-al.-(2014)-PBDM-approach" title="Permalink"></a></h3><p>Gilioli et al. (2014) developed a physiologically based demographic model (PBDM) to assess the potential distribution of <em>B. tabaci</em> MEAM1 in Europe under current and future climate scenarios. The model uses:</p><ol><li>A <strong>von Foerster partial differential equation</strong> framework for  age-structured population dynamics in physiological time</li><li><strong>Brière-type nonlinear development rate</strong> functions fitted to  laboratory data</li><li><strong>Polynomial survival functions</strong> capturing U-shaped  temperature-dependent mortality</li><li><strong>Dome-shaped fecundity</strong> as a function of temperature</li><li>Climate projections: baseline (1950–2000) plus uniform <strong>+1°C</strong> and  <strong>+2°C</strong> warming scenarios</li></ol><p><strong>References:</strong></p><ul><li>Gilioli, G., Pasquali, S. and Marchesini, E. (2014). <em>Modelling the potential distribution of Bemisia tabaci in Europe in light of the climate change scenario.</em> Pest Management Science 70:1611–1623.</li><li>EFSA Panel on Plant Health (2013). <em>Scientific Opinion on the risks to plant health posed by Bemisia tabaci species complex.</em> EFSA Journal 11(4):3162.</li></ul><h2 id="Model-Description"><a class="docs-heading-anchor" href="#Model-Description">Model Description</a><a id="Model-Description-1"></a><a class="docs-heading-anchor-permalink" href="#Model-Description" title="Permalink"></a></h2><p>The PBDM follows the distributed maturation time framework of Manetsch (1976) and Vansickle (1977), discretized from the continuous von Foerster PDE. The population is structured into life stages, each governed by:</p><p class="math-container">\[\frac{\partial \phi_i(t,x)}{\partial t} + \sigma_i(T) \frac{\partial \phi_i(t,x)}{\partial x} + \mu_i(T) \phi_i(t,x) = 0\]</p><p>where <span>$\phi_i(t,x)$</span> is the age density in stage <span>$i$</span>, <span>$\sigma_i(T)$</span> is the temperature-dependent development rate, <span>$\mu_i(T)$</span> is the mortality rate, and <span>$x \in [0,1]$</span> is the physiological age within the stage.</p><h3 id="Development-rate"><a class="docs-heading-anchor" href="#Development-rate">Development rate</a><a id="Development-rate-1"></a><a class="docs-heading-anchor-permalink" href="#Development-rate" title="Permalink"></a></h3><p>Development is modeled with a Brière et al. (1999) nonlinear function:</p><p class="math-container">\[\sigma(T) = a \cdot T \cdot (T - T_\text{inf}) \cdot \sqrt{T_\text{sup} - T}\]</p><p>for <span>$T \in [T_\text{inf}, T_\text{sup}]$</span>, and <span>$\sigma(T) = 0$</span> otherwise.</p><h3 id="Mortality"><a class="docs-heading-anchor" href="#Mortality">Mortality</a><a id="Mortality-1"></a><a class="docs-heading-anchor-permalink" href="#Mortality" title="Permalink"></a></h3><p>Within the viable temperature range, daily survival probability is a quadratic:</p><p class="math-container">\[\text{sur}(T) = p_1 T^2 + p_2 T + p_3\]</p><p>The temperature-dependent mortality rate combines the survival function with the development rate:</p><p class="math-container">\[\mu(T) = \begin{cases}
+-\sigma(T) \cdot \log[\text{sur}(T)] &amp; T \in [T_\text{inf}, T_\text{sup}] \\
+-\sigma(T_\text{inf}) \cdot \log[\text{sur}(T_\text{inf})] \cdot (T_\text{inf} - T + 1) &amp; T &lt; T_\text{inf} \\
+-\sigma(T_\text{sup}) \cdot \log[\text{sur}(T_\text{sup})] \cdot (T - T_\text{sup} + 1) &amp; T &gt; T_\text{sup}
+\end{cases}\]</p><p>A constant baseline mortality of 0.03 day⁻¹ is added.</p><h3 id="Fecundity"><a class="docs-heading-anchor" href="#Fecundity">Fecundity</a><a id="Fecundity-1"></a><a class="docs-heading-anchor-permalink" href="#Fecundity" title="Permalink"></a></h3><p>Temperature-dependent fecundity follows a truncated dome:</p><p class="math-container">\[\text{fec}(T) = \alpha \cdot \max\!\left[1 - \left(\frac{T - T_\text{min} - T_\text{mid}}{T_\text{mid}}\right)^2,\; 0\right]\]</p><p>with peak fecundity <span>$\alpha = 143.53$</span> eggs female⁻¹ day⁻¹ at <span>$T_\text{opt} = T_\text{min} + T_\text{mid} = 24.53$</span>°C.</p><h2 id="Implementation"><a class="docs-heading-anchor" href="#Implementation">Implementation</a><a id="Implementation-1"></a><a class="docs-heading-anchor-permalink" href="#Implementation" title="Permalink"></a></h2><p>We implement the <em>B. tabaci</em> PBDM using the distributed delay framework from <code>PhysiologicallyBasedDemographicModels.jl</code>. Following Gilioli et al. (2014), the model has two aggregate stages — immature (egg through N4) and adult — each with its own Brière development rate and polynomial survival function.</p><h3 id="Development-rate-functions"><a class="docs-heading-anchor" href="#Development-rate-functions">Development rate functions</a><a id="Development-rate-functions-1"></a><a class="docs-heading-anchor-permalink" href="#Development-rate-functions" title="Permalink"></a></h3><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+
+# --- Brière development rate parameters (Gilioli et al. 2014, Table A1) ---
+# σ(T) = a * T * (T - T_inf) * sqrt(T_sup - T)
+
+# Immature stage (egg + nymphs N1-N4 combined)
+immature_dev = BriereDevelopmentRate(3.502e-5, 9.67, 37.05)
+
+# Adult stage (ageing / lifespan)
+adult_dev = BriereDevelopmentRate(5.112e-5, 12.07, 36.26)
+
+# Verify development rates at key temperatures
+println(&quot;Bemisia tabaci development rates (Gilioli et al. 2014, Table A1):&quot;)
+println(&quot;=&quot;^65)
+println(&quot;  T (°C)  |  Immature r(T)  |  Adult r(T)  |  Imm. time (d)&quot;)
+println(&quot;-&quot;^65)
+for T in [10.0, 15.0, 20.0, 25.0, 27.0, 30.0, 33.0, 35.0, 37.0]
+    ri = development_rate(immature_dev, T)
+    ra = development_rate(adult_dev, T)
+    d_imm = ri &gt; 0 ? round(1.0 / ri, digits=1) : Inf
+    println(&quot;  $(lpad(T, 5))   |   $(lpad(round(ri, digits=6), 9))    |&quot; *
+            &quot;  $(lpad(round(ra, digits=6), 9))  |   $(d_imm)&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Bemisia tabaci development rates (Gilioli et al. 2014, Table A1):
+=================================================================
+  T (°C)  |  Immature r(T)  |  Adult r(T)  |  Imm. time (d)
+-----------------------------------------------------------------
+   10.0   |    0.000601    |        0.0  |   1663.7
+   15.0   |    0.013147    |   0.010359  |   76.1
+   20.0   |    0.029875    |   0.032693  |   33.5
+   25.0   |     0.04659    |    0.05545  |   21.5
+   27.0   |    0.051947    |   0.062708  |   19.3
+   30.0   |    0.056711    |   0.068799  |   17.6
+   33.0   |    0.054259    |    0.06375  |   18.4
+   35.0   |    0.044453    |   0.046052  |   22.5
+   37.0   |    0.007918    |        0.0  |   126.3</code></pre><h3 id="Mortality-functions"><a class="docs-heading-anchor" href="#Mortality-functions">Mortality functions</a><a id="Mortality-functions-1"></a><a class="docs-heading-anchor-permalink" href="#Mortality-functions" title="Permalink"></a></h3><pre><code class="language-julia hljs"># --- Temperature-dependent mortality (Gilioli et al. 2014, Table A2) ---
+# Survival: sur(T) = p₁T² + p₂T + p₃
+# Mortality: μ(T) = -σ(T) * log(sur(T)) within [T_inf, T_sup]
+
+# Immature survival parameters
+const IMM_P1 = -0.002194
+const IMM_P2 = 0.0997
+const IMM_P3 = -0.4587
+const IMM_T_INF_MORT = 10.0
+const IMM_T_SUP_MORT = 37.049
+
+# Adult survival parameters
+const ADT_P1 = -0.003227
+const ADT_P2 = 0.1549
+const ADT_P3 = -1.3541
+const ADT_T_INF_MORT = 12.4
+const ADT_T_SUP_MORT = 36.259
+
+# Baseline mortality
+const MU_BASE = 0.03
+
+function survival_prob(T, p1, p2, p3)
+    s = p1 * T^2 + p2 * T + p3
+    return clamp(s, 0.001, 0.999)
+end
+
+function bemisia_mortality(T, dev_rate_model, p1, p2, p3, T_inf, T_sup)
+    σ_inf = development_rate(dev_rate_model, max(T_inf, dev_rate_model.T_lower + 0.1))
+    σ_sup = development_rate(dev_rate_model, min(T_sup, dev_rate_model.T_upper - 0.1))
+
+    if T &lt; T_inf
+        sur_inf = survival_prob(T_inf, p1, p2, p3)
+        μ_boundary = σ_inf &gt; 0 ? -σ_inf * log(sur_inf) : 0.0
+        return MU_BASE + μ_boundary * (T_inf - T + 1)
+    elseif T &gt; T_sup
+        sur_sup = survival_prob(T_sup, p1, p2, p3)
+        μ_boundary = σ_sup &gt; 0 ? -σ_sup * log(sur_sup) : 0.0
+        return MU_BASE + μ_boundary * (T - T_sup + 1)
+    else
+        σ_T = development_rate(dev_rate_model, T)
+        sur = survival_prob(T, p1, p2, p3)
+        return MU_BASE + (σ_T &gt; 0 ? -σ_T * log(sur) : 0.0)
+    end
+end
+
+function bemisia_immature_mortality(T)
+    bemisia_mortality(T, immature_dev, IMM_P1, IMM_P2, IMM_P3,
+                      IMM_T_INF_MORT, IMM_T_SUP_MORT)
+end
+
+function bemisia_adult_mortality(T)
+    bemisia_mortality(T, adult_dev, ADT_P1, ADT_P2, ADT_P3,
+                      ADT_T_INF_MORT, ADT_T_SUP_MORT)
+end
+
+println(&quot;Temperature-dependent mortality rate (day⁻¹):&quot;)
+println(&quot;T (°C)  |  Immature μ(T)  |  Adult μ(T)  |  Imm. daily surv.&quot;)
+println(&quot;-&quot;^60)
+for T in [0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 27.0, 30.0, 33.0, 35.0, 38.0]
+    μi = bemisia_immature_mortality(T)
+    μa = bemisia_adult_mortality(T)
+    surv = exp(-μi)
+    println(&quot;  $(lpad(T, 5))  |    $(lpad(round(μi, digits=4), 7))    |&quot; *
+            &quot;  $(lpad(round(μa, digits=4), 7))  |   $(round(surv, digits=4))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Temperature-dependent mortality rate (day⁻¹):
+T (°C)  |  Immature μ(T)  |  Adult μ(T)  |  Imm. daily surv.
+------------------------------------------------------------
+    0.0  |     0.0376    |   0.0663  |   0.9631
+    5.0  |     0.0341    |   0.0528  |   0.9665
+   10.0  |     0.0307    |   0.0392  |   0.9698
+   15.0  |      0.038    |   0.0446  |   0.9627
+   20.0  |     0.0425    |   0.0559  |   0.9584
+   25.0  |     0.0492    |   0.0683  |   0.952
+   27.0  |     0.0537    |   0.0766  |   0.9477
+   30.0  |     0.0631    |    0.095  |   0.9388
+   33.0  |     0.0743    |   0.1201  |   0.9284
+   35.0  |     0.0775    |   0.1299  |   0.9254
+   38.0  |     0.0626    |   0.1813  |   0.9393</code></pre><h3 id="Fecundity-function"><a class="docs-heading-anchor" href="#Fecundity-function">Fecundity function</a><a id="Fecundity-function-1"></a><a class="docs-heading-anchor-permalink" href="#Fecundity-function" title="Permalink"></a></h3><pre><code class="language-julia hljs"># --- Fecundity (Gilioli et al. 2014, Table A3) ---
+# fec(T) = α * max(1 - ((T - T_min - T_mid) / T_mid)², 0)
+const FEC_ALPHA = 143.53   # peak fecundity (eggs female⁻¹ day⁻¹)
+const FEC_T_MIN = 13.42    # lower temperature limit (°C)
+const FEC_T_MID = 11.11    # half-width of dome (°C)
+const FEC_T_OPT = FEC_T_MIN + FEC_T_MID  # 24.53°C
+
+function bemisia_fecundity(T)
+    z = (T - FEC_T_OPT) / FEC_T_MID
+    return FEC_ALPHA * max(1.0 - z^2, 0.0)
+end
+
+println(&quot;Temperature-dependent fecundity (eggs female⁻¹ day⁻¹):&quot;)
+println(&quot;T (°C)  |  fec(T)  |  Interpretation&quot;)
+println(&quot;-&quot;^55)
+for T in [10.0, 13.5, 15.0, 18.0, 20.0, 22.0, 24.5, 27.0, 30.0, 33.0, 36.0]
+    f = bemisia_fecundity(T)
+    interp = f &gt; 120 ? &quot;Near optimal&quot; :
+             f &gt; 60  ? &quot;High&quot; :
+             f &gt; 20  ? &quot;Moderate&quot; :
+             f &gt; 0   ? &quot;Low&quot; : &quot;None&quot;
+    println(&quot;  $(lpad(T, 5)) |  $(lpad(round(f, digits=1), 6))  | $interp&quot;)
+end
+
+println(&quot;\nFecundity range: $(FEC_T_MIN)°C to $(round(FEC_T_MIN + 2*FEC_T_MID, digits=2))°C&quot;)
+println(&quot;Peak: $(FEC_ALPHA) eggs/female/day at $(FEC_T_OPT)°C&quot;)</code></pre><pre><code class="nohighlight hljs">Temperature-dependent fecundity (eggs female⁻¹ day⁻¹):
+T (°C)  |  fec(T)  |  Interpretation
+-------------------------------------------------------
+   10.0 |     0.0  | None
+   13.5 |     2.1  | Low
+   15.0 |    37.9  | Moderate
+   18.0 |    93.9  | High
+   20.0 |   119.7  | High
+   22.0 |   136.1  | Near optimal
+   24.5 |   143.5  | Near optimal
+   27.0 |   136.4  | Near optimal
+   30.0 |   108.7  | High
+   33.0 |    60.1  | High
+   36.0 |     0.0  | None
+
+Fecundity range: 13.42°C to 35.64°C
+Peak: 143.53 eggs/female/day at 24.53°C</code></pre><h2 id="Temperature-Response-Curves"><a class="docs-heading-anchor" href="#Temperature-Response-Curves">Temperature Response Curves</a><a id="Temperature-Response-Curves-1"></a><a class="docs-heading-anchor-permalink" href="#Temperature-Response-Curves" title="Permalink"></a></h2><pre><code class="language-julia hljs">using CairoMakie
+
+fig = Figure(size=(1000, 900))
+
+T_range = collect(0.0:0.5:42.0)
+
+# --- Panel A: Development rate ---
+ax1 = Axis(fig[1, 1],
+           xlabel=&quot;Temperature (°C)&quot;,
+           ylabel=&quot;Development rate (day⁻¹)&quot;,
+           title=&quot;(a) Development Rate — Brière Function&quot;)
+
+ri = [development_rate(immature_dev, T) for T in T_range]
+ra = [development_rate(adult_dev, T) for T in T_range]
+
+lines!(ax1, T_range, ri, color=:forestgreen, linewidth=2.5,
+       label=&quot;Immature (egg + N1–N4)&quot;)
+lines!(ax1, T_range, ra, color=:darkorange, linewidth=2.5,
+       label=&quot;Adult (ageing)&quot;)
+
+vlines!(ax1, [9.67], color=:forestgreen, linestyle=:dash, linewidth=0.8)
+vlines!(ax1, [12.07], color=:darkorange, linestyle=:dash, linewidth=0.8)
+vlines!(ax1, [37.05], color=:forestgreen, linestyle=:dot, linewidth=0.8)
+
+axislegend(ax1, position=:lt, framevisible=false)
+
+# --- Panel B: Mortality rate ---
+ax2 = Axis(fig[1, 2],
+           xlabel=&quot;Temperature (°C)&quot;,
+           ylabel=&quot;Mortality rate (day⁻¹)&quot;,
+           title=&quot;(b) Temperature-Dependent Mortality&quot;)
+
+μi = [bemisia_immature_mortality(T) for T in T_range]
+μa = [bemisia_adult_mortality(T) for T in T_range]
+
+lines!(ax2, T_range, μi, color=:forestgreen, linewidth=2.5,
+       label=&quot;Immature&quot;)
+lines!(ax2, T_range, μa, color=:darkorange, linewidth=2.5,
+       label=&quot;Adult&quot;)
+hlines!(ax2, [MU_BASE], color=:gray, linestyle=:dash, linewidth=0.8,
+        label=&quot;Baseline (0.03)&quot;)
+
+axislegend(ax2, position=:rt, framevisible=false)
+
+# --- Panel C: Fecundity ---
+ax3 = Axis(fig[2, 1],
+           xlabel=&quot;Temperature (°C)&quot;,
+           ylabel=&quot;Fecundity (eggs female⁻¹ day⁻¹)&quot;,
+           title=&quot;(c) Temperature-Dependent Fecundity&quot;)
+
+fec = [bemisia_fecundity(T) for T in T_range]
+
+band!(ax3, T_range, zeros(length(T_range)), fec,
+      color=(:mediumpurple, 0.3))
+lines!(ax3, T_range, fec, color=:purple, linewidth=2.5)
+
+vlines!(ax3, [FEC_T_OPT], color=:red, linestyle=:dash, linewidth=1,
+        label=&quot;T_opt = $(FEC_T_OPT)°C&quot;)
+scatter!(ax3, [FEC_T_OPT], [FEC_ALPHA], color=:red, markersize=10)
+text!(ax3, FEC_T_OPT + 0.5, FEC_ALPHA - 10,
+      text=&quot;$(FEC_ALPHA) eggs/♀/day&quot;, fontsize=10)
+
+axislegend(ax3, position=:rt, framevisible=false)
+
+# --- Panel D: Daily survival ---
+ax4 = Axis(fig[2, 2],
+           xlabel=&quot;Temperature (°C)&quot;,
+           ylabel=&quot;Daily survival probability&quot;,
+           title=&quot;(d) Daily Survival Probability&quot;)
+
+surv_i = [exp(-bemisia_immature_mortality(T)) for T in T_range]
+surv_a = [exp(-bemisia_adult_mortality(T)) for T in T_range]
+
+lines!(ax4, T_range, surv_i, color=:forestgreen, linewidth=2.5,
+       label=&quot;Immature&quot;)
+lines!(ax4, T_range, surv_a, color=:darkorange, linewidth=2.5,
+       label=&quot;Adult&quot;)
+hlines!(ax4, [0.5], color=:gray, linestyle=:dot, linewidth=0.8)
+
+axislegend(ax4, position=:rb, framevisible=false)
+
+Label(fig[0, :], &quot;Bemisia tabaci MEAM1 — Biodemographic Functions (Gilioli et al. 2014)&quot;,
+      fontsize=16, font=:bold)
+
+fig</code></pre><p><img src="../25_bemisia_tabaci_files/figure-commonmark/cell-5-output-1.png" alt/></p><h2 id="Stage-Structured-PBDM"><a class="docs-heading-anchor" href="#Stage-Structured-PBDM">Stage-Structured PBDM</a><a id="Stage-Structured-PBDM-1"></a><a class="docs-heading-anchor-permalink" href="#Stage-Structured-PBDM" title="Permalink"></a></h2><p>We build the distributed delay model using the package’s <code>LifeStage</code>, <code>DistributedDelay</code>, and <code>Population</code> types. Following Gilioli et al. (2014), the model has two aggregate stages: immature (egg through N4) and adult. The Brière development parameters define the temperature-dependent flow through each stage.</p><p>For the distributed delay, the stage completes when cumulative development rate <span>$\sum \sigma(T_d) = 1.0$</span> (one full unit of physiological age). The Erlang <span>$k$</span> parameter controls the variance of developmental times — higher <span>$k$</span> gives a tighter distribution (CV <span>$\approx 1/\sqrt{k}$</span>).</p><pre><code class="language-julia hljs"># Stage completion requires cumulative σ(T) = τ = 1.0
+const TAU_IMMATURE = 1.0   # one full stage traversal
+const TAU_ADULT    = 1.0   # one full adult lifespan
+
+# Erlang substages: k ≈ 25–45 for CV ≈ 0.15–0.20
+const K_IMMATURE = 30
+const K_ADULT    = 20
+
+# Background mortality rate per degree-day unit
+const MU_IMM_DD = 0.03
+const MU_ADT_DD = 0.04
+
+bemisia_stages = [
+    LifeStage(:immature, DistributedDelay(K_IMMATURE, TAU_IMMATURE; W0=0.0),
+              immature_dev, MU_IMM_DD),
+    LifeStage(:adult,    DistributedDelay(K_ADULT, TAU_ADULT; W0=10.0),
+              adult_dev, MU_ADT_DD),
+]
+
+bemisia_pop = Population(:bemisia_tabaci, bemisia_stages)
+
+println(&quot;Bemisia tabaci PBDM:&quot;)
+println(&quot;  Stages: &quot;, n_stages(bemisia_pop))
+println(&quot;  Total substages: &quot;, n_substages(bemisia_pop))
+println(&quot;  Initial population: &quot;, total_population(bemisia_pop))
+
+for stage in bemisia_pop.stages
+    d = stage.delay
+    println(&quot;  $(stage.name): k=$(d.k), τ=$(d.τ), &quot; *
+            &quot;σ²=$(round(delay_variance(d), digits=4)), μ=$(stage.μ)/DD&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Bemisia tabaci PBDM:
+  Stages: 2
+  Total substages: 50
+  Initial population: 200.0
+  immature: k=30, τ=1.0, σ²=0.0333, μ=0.03/DD
+  adult: k=20, τ=1.0, σ²=0.05, μ=0.04/DD</code></pre><h2 id="Population-Dynamics:-Mediterranean-vs-Temperate-Europe"><a class="docs-heading-anchor" href="#Population-Dynamics:-Mediterranean-vs-Temperate-Europe">Population Dynamics: Mediterranean vs Temperate Europe</a><a id="Population-Dynamics:-Mediterranean-vs-Temperate-Europe-1"></a><a class="docs-heading-anchor-permalink" href="#Population-Dynamics:-Mediterranean-vs-Temperate-Europe" title="Permalink"></a></h2><p>We simulate the whitefly’s population dynamics under representative climate profiles from two contrasting European regions:</p><ol><li><strong>Mediterranean (Rome-like, ~42°N)</strong>: warm summers, mild winters;  mean ~16°C, amplitude ~9°C. Outdoor establishment possible.</li><li><strong>Temperate (London-like, ~51°N)</strong>: cool summers, cold winters; mean  ~11°C, amplitude ~7°C. Winter limits persistence.</li></ol><pre><code class="language-julia hljs"># Define representative climates
+climates = [
+    (&quot;Mediterranean (Rome, 42°N)&quot;,  16.0, 9.0),
+    (&quot;Temperate (London, 51°N)&quot;,    11.0, 7.0),
+]
+
+results = Dict{String, Any}()
+
+for (name, T_mean, amplitude) in climates
+    sw = SinusoidalWeather(T_mean, amplitude; phase=200.0)
+
+    # Fresh population for each location
+    stages = [
+        LifeStage(:immature, DistributedDelay(K_IMMATURE, TAU_IMMATURE; W0=0.0),
+                  immature_dev, MU_IMM_DD),
+        LifeStage(:adult,    DistributedDelay(K_ADULT, TAU_ADULT; W0=10.0),
+                  adult_dev, MU_ADT_DD),
+    ]
+    pop = Population(:bemisia, stages)
+
+    # Simulate two full years (730 days)
+    n_sim = 730
+    weather_days = [get_weather(sw, d) for d in 1:n_sim]
+    ws = WeatherSeries(weather_days; day_offset=1)
+
+    prob = PBDMProblem(pop, ws, (1, n_sim))
+    sol = solve(prob, DirectIteration())
+
+    cdd = cumulative_degree_days(sol)
+    total_pop = total_population(sol)
+    peak_pop = maximum(total_pop)
+    final_pop = total_pop[end]
+
+    results[name] = (sol=sol, cdd=cdd, peak=peak_pop, final_pop=final_pop,
+                     total_pop=total_pop, T_mean=T_mean, amplitude=amplitude)
+
+    # Count days above the immature lower threshold
+    active_days = sum(1 for d in 1:365 if
+        get_weather(sw, d).T_mean &gt; 9.67)
+    cold_days = 365 - active_days
+
+    println(&quot;$name:&quot;)
+    println(&quot;  Active growing days: $active_days / 365&quot;)
+    println(&quot;  Cold-limited days:   $cold_days&quot;)
+    println(&quot;  Peak population:     $(round(peak_pop, digits=1))&quot;)
+    println(&quot;  Final population:    $(round(final_pop, digits=1))&quot;)
+    println()
+end</code></pre><pre><code class="nohighlight hljs">Mediterranean (Rome, 42°N):
+  Active growing days: 273 / 365
+  Cold-limited days:   92
+  Peak population:     194.6
+  Final population:    0.0
+
+Temperate (London, 51°N):
+  Active growing days: 205 / 365
+  Cold-limited days:   160
+  Peak population:     199.4
+  Final population:    0.0</code></pre><h3 id="Population-dynamics-figure"><a class="docs-heading-anchor" href="#Population-dynamics-figure">Population dynamics figure</a><a id="Population-dynamics-figure-1"></a><a class="docs-heading-anchor-permalink" href="#Population-dynamics-figure" title="Permalink"></a></h3><pre><code class="language-julia hljs">using CairoMakie
+
+fig = Figure(size=(1000, 700))
+
+plot_locations = [
+    (&quot;Mediterranean (Rome, 42°N)&quot;, 16.0, 9.0),
+    (&quot;Temperate (London, 51°N)&quot;,   11.0, 7.0),
+]
+
+for (idx, (name, T_mean, amplitude)) in enumerate(plot_locations)
+    sw = SinusoidalWeather(T_mean, amplitude; phase=200.0)
+
+    stages = [
+        LifeStage(:immature, DistributedDelay(K_IMMATURE, TAU_IMMATURE; W0=0.0),
+                  immature_dev, MU_IMM_DD),
+        LifeStage(:adult,    DistributedDelay(K_ADULT, TAU_ADULT; W0=10.0),
+                  adult_dev, MU_ADT_DD),
+    ]
+    pop = Population(:bemisia, stages)
+
+    ws = WeatherSeries([get_weather(sw, d) for d in 1:365]; day_offset=1)
+    prob = PBDMProblem(pop, ws, (1, 365))
+    sol = solve(prob, DirectIteration())
+
+    # Temperature profile
+    temps = [get_weather(sw, d).T_mean for d in 1:365]
+
+    # Stage trajectories
+    imm_traj   = stage_trajectory(sol, 1)
+    adult_traj = stage_trajectory(sol, 2)
+    days = sol.t
+
+    # Left panel: population dynamics
+    ax = Axis(fig[idx, 1], title=name,
+              xlabel= idx == 2 ? &quot;Day of year&quot; : &quot;&quot;,
+              ylabel=&quot;Population (individuals)&quot;)
+
+    lines!(ax, days, imm_traj, label=&quot;Immature (egg + N1–N4)&quot;,
+           color=:forestgreen, linewidth=2)
+    lines!(ax, days, adult_traj, label=&quot;Adult&quot;,
+           color=:darkorange, linewidth=2)
+
+    if idx == 1
+        axislegend(ax, position=:rt, framevisible=false)
+    end
+
+    # Right panel: temperature
+    ax2 = Axis(fig[idx, 2],
+               xlabel= idx == 2 ? &quot;Day of year&quot; : &quot;&quot;,
+               ylabel=&quot;Temperature (°C)&quot;)
+
+    lines!(ax2, 1:365, temps, color=:steelblue, linewidth=1.5,
+           label=&quot;Daily T&quot;)
+    hlines!(ax2, [9.67], color=:forestgreen, linestyle=:dash, linewidth=1,
+            label=&quot;T_inf imm. = 9.67°C&quot;)
+    hlines!(ax2, [12.07], color=:darkorange, linestyle=:dash, linewidth=1,
+            label=&quot;T_inf adult = 12.07°C&quot;)
+
+    # Shade cold-stress periods (below immature lower threshold)
+    cold_mask = temps .&lt; 9.67
+    for d in 1:365
+        if cold_mask[d]
+            vspan!(ax2, d - 0.5, d + 0.5, color=(:lightblue, 0.3))
+        end
+    end
+
+    if idx == 1
+        axislegend(ax2, position=:rb, framevisible=false, labelsize=9)
+    end
+end
+
+Label(fig[0, :],
+      &quot;Bemisia tabaci Population Dynamics: Mediterranean vs Temperate Europe&quot;,
+      fontsize=16, font=:bold)
+
+fig</code></pre><p><img src="../25_bemisia_tabaci_files/figure-commonmark/cell-8-output-1.png" alt/></p><h2 id="Climate-Warming-Analysis"><a class="docs-heading-anchor" href="#Climate-Warming-Analysis">Climate Warming Analysis</a><a id="Climate-Warming-Analysis-1"></a><a class="docs-heading-anchor-permalink" href="#Climate-Warming-Analysis" title="Permalink"></a></h2><p>Gilioli et al. (2014) assessed invasion risk under baseline conditions and two warming scenarios (+1°C and +2°C uniform warming). Their key finding was that even under +2°C, <em>B. tabaci</em> cannot establish outdoor populations in most of northern Europe, though the suitable area in southern Europe expands considerably.</p><h3 id="Latitudinal-transect"><a class="docs-heading-anchor" href="#Latitudinal-transect">Latitudinal transect</a><a id="Latitudinal-transect-1"></a><a class="docs-heading-anchor-permalink" href="#Latitudinal-transect" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Scan a latitude gradient to build a 1-D invasion risk transect
+println(&quot;Invasion risk transect: European latitudinal gradient&quot;)
+println(&quot;=&quot;^75)
+println(&quot;Latitude | Mean T | Scenario  | Active days | Peak pop.  | Risk&quot;)
+println(&quot;-&quot;^75)
+
+for lat in [33.0, 36.0, 39.0, 42.0, 45.0, 48.0, 51.0, 54.0]
+    # Latitude–temperature approximation for Europe
+    T_mean = 22.0 - 0.30 * (lat - 33.0)
+    amplitude = 6.0 + 0.20 * (lat - 33.0)
+
+    for (scenario, ΔT) in [(&quot;Baseline&quot;, 0.0), (&quot;+1°C&quot;, 1.0), (&quot;+2°C&quot;, 2.0)]
+        sw = SinusoidalWeather(T_mean + ΔT, amplitude; phase=200.0)
+
+        stages = [
+            LifeStage(:immature, DistributedDelay(K_IMMATURE, TAU_IMMATURE; W0=0.0),
+                      immature_dev, MU_IMM_DD),
+            LifeStage(:adult,    DistributedDelay(K_ADULT, TAU_ADULT; W0=10.0),
+                      adult_dev, MU_ADT_DD),
+        ]
+        pop = Population(:bemisia, stages)
+
+        ws = WeatherSeries([get_weather(sw, d) for d in 1:365]; day_offset=1)
+        prob = PBDMProblem(pop, ws, (1, 365))
+        sol = solve(prob, DirectIteration())
+
+        total_pop = total_population(sol)
+        peak_pop = maximum(total_pop)
+        active = sum(1 for d in 1:365 if
+            get_weather(sw, d).T_mean &gt; 9.67)
+
+        risk = peak_pop &gt; 100 ? &quot;High&quot; :
+               peak_pop &gt; 10  ? &quot;Moderate&quot; :
+               peak_pop &gt; 1   ? &quot;Low&quot; : &quot;Negligible&quot;
+
+        println(&quot;  $(lpad(lat, 4))°N  | $(lpad(round(T_mean + ΔT, digits=1), 5))°C |&quot; *
+                &quot; $(rpad(scenario, 9)) |    $(lpad(active, 3))      |&quot; *
+                &quot;  $(lpad(round(peak_pop, digits=1), 8)) | $risk&quot;)
+    end
+    println()
+end</code></pre><pre><code class="nohighlight hljs">Invasion risk transect: European latitudinal gradient
+===========================================================================
+Latitude | Mean T | Scenario  | Active days | Peak pop.  | Risk
+---------------------------------------------------------------------------
+  33.0°N  |  22.0°C | Baseline  |    365      |     189.6 | High
+  33.0°N  |  23.0°C | +1°C      |    365      |     188.7 | High
+  33.0°N  |  24.0°C | +2°C      |    365      |     187.9 | High
+
+  36.0°N  |  21.1°C | Baseline  |    365      |     190.3 | High
+  36.0°N  |  22.1°C | +1°C      |    365      |     189.4 | High
+  36.0°N  |  23.1°C | +2°C      |    365      |     188.5 | High
+
+  39.0°N  |  20.2°C | Baseline  |    365      |     191.0 | High
+  39.0°N  |  21.2°C | +1°C      |    365      |     190.1 | High
+  39.0°N  |  22.2°C | +2°C      |    365      |     189.2 | High
+
+  42.0°N  |  19.3°C | Baseline  |    365      |     191.7 | High
+  42.0°N  |  20.3°C | +1°C      |    365      |     190.8 | High
+  42.0°N  |  21.3°C | +2°C      |    365      |     189.8 | High
+
+  45.0°N  |  18.4°C | Baseline  |    365      |     192.5 | High
+  45.0°N  |  19.4°C | +1°C      |    365      |     191.5 | High
+  45.0°N  |  20.4°C | +2°C      |    365      |     190.5 | High
+
+  48.0°N  |  17.5°C | Baseline  |    305      |     193.2 | High
+  48.0°N  |  18.5°C | +1°C      |    342      |     192.2 | High
+  48.0°N  |  19.5°C | +2°C      |    365      |     191.2 | High
+
+  51.0°N  |  16.6°C | Baseline  |    276      |     193.9 | High
+  51.0°N  |  17.6°C | +1°C      |    295      |     192.9 | High
+  51.0°N  |  18.6°C | +2°C      |    321      |     191.9 | High
+
+  54.0°N  |  15.7°C | Baseline  |    256      |     194.6 | High
+  54.0°N  |  16.7°C | +1°C      |    271      |     193.6 | High
+  54.0°N  |  17.7°C | +2°C      |    288      |     192.6 | High</code></pre><h3 id="Climate-warming-comparison-figure"><a class="docs-heading-anchor" href="#Climate-warming-comparison-figure">Climate warming comparison figure</a><a id="Climate-warming-comparison-figure-1"></a><a class="docs-heading-anchor-permalink" href="#Climate-warming-comparison-figure" title="Permalink"></a></h3><pre><code class="language-julia hljs">using CairoMakie
+
+fig = Figure(size=(1000, 500))
+
+# Simulate Rome-like and London-like locations under three scenarios
+T_mean_rome = 16.0
+amplitude_rome = 9.0
+T_mean_london = 11.0
+amplitude_london = 7.0
+
+scenarios = [
+    (&quot;Baseline&quot;,  0.0, :steelblue),
+    (&quot;+1°C&quot;,      1.0, :orange),
+    (&quot;+2°C&quot;,      2.0, :firebrick),
+]
+
+ax1 = Axis(fig[1, 1],
+           xlabel=&quot;Day of year&quot;,
+           ylabel=&quot;Total population&quot;,
+           title=&quot;Mediterranean (Rome, 42°N)&quot;)
+
+ax2 = Axis(fig[1, 2],
+           xlabel=&quot;Day of year&quot;,
+           ylabel=&quot;Total population&quot;,
+           title=&quot;Temperate (London, 51°N)&quot;)
+
+for (label, ΔT, color) in scenarios
+    for (ax, Tm, amp) in [(ax1, T_mean_rome, amplitude_rome),
+                           (ax2, T_mean_london, amplitude_london)]
+        sw = SinusoidalWeather(Tm + ΔT, amp; phase=200.0)
+
+        stages = [
+            LifeStage(:immature, DistributedDelay(K_IMMATURE, TAU_IMMATURE; W0=0.0),
+                      immature_dev, MU_IMM_DD),
+            LifeStage(:adult,    DistributedDelay(K_ADULT, TAU_ADULT; W0=10.0),
+                      adult_dev, MU_ADT_DD),
+        ]
+        pop = Population(:bemisia, stages)
+
+        ws = WeatherSeries([get_weather(sw, d) for d in 1:365]; day_offset=1)
+        prob = PBDMProblem(pop, ws, (1, 365))
+        sol = solve(prob, DirectIteration())
+
+        total_pop = total_population(sol)
+        lines!(ax, sol.t, total_pop, color=color, linewidth=2, label=label)
+    end
+end
+
+axislegend(ax1, position=:lt, framevisible=false)
+axislegend(ax2, position=:lt, framevisible=false)
+
+Label(fig[0, :],
+      &quot;Bemisia tabaci: Climate Warming Impact on Population Dynamics&quot;,
+      fontsize=16, font=:bold)
+
+fig</code></pre><p><img src="../25_bemisia_tabaci_files/figure-commonmark/cell-10-output-1.png" alt/></p><h3 id="Invasion-risk-index-across-latitudes"><a class="docs-heading-anchor" href="#Invasion-risk-index-across-latitudes">Invasion risk index across latitudes</a><a id="Invasion-risk-index-across-latitudes-1"></a><a class="docs-heading-anchor-permalink" href="#Invasion-risk-index-across-latitudes" title="Permalink"></a></h3><pre><code class="language-julia hljs">using CairoMakie
+
+fig = Figure(size=(900, 500))
+
+ax = Axis(fig[1, 1],
+          xlabel=&quot;Latitude (°N)&quot;,
+          ylabel=&quot;Peak annual population&quot;,
+          title=&quot;Bemisia tabaci Invasion Risk: Latitudinal Transect&quot;)
+
+latitudes = collect(30.0:0.5:58.0)
+
+for (scenario, ΔT, color, lstyle) in [
+    (&quot;Baseline&quot;, 0.0, :steelblue, :solid),
+    (&quot;+1°C&quot;,     1.0, :orange,    :dash),
+    (&quot;+2°C&quot;,     2.0, :firebrick, :dashdot),
+]
+    peak_pops = Float64[]
+
+    for lat in latitudes
+        T_mean = 22.0 - 0.30 * (lat - 33.0) + ΔT
+        amplitude = 6.0 + 0.20 * (lat - 33.0)
+
+        sw = SinusoidalWeather(T_mean, amplitude; phase=200.0)
+
+        stages = [
+            LifeStage(:immature, DistributedDelay(K_IMMATURE, TAU_IMMATURE; W0=0.0),
+                      immature_dev, MU_IMM_DD),
+            LifeStage(:adult,    DistributedDelay(K_ADULT, TAU_ADULT; W0=10.0),
+                      adult_dev, MU_ADT_DD),
+        ]
+        pop = Population(:bemisia, stages)
+
+        ws = WeatherSeries([get_weather(sw, d) for d in 1:365]; day_offset=1)
+        prob = PBDMProblem(pop, ws, (1, 365))
+        sol = solve(prob, DirectIteration())
+
+        push!(peak_pops, maximum(total_population(sol)))
+    end
+
+    lines!(ax, latitudes, peak_pops, color=color, linewidth=2.5,
+           linestyle=lstyle, label=scenario)
+end
+
+# Mark key latitudinal zones
+vlines!(ax, [42.0], color=:gray, linestyle=:dot, linewidth=0.8)
+vlines!(ax, [51.0], color=:gray, linestyle=:dot, linewidth=0.8)
+text!(ax, 37.0, 0.0, text=&quot;S. Europe&quot;, fontsize=10, align=(:center, :bottom))
+text!(ax, 46.5, 0.0, text=&quot;C. Europe&quot;, fontsize=10, align=(:center, :bottom))
+text!(ax, 54.0, 0.0, text=&quot;N. Europe&quot;, fontsize=10, align=(:center, :bottom))
+
+axislegend(ax, position=:rt, framevisible=false)
+
+fig</code></pre><p><img src="../25_bemisia_tabaci_files/figure-commonmark/cell-11-output-1.png" alt/></p><h2 id="Key-Insights"><a class="docs-heading-anchor" href="#Key-Insights">Key Insights</a><a id="Key-Insights-1"></a><a class="docs-heading-anchor-permalink" href="#Key-Insights" title="Permalink"></a></h2><ol><li><p><strong>Mediterranean establishment is robust</strong>: Under all climate  scenarios, <em>B. tabaci</em> can maintain outdoor populations in southern  Europe (south of ~42°N). The warm Mediterranean summers provide  sufficient degree-day accumulation for multiple generations, and  mild winters allow survival of residual populations.</p></li><li><p><strong>Northern Europe remains unsuitable</strong>: Even under +2°C warming, the  combination of cold winters (below the 9.67°C immature development  threshold) and short growing seasons prevents establishment north of  ~48°N. This is consistent with Gilioli et al. (2014), who found that  adverse autumn/winter conditions prevent persistence beyond the  Mediterranean belt.</p></li><li><p><strong>Greenhouses extend the threat</strong>: While outdoor establishment is  climatically limited, <em>B. tabaci</em> thrives in heated greenhouses  throughout Europe. The primary phytosanitary risk in northern Europe  is via introductions on plant material, with transient outdoor  populations in warm summers.</p></li><li><p><strong>Warming shifts the boundary northward</strong>: The +1°C and +2°C  scenarios expand the suitable area for outdoor establishment,  particularly into central France, the Po Valley, and parts of the  northern Balkans. Southern margins become slightly less favorable  due to increased heat mortality above ~35°C.</p></li><li><p><strong>Fecundity peaks at moderate temperatures</strong>: The dome-shaped  fecundity function (peak at 24.5°C, zero below 13.4°C and above  35.6°C) means the highest reproductive potential occurs in late  spring and early autumn, not during peak summer heat.</p></li></ol><h2 id="Parameter-Sources"><a class="docs-heading-anchor" href="#Parameter-Sources">Parameter Sources</a><a id="Parameter-Sources-1"></a><a class="docs-heading-anchor-permalink" href="#Parameter-Sources" title="Permalink"></a></h2><p>All model parameters are from Gilioli et al. (2014) unless otherwise noted.</p><table><tr><th style="text-align: right">Parameter</th><th style="text-align: right">Symbol</th><th style="text-align: right">Value</th><th style="text-align: right">Unit</th><th style="text-align: right">Source</th><th style="text-align: right">Literature Range</th><th style="text-align: right">Status</th></tr><tr><td style="text-align: right">Imm. dev. rate coeff.</td><td style="text-align: right"><em>a</em></td><td style="text-align: right">3.502 × 10⁻⁵</td><td style="text-align: right">°C⁻¹ day⁻¹</td><td style="text-align: right">Table A1</td><td style="text-align: right">—</td><td style="text-align: right">From paper</td></tr><tr><td style="text-align: right">Adult dev. rate coeff.</td><td style="text-align: right"><em>a</em></td><td style="text-align: right">5.112 × 10⁻⁵</td><td style="text-align: right">°C⁻¹ day⁻¹</td><td style="text-align: right">Table A1</td><td style="text-align: right">—</td><td style="text-align: right">From paper</td></tr><tr><td style="text-align: right">Imm. lower threshold</td><td style="text-align: right"><em>T</em>_inf</td><td style="text-align: right">9.67</td><td style="text-align: right">°C</td><td style="text-align: right">Table A1</td><td style="text-align: right">11–14°C (varies by biotype)</td><td style="text-align: right">✓ lower end</td></tr><tr><td style="text-align: right">Adult lower threshold</td><td style="text-align: right"><em>T</em>_inf</td><td style="text-align: right">12.07</td><td style="text-align: right">°C</td><td style="text-align: right">Table A1</td><td style="text-align: right">11–14°C</td><td style="text-align: right">✓ within range</td></tr><tr><td style="text-align: right">Imm. upper threshold</td><td style="text-align: right"><em>T</em>_sup</td><td style="text-align: right">37.05</td><td style="text-align: right">°C</td><td style="text-align: right">Table A1</td><td style="text-align: right">35–40°C</td><td style="text-align: right">✓ within range</td></tr><tr><td style="text-align: right">Adult upper threshold</td><td style="text-align: right"><em>T</em>_sup</td><td style="text-align: right">36.26</td><td style="text-align: right">°C</td><td style="text-align: right">Table A1</td><td style="text-align: right">35–40°C</td><td style="text-align: right">✓ within range</td></tr><tr><td style="text-align: right">Imm. survival <em>p</em>₁</td><td style="text-align: right"><em>p</em>₁</td><td style="text-align: right">−0.002194</td><td style="text-align: right">—</td><td style="text-align: right">Table A2</td><td style="text-align: right">—</td><td style="text-align: right">From paper</td></tr><tr><td style="text-align: right">Imm. survival <em>p</em>₂</td><td style="text-align: right"><em>p</em>₂</td><td style="text-align: right">0.0997</td><td style="text-align: right">—</td><td style="text-align: right">Table A2</td><td style="text-align: right">—</td><td style="text-align: right">From paper</td></tr><tr><td style="text-align: right">Imm. survival <em>p</em>₃</td><td style="text-align: right"><em>p</em>₃</td><td style="text-align: right">−0.4587</td><td style="text-align: right">—</td><td style="text-align: right">Table A2</td><td style="text-align: right">—</td><td style="text-align: right">From paper</td></tr><tr><td style="text-align: right">Adult survival <em>p</em>₁</td><td style="text-align: right"><em>p</em>₁</td><td style="text-align: right">−0.003227</td><td style="text-align: right">—</td><td style="text-align: right">Table A2</td><td style="text-align: right">—</td><td style="text-align: right">From paper</td></tr><tr><td style="text-align: right">Adult survival <em>p</em>₂</td><td style="text-align: right"><em>p</em>₂</td><td style="text-align: right">0.1549</td><td style="text-align: right">—</td><td style="text-align: right">Table A2</td><td style="text-align: right">—</td><td style="text-align: right">From paper</td></tr><tr><td style="text-align: right">Adult survival <em>p</em>₃</td><td style="text-align: right"><em>p</em>₃</td><td style="text-align: right">−1.3541</td><td style="text-align: right">—</td><td style="text-align: right">Table A2</td><td style="text-align: right">—</td><td style="text-align: right">From paper</td></tr><tr><td style="text-align: right">Baseline mortality</td><td style="text-align: right">μ₀</td><td style="text-align: right">0.03</td><td style="text-align: right">day⁻¹</td><td style="text-align: right">Text</td><td style="text-align: right">—</td><td style="text-align: right">From paper</td></tr><tr><td style="text-align: right">Peak fecundity</td><td style="text-align: right">α</td><td style="text-align: right">143.53</td><td style="text-align: right">eggs ♀⁻¹ day⁻¹</td><td style="text-align: right">Table A3</td><td style="text-align: right">50–300 eggs/♀ lifetime</td><td style="text-align: right">✓ consistent</td></tr><tr><td style="text-align: right">Fecundity <em>T</em>_min</td><td style="text-align: right"><em>T</em>_min</td><td style="text-align: right">13.42</td><td style="text-align: right">°C</td><td style="text-align: right">Table A3</td><td style="text-align: right">11–14°C</td><td style="text-align: right">✓ within range</td></tr><tr><td style="text-align: right">Fecundity <em>T</em>_mid</td><td style="text-align: right"><em>T</em>_mid</td><td style="text-align: right">11.11</td><td style="text-align: right">°C</td><td style="text-align: right">Table A3</td><td style="text-align: right">—</td><td style="text-align: right">From paper</td></tr><tr><td style="text-align: right">Fecundity optimal <em>T</em></td><td style="text-align: right">—</td><td style="text-align: right">24.53</td><td style="text-align: right">°C</td><td style="text-align: right">Derived</td><td style="text-align: right">25–28°C (Bonato 2007; Muñiz 2001)</td><td style="text-align: right">✓ close</td></tr><tr><td style="text-align: right">Egg-to-adult time (25°C)</td><td style="text-align: right">—</td><td style="text-align: right">~20–25</td><td style="text-align: right">days</td><td style="text-align: right">Model output</td><td style="text-align: right">15–35 days</td><td style="text-align: right">✓ within range</td></tr><tr><td style="text-align: right">Adult longevity (25°C)</td><td style="text-align: right">—</td><td style="text-align: right">~20–30</td><td style="text-align: right">days</td><td style="text-align: right">Model output</td><td style="text-align: right">10–60 days</td><td style="text-align: right">✓ within range</td></tr></table><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><ul><li>Gilioli, G., Pasquali, S. and Marchesini, E. (2014). Modelling the potential distribution of <em>Bemisia tabaci</em> in Europe in light of the climate change scenario. <em>Pest Management Science</em> 70:1611–1623.</li><li>Bonato, O., Lurette, A., Vidal, C. and Fargues, J. (2007). Modelling temperature-dependent bionomics of <em>Bemisia tabaci</em> (Q-biotype). <em>Physiological Entomology</em> 32:50–55.</li><li>Muñiz, M. and Nombela, G. (2001). Differential variation in development of the B- and Q-biotypes of <em>Bemisia tabaci</em> on sweet pepper at constant temperatures. <em>Environmental Entomology</em> 30:720–727.</li><li>EFSA Panel on Plant Health (2013). Scientific Opinion on the risks to plant health posed by <em>Bemisia tabaci</em> species complex and the viruses it transmits for the EU territory. <em>EFSA Journal</em> 11(4):3162.</li><li>Brière, J.-F., Pracros, P., Le Roux, A.-Y. and Pierre, J.-S. (1999). A novel rate model of temperature-dependent development for arthropods. <em>Environmental Entomology</em> 28:22–29.</li><li>Manetsch, T.J. (1976). Time-varying distributed delays and their use in aggregative models of large systems. <em>IEEE Transactions on Systems, Man, and Cybernetics</em> 6:547–553.</li></ul><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Gilioli2014Bemisia&quot; class=&quot;csl-entry&quot;&gt;</p><p>Gilioli, Gianni, Sara Pasquali, and Ettore Marchesini. 2014. “Modelling the Potential Distribution of &lt;span class=&quot;nocase&quot;&gt;Bemisia tabaci&lt;/span&gt; in Europe in Light of the Climate Change Scenario.” <em>Pest Management Science</em> 70: 1611–23. <a href="https://doi.org/10.1002/ps.3734">https://doi.org/10.1002/ps.3734</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../24_asian_citrus_psyllid/">« Asian Citrus Psyllid and Citrus Greening Disease</a><a class="docs-footer-nextpage" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

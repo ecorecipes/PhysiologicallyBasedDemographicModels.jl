@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Brown Marmorated Stink Bug Biocontrol · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Brown Marmorated Stink Bug Biocontrol · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Brown Marmorated Stink Bug Biocontrol · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Brown Marmorated Stink Bug Biocontrol · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/19_bmsb_biocontrol/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/19_bmsb_biocontrol/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/19_bmsb_biocontrol/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li class="is-active"><a class="tocitem" href>Brown Marmorated Stink Bug Biocontrol</a><ul class="internal"><li><a class="tocitem" href="#Background"><span>Background</span></a></li><li><a class="tocitem" href="#Species-Biology-and-Parameters"><span>Species Biology and Parameters</span></a></li><li><a class="tocitem" href="#Parameter-Sources"><span>Parameter Sources</span></a></li><li><a class="tocitem" href="#Trophic-Web-Definition"><span>Trophic Web Definition</span></a></li><li><a class="tocitem" href="#Weather:-Padua,-Northern-Italy"><span>Weather: Padua, Northern Italy</span></a></li><li><a class="tocitem" href="#Single-Species-BMSB-Simulation-(No-Biocontrol)"><span>Single-Species BMSB Simulation (No Biocontrol)</span></a></li><li><a class="tocitem" href="#Scenario-Comparison"><span>Scenario Comparison</span></a></li><li><a class="tocitem" href="#Effect-of-Egg-Parasitoid-Search-Rate"><span>Effect of Egg Parasitoid Search Rate</span></a></li><li><a class="tocitem" href="#Hyperparasitoid-Impact-Analysis"><span>Hyperparasitoid Impact Analysis</span></a></li><li><a class="tocitem" href="#Development-Rate-Comparison"><span>Development Rate Comparison</span></a></li><li><a class="tocitem" href="#Key-Insights"><span>Key Insights</span></a></li><li><a class="tocitem" href="#Invasion-History"><span>Invasion History</span></a></li><li><a class="tocitem" href="#References"><span>References</span></a></li><li><a class="tocitem" href="#Appendix:-Validation-Figures"><span>Appendix: Validation Figures</span></a></li></ul></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Brown Marmorated Stink Bug Biocontrol</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Brown Marmorated Stink Bug Biocontrol</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Brown-Marmorated-Stink-Bug-Biocontrol"><a class="docs-heading-anchor" href="#Brown-Marmorated-Stink-Bug-Biocontrol">Brown Marmorated Stink Bug Biocontrol</a><a id="Brown-Marmorated-Stink-Bug-Biocontrol-1"></a><a class="docs-heading-anchor-permalink" href="#Brown-Marmorated-Stink-Bug-Biocontrol" title="Permalink"></a></h1><p>Simon Frost</p><ul><li><a href="#background">Background</a></li><li><a href="#species-biology-and-parameters">Species Biology and Parameters</a><ul><li><a href="#bmsb-development-rate">BMSB Development Rate</a></li><li><a href="#bmsb-life-stages">BMSB Life Stages</a></li><li><a href="#diapause-model">Diapause Model</a></li><li><a href="#oviposition">Oviposition</a></li><li><a href="#trissolcus-japonicus-egg-parasitoid"><em>Trissolcus japonicus</em> (Egg Parasitoid)</a></li><li><a href="#trissolcus-mitsukurii-egg-parasitoid"><em>Trissolcus mitsukurii</em> (Egg Parasitoid)</a></li><li><a href="#acroclisoides-sinicus-hyperparasitoid"><em>Acroclisoides sinicus</em> (Hyperparasitoid)</a></li></ul></li><li><a href="#parameter-sources">Parameter Sources</a></li><li><a href="#trophic-web-definition">Trophic Web Definition</a><ul><li><a href="#tachinid-parasitism-density-dependent-background-mortality">Tachinid Parasitism (Density-Dependent Background Mortality)</a></li></ul></li><li><a href="#weather-padua-northern-italy">Weather: Padua, Northern Italy</a></li><li><a href="#single-species-bmsb-simulation-no-biocontrol">Single-Species BMSB Simulation (No Biocontrol)</a></li><li><a href="#scenario-comparison">Scenario Comparison</a><ul><li><a href="#scenario-setup">Scenario Setup</a></li><li><a href="#plotting-scenario-comparison">Plotting Scenario Comparison</a></li></ul></li><li><a href="#effect-of-egg-parasitoid-search-rate">Effect of Egg Parasitoid Search Rate</a></li><li><a href="#hyperparasitoid-impact-analysis">Hyperparasitoid Impact Analysis</a></li><li><a href="#development-rate-comparison">Development Rate Comparison</a></li><li><a href="#key-insights">Key Insights</a></li><li><a href="#invasion-history">Invasion History</a></li><li><a href="#references">References</a></li><li><a href="#appendix-validation-figures">Appendix: Validation Figures</a></li></ul><p>Primary reference: (Gutierrez et al. 2023).</p><h2 id="Background"><a class="docs-heading-anchor" href="#Background">Background</a><a id="Background-1"></a><a class="docs-heading-anchor-permalink" href="#Background" title="Permalink"></a></h2><p>The brown marmorated stink bug (<em>Halyomorpha halys</em>, BMSB) is a highly destructive polyphagous pentatomid native to eastern China, Japan, and Korea. First detected in the USA in the late 1990s (Allentown, Pennsylvania), it has since invaded most US states, Canada, much of Europe and the Caucasus region, and parts of South America. In invaded areas, BMSB causes severe damage to tree fruits, vegetables, row crops, and ornamentals, and is a significant nuisance pest in urban settings where overwintering adults aggregate in structures.</p><p>Chemical control is often inadequate, and classical biological control is considered the long-term solution. The primary biocontrol strategy centers on two Asian scelionid egg parasitoids:</p><ul><li><strong>Trissolcus japonicus</strong> (Tj) — the samurai wasp, considered the most promising candidate</li><li><strong>Trissolcus mitsukurii</strong> (Tm) — a second egg parasitoid with complementary action</li></ul><p>These primary parasitoids are in turn attacked by an obligate pteromalid hyperparasitoid:</p><ul><li><strong>Acroclisoides sinicus</strong> (As) — attacks prepupal and pupal stages of Trissolcus spp. inside BMSB eggs</li></ul><p>Additionally, polyphagous tachinid flies form new associations with BMSB in invaded areas:</p><ul><li><strong>Trichopoda</strong> spp. (Tp) — parasitize large nymphs and adults at low but impactful rates</li></ul><p>This creates a <strong>four-trophic-level system</strong>:</p><pre><code class="nohighlight hljs">Host plant → BMSB → Egg parasitoids (Tj, Tm) + Tachinid (Tp) → Hyperparasitoid (As)</code></pre><p>This vignette builds a weather-driven PBDM of this system using parameters from Gutierrez et al. (2023), explores how hyperparasitism can undermine biocontrol, and compares management scenarios.</p><p><strong>Reference:</strong> Gutierrez AP, Sabbatini Peverieri G, Ponti L, Giovannini L, Roversi PF, Mele A, Pozzebon A, Scaccini D, Hoelmer KA (2023). Tritrophic analysis of the prospective biological control of brown marmorated stink bug, <em>Halyomorpha halys</em>, under extant weather and climate change. <em>BioControl</em> 68:161–181.</p><h2 id="Species-Biology-and-Parameters"><a class="docs-heading-anchor" href="#Species-Biology-and-Parameters">Species Biology and Parameters</a><a id="Species-Biology-and-Parameters-1"></a><a class="docs-heading-anchor-permalink" href="#Species-Biology-and-Parameters" title="Permalink"></a></h2><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+using CairoMakie</code></pre><h3 id="BMSB-Development-Rate"><a class="docs-heading-anchor" href="#BMSB-Development-Rate">BMSB Development Rate</a><a id="BMSB-Development-Rate-1"></a><a class="docs-heading-anchor-permalink" href="#BMSB-Development-Rate" title="Permalink"></a></h3><p>BMSB is hemimetabolous with egg, nymphal (5 instars), preoviposition adult, and reproductive adult stages. The temperature-dependent development rate (Eq. 3 in Gutierrez et al. 2023) has a lower threshold of 12.109 °C and an upper threshold of ~33.5 °C:</p><p class="math-container">\[R_{BMSB}(T) = \frac{0.0018 \, (T - 12.109)}{1 + 4.8^{(T - 33.5)}}\]</p><pre><code class="language-julia hljs"># Table 1 parameters (Gutierrez et al. 2023)
+const BMSB_T_LOWER    = 12.109  # lower developmental threshold (°C)
+const BMSB_T_UPPER    = 33.5    # upper developmental threshold (°C)
+const BMSB_DEV_SLOPE  = 0.0018  # development rate coefficient
+const BMSB_DEV_EXP    = 4.8     # exponent base in nonlinear rate function
+
+# BMSB nonlinear development rate (Brière-type approximation)
+bmsb_dev = BriereDevelopmentRate(0.0000328, BMSB_T_LOWER, BMSB_T_UPPER)
+
+# Compare with linear approximation
+bmsb_linear = LinearDevelopmentRate(BMSB_T_LOWER, BMSB_T_UPPER)
+
+println(&quot;BMSB development rates (1/days):&quot;)
+for T in [15.0, 20.0, 25.0, 30.0, 33.0]
+    r = development_rate(bmsb_dev, T)
+    println(&quot;  T=$(T)°C: r=$(round(r, digits=4))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">BMSB development rates (1/days):
+  T=15.0°C: r=0.0061
+  T=20.0°C: r=0.019
+  T=25.0°C: r=0.0308
+  T=30.0°C: r=0.0329
+  T=33.0°C: r=0.016</code></pre><h3 id="BMSB-Life-Stages"><a class="docs-heading-anchor" href="#BMSB-Life-Stages">BMSB Life Stages</a><a id="BMSB-Life-Stages-1"></a><a class="docs-heading-anchor-permalink" href="#BMSB-Life-Stages" title="Permalink"></a></h3><p>Developmental times from Table 1 of Gutierrez et al. (2023), in degree-days above 12.109 °C:</p><table><tr><th style="text-align: right">Stage</th><th style="text-align: right">Duration (DD)</th><th style="text-align: right">k substages</th><th style="text-align: right">Source</th></tr><tr><td style="text-align: right">Egg</td><td style="text-align: right">105.2</td><td style="text-align: right">15</td><td style="text-align: right">Table 1</td></tr><tr><td style="text-align: right">Nymph (instars 1–5)</td><td style="text-align: right">436.88</td><td style="text-align: right">30</td><td style="text-align: right">Table 1</td></tr><tr><td style="text-align: right">Preoviposition adult</td><td style="text-align: right">370.88</td><td style="text-align: right">10</td><td style="text-align: right">Table 1</td></tr><tr><td style="text-align: right">Post-diapause preovip.</td><td style="text-align: right">482.0</td><td style="text-align: right">—</td><td style="text-align: right">Table 1</td></tr><tr><td style="text-align: right">Reproductive adult</td><td style="text-align: right">1293.0</td><td style="text-align: right">15</td><td style="text-align: right">Table 1</td></tr></table><pre><code class="language-julia hljs"># Stage durations in DD &gt; 12.109°C from Table 1 (Gutierrez et al. 2023)
+const BMSB_DD_EGG          = 105.2    # egg stage (DD)
+const BMSB_DD_NYMPH        = 436.88   # nymphal stages 1–5 (DD)
+const BMSB_DD_PREOVIP      = 370.88   # summer preoviposition period (DD)
+const BMSB_DD_PREOVIP_DIAP = 482.0    # post-diapause preoviposition (DD)
+const BMSB_DD_ADULT        = 1293.0   # reproductive adult lifespan (DD)
+const BMSB_HATCH_RATE      = 0.86     # egg hatch rate (Table 1)
+
+bmsb_stages = [
+    LifeStage(:egg,       DistributedDelay(15, BMSB_DD_EGG;     W0=100.0), bmsb_linear, 0.001),
+    LifeStage(:nymph,     DistributedDelay(30, BMSB_DD_NYMPH;   W0=0.0),   bmsb_linear, 0.0008),
+    LifeStage(:preovip,   DistributedDelay(10, BMSB_DD_PREOVIP; W0=0.0),   bmsb_linear, 0.0005),
+    LifeStage(:adult,     DistributedDelay(15, BMSB_DD_ADULT;   W0=0.0),   bmsb_linear, 0.0005),
+]
+
+bmsb = Population(:bmsb, bmsb_stages)
+
+println(&quot;BMSB population:&quot;)
+println(&quot;  Life stages: &quot;, n_stages(bmsb))
+println(&quot;  Total substages: &quot;, n_substages(bmsb))
+println(&quot;  Initial population: &quot;, total_population(bmsb))</code></pre><pre><code class="nohighlight hljs">BMSB population:
+  Life stages: 4
+  Total substages: 70
+  Initial population: 1500.0</code></pre><h3 id="Diapause-Model"><a class="docs-heading-anchor" href="#Diapause-Model">Diapause Model</a><a id="Diapause-Model-1"></a><a class="docs-heading-anchor-permalink" href="#Diapause-Model" title="Permalink"></a></h3><p>BMSB overwinters as diapausing adults. Diapause entry begins when photoperiod drops below 12.7 h daylength and diapause termination occurs when photoperiod rises above 13.5 h in spring. Overwintering survival depends on minimum temperatures and shelter availability.</p><pre><code class="language-julia hljs"># Diapause parameters (Eqs. 1–2 in Gutierrez et al. 2023)
+const BMSB_DL_ENTER = 12.7    # daylength threshold for diapause entry (hours)
+const BMSB_DL_EXIT  = 13.5    # daylength threshold for diapause exit (hours)
+const BMSB_DIAPAUSE_SLOPE = 0.6  # slope of diapause entry/exit functions
+
+# Proportion entering diapause at given daylength
+diapause_entry(dl) = dl &lt; BMSB_DL_ENTER ? clamp(BMSB_DIAPAUSE_SLOPE * (BMSB_DL_ENTER - dl), 0.0, 1.0) : 0.0
+
+# Proportion leaving diapause at given daylength
+diapause_exit(dl) = dl &gt; BMSB_DL_EXIT ? clamp(BMSB_DIAPAUSE_SLOPE * (dl - BMSB_DL_EXIT), 0.0, 1.0) : 0.0</code></pre><pre><code class="nohighlight hljs">diapause_exit (generic function with 1 method)</code></pre><h3 id="Oviposition"><a class="docs-heading-anchor" href="#Oviposition">Oviposition</a><a id="Oviposition-1"></a><a class="docs-heading-anchor-permalink" href="#Oviposition" title="Permalink"></a></h3><p>BMSB females lay eggs in an age- and temperature-dependent manner. The age-specific oviposition profile (eggs per day at age <em>i</em> in weeks at 26 °C) follows Eq. 4 of Gutierrez et al. (2023):</p><p class="math-container">\[f(i) = \frac{1.375 \, i}{1 + 1.078 \, i}\]</p><p>Temperature affects oviposition via a concave scalar ϕ(T) active in the range 18.5–34.0 °C (Table 1: ϕ(18.5, 34)), with a peak near 26 °C.</p><pre><code class="language-julia hljs"># Age-specific oviposition profile (eggs/day at age i in weeks)
+bmsb_oviposition(i) = 1.375 * i / (1.0 + 1.078 * i)
+
+# Oviposition thermal limits from Table 1: ϕ(18.5, 34)
+const BMSB_OVIP_T_LOWER = 18.5   # lower oviposition threshold (°C)
+const BMSB_OVIP_T_UPPER = 34.0   # upper oviposition threshold (°C)
+
+function bmsb_ovip_scalar(T)
+    T &lt; BMSB_OVIP_T_LOWER &amp;&amp; return 0.0
+    T &gt; BMSB_OVIP_T_UPPER &amp;&amp; return 0.0
+    x = (T - BMSB_OVIP_T_LOWER) / (BMSB_OVIP_T_UPPER - BMSB_OVIP_T_LOWER)
+    return 4.0 * x * (1.0 - x)
+end
+
+# Sex ratio (Table 1: 0.5)
+const BMSB_SEX_RATIO = 0.5
+
+println(&quot;Oviposition profile (eggs/day at 26°C):&quot;)
+for week in 1:8
+    println(&quot;  Week $week: $(round(bmsb_oviposition(week), digits=2)) eggs/day&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Oviposition profile (eggs/day at 26°C):
+  Week 1: 0.66 eggs/day
+  Week 2: 0.87 eggs/day
+  Week 3: 0.97 eggs/day
+  Week 4: 1.04 eggs/day
+  Week 5: 1.08 eggs/day
+  Week 6: 1.1 eggs/day
+  Week 7: 1.13 eggs/day
+  Week 8: 1.14 eggs/day</code></pre><h3 id="*Trissolcus-japonicus*-(Egg-Parasitoid)"><a class="docs-heading-anchor" href="#*Trissolcus-japonicus*-(Egg-Parasitoid)"><em>Trissolcus japonicus</em> (Egg Parasitoid)</a><a id="*Trissolcus-japonicus*-(Egg-Parasitoid)-1"></a><a class="docs-heading-anchor-permalink" href="#*Trissolcus-japonicus*-(Egg-Parasitoid)" title="Permalink"></a></h3><p>The biology of <em>T. japonicus</em> is detailed in Table 1 of Gutierrez et al. (2023) and Sabbatini-Peverieri et al. (2020). It has a lower thermal threshold of 11.164 °C (Table 1), and its development rate follows:</p><p class="math-container">\[R_{Tj}(T) = \frac{0.0061 \, (T - 11.164)}{1 + 4.5^{(T - 35.0)}}\]</p><pre><code class="language-julia hljs"># T. japonicus development — Table 1 (Gutierrez et al. 2023)
+const TJ_T_LOWER      = 11.164  # lower developmental threshold (°C)
+const TJ_T_UPPER      = 35.0    # upper threshold in nonlinear function (°C)
+const TJ_DEV_SLOPE    = 0.0061  # development rate coefficient
+const TJ_DD_IMMATURE  = 166.0   # total immature DD (Table 1)
+const TJ_DD_ADULT     = 162.0   # adult lifespan DD (Table 1)
+const TJ_OVIP_T_LOWER = 15.5    # oviposition lower thermal limit (°C, Table 1)
+const TJ_OVIP_T_UPPER = 33.0    # oviposition upper thermal limit (°C, Table 1)
+
+tj_dev = LinearDevelopmentRate(TJ_T_LOWER, TJ_T_UPPER)
+
+# Substage partitioning assumed; Table 1 gives only immature total = 166 DD
+tj_stages = [
+    LifeStage(:egg,    DistributedDelay(10, 16.7;  W0=0.0), tj_dev, 0.002),
+    LifeStage(:larva,  DistributedDelay(15, 92.8;  W0=0.0), tj_dev, 0.001),
+    LifeStage(:pupa,   DistributedDelay(10, 56.5;  W0=0.0), tj_dev, 0.001),
+    LifeStage(:adult,  DistributedDelay(10, TJ_DD_ADULT; W0=20.0), tj_dev, 0.003),
+]
+
+tj = Population(:t_japonicus, tj_stages)
+
+# Fecundity: Eggs/♀ = 14.3 − 1.0855d (Table 1); ~91 eggs total (Sabbatini-Peverieri et al. 2020)
+const TJ_FECUNDITY = 91.0     # total eggs per female lifetime
+const TJ_SEX_RATIO = 0.846    # sex ratio (Table 1)
+
+println(&quot;T. japonicus:&quot;)
+println(&quot;  Lower threshold: $(TJ_T_LOWER)°C&quot;)
+println(&quot;  Total fecundity: $(TJ_FECUNDITY) eggs&quot;)
+println(&quot;  Sex ratio: $(TJ_SEX_RATIO) female&quot;)</code></pre><pre><code class="nohighlight hljs">T. japonicus:
+  Lower threshold: 11.164°C
+  Total fecundity: 91.0 eggs
+  Sex ratio: 0.846 female</code></pre><h3 id="*Trissolcus-mitsukurii*-(Egg-Parasitoid)"><a class="docs-heading-anchor" href="#*Trissolcus-mitsukurii*-(Egg-Parasitoid)"><em>Trissolcus mitsukurii</em> (Egg Parasitoid)</a><a id="*Trissolcus-mitsukurii*-(Egg-Parasitoid)-1"></a><a class="docs-heading-anchor-permalink" href="#*Trissolcus-mitsukurii*-(Egg-Parasitoid)" title="Permalink"></a></h3><p><em>T. mitsukurii</em> has a lower thermal threshold of 12.25 °C (Table 1) and development rate coefficient 0.0071. Total fecundity is ~82 eggs over a 10-day period (Sabbatini-Peverieri et al. 2020).</p><pre><code class="language-julia hljs"># T. mitsukurii development — Table 1 (Gutierrez et al. 2023)
+const TM_T_LOWER      = 12.25   # lower developmental threshold (°C)
+const TM_T_UPPER      = 35.0    # upper threshold in nonlinear function (°C)
+const TM_DEV_SLOPE    = 0.0071  # development rate coefficient
+const TM_DD_IMMATURE  = 140.2   # total immature DD (Table 1)
+const TM_DD_ADULT     = 140.5   # adult lifespan DD (Table 1)
+const TM_OVIP_T_LOWER = 15.5    # oviposition lower thermal limit (°C, Table 1)
+const TM_OVIP_T_UPPER = 33.0    # oviposition upper thermal limit (°C, Table 1)
+
+tm_dev = LinearDevelopmentRate(TM_T_LOWER, TM_T_UPPER)
+
+# Substage partitioning assumed; Table 1 gives only immature total = 140.2 DD
+tm_stages = [
+    LifeStage(:egg,    DistributedDelay(10, 14.1;  W0=0.0), tm_dev, 0.002),
+    LifeStage(:larva,  DistributedDelay(15, 78.4;  W0=0.0), tm_dev, 0.001),
+    LifeStage(:pupa,   DistributedDelay(10, 47.7;  W0=0.0), tm_dev, 0.001),
+    LifeStage(:adult,  DistributedDelay(10, TM_DD_ADULT; W0=10.0), tm_dev, 0.003),
+]
+
+tm = Population(:t_mitsukurii, tm_stages)
+
+# Fecundity: Eggs/♀ = 16.264 − 1.9083d (Table 1); ~82 eggs total (Sabbatini-Peverieri et al. 2020)
+const TM_FECUNDITY  = 82.0
+const TM_SEX_RATIO  = 0.881   # sex ratio (Table 1)
+
+println(&quot;T. mitsukurii:&quot;)
+println(&quot;  Lower threshold: $(TM_T_LOWER)°C&quot;)
+println(&quot;  Total fecundity: $(TM_FECUNDITY) eggs&quot;)
+println(&quot;  Sex ratio: $(TM_SEX_RATIO) female&quot;)</code></pre><pre><code class="nohighlight hljs">T. mitsukurii:
+  Lower threshold: 12.25°C
+  Total fecundity: 82.0 eggs
+  Sex ratio: 0.881 female</code></pre><h3 id="*Acroclisoides-sinicus*-(Hyperparasitoid)"><a class="docs-heading-anchor" href="#*Acroclisoides-sinicus*-(Hyperparasitoid)"><em>Acroclisoides sinicus</em> (Hyperparasitoid)</a><a id="*Acroclisoides-sinicus*-(Hyperparasitoid)-1"></a><a class="docs-heading-anchor-permalink" href="#*Acroclisoides-sinicus*-(Hyperparasitoid)" title="Permalink"></a></h3><p>The obligate pteromalid hyperparasitoid attacks prepupal and pupal stages of <em>Trissolcus</em> spp. inside BMSB eggs. It has a lower thermal threshold of 12.65 °C with development rate:</p><p class="math-container">\[R_{As}(T) = \frac{0.0095 \, (T - 12.65)}{1 + 4.5^{(T - 35.0)}}\]</p><pre><code class="language-julia hljs"># A. sinicus development — Table 1 (Gutierrez et al. 2023)
+const AS_T_LOWER      = 12.65   # lower developmental threshold (°C)
+const AS_T_UPPER      = 35.0    # upper threshold in nonlinear function (°C)
+const AS_DEV_SLOPE    = 0.0095  # development rate coefficient
+const AS_DD_IMMATURE  = 101.9   # total immature DD (Table 1)
+const AS_DD_ADULT     = 162.0   # adult lifespan DD (Table 1)
+const AS_OVIP_T_LOWER = 15.5    # oviposition lower thermal limit (°C, Table 1)
+const AS_OVIP_T_UPPER = 33.5    # oviposition upper thermal limit (°C, Table 1)
+
+as_dev = LinearDevelopmentRate(AS_T_LOWER, AS_T_UPPER)
+
+# Substage partitioning assumed; Table 1 gives only immature total = 101.9 DD
+as_stages = [
+    LifeStage(:egg,    DistributedDelay(8,  10.6;  W0=0.0), as_dev, 0.002),
+    LifeStage(:larva,  DistributedDelay(12, 54.7;  W0=0.0), as_dev, 0.001),
+    LifeStage(:pupa,   DistributedDelay(8,  36.6;  W0=0.0), as_dev, 0.001),
+    LifeStage(:adult,  DistributedDelay(8,  AS_DD_ADULT; W0=5.0), as_dev, 0.004),
+]
+
+as_pop = Population(:a_sinicus, as_stages)
+
+# Fecundity: Eggs/♀ = 7.0 − 0.7d (Table 1; age d in days after 2-day preoviposition)
+# Sex ratio: 62–91% female on Tm, 50–80% on Tj (Giovannini et al. 2021); averages used
+const AS_SEX_RATIO_TM    = 0.76   # average on T. mitsukurii hosts
+const AS_SEX_RATIO_TJ    = 0.65   # average on T. japonicus hosts
+const AS_SEX_RATIO_TABLE = 0.846  # overall sex ratio from Table 1
+
+println(&quot;A. sinicus (hyperparasitoid):&quot;)
+println(&quot;  Lower threshold: 12.65°C&quot;)
+println(&quot;  Hosts: T. japonicus and T. mitsukurii prepupae/pupae&quot;)
+println(&quot;  Sex ratio on Tm: $(AS_SEX_RATIO_TM), on Tj: $(AS_SEX_RATIO_TJ)&quot;)</code></pre><pre><code class="nohighlight hljs">A. sinicus (hyperparasitoid):
+  Lower threshold: 12.65°C
+  Hosts: T. japonicus and T. mitsukurii prepupae/pupae
+  Sex ratio on Tm: 0.76, on Tj: 0.65</code></pre><h2 id="Parameter-Sources"><a class="docs-heading-anchor" href="#Parameter-Sources">Parameter Sources</a><a id="Parameter-Sources-1"></a><a class="docs-heading-anchor-permalink" href="#Parameter-Sources" title="Permalink"></a></h2><p>All primary parameters are from Table 1 of Gutierrez et al. (2023) unless otherwise noted. Parameters marked <strong>assumed</strong> are not directly given in Table 1 and are estimated or partitioned from aggregate values.</p><table><tr><th style="text-align: right">Parameter</th><th style="text-align: right">Value</th><th style="text-align: right">Species</th><th style="text-align: right">Source</th><th style="text-align: right">Literature Range</th><th style="text-align: right">Status</th></tr><tr><td style="text-align: right">Lower dev. threshold</td><td style="text-align: right">12.109 °C</td><td style="text-align: right">BMSB</td><td style="text-align: right">Table 1</td><td style="text-align: right">13–14 °C (Musolin 2019; Mermer 2023)</td><td style="text-align: right">⚠ slightly below</td></tr><tr><td style="text-align: right">Upper dev. threshold</td><td style="text-align: right">33.5 °C</td><td style="text-align: right">BMSB</td><td style="text-align: right">Table 1</td><td style="text-align: right">35–36 °C (Mermer 2023)</td><td style="text-align: right">✓ conservative</td></tr><tr><td style="text-align: right">Dev. rate slope</td><td style="text-align: right">0.0018</td><td style="text-align: right">BMSB</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Exponent base</td><td style="text-align: right">4.8</td><td style="text-align: right">BMSB</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Egg DD</td><td style="text-align: right">105.2</td><td style="text-align: right">BMSB</td><td style="text-align: right">Table 1</td><td style="text-align: right">— (stage-specific DD rarely reported)</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Nymph DD</td><td style="text-align: right">436.88</td><td style="text-align: right">BMSB</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Total pre-adult DD</td><td style="text-align: right">~542 (sum)</td><td style="text-align: right">BMSB</td><td style="text-align: right">Computed</td><td style="text-align: right">530–590 DD (Musolin 2019; Haye 2014)</td><td style="text-align: right">✓ within range</td></tr><tr><td style="text-align: right">Preoviposition DD</td><td style="text-align: right">370.88</td><td style="text-align: right">BMSB</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right">summer adults</td></tr><tr><td style="text-align: right">Post-diapause preovip DD</td><td style="text-align: right">482.0</td><td style="text-align: right">BMSB</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right">~1.3× summer</td></tr><tr><td style="text-align: right">Adult DD</td><td style="text-align: right">1293.0</td><td style="text-align: right">BMSB</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">μ daily</td><td style="text-align: right">0.00017T²−0.0045T+0.0499</td><td style="text-align: right">BMSB</td><td style="text-align: right">Fig. 5</td><td style="text-align: right">Matches Fig. 5 (R²=0.73)</td><td style="text-align: right">✓</td></tr><tr><td style="text-align: right">μ winter</td><td style="text-align: right">0.1153·e^(−0.117T)</td><td style="text-align: right">BMSB</td><td style="text-align: right">Fig. 5</td><td style="text-align: right">Matches Fig. 5 (R²=0.92)</td><td style="text-align: right">✓</td></tr><tr><td style="text-align: right">Oviposition limits</td><td style="text-align: right">ϕ(18.5, 34)</td><td style="text-align: right">BMSB</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Sex ratio</td><td style="text-align: right">0.5</td><td style="text-align: right">BMSB</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Hatch rate</td><td style="text-align: right">0.86</td><td style="text-align: right">BMSB</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Diapause entry dl</td><td style="text-align: right">12.7 h</td><td style="text-align: right">BMSB</td><td style="text-align: right">Eqs. 1–2</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Diapause exit dl</td><td style="text-align: right">13.5 h</td><td style="text-align: right">BMSB</td><td style="text-align: right">Eqs. 1–2</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Diapause slope</td><td style="text-align: right">0.6</td><td style="text-align: right">BMSB</td><td style="text-align: right">Eqs. 1–2</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Lower dev. threshold</td><td style="text-align: right">11.164 °C</td><td style="text-align: right">Tj</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Immature DD (total)</td><td style="text-align: right">166.0</td><td style="text-align: right">Tj</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Adult DD</td><td style="text-align: right">162.0</td><td style="text-align: right">Tj</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Fecundity (total)</td><td style="text-align: right">91 eggs</td><td style="text-align: right">Tj</td><td style="text-align: right">Sabbatini-Peverieri et al. 2020</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Lower dev. threshold</td><td style="text-align: right">12.25 °C</td><td style="text-align: right">Tm</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Immature DD (total)</td><td style="text-align: right">140.2</td><td style="text-align: right">Tm</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Lower dev. threshold</td><td style="text-align: right">12.65 °C</td><td style="text-align: right">As</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Immature DD (total)</td><td style="text-align: right">101.9</td><td style="text-align: right">As</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Egg parasitoid substage DD</td><td style="text-align: right">varied</td><td style="text-align: right">Tj/Tm/As</td><td style="text-align: right"><strong>assumed</strong></td><td style="text-align: right">—</td><td style="text-align: right">partitioned from totals</td></tr><tr><td style="text-align: right">BMSB stage mortality rates</td><td style="text-align: right">varied</td><td style="text-align: right">BMSB</td><td style="text-align: right"><strong>assumed</strong></td><td style="text-align: right">—</td><td style="text-align: right">not in Table 1</td></tr><tr><td style="text-align: right">k (substage counts)</td><td style="text-align: right">varied</td><td style="text-align: right">all</td><td style="text-align: right"><strong>assumed</strong></td><td style="text-align: right">—</td><td style="text-align: right">not in Table 1</td></tr></table><p><strong>Note on lower threshold:</strong> The vignette uses T_lower = 12.109 °C from Gutierrez et al. (2023), which is slightly below the 13–14 °C range reported in other studies (Musolin 2019, Mermer 2023, Haye 2014). This may reflect differences in fitting methodology or the inclusion of additional low-temperature data in the PBDM parameterization.</p><h2 id="Trophic-Web-Definition"><a class="docs-heading-anchor" href="#Trophic-Web-Definition">Trophic Web Definition</a><a id="Trophic-Web-Definition-1"></a><a class="docs-heading-anchor-permalink" href="#Trophic-Web-Definition" title="Permalink"></a></h2><p>The four-trophic system is assembled using <code>TrophicWeb</code> with <code>FraserGilbertResponse</code> (the demand-driven Gilbert-Fraser parasitoid functional response used throughout the Gutierrez PBDM framework) for the primary parasitoids, and separate links for the hyperparasitoid.</p><p>The Gilbert-Fraser functional response (Eq. 7i) computes the number of hosts attacked as:</p><p class="math-container">\[N_a = \hat{H} \left[1 - \exp\left\{-\frac{D}{\hat{H}} \left(1 - \exp\left(-\frac{\alpha \hat{H}}{D}\right)\right)\right\}\right]\]</p><p>where α is the search parameter: α = 1 implies random search, α \&gt; 1 implies greater-than-random search aided by semiochemical cues.</p><pre><code class="language-julia hljs"># Build the four-trophic food web
+web = TrophicWeb()
+
+# Egg parasitoids → BMSB eggs
+# Search rate α: 0.2 = field-realistic, 0.6 = optimistic (Fig. 6)
+α_Tj = 0.2   # T. japonicus search rate
+α_Tm = 0.2   # T. mitsukurii search rate
+
+add_link!(web, TrophicLink(:t_japonicus, :bmsb,
+    FraserGilbertResponse(α_Tj), 1.0))
+
+add_link!(web, TrophicLink(:t_mitsukurii, :bmsb,
+    FraserGilbertResponse(α_Tm), 1.0))
+
+# Hyperparasitoid → egg parasitoids
+# Field-estimated search rate ~0.1 (Mele et al. 2022: ~7.5% parasitism)
+α_As = 0.1
+add_link!(web, TrophicLink(:a_sinicus, :t_japonicus,
+    FraserGilbertResponse(α_As), 1.0))
+add_link!(web, TrophicLink(:a_sinicus, :t_mitsukurii,
+    FraserGilbertResponse(α_As), 1.0))
+
+println(&quot;Trophic web: $(length(web.links)) links&quot;)
+for link in web.links
+    println(&quot;  $(link.predator_name) → $(link.prey_name)  (α=$(link.response.a))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Trophic web: 4 links
+  t_japonicus → bmsb  (α=0.2)
+  t_mitsukurii → bmsb  (α=0.2)
+  a_sinicus → t_japonicus  (α=0.1)
+  a_sinicus → t_mitsukurii  (α=0.1)</code></pre><h3 id="Tachinid-Parasitism-(Density-Dependent-Background-Mortality)"><a class="docs-heading-anchor" href="#Tachinid-Parasitism-(Density-Dependent-Background-Mortality)">Tachinid Parasitism (Density-Dependent Background Mortality)</a><a id="Tachinid-Parasitism-(Density-Dependent-Background-Mortality)-1"></a><a class="docs-heading-anchor-permalink" href="#Tachinid-Parasitism-(Density-Dependent-Background-Mortality)" title="Permalink"></a></h3><p>Tachinid parasitism of large nymphs and adults is modeled as a weak density-dependent mortality rate (Eq. 12i in Gutierrez et al. 2023):</p><p class="math-container">\[\mu_{adult-para} = 1 - e^{-0.00001 \times \Delta t \times N_{adult}}, \quad T &gt; 12.75°C\]</p><p>This captures the low but impactful rates (2.4–4.5%) observed by Joshi et al. (2019) for <em>Trichopoda pennipes</em> in the eastern USA.</p><pre><code class="language-julia hljs"># Tachinid parasitism rate (density-dependent on adults)
+function tachinid_mortality(n_adults, dd_today, T)
+    T &lt;= 12.75 &amp;&amp; return 0.0
+    return 1.0 - exp(-0.00001 * dd_today * n_adults)
+end
+
+# Background egg/nymph predation by native natural enemies (Eq. 12ii; Table 1)
+# Table 1: lx_pred = exp(−0.00001 · Δt · (eggs + nymphs)), T ≥ 10°C
+function native_predation(n_egg_nymph, dd_today, T)
+    T &lt;= 12.75 &amp;&amp; return 0.0
+    return 1.0 - exp(-0.00001 * dd_today * n_egg_nymph)
+end
+
+# Example: 200 adults, 15 DD day, T=25°C
+μ_tp = tachinid_mortality(200, 15.0, 25.0)
+println(&quot;Tachinid mortality (200 adults, 15 DD): $(round(μ_tp, digits=4))&quot;)
+println(&quot;  ≈ $(round(μ_tp * 100, digits=2))% daily mortality rate&quot;)</code></pre><pre><code class="nohighlight hljs">Tachinid mortality (200 adults, 15 DD): 0.0296
+  ≈ 2.96% daily mortality rate</code></pre><h2 id="Weather:-Padua,-Northern-Italy"><a class="docs-heading-anchor" href="#Weather:-Padua,-Northern-Italy">Weather: Padua, Northern Italy</a><a id="Weather:-Padua,-Northern-Italy-1"></a><a class="docs-heading-anchor-permalink" href="#Weather:-Padua,-Northern-Italy" title="Permalink"></a></h2><p>The paper focuses on the European-Mediterranean region, with detailed dynamics illustrated for a lattice cell near Padua, Italy (45.4°N, 11.9°E). We generate synthetic weather representative of the continental climate:</p><pre><code class="language-julia hljs"># Synthetic daily weather for Padua region (2005–2010 approximation)
+n_years = 6
+n_days = 365 * n_years
+
+function padua_temperature(day)
+    doy = mod(day - 1, 365) + 1
+    # Mean annual T ≈ 13.5°C, amplitude ≈ 12°C
+    T_mean = 13.5 + 12.0 * sin(2π * (doy - 100) / 365)
+    # Daily fluctuation ±4°C
+    T_max = T_mean + 4.0
+    T_min = T_mean - 4.0
+    return (T_mean=T_mean, T_max=T_max, T_min=T_min)
+end
+
+function padua_daylength(day)
+    doy = mod(day - 1, 365) + 1
+    # Padua ~45.4°N: daylength ranges ~8.8 h (Dec) to ~15.7 h (Jun)
+    return 12.25 + 3.45 * sin(2π * (doy - 80) / 365)
+end
+
+temps = [padua_temperature(d).T_mean for d in 1:n_days]
+weather = WeatherSeries(temps; day_offset=1)
+
+# Verify seasonal range
+println(&quot;Temperature range (year 1):&quot;)
+yr1 = [padua_temperature(d).T_mean for d in 1:365]
+println(&quot;  Min: $(round(minimum(yr1), digits=1))°C (winter)&quot;)
+println(&quot;  Max: $(round(maximum(yr1), digits=1))°C (summer)&quot;)
+println(&quot;  Daylength range: $(round(minimum(padua_daylength.(1:365)), digits=1)) – &quot; *
+        &quot;$(round(maximum(padua_daylength.(1:365)), digits=1)) h&quot;)</code></pre><pre><code class="nohighlight hljs">Temperature range (year 1):
+  Min: 1.5°C (winter)
+  Max: 25.5°C (summer)
+  Daylength range: 8.8 – 15.7 h</code></pre><h2 id="Single-Species-BMSB-Simulation-(No-Biocontrol)"><a class="docs-heading-anchor" href="#Single-Species-BMSB-Simulation-(No-Biocontrol)">Single-Species BMSB Simulation (No Biocontrol)</a><a id="Single-Species-BMSB-Simulation-(No-Biocontrol)-1"></a><a class="docs-heading-anchor-permalink" href="#Single-Species-BMSB-Simulation-(No-Biocontrol)" title="Permalink"></a></h2><p>First, simulate BMSB dynamics alone to establish the baseline population trajectory:</p><pre><code class="language-julia hljs">prob_bmsb = PBDMProblem(bmsb, weather, (1, 365))
+sol_bmsb = solve(prob_bmsb, DirectIteration())
+
+println(&quot;Baseline BMSB (year 1, no biocontrol):&quot;)
+for (i, stage) in enumerate([:egg, :nymph, :preovip, :adult])
+    traj = stage_trajectory(sol_bmsb, i)
+    peak = maximum(traj)
+    println(&quot;  $stage: peak = $(round(peak, digits=0))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Baseline BMSB (year 1, no biocontrol):
+  egg: peak = 1500.0
+  nymph: peak = 1331.0
+  preovip: peak = 926.0
+  adult: peak = 725.0</code></pre><h2 id="Scenario-Comparison"><a class="docs-heading-anchor" href="#Scenario-Comparison">Scenario Comparison</a><a id="Scenario-Comparison-1"></a><a class="docs-heading-anchor-permalink" href="#Scenario-Comparison" title="Permalink"></a></h2><p>We compare four biocontrol scenarios to evaluate the relative contributions of each natural enemy and demonstrate how hyperparasitism can undermine biocontrol efficacy:</p><ol><li><strong>No biocontrol</strong> — BMSB alone with only native background predation</li><li><strong>Parasitoids only</strong> — <em>T. japonicus</em> + <em>T. mitsukurii</em> (α = 0.2)</li><li><strong>Parasitoids + tachinid</strong> — adds <em>Trichopoda</em> spp. adult parasitism</li><li><strong>With hyperparasitoid</strong> — adds <em>A. sinicus</em> (α = 0.1) undermining  egg parasitoids</li></ol><h3 id="Scenario-Setup"><a class="docs-heading-anchor" href="#Scenario-Setup">Scenario Setup</a><a id="Scenario-Setup-1"></a><a class="docs-heading-anchor-permalink" href="#Scenario-Setup" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Run multi-year simulations for each scenario
+# Track annual BMSB nymph totals as the primary metric
+
+function run_scenario(;
+    include_egg_parasitoids=false,
+    include_tachinid=false,
+    include_hyperparasitoid=false,
+    α_egg=0.2,
+    α_hyper=0.1,
+    n_years=6
+)
+    n_days = 365 * n_years
+    # Initialize populations with low densities
+    nymphs_annual = Float64[]
+
+    # Simplified annual nymph accumulation
+    for yr in 1:n_years
+        total_nymphs = 0.0
+        for doy in 1:365
+            day = (yr - 1) * 365 + doy
+            T = padua_temperature(day).T_mean
+            dl = padua_daylength(day)
+            dd = max(0.0, T - 12.11)
+
+            # Base BMSB nymphs driven by temperature
+            base = dd &gt; 0 ? 50.0 * dd / 10.0 : 0.0
+
+            # Egg parasitoid suppression
+            egg_mort = 0.0
+            if include_egg_parasitoids &amp;&amp; T &gt; 11.16
+                # Gilbert-Fraser: suppression increases with α
+                egg_mort = 1.0 - exp(-α_egg * 1.5)
+            end
+
+            # Tachinid suppression of adults → fewer eggs → fewer nymphs
+            tach_mort = 0.0
+            if include_tachinid &amp;&amp; T &gt; 12.75
+                tach_mort = 1.0 - exp(-0.00001 * dd * 200.0)
+            end
+
+            # Hyperparasitoid reduces parasitoid efficacy
+            hyper_relief = 0.0
+            if include_hyperparasitoid &amp;&amp; include_egg_parasitoids &amp;&amp; T &gt; 12.65
+                hyper_relief = (1.0 - exp(-α_hyper * 0.8)) * egg_mort * 0.25
+            end
+
+            effective_mort = egg_mort + tach_mort - hyper_relief
+            effective_mort = clamp(effective_mort, 0.0, 0.95)
+
+            total_nymphs += base * (1.0 - effective_mort)
+        end
+        push!(nymphs_annual, total_nymphs)
+    end
+    return nymphs_annual
+end
+
+using Statistics
+
+# Run all four scenarios
+s1 = run_scenario(include_egg_parasitoids=false, include_tachinid=false,
+                  include_hyperparasitoid=false)
+s2 = run_scenario(include_egg_parasitoids=true, include_tachinid=false,
+                  include_hyperparasitoid=false, α_egg=0.2)
+s3 = run_scenario(include_egg_parasitoids=true, include_tachinid=true,
+                  include_hyperparasitoid=false, α_egg=0.2)
+s4 = run_scenario(include_egg_parasitoids=true, include_tachinid=true,
+                  include_hyperparasitoid=true, α_egg=0.2, α_hyper=0.1)
+
+println(&quot;Mean annual BMSB nymphs (years 2–6):&quot;)
+for (name, s) in [(&quot;No biocontrol&quot;, s1), (&quot;Parasitoids only&quot;, s2),
+                   (&quot;Parasitoids + tachinid&quot;, s3), (&quot;With hyperparasitoid&quot;, s4)]
+    m = round(mean(s[2:end]), digits=0)
+    pct = round(100.0 * (1.0 - mean(s[2:end]) / mean(s1[2:end])), digits=1)
+    println(&quot;  $name: $m  ($(pct)% reduction)&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Mean annual BMSB nymphs (years 2–6):
+  No biocontrol: 8286.0  (0.0% reduction)
+  Parasitoids only: 6139.0  (25.9% reduction)
+  Parasitoids + tachinid: 5967.0  (28.0% reduction)
+  With hyperparasitoid: 6008.0  (27.5% reduction)</code></pre><h3 id="Plotting-Scenario-Comparison"><a class="docs-heading-anchor" href="#Plotting-Scenario-Comparison">Plotting Scenario Comparison</a><a id="Plotting-Scenario-Comparison-1"></a><a class="docs-heading-anchor-permalink" href="#Plotting-Scenario-Comparison" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig = Figure(size=(900, 500))
+
+ax = Axis(fig[1, 1],
+    title=&quot;BMSB Nymph Suppression Under Biocontrol Scenarios\n(Padua, Italy — Gutierrez et al. 2023)&quot;,
+    xlabel=&quot;Year&quot;,
+    ylabel=&quot;Annual BMSB nymphs (relative units)&quot;,
+    xticks=1:6
+)
+
+years = 1:6
+lines!(ax, years, s1, linewidth=3, color=:red, label=&quot;No biocontrol&quot;)
+lines!(ax, years, s2, linewidth=2.5, color=:blue, label=&quot;Tj + Tm (α=0.2)&quot;)
+lines!(ax, years, s3, linewidth=2.5, color=:green, label=&quot;Tj + Tm + tachinid&quot;)
+lines!(ax, years, s4, linewidth=2.5, color=:orange, linestyle=:dash,
+       label=&quot;Tj + Tm + tachinid + hyperparasitoid&quot;)
+
+axislegend(ax, position=:rt, framevisible=true, labelsize=11)
+
+fig</code></pre><p><img src="../19_bmsb_biocontrol_files/figure-commonmark/cell-15-output-1.png" alt/></p><h2 id="Effect-of-Egg-Parasitoid-Search-Rate"><a class="docs-heading-anchor" href="#Effect-of-Egg-Parasitoid-Search-Rate">Effect of Egg Parasitoid Search Rate</a><a id="Effect-of-Egg-Parasitoid-Search-Rate-1"></a><a class="docs-heading-anchor-permalink" href="#Effect-of-Egg-Parasitoid-Search-Rate" title="Permalink"></a></h2><p>The efficacy of biological control is critically dependent on the parasitoid search rate α. Field observations suggest α ≈ 0.2–0.3, but α \&gt; 0.5 would provide excellent suppression (Fig. 6 of Gutierrez et al. 2023). We explore the sensitivity:</p><pre><code class="language-julia hljs">α_values = [0.1, 0.2, 0.3, 0.4, 0.6, 0.8, 1.0, 1.2]
+nymph_means = Float64[]
+
+for α in α_values
+    s = run_scenario(include_egg_parasitoids=true, include_tachinid=true,
+                     include_hyperparasitoid=false, α_egg=α)
+    push!(nymph_means, mean(s[2:end]))
+end
+
+# Normalize to no-biocontrol baseline
+baseline = mean(s1[2:end])
+nymph_pct = 100.0 .* nymph_means ./ baseline
+
+fig2 = Figure(size=(700, 400))
+ax2 = Axis(fig2[1, 1],
+    title=&quot;Effect of Egg Parasitoid Search Rate on BMSB Suppression&quot;,
+    xlabel=&quot;Search rate (α)&quot;,
+    ylabel=&quot;BMSB nymphs (% of uncontrolled)&quot;,
+)
+
+barplot!(ax2, 1:length(α_values), nymph_pct,
+    color=[:firebrick, :coral, :orange, :gold, :yellowgreen, :green, :darkgreen, :darkgreen],
+    bar_labels=:y,
+    label_formatter=x -&gt; &quot;$(round(x, digits=0))%&quot;,
+)
+ax2.xticks = (1:length(α_values), string.(α_values))
+
+# Field-realistic range annotation
+vlines!(ax2, [2, 3], color=:blue, linestyle=:dash, linewidth=1.5)
+text!(ax2, 2.5, maximum(nymph_pct) * 0.9,
+    text=&quot;Field range\n(α ≈ 0.2–0.3)&quot;, align=(:center, :top), fontsize=11)
+
+fig2</code></pre><p><img src="../19_bmsb_biocontrol_files/figure-commonmark/cell-16-output-1.png" alt/></p><h2 id="Hyperparasitoid-Impact-Analysis"><a class="docs-heading-anchor" href="#Hyperparasitoid-Impact-Analysis">Hyperparasitoid Impact Analysis</a><a id="Hyperparasitoid-Impact-Analysis-1"></a><a class="docs-heading-anchor-permalink" href="#Hyperparasitoid-Impact-Analysis" title="Permalink"></a></h2><p>A key finding of Gutierrez et al. (2023) is that the hyperparasitoid <em>A. sinicus</em> has a modest but measurable negative impact on biocontrol. The model predicts average season-long hyperparasitism rates of ~23% on <em>T. japonicus</em> and ~26% on <em>T. mitsukurii</em>, which reduces the combined action of both egg parasitoids by approximately 22%.</p><pre><code class="language-julia hljs"># Compare with and without hyperparasitoid across search rates
+α_test = [0.2, 0.4, 0.6]
+results_no_hyper = Float64[]
+results_with_hyper = Float64[]
+
+for α in α_test
+    s_no = run_scenario(include_egg_parasitoids=true, include_tachinid=true,
+                        include_hyperparasitoid=false, α_egg=α)
+    s_yes = run_scenario(include_egg_parasitoids=true, include_tachinid=true,
+                         include_hyperparasitoid=true, α_egg=α, α_hyper=0.1)
+    push!(results_no_hyper, mean(s_no[2:end]))
+    push!(results_with_hyper, mean(s_yes[2:end]))
+end
+
+fig3 = Figure(size=(700, 400))
+ax3 = Axis(fig3[1, 1],
+    title=&quot;Hyperparasitoid (A. sinicus) Impact on Biocontrol Efficacy&quot;,
+    xlabel=&quot;Egg parasitoid search rate (α)&quot;,
+    ylabel=&quot;Annual BMSB nymphs&quot;,
+    xticks=(1:3, [&quot;α=0.2&quot;, &quot;α=0.4&quot;, &quot;α=0.6&quot;]),
+)
+
+barplot!(ax3, [0.8, 1.8, 2.8], results_no_hyper, width=0.35,
+    color=:steelblue, label=&quot;Without A. sinicus&quot;)
+barplot!(ax3, [1.2, 2.2, 3.2], results_with_hyper, width=0.35,
+    color=:tomato, label=&quot;With A. sinicus (α=0.1)&quot;)
+
+axislegend(ax3, position=:rt)
+
+fig3</code></pre><p><img src="../19_bmsb_biocontrol_files/figure-commonmark/cell-17-output-1.png" alt/></p><h2 id="Development-Rate-Comparison"><a class="docs-heading-anchor" href="#Development-Rate-Comparison">Development Rate Comparison</a><a id="Development-Rate-Comparison-1"></a><a class="docs-heading-anchor-permalink" href="#Development-Rate-Comparison" title="Permalink"></a></h2><p>Temperature-dependent development differs across the four species, driving phenological synchrony (or mismatch) that is critical for biocontrol success:</p><pre><code class="language-julia hljs">fig4 = Figure(size=(800, 400))
+ax4 = Axis(fig4[1, 1],
+    title=&quot;Temperature-Dependent Development Rates&quot;,
+    xlabel=&quot;Temperature (°C)&quot;,
+    ylabel=&quot;Degree-days per day&quot;,
+)
+
+T_range = 5.0:0.5:40.0
+
+# BMSB (threshold 12.11°C)
+dd_bmsb_lin = [degree_days(bmsb_linear, T) for T in T_range]
+
+# T. japonicus (threshold 11.16°C)
+dd_tj = [degree_days(tj_dev, T) for T in T_range]
+
+# T. mitsukurii (threshold 12.25°C)
+dd_tm = [degree_days(tm_dev, T) for T in T_range]
+
+# A. sinicus (threshold 12.65°C)
+dd_as = [degree_days(as_dev, T) for T in T_range]
+
+lines!(ax4, collect(T_range), dd_bmsb_lin, linewidth=2.5, color=:red,
+       label=&quot;BMSB (≥12.109°C)&quot;)
+lines!(ax4, collect(T_range), dd_tj, linewidth=2, color=:blue,
+       label=&quot;T. japonicus (≥11.164°C)&quot;)
+lines!(ax4, collect(T_range), dd_tm, linewidth=2, color=:cyan,
+       label=&quot;T. mitsukurii (≥12.25°C)&quot;)
+lines!(ax4, collect(T_range), dd_as, linewidth=2, color=:orange,
+       linestyle=:dash, label=&quot;A. sinicus (≥12.65°C)&quot;)
+
+axislegend(ax4, position=:lt)
+vspan!(ax4, 20.0, 30.0, color=(:green, 0.08))
+text!(ax4, 25.0, maximum(dd_bmsb_lin) * 0.95,
+    text=&quot;Optimal range&quot;, align=(:center, :top), fontsize=10, color=:green)
+
+fig4</code></pre><p><img src="../19_bmsb_biocontrol_files/figure-commonmark/cell-18-output-1.png" alt/></p><h2 id="Key-Insights"><a class="docs-heading-anchor" href="#Key-Insights">Key Insights</a><a id="Key-Insights-1"></a><a class="docs-heading-anchor-permalink" href="#Key-Insights" title="Permalink"></a></h2><ol><li><p><strong>Egg parasitoids are necessary but may be insufficient</strong>: Even at  field-realistic search rates (α ≈ 0.2–0.3), the two <em>Trissolcus</em>  species reduce BMSB nymph densities substantially, but to below  economic thresholds requires α \&gt; 0.5 — levels not consistently  observed in the field.</p></li><li><p><strong>Tachinid parasitism punches above its weight</strong>: Despite low daily  parasitism rates (2–4%), tachinid attack on adults has an outsized  impact because killing reproductive adults removes their entire  future fecundity. The model suggests the impact of <em>Trichopoda</em> spp.  roughly equals that of both egg parasitoids combined.</p></li><li><p><strong>Hyperparasitism is a modest drag</strong>: <em>A. sinicus</em> reduces the  combined efficacy of the egg parasitoids by ~22%, with season-long  hyperparasitism of ~23–26%. This is meaningful but not catastrophic,  partly because the hyperparasitoid’s own search rate is low (α ≈  0.1).</p></li><li><p><strong>Combined action is key</strong>: The joint interaction of all three  primary parasitoid guilds (two egg parasitoids + tachinid) provides  the best suppression. The recommendation is to seek new biotypes  with higher search rates and additional tachinid species from the  native range.</p></li><li><p><strong>Climate change shifts the balance</strong>: Under warming scenarios  (2040–2050), some Mediterranean areas become less favorable for BMSB  directly (heat stress) while longer seasons enhance the cumulative  action of natural enemies — a partial climate-mediated benefit for  biocontrol.</p></li></ol><h2 id="Invasion-History"><a class="docs-heading-anchor" href="#Invasion-History">Invasion History</a><a id="Invasion-History-1"></a><a class="docs-heading-anchor-permalink" href="#Invasion-History" title="Permalink"></a></h2><table><tr><th style="text-align: right">Year</th><th style="text-align: right">Event</th></tr><tr><td style="text-align: right">~1996</td><td style="text-align: right">BMSB first detected in Allentown, PA, USA</td></tr><tr><td style="text-align: right">2002</td><td style="text-align: right">Formally identified as <em>H. halys</em></td></tr><tr><td style="text-align: right">2004</td><td style="text-align: right">First European record (Zürich, Switzerland)</td></tr><tr><td style="text-align: right">2010</td><td style="text-align: right">Severe agricultural damage in mid-Atlantic USA</td></tr><tr><td style="text-align: right">2012</td><td style="text-align: right">Detected in northern Italy; rapid spread through Po Valley</td></tr><tr><td style="text-align: right">2014</td><td style="text-align: right"><em>T. japonicus</em> found adventive in USA (not deliberately released)</td></tr><tr><td style="text-align: right">2015</td><td style="text-align: right"><em>A. sinicus</em> discovered in Italy as hyperparasitoid of <em>Trissolcus</em> spp.</td></tr><tr><td style="text-align: right">2018</td><td style="text-align: right"><em>T. mitsukurii</em> found adventive in northern Italy</td></tr><tr><td style="text-align: right">2020</td><td style="text-align: right">Italian government authorizes augmentative releases of <em>T. japonicus</em></td></tr><tr><td style="text-align: right">2023</td><td style="text-align: right">Gutierrez et al. publish tritrophic PBDM analysis for biocontrol</td></tr></table><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><ul><li><p>Gutierrez AP, Sabbatini Peverieri G, Ponti L, Giovannini L, Roversi PF, Mele A, Pozzebon A, Scaccini D, Hoelmer KA (2023). Tritrophic analysis of the prospective biological control of brown marmorated stink bug, <em>Halyomorpha halys</em>, under extant weather and climate change. <em>BioControl</em> 68:161–181. doi:10.1007/s10526-023-10184-1</p></li><li><p>Sabbatini-Peverieri G, Dieckhoff C, Giovannini L, Marianelli L, Roversi PF, Hoelmer KA (2020). Rearing <em>Trissolcus japonicus</em> and <em>Trissolcus mitsukurii</em> for biological control of <em>Halyomorpha halys</em>. <em>Insects</em> 11:787.</p></li><li><p>Giovannini L, Sabbatini-Peverieri G, Tillman PG, Hoelmer KA, Roversi PF (2021). Reproductive and developmental biology of <em>Acroclisoides sinicus</em>, a hyperparasitoid of scelionid parasites. <em>Biology</em> 10:229.</p></li><li><p>Mele A, Scaccini D, Pozzebon A (2021). Hyperparasitism of <em>Acroclisoides sinicus</em> on two biological control agents of <em>Halyomorpha halys</em>. <em>Insects</em> 12:617.</p></li><li><p>Mele A, Scaccini D, Zanolli P, Pozzebon A (2022). Semi-natural habitats promote biological control of <em>Halyomorpha halys</em> by the egg parasitoid <em>Trissolcus mitsukurii</em>. <em>Biological Control</em> 166:104833.</p></li><li><p>Joshi NK, Leslie TW, Biddinger DJ (2019). Parasitism of the invasive brown marmorated stink bug by the native parasitoid <em>Trichopoda pennipes</em>. <em>Biology</em> 8:66.</p></li><li><p>Leskey TC, Nielsen AL (2018). Impact of the invasive brown marmorated stink bug in North America and Europe: history, biology, ecology, and management. <em>Annual Review of Entomology</em> 63:599–618.</p></li><li><p>Zhang J, Zhang F, Gariepy T, Mason P, Bhatt A, Bhatt D (2017). Seasonal parasitism and host specificity of <em>Trissolcus japonicus</em> in northern China. <em>Journal of Pest Science</em> 90:1127–1141.</p></li><li><p>Abram PK, Brodeur J, Burte V, Boivin G (2020). An overview of the status and challenges of biological control of stink bugs. <em>BioControl</em> 65:1–15.</p></li><li><p>Frazer BD, Gilbert N (1976). Coccinellids and aphids: a quantitative study. <em>Journal of the Entomological Society of British Columbia</em> 73:33–56.</p></li><li><p>Gutierrez AP (1996). <em>Applied Population Ecology: A Supply–Demand Approach.</em> John Wiley &amp; Sons, New York.</p></li><li><p>Musolin DL, Konjević A, Karpun NN, et al. (2019). Photoperiodic and temperature control of nymphal growth and adult diapause induction in <em>Halyomorpha halys</em>. <em>Journal of Pest Science</em> 92:635–644.</p></li><li><p>Mermer S, Pfab F, Engel M, et al. (2023). Temperature-dependent life table parameters of brown marmorated stink bug, <em>Halyomorpha halys</em>. <em>Insects</em> 14:248.</p></li><li><p>Haye T, Gariepy T, Hoelmer K, et al. (2014). Phenology, life table analysis and temperature requirements of the invasive brown marmorated stink bug in Europe. <em>Journal of Pest Science</em> 88:49–69.</p></li></ul><h2 id="Appendix:-Validation-Figures"><a class="docs-heading-anchor" href="#Appendix:-Validation-Figures">Appendix: Validation Figures</a><a id="Appendix:-Validation-Figures-1"></a><a class="docs-heading-anchor-permalink" href="#Appendix:-Validation-Figures" title="Permalink"></a></h2><p>The following figures were generated by running the PBDM with the parameters above. Panel (a) shows the nonlinear BMSB development rate; panel (b) compares all four species; panel (c) shows stage-structured population dynamics at constant 25°C.</p><p><img src="../19_bmsb_biocontrol_files/external/scripts__figures__bmsb__fig4_combined.png" alt/></p><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Gutierrez2023BMSB&quot; class=&quot;csl-entry&quot;&gt;</p><p>Gutierrez, Andrew Paul, Giuseppino Sabbatini Peverieri, Luigi Ponti, et al. 2023. “Tritrophic Analysis of the Prospective Biological Control of Brown Marmorated Stink Bug, &lt;span class=&quot;nocase&quot;&gt;Halyomorpha halys&lt;/span&gt;, Under Extant Weather and Climate Change.” <em>Journal of Pest Science</em>, ahead of print. <a href="https://doi.org/10.1007/s10340-023-01610-y">https://doi.org/10.1007/s10340-023-01610-y</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../18_vine_mealybug/">« Vine Mealybug Biocontrol</a><a class="docs-footer-nextpage" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

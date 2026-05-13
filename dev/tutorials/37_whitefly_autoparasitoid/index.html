@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Cotton-Whitefly-Autoparasitoid Dynamics · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Cotton-Whitefly-Autoparasitoid Dynamics · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Cotton-Whitefly-Autoparasitoid Dynamics · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Cotton-Whitefly-Autoparasitoid Dynamics · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/37_whitefly_autoparasitoid/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/37_whitefly_autoparasitoid/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/37_whitefly_autoparasitoid/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li class="is-active"><a class="tocitem" href>Cotton-Whitefly-Autoparasitoid Dynamics</a><ul class="internal"><li><a class="tocitem" href="#Introduction"><span>Introduction</span></a></li><li><a class="tocitem" href="#Model-Structure"><span>Model Structure</span></a></li><li><a class="tocitem" href="#Parameters"><span>Parameters</span></a></li><li><a class="tocitem" href="#Weather"><span>Weather</span></a></li><li><a class="tocitem" href="#Implementation"><span>Implementation</span></a></li><li><a class="tocitem" href="#Results"><span>Results</span></a></li><li><a class="tocitem" href="#Analysis-—-Biocontrol-Efficacy"><span>Analysis — Biocontrol Efficacy</span></a></li><li><a class="tocitem" href="#Parameter-Sources"><span>Parameter Sources</span></a></li><li><a class="tocitem" href="#Discussion"><span>Discussion</span></a></li><li><a class="tocitem" href="#References"><span>References</span></a></li></ul></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Cotton-Whitefly-Autoparasitoid Dynamics</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Cotton-Whitefly-Autoparasitoid Dynamics</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Cotton-Whitefly-Autoparasitoid-Dynamics"><a class="docs-heading-anchor" href="#Cotton-Whitefly-Autoparasitoid-Dynamics">Cotton-Whitefly-Autoparasitoid Dynamics</a><a id="Cotton-Whitefly-Autoparasitoid-Dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Cotton-Whitefly-Autoparasitoid-Dynamics" title="Permalink"></a></h1><p>PhysiologicallyBasedDemographicModels.jl</p><ul><li><a href="#introduction">Introduction</a></li><li><a href="#model-structure">Model Structure</a><ul><li><a href="#trophic-relationships">Trophic Relationships</a></li><li><a href="#functional-response">Functional Response</a></li><li><a href="#mortality-partitioning">Mortality Partitioning</a></li></ul></li><li><a href="#parameters">Parameters</a><ul><li><a href="#temperature-thresholds-and-development">Temperature Thresholds and Development</a></li><li><a href="#functional-response-parameters">Functional Response Parameters</a></li><li><a href="#population-parameters">Population Parameters</a></li></ul></li><li><a href="#weather">Weather</a><ul><li><a href="#california-cotton-season">California Cotton Season</a></li><li><a href="#seasonal-temperature-profile">Seasonal Temperature Profile</a></li></ul></li><li><a href="#implementation">Implementation</a><ul><li><a href="#life-stages">Life Stages</a></li><li><a href="#trophic-web">Trophic Web</a></li><li><a href="#simulation-core">Simulation Core</a></li><li><a href="#pbdm-problem-formulation">PBDM Problem Formulation</a></li></ul></li><li><a href="#results">Results</a><ul><li><a href="#population-dynamics--all-parasitoids">Population Dynamics — All Parasitoids</a></li><li><a href="#parasitoid-combinations">Parasitoid Combinations</a></li><li><a href="#autoparasitoid-sex-ratios">Autoparasitoid Sex Ratios</a></li></ul></li><li><a href="#analysis--biocontrol-efficacy">Analysis — Biocontrol Efficacy</a><ul><li><a href="#whitefly-suppression-index">Whitefly Suppression Index</a></li><li><a href="#cotton-yield-impact">Cotton Yield Impact</a></li><li><a href="#stability-analysis">Stability Analysis</a></li></ul></li><li><a href="#parameter-sources">Parameter Sources</a></li><li><a href="#discussion">Discussion</a></li><li><a href="#references">References</a></li></ul><h2 id="Introduction"><a class="docs-heading-anchor" href="#Introduction">Introduction</a><a id="Introduction-1"></a><a class="docs-heading-anchor-permalink" href="#Introduction" title="Permalink"></a></h2><p>The sweetpotato whitefly <em>Bemisia tabaci</em> (Gennadius) is a major pest of cotton (<em>Gossypium hirsutum</em> L.) in the San Joaquin Valley of California and worldwide. Biological control of whiteflies relies heavily on aphelinid parasitoids, which display a remarkable diversity of reproductive strategies centred on <strong>heteronomous hyperparasitism</strong> — where males and females develop on different host types.</p><p>Mills &amp; Gutierrez (1996) developed a tritrophic physiologically based demographic model (PBDM) for the cotton–whitefly–parasitoid system that captures three distinct aphelinid biologies:</p><ul><li><strong>Primary parasitoid (P₁)</strong> — modelled on <em>Eretmocerus</em> spp.: both sexes develop directly on whitefly nymphs with a fixed 1:1 sex ratio.</li><li><strong>Obligate autoparasitoid (P₂)</strong> — modelled on <em>Encarsia</em> (obligate form): females develop on unparasitized whitefly, but males develop <strong>only</strong> as hyperparasitoids of conspecific females.</li><li><strong>Facultative autoparasitoid (P₃)</strong> — modelled on <em>Encarsia</em> (facultative form): females develop on whitefly, males develop as hyperparasitoids of <strong>any</strong> parasitoid species including itself.</li></ul><p>Schreiber, Mills &amp; Gutierrez (2001) extended this analysis with stage-structured ODE models to show that obligate autoparasitism always stabilizes host–parasitoid interactions, while facultative autoparasitoids can displace primary parasitoids but may provide inferior host suppression.</p><p>This vignette implements the tritrophic cotton–whitefly–autoparasitoid system using the <code>PhysiologicallyBasedDemographicModels.jl</code> API, focusing on the interplay between parasitoid biology and whitefly suppression.</p><h2 id="Model-Structure"><a class="docs-heading-anchor" href="#Model-Structure">Model Structure</a><a id="Model-Structure-1"></a><a class="docs-heading-anchor-permalink" href="#Model-Structure" title="Permalink"></a></h2><h3 id="Trophic-Relationships"><a class="docs-heading-anchor" href="#Trophic-Relationships">Trophic Relationships</a><a id="Trophic-Relationships-1"></a><a class="docs-heading-anchor-permalink" href="#Trophic-Relationships" title="Permalink"></a></h3><p>The model has three trophic levels:</p><ol><li><strong>Cotton</strong> — provides phloem sap to whitefly; growth driven by  photosynthesis and degree-day accumulation above 12 °C.</li><li><strong>Whitefly</strong> (<em>B. tabaci</em>) — egg, four nymphal instars, and adult  stages; development above 13.5 °C threshold; feeds on cotton phloem.</li><li><strong>Parasitoids</strong> — three aphelinid species with overlapping  generations, each with immature and adult stages developing above  13.5 °C.</li></ol><p>The key biological asymmetry lies in <strong>male ontogeny</strong>:</p><table><tr><th style="text-align: left">Species</th><th style="text-align: left">Female hosts</th><th style="text-align: left">Male hosts</th><th style="text-align: left">Sex ratio</th></tr><tr><td style="text-align: left">P₁ (primary)</td><td style="text-align: left">Whitefly nymphs</td><td style="text-align: left">Whitefly nymphs</td><td style="text-align: left">Fixed 0.5</td></tr><tr><td style="text-align: left">P₂ (obligate auto.)</td><td style="text-align: left">Whitefly nymphs</td><td style="text-align: left">P₂ females in whitefly</td><td style="text-align: left">Density-dependent</td></tr><tr><td style="text-align: left">P₃ (facultative auto.)</td><td style="text-align: left">Whitefly nymphs</td><td style="text-align: left">Any parasitoid in whitefly</td><td style="text-align: left">Density-dependent</td></tr></table><h3 id="Functional-Response"><a class="docs-heading-anchor" href="#Functional-Response">Functional Response</a><a id="Functional-Response-1"></a><a class="docs-heading-anchor-permalink" href="#Functional-Response" title="Permalink"></a></h3><p>Resource acquisition at each trophic level uses the ratio-dependent (Gutierrez–Baumgärtner) functional response (Mills and Gutierrez 1996, Eq. A1–A2):</p><p class="math-container">\[f = D \cdot N \left(1 - e^{-\alpha \cdot R / D}\right)\]</p><p>where <span>$D$</span> is the consumer’s demand rate, <span>$N$</span> is consumer abundance, <span>$\alpha$</span> is search efficiency, and <span>$R$</span> is the resource supply. For parasitoids, the integrated form permits superparasitism:</p><p class="math-container">\[g_j = H_j \left(1 - e^{-(D_j / H_j)\left[1 - e^{-\alpha_j A_j / D_j}\right]}\right) = H_j(1 - s_j)\]</p><p>where <span>$s_j$</span> is the host escape probability and <span>$H_j$</span> is the host set available to species <span>$j$</span>.</p><h3 id="Mortality-Partitioning"><a class="docs-heading-anchor" href="#Mortality-Partitioning">Mortality Partitioning</a><a id="Mortality-Partitioning-1"></a><a class="docs-heading-anchor-permalink" href="#Mortality-Partitioning" title="Permalink"></a></h3><p>When multiple parasitoid species attack the same host, the total mortality is <span>$1 - s_1 s_2 s_3$</span> and is partitioned among species proportionally to their individual attack rates <span>$\mu_j = 1 - s_j$</span> (Mills and Gutierrez 1996, Appendix).</p><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+using CairoMakie
+using Statistics</code></pre><h2 id="Parameters"><a class="docs-heading-anchor" href="#Parameters">Parameters</a><a id="Parameters-1"></a><a class="docs-heading-anchor-permalink" href="#Parameters" title="Permalink"></a></h2><p>Parameters are drawn from Table 1 of Mills &amp; Gutierrez (1996) and Table 1 of Schreiber et al. (2001).</p><h3 id="Temperature-Thresholds-and-Development"><a class="docs-heading-anchor" href="#Temperature-Thresholds-and-Development">Temperature Thresholds and Development</a><a id="Temperature-Thresholds-and-Development-1"></a><a class="docs-heading-anchor-permalink" href="#Temperature-Thresholds-and-Development" title="Permalink"></a></h3><pre><code class="language-julia hljs"># ── Temperature thresholds ────────────────────────────────────────
+const T_BASE_COTTON = 12.0    # °C, cotton development threshold
+const T_BASE_WF = 13.5        # °C, whitefly development threshold
+const T_BASE_PARA = 13.5      # °C, parasitoid development threshold
+
+# ── Development rate objects ──────────────────────────────────────
+cotton_dev = LinearDevelopmentRate(T_BASE_COTTON, 40.0)
+whitefly_dev = LinearDevelopmentRate(T_BASE_WF, 40.0)
+parasitoid_dev = LinearDevelopmentRate(T_BASE_PARA, 40.0)
+
+# ── Life stage durations (degree-days above threshold) ────────────
+# Whitefly: egg 0–90 dd, larva 90–200 dd, pupa 200–300 dd, adult 300–800 dd
+const WF_EGG_DD = 90.0
+const WF_LARVA_DD = 110.0     # 200 - 90
+const WF_PUPA_DD = 100.0      # 300 - 200
+const WF_ADULT_DD = 500.0     # 800 - 300
+
+# Parasitoid: immature 0–250 dd, pupa 250–386 dd, adult 386–475 dd
+const PARA_IMMATURE_DD = 250.0
+const PARA_PUPA_DD = 136.0    # 386 - 250
+const PARA_ADULT_DD = 89.0    # 475 - 386
+
+println(&quot;Whitefly total generation: $(WF_EGG_DD + WF_LARVA_DD + WF_PUPA_DD + WF_ADULT_DD) dd&quot;)
+println(&quot;Parasitoid total generation: $(PARA_IMMATURE_DD + PARA_PUPA_DD + PARA_ADULT_DD) dd&quot;)</code></pre><pre><code class="nohighlight hljs">Whitefly total generation: 800.0 dd
+Parasitoid total generation: 475.0 dd</code></pre><h3 id="Functional-Response-Parameters"><a class="docs-heading-anchor" href="#Functional-Response-Parameters">Functional Response Parameters</a><a id="Functional-Response-Parameters-1"></a><a class="docs-heading-anchor-permalink" href="#Functional-Response-Parameters" title="Permalink"></a></h3><pre><code class="language-julia hljs"># ── Search efficiencies (α) ───────────────────────────────────────
+const ALPHA_COTTON = 0.80     # cotton light capture efficiency
+const ALPHA_WF = 0.85         # whitefly search on cotton
+const ALPHA_PARA = 0.60       # parasitoid search for hosts
+
+# ── Oviposition rates (demand, per dd) ────────────────────────────
+const OVIP_WF = 0.5           # whitefly: 0.5 eggs per dd
+const OVIP_PARA = 0.99        # parasitoid: 0.99 eggs per dd
+
+# ── Functional responses ─────────────────────────────────────────
+# Whitefly on cotton: Holling Type II with search rate and handling time
+wf_response = HollingTypeII(ALPHA_WF, 0.01)
+
+# Parasitoid on whitefly: high attack rate, moderate handling time
+para_response = HollingTypeII(ALPHA_PARA, 0.02)
+
+# Autoparasitoid on parasitized hosts (male production)
+auto_response = HollingTypeII(0.50, 0.03)
+
+for (name, fr) in [(&quot;Whitefly&quot;, wf_response), (&quot;Parasitoid&quot;, para_response),
+                    (&quot;Autoparasitoid&quot;, auto_response)]
+    rate = functional_response(fr, 100.0)
+    println(&quot;$name at N=100: $(round(rate, digits=2)) attacks/predator/day&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Whitefly at N=100: 45.95 attacks/predator/day
+Parasitoid at N=100: 27.27 attacks/predator/day
+Autoparasitoid at N=100: 20.0 attacks/predator/day</code></pre><h3 id="Population-Parameters"><a class="docs-heading-anchor" href="#Population-Parameters">Population Parameters</a><a id="Population-Parameters-1"></a><a class="docs-heading-anchor-permalink" href="#Population-Parameters" title="Permalink"></a></h3><pre><code class="language-julia hljs"># ── Substages for distributed delay ──────────────────────────────
+const K_WF = 25           # substages per whitefly life stage
+const K_PARA = 20         # substages per parasitoid life stage
+
+# ── Parasitoid sex ratios ─────────────────────────────────────────
+# P₁: fixed 50% female on whitefly
+const THETA_P1 = 0.5
+# P₂: females only from whitefly, males only from conspecific females
+const THETA_P2 = 1.0      # all whitefly attacks → females
+# P₃: females from whitefly, males from any parasitoid
+const THETA_P3 = 1.0      # all whitefly attacks → females
+
+# ── Conversion efficiencies ───────────────────────────────────────
+const EFF_WF = 0.30       # whitefly: phloem → biomass
+const EFF_PARA = 0.70     # parasitoid: host → parasitoid
+
+println(&quot;P₁ sex ratio: fixed $(THETA_P1) female&quot;)
+println(&quot;P₂ sex ratio: density-dependent (obligate autoparasitoid)&quot;)
+println(&quot;P₃ sex ratio: density-dependent (facultative autoparasitoid)&quot;)</code></pre><pre><code class="nohighlight hljs">P₁ sex ratio: fixed 0.5 female
+P₂ sex ratio: density-dependent (obligate autoparasitoid)
+P₃ sex ratio: density-dependent (facultative autoparasitoid)</code></pre><h2 id="Weather"><a class="docs-heading-anchor" href="#Weather">Weather</a><a id="Weather-1"></a><a class="docs-heading-anchor-permalink" href="#Weather" title="Permalink"></a></h2><h3 id="California-Cotton-Season"><a class="docs-heading-anchor" href="#California-Cotton-Season">California Cotton Season</a><a id="California-Cotton-Season-1"></a><a class="docs-heading-anchor-permalink" href="#California-Cotton-Season" title="Permalink"></a></h3><p>The cotton growing season at Corcoran, California (36.1°N, San Joaquin Valley) runs from late March through October. We construct a 200-day weather profile representative of the 1973 season used in the original analysis (Mills and Gutierrez 1996).</p><pre><code class="language-julia hljs">const N_DAYS = 200    # late March through mid-October
+const START_DAY = 86  # 27 March (Julian day)
+
+weather_days = DailyWeather[]
+for d in 1:N_DAYS
+    jday = START_DAY + d - 1
+    # Seasonal temperature profile for San Joaquin Valley
+    T_mean = 18.0 + 12.0 * sin(π * (jday - 60) / 200)
+    T_min = T_mean - 6.0 + 2.0 * randn() * 0.0  # deterministic envelope
+    T_min = T_mean - 6.0
+    T_max = T_mean + 8.0
+    # Solar radiation peaks in summer
+    rad = 18.0 + 8.0 * sin(π * (jday - 60) / 200)
+    push!(weather_days, DailyWeather(T_mean, T_min, T_max;
+                                      radiation=rad, photoperiod=14.0))
+end
+weather = WeatherSeries(weather_days; day_offset=1)
+
+# Summarize seasonal conditions
+T_means = [18.0 + 12.0 * sin(π * (START_DAY + d - 1 - 60) / 200) for d in 1:N_DAYS]
+println(&quot;Season: $N_DAYS days, T̄=$(round(mean(T_means), digits=1))°C&quot;)
+println(&quot;T range: $(round(minimum(T_means), digits=1))–$(round(maximum(T_means), digits=1))°C&quot;)
+dd_total = sum(max(0.0, T - T_BASE_WF) for T in T_means)
+println(&quot;Total whitefly dd: $(round(dd_total, digits=0))&quot;)</code></pre><pre><code class="nohighlight hljs">Season: 200 days, T̄=25.0°C
+T range: 13.4–30.0°C
+Total whitefly dd: 2307.0</code></pre><h3 id="Seasonal-Temperature-Profile"><a class="docs-heading-anchor" href="#Seasonal-Temperature-Profile">Seasonal Temperature Profile</a><a id="Seasonal-Temperature-Profile-1"></a><a class="docs-heading-anchor-permalink" href="#Seasonal-Temperature-Profile" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig_wx = Figure(size=(700, 300))
+ax = Axis(fig_wx[1, 1],
+    xlabel=&quot;Day of season&quot;,
+    ylabel=&quot;Temperature (°C)&quot;,
+    title=&quot;Corcoran, CA — Cotton Season Temperature Profile&quot;)
+lines!(ax, 1:N_DAYS, T_means, linewidth=2, color=:firebrick)
+hlines!(ax, [T_BASE_WF], color=:gray, linestyle=:dash, label=&quot;Whitefly threshold&quot;)
+hlines!(ax, [T_BASE_COTTON], color=:steelblue, linestyle=:dot, label=&quot;Cotton threshold&quot;)
+axislegend(ax; position=:rb)
+fig_wx</code></pre><p><img src="../37_whitefly_autoparasitoid_files/figure-commonmark/cell-7-output-1.png" alt/></p><h2 id="Implementation"><a class="docs-heading-anchor" href="#Implementation">Implementation</a><a id="Implementation-1"></a><a class="docs-heading-anchor-permalink" href="#Implementation" title="Permalink"></a></h2><h3 id="Life-Stages"><a class="docs-heading-anchor" href="#Life-Stages">Life Stages</a><a id="Life-Stages-1"></a><a class="docs-heading-anchor-permalink" href="#Life-Stages" title="Permalink"></a></h3><p>We define age-structured populations for whitefly and the three parasitoid species using the distributed delay framework.</p><pre><code class="language-julia hljs">make_delay_stage(name, k, tau, dev_rate, W0; μ=0.01) =
+    LifeStage(name, DistributedDelay(k, tau; W0=W0), dev_rate, μ)
+
+# ── Whitefly population ──────────────────────────────────────────
+wf_egg = make_delay_stage(:wf_egg, K_WF, WF_EGG_DD, whitefly_dev, 30.0; μ=0.002)
+wf_larva = make_delay_stage(:wf_larva, K_WF, WF_LARVA_DD, whitefly_dev, 0.0; μ=0.003)
+wf_pupa = make_delay_stage(:wf_pupa, K_WF, WF_PUPA_DD, whitefly_dev, 0.0; μ=0.002)
+wf_adult = make_delay_stage(:wf_adult, K_WF, WF_ADULT_DD, whitefly_dev, 0.0; μ=0.01)
+
+whitefly_pop = Population(:whitefly, [wf_egg, wf_larva, wf_pupa, wf_adult])
+
+# ── Primary parasitoid P₁ (Eretmocerus-type) ────────────────────
+p1_immature = make_delay_stage(:p1_immature, K_PARA, PARA_IMMATURE_DD, parasitoid_dev, 0.0)
+p1_pupa = make_delay_stage(:p1_pupa, K_PARA, PARA_PUPA_DD, parasitoid_dev, 0.0)
+p1_adult_f = make_delay_stage(:p1_adult_f, K_PARA, PARA_ADULT_DD, parasitoid_dev, 1.0)  # 1 female/plant
+p1_adult_m = make_delay_stage(:p1_adult_m, K_PARA, PARA_ADULT_DD, parasitoid_dev, 1.0)
+
+p1_pop = Population(:p1, [p1_immature, p1_pupa, p1_adult_f, p1_adult_m])
+
+# ── Obligate autoparasitoid P₂ (Encarsia obligate) ──────────────
+p2_immature_f = make_delay_stage(:p2_imm_f, K_PARA, PARA_IMMATURE_DD, parasitoid_dev, 0.0)
+p2_immature_m = make_delay_stage(:p2_imm_m, K_PARA, PARA_IMMATURE_DD, parasitoid_dev, 0.0)
+p2_adult_f = make_delay_stage(:p2_adult_f, K_PARA, PARA_ADULT_DD, parasitoid_dev, 1.0)
+p2_adult_m = make_delay_stage(:p2_adult_m, K_PARA, PARA_ADULT_DD, parasitoid_dev, 0.0)
+
+p2_pop = Population(:p2, [p2_immature_f, p2_immature_m, p2_adult_f, p2_adult_m])
+
+# ── Facultative autoparasitoid P₃ (Encarsia facultative) ────────
+p3_immature_f = make_delay_stage(:p3_imm_f, K_PARA, PARA_IMMATURE_DD, parasitoid_dev, 0.0)
+p3_immature_m = make_delay_stage(:p3_imm_m, K_PARA, PARA_IMMATURE_DD, parasitoid_dev, 0.0)
+p3_adult_f = make_delay_stage(:p3_adult_f, K_PARA, PARA_ADULT_DD, parasitoid_dev, 1.0)
+p3_adult_m = make_delay_stage(:p3_adult_m, K_PARA, PARA_ADULT_DD, parasitoid_dev, 0.0)
+
+p3_pop = Population(:p3, [p3_immature_f, p3_immature_m, p3_adult_f, p3_adult_m])
+
+println(&quot;Whitefly stages: &quot;, n_stages(whitefly_pop))
+println(&quot;P₁ stages: &quot;, n_stages(p1_pop))
+println(&quot;P₂ stages: &quot;, n_stages(p2_pop))
+println(&quot;P₃ stages: &quot;, n_stages(p3_pop))</code></pre><pre><code class="nohighlight hljs">Whitefly stages: 4
+P₁ stages: 4
+P₂ stages: 4
+P₃ stages: 4</code></pre><h3 id="Trophic-Web"><a class="docs-heading-anchor" href="#Trophic-Web">Trophic Web</a><a id="Trophic-Web-1"></a><a class="docs-heading-anchor-permalink" href="#Trophic-Web" title="Permalink"></a></h3><p>We encode the tritrophic interactions using <code>TrophicWeb</code> and <code>TrophicLink</code> objects.</p><pre><code class="language-julia hljs">web = TrophicWeb()
+
+# Whitefly feeds on cotton (implicit via supply/demand)
+# Parasitoids attack whitefly
+add_link!(web, TrophicLink(:p1, :whitefly, para_response, EFF_PARA))
+add_link!(web, TrophicLink(:p2, :whitefly, para_response, EFF_PARA))
+add_link!(web, TrophicLink(:p3, :whitefly, para_response, EFF_PARA))
+
+# Autoparasitoid male production: hyperparasitism on immature parasitoids
+# P₂ males from P₂ females
+add_link!(web, TrophicLink(:p2_male, :p2_imm_f, auto_response, EFF_PARA))
+# P₃ males from any parasitoid immatures
+add_link!(web, TrophicLink(:p3_male, :p1_immature, auto_response, EFF_PARA))
+add_link!(web, TrophicLink(:p3_male, :p2_imm_f, auto_response, EFF_PARA))
+add_link!(web, TrophicLink(:p3_male, :p3_imm_f, auto_response, EFF_PARA))
+
+# Verify links
+wf_predators = find_predators(web, :whitefly)
+println(&quot;Whitefly predators: &quot;, length(wf_predators), &quot; species&quot;)
+p1_links = find_links(web, :p1)
+println(&quot;P₁ attack links: &quot;, length(p1_links))</code></pre><pre><code class="nohighlight hljs">Whitefly predators: 3 species
+P₁ attack links: 1</code></pre><h3 id="Simulation-Core"><a class="docs-heading-anchor" href="#Simulation-Core">Simulation Core</a><a id="Simulation-Core-1"></a><a class="docs-heading-anchor-permalink" href="#Simulation-Core" title="Permalink"></a></h3><p>The simulation iterates daily, accumulating degree-days and computing the functional response at each trophic level. The host escape probabilities determine parasitism, and mortality is partitioned among species.</p><pre><code class="language-julia hljs">function simulate_tritrophic(;
+    n_days=N_DAYS,
+    parasitoids=[true, true, true],  # which P₁, P₂, P₃ are present
+    T_means=T_means
+)
+    # BulkPopulations for each sex/stage class
+    bp_wf      = BulkPopulation(:wf,       30.0;  K=1e6)
+    bp_p1_f    = BulkPopulation(:p1_f,     parasitoids[1] ? 1.0 : 0.0)
+    bp_p1_m    = BulkPopulation(:p1_m,     parasitoids[1] ? 1.0 : 0.0)
+    bp_p1_imm  = BulkPopulation(:p1_imm,   0.0)
+    bp_p2_f    = BulkPopulation(:p2_f,     parasitoids[2] ? 1.0 : 0.0)
+    bp_p2_m    = BulkPopulation(:p2_m,     0.0)
+    bp_p2_if   = BulkPopulation(:p2_imm_f, 0.0)
+    bp_p2_im   = BulkPopulation(:p2_imm_m, 0.0)
+    bp_p3_f    = BulkPopulation(:p3_f,     parasitoids[3] ? 1.0 : 0.0)
+    bp_p3_m    = BulkPopulation(:p3_m,     0.0)
+    bp_p3_if   = BulkPopulation(:p3_imm_f, 0.0)
+    bp_p3_im   = BulkPopulation(:p3_imm_m, 0.0)
+
+    cum_dd_state = ScalarState(:cum_dd, 0.0;
+        update=(v, sys, w, day, p) -&gt; v + max(0.0, p.T_means[day] - T_BASE_WF))
+
+    dynamics = CustomRule(:dynamics, (sys, w, day, p) -&gt; begin
+        T = p.T_means[day]
+        dd_wf   = max(0.0, T - T_BASE_WF)
+        dd_para = max(0.0, T - T_BASE_PARA)
+        PARA_DELAY = 24
+
+        wf      = total_population(sys[:wf].population)
+        p1_f    = total_population(sys[:p1_f].population)
+        p1_m    = total_population(sys[:p1_m].population)
+        p1_imm  = total_population(sys[:p1_imm].population)
+        p2_f    = total_population(sys[:p2_f].population)
+        p2_m    = total_population(sys[:p2_m].population)
+        p2_imm_f = total_population(sys[:p2_imm_f].population)
+        p2_imm_m = total_population(sys[:p2_imm_m].population)
+        p3_f    = total_population(sys[:p3_f].population)
+        p3_m    = total_population(sys[:p3_m].population)
+        p3_imm_f = total_population(sys[:p3_imm_f].population)
+        p3_imm_m = total_population(sys[:p3_imm_m].population)
+
+        # Whitefly reproduction
+        oviposition = OVIP_WF * dd_wf * max(0.0, wf) / (1.0 + 0.001 * wf)
+        K_cotton = 500.0
+        phi_wf = max(0.1, 1.0 - wf / K_cotton)
+
+        # Parasitoid attacks (only after delay)
+        s1 = 1.0; s2 = 1.0; s3 = 1.0
+        if day &gt; PARA_DELAY
+            H1 = max(0.0, wf)
+            H2 = max(0.0, wf + p2_imm_f)
+            H3 = max(0.0, wf + p1_imm + p2_imm_f + p3_imm_f)
+
+            if H1 &gt; 0.0 &amp;&amp; p1_f &gt; 0.0
+                demand_p1 = OVIP_PARA * dd_para * p1_f
+                exponent = (demand_p1 / H1) * (1.0 - exp(-ALPHA_PARA * p1_f / demand_p1))
+                s1 = exp(-exponent)
+            end
+            if H2 &gt; 0.0 &amp;&amp; p2_f &gt; 0.0
+                demand_p2 = OVIP_PARA * dd_para * p2_f
+                exponent = (demand_p2 / H2) * (1.0 - exp(-ALPHA_PARA * p2_f / demand_p2))
+                s2 = exp(-exponent)
+            end
+            if H3 &gt; 0.0 &amp;&amp; p3_f &gt; 0.0
+                demand_p3 = OVIP_PARA * dd_para * p3_f
+                exponent = (demand_p3 / H3) * (1.0 - exp(-ALPHA_PARA * p3_f / demand_p3))
+                s3 = exp(-exponent)
+            end
+        end
+
+        total_parasitism = 1.0 - s1 * s2 * s3
+        wf_attacked = total_parasitism * wf
+
+        mu1 = 1.0 - s1; mu2 = 1.0 - s2; mu3 = 1.0 - s3
+        mu_sum = mu1 + mu2 + mu3 + 1e-10
+        wf_k1 = wf_attacked * mu1 / mu_sum
+        wf_k2 = wf_attacked * mu2 / mu_sum
+        wf_k3 = wf_attacked * mu3 / mu_sum
+
+        # Whitefly dynamics
+        wf_growth = oviposition * phi_wf
+        wf_mort = 0.01 * dd_wf * wf
+        wf_new = max(0.1, wf + wf_growth - wf_mort - wf_attacked)
+
+        # P₁ dynamics
+        p1_imm_new = THETA_P1 * wf_k1
+        p1_mature = p1_imm * dd_para / PARA_IMMATURE_DD
+        p1_imm_next = max(0.0, p1_imm + p1_imm_new - p1_mature)
+        p1_f_next = max(0.0, p1_f + THETA_P1 * p1_mature - 0.01 * dd_para * p1_f)
+        p1_m_next = max(0.0, p1_m + (1.0 - THETA_P1) * p1_mature - 0.01 * dd_para * p1_m)
+
+        # P₂ dynamics (obligate autoparasitoid)
+        p2_imm_f_new = wf_k2
+        p2_imm_f_mature = p2_imm_f * dd_para / PARA_IMMATURE_DD
+        auto_attack_p2 = 0.0
+        if day &gt; PARA_DELAY &amp;&amp; p2_f &gt; 0.0 &amp;&amp; p2_imm_f &gt; 0.0
+            auto_attack_p2 = min(p2_imm_f * 0.3, p2_f * OVIP_PARA * dd_para * 0.5)
+        end
+        p2_imm_m_new = auto_attack_p2
+        p2_imm_m_mature = p2_imm_m * dd_para / PARA_IMMATURE_DD
+
+        p2_imm_f_next = max(0.0, p2_imm_f + p2_imm_f_new - p2_imm_f_mature - auto_attack_p2)
+        p2_imm_m_next = max(0.0, p2_imm_m + p2_imm_m_new - p2_imm_m_mature)
+        p2_f_next = max(0.0, p2_f + p2_imm_f_mature - 0.01 * dd_para * p2_f)
+        p2_m_next = max(0.0, p2_m + p2_imm_m_mature - 0.01 * dd_para * p2_m)
+
+        # P₃ dynamics (facultative autoparasitoid)
+        p3_imm_f_new = wf_k3
+        p3_imm_f_mature = p3_imm_f * dd_para / PARA_IMMATURE_DD
+        total_para_imm = p1_imm + p2_imm_f + p3_imm_f
+        auto_attack_p3 = 0.0
+        if day &gt; PARA_DELAY &amp;&amp; p3_f &gt; 0.0 &amp;&amp; total_para_imm &gt; 0.0
+            auto_attack_p3 = min(total_para_imm * 0.2, p3_f * OVIP_PARA * dd_para * 0.5)
+        end
+        p3_imm_m_new = auto_attack_p3
+        p3_imm_m_mature = p3_imm_m * dd_para / PARA_IMMATURE_DD
+
+        # Compute base next-state for P₃ immatures before hyperparasitism
+        p3_imm_f_next = max(0.0, p3_imm_f + p3_imm_f_new - p3_imm_f_mature)
+        p3_imm_m_next = max(0.0, p3_imm_m + p3_imm_m_new - p3_imm_m_mature)
+        p3_f_next = max(0.0, p3_f + p3_imm_f_mature - 0.01 * dd_para * p3_f)
+        p3_m_next = max(0.0, p3_m + p3_imm_m_mature - 0.01 * dd_para * p3_m)
+
+        # Distribute hyperparasitism losses among all immature parasitoids
+        if total_para_imm &gt; 0.0
+            frac_p1 = p1_imm / total_para_imm
+            frac_p2 = p2_imm_f / total_para_imm
+            frac_p3 = p3_imm_f / total_para_imm
+            p1_imm_next = max(0.0, p1_imm_next - auto_attack_p3 * frac_p1)
+            p2_imm_f_next = max(0.0, p2_imm_f_next - auto_attack_p3 * frac_p2)
+            p3_imm_f_next = max(0.0, p3_imm_f_next - auto_attack_p3 * frac_p3)
+        end
+
+        # Update all populations
+        set_value!(sys[:wf].population, wf_new)
+        set_value!(sys[:p1_f].population, p1_f_next)
+        set_value!(sys[:p1_m].population, p1_m_next)
+        set_value!(sys[:p1_imm].population, p1_imm_next)
+        set_value!(sys[:p2_f].population, p2_f_next)
+        set_value!(sys[:p2_m].population, p2_m_next)
+        set_value!(sys[:p2_imm_f].population, p2_imm_f_next)
+        set_value!(sys[:p2_imm_m].population, p2_imm_m_next)
+        set_value!(sys[:p3_f].population, p3_f_next)
+        set_value!(sys[:p3_m].population, p3_m_next)
+        set_value!(sys[:p3_imm_f].population, p3_imm_f_next)
+        set_value!(sys[:p3_imm_m].population, p3_imm_m_next)
+
+        sr_p2 = (p2_f_next + p2_m_next &gt; 0) ? p2_f_next / (p2_f_next + p2_m_next) : 0.5
+        sr_p3 = (p3_f_next + p3_m_next &gt; 0) ? p3_f_next / (p3_f_next + p3_m_next) : 0.5
+        (sr_p2=sr_p2, sr_p3=sr_p3)
+    end)
+
+    sys = PopulationSystem(
+        :wf =&gt; bp_wf,
+        :p1_f =&gt; bp_p1_f, :p1_m =&gt; bp_p1_m, :p1_imm =&gt; bp_p1_imm,
+        :p2_f =&gt; bp_p2_f, :p2_m =&gt; bp_p2_m, :p2_imm_f =&gt; bp_p2_if, :p2_imm_m =&gt; bp_p2_im,
+        :p3_f =&gt; bp_p3_f, :p3_m =&gt; bp_p3_m, :p3_imm_f =&gt; bp_p3_if, :p3_imm_m =&gt; bp_p3_im;
+        state=[cum_dd_state])
+
+    wx = WeatherSeries([DailyWeather(T_means[d], T_means[d], T_means[d]) for d in 1:n_days])
+    prob = PBDMProblem(sys, wx, (1, n_days);
+        rules=[dynamics],
+        p=(T_means=T_means,))
+
+    sol = solve(prob, DirectIteration())
+
+    # Reconstruct original return format
+    traj_wf = vcat(30.0, sol[:wf])
+    traj_p1 = vcat(parasitoids[1] ? 2.0 : 0.0,
+                   [sol[:p1_f][d] + sol[:p1_m][d] for d in 1:n_days])
+    traj_p2 = vcat(parasitoids[2] ? 1.0 : 0.0,
+                   [sol[:p2_f][d] + sol[:p2_m][d] for d in 1:n_days])
+    traj_p3 = vcat(parasitoids[3] ? 1.0 : 0.0,
+                   [sol[:p3_f][d] + sol[:p3_m][d] for d in 1:n_days])
+
+    rule_log = sol.rule_log[:dynamics]
+    traj_sr_p2 = [r.sr_p2 for r in rule_log]
+    traj_sr_p3 = [r.sr_p3 for r in rule_log]
+    cum_dd = sol.state_history[:cum_dd]
+
+    return (; traj_wf, traj_p1, traj_p2, traj_p3,
+              traj_sr_p2, traj_sr_p3, cum_dd)
+end
+
+# Run with all three parasitoids
+res_all = simulate_tritrophic(parasitoids=[true, true, true])
+println(&quot;Final whitefly: $(round(res_all.traj_wf[end], digits=1)) per plant&quot;)
+println(&quot;Final P₁: $(round(res_all.traj_p1[end], digits=2))&quot;)
+println(&quot;Final P₂: $(round(res_all.traj_p2[end], digits=2))&quot;)
+println(&quot;Final P₃: $(round(res_all.traj_p3[end], digits=2))&quot;)</code></pre><pre><code class="nohighlight hljs">Final whitefly: 3999.8 per plant
+Final P₁: 0.0
+Final P₂: 0.0
+Final P₃: 0.09</code></pre><h3 id="PBDM-Problem-Formulation"><a class="docs-heading-anchor" href="#PBDM-Problem-Formulation">PBDM Problem Formulation</a><a id="PBDM-Problem-Formulation-1"></a><a class="docs-heading-anchor-permalink" href="#PBDM-Problem-Formulation" title="Permalink"></a></h3><p>We also set up the system using the <code>PBDMProblem</code> / <code>solve</code> interface for the whitefly population as a stand-alone density-dependent model.</p><pre><code class="language-julia hljs"># Whitefly-only PBDM (no parasitoids, baseline growth)
+wf_egg_stage = make_delay_stage(:egg, K_WF, WF_EGG_DD, whitefly_dev, 30.0; μ=0.002)
+wf_nymph_stage = make_delay_stage(:nymph, K_WF, WF_LARVA_DD, whitefly_dev, 0.0; μ=0.003)
+wf_adult_stage = make_delay_stage(:adult, K_WF, WF_ADULT_DD, whitefly_dev, 0.0; μ=0.01)
+
+wf_baseline = Population(:whitefly_baseline, [wf_egg_stage, wf_nymph_stage, wf_adult_stage])
+
+prob_wf = PBDMProblem(
+    DensityDependent(),
+    wf_baseline,
+    weather,
+    (1, N_DAYS);
+    p=(; K=500.0, ovip=OVIP_WF, T_base=T_BASE_WF)
+)
+
+println(prob_wf)</code></pre><pre><code class="nohighlight hljs">PBDMProblem(SingleSpeciesPBDM, DensityDependent, Deterministic, tspan=(1, 200))</code></pre><h2 id="Results"><a class="docs-heading-anchor" href="#Results">Results</a><a id="Results-1"></a><a class="docs-heading-anchor-permalink" href="#Results" title="Permalink"></a></h2><h3 id="Population-Dynamics-—-All-Parasitoids"><a class="docs-heading-anchor" href="#Population-Dynamics-—-All-Parasitoids">Population Dynamics — All Parasitoids</a><a id="Population-Dynamics-—-All-Parasitoids-1"></a><a class="docs-heading-anchor-permalink" href="#Population-Dynamics-—-All-Parasitoids" title="Permalink"></a></h3><pre><code class="language-julia hljs">days = 0:N_DAYS
+
+fig1 = Figure(size=(800, 600))
+
+ax1 = Axis(fig1[1, 1],
+    ylabel=&quot;Whitefly nymphs/plant&quot;,
+    title=&quot;Cotton-Whitefly-Parasitoid Dynamics (All Species)&quot;)
+lines!(ax1, collect(days), res_all.traj_wf, linewidth=2.5, color=:forestgreen,
+       label=&quot;B. tabaci&quot;)
+axislegend(ax1; position=:rt)
+
+ax2 = Axis(fig1[2, 1],
+    xlabel=&quot;Day of season&quot;,
+    ylabel=&quot;Parasitoid adults/plant&quot;)
+lines!(ax2, collect(days), res_all.traj_p1, linewidth=2, color=:steelblue,
+       label=&quot;P₁ (primary)&quot;)
+lines!(ax2, collect(days), res_all.traj_p2, linewidth=2, color=:orange,
+       label=&quot;P₂ (obligate auto.)&quot;)
+lines!(ax2, collect(days), res_all.traj_p3, linewidth=2, color=:firebrick,
+       label=&quot;P₃ (facultative auto.)&quot;)
+axislegend(ax2; position=:rt)
+
+fig1</code></pre><p><img src="../37_whitefly_autoparasitoid_files/figure-commonmark/cell-12-output-1.png" alt/></p><h3 id="Parasitoid-Combinations"><a class="docs-heading-anchor" href="#Parasitoid-Combinations">Parasitoid Combinations</a><a id="Parasitoid-Combinations-1"></a><a class="docs-heading-anchor-permalink" href="#Parasitoid-Combinations" title="Permalink"></a></h3><p>We compare four scenarios from the original analysis: no parasitoids, primary only, obligate autoparasitoid only, and all three species.</p><pre><code class="language-julia hljs">scenarios = [
+    (&quot;No parasitoids&quot;,          [false, false, false]),
+    (&quot;P₁ only (primary)&quot;,       [true, false, false]),
+    (&quot;P₂ only (obligate auto)&quot;, [false, true, false]),
+    (&quot;P₃ only (facultative)&quot;,   [false, false, true]),
+    (&quot;P₁ + P₂&quot;,                [true, true, false]),
+    (&quot;P₁ + P₃&quot;,                [true, false, true]),
+    (&quot;All three&quot;,               [true, true, true]),
+]
+
+results = Dict{String, NamedTuple}()
+for (name, combo) in scenarios
+    results[name] = simulate_tritrophic(parasitoids=combo)
+end
+
+fig2 = Figure(size=(900, 700))
+
+colors = [:gray60, :steelblue, :orange, :firebrick, :purple, :teal, :black]
+for (i, (name, _)) in enumerate(scenarios)
+    if i == 1
+        ax = Axis(fig2[1, 1],
+            ylabel=&quot;Whitefly/plant&quot;,
+            title=&quot;Whitefly Suppression by Parasitoid Combination&quot;)
+    end
+    ax = content(fig2[1, 1])
+    lines!(ax, collect(days), results[name].traj_wf,
+           linewidth=(i == length(scenarios) ? 2.5 : 1.5),
+           color=colors[i], label=name,
+           linestyle=(i == 1 ? :dash : :solid))
+end
+axislegend(content(fig2[1, 1]); position=:rt, labelsize=10)
+
+# Cumulative whitefly abundance
+ax3 = Axis(fig2[2, 1],
+    xlabel=&quot;Parasitoid combination&quot;,
+    ylabel=&quot;Cumulative whitefly·days&quot;,
+    title=&quot;Season-Total Whitefly Abundance&quot;,
+    xticks=(1:length(scenarios), [s[1] for s in scenarios]),
+    xticklabelrotation=π/4)
+
+cum_wf = [sum(results[s[1]].traj_wf) for s in scenarios]
+barplot!(ax3, 1:length(scenarios), cum_wf, color=colors)
+
+fig2</code></pre><p><img src="../37_whitefly_autoparasitoid_files/figure-commonmark/cell-13-output-1.png" alt/></p><h3 id="Autoparasitoid-Sex-Ratios"><a class="docs-heading-anchor" href="#Autoparasitoid-Sex-Ratios">Autoparasitoid Sex Ratios</a><a id="Autoparasitoid-Sex-Ratios-1"></a><a class="docs-heading-anchor-permalink" href="#Autoparasitoid-Sex-Ratios" title="Permalink"></a></h3><p>The sex ratio dynamics of the autoparasitoids are a key emergent property of the system. P₂ and P₃ sex ratios fluctuate with whitefly abundance — when primary hosts are plentiful, the proportion of females rises; when scarce, males dominate through hyperparasitism (Mills and Gutierrez 1996, fig. 4).</p><pre><code class="language-julia hljs">fig3 = Figure(size=(750, 500))
+
+ax_sr = Axis(fig3[1, 1],
+    xlabel=&quot;Day of season&quot;,
+    ylabel=&quot;Proportion female&quot;,
+    title=&quot;Autoparasitoid Sex Ratio Dynamics&quot;)
+
+lines!(ax_sr, 1:N_DAYS, res_all.traj_sr_p2, linewidth=2, color=:orange,
+       label=&quot;P₂ (obligate)&quot;)
+lines!(ax_sr, 1:N_DAYS, res_all.traj_sr_p3, linewidth=2, color=:firebrick,
+       label=&quot;P₃ (facultative)&quot;)
+hlines!(ax_sr, [0.5], color=:gray, linestyle=:dash, label=&quot;0.5 (P₁ fixed)&quot;)
+ylims!(ax_sr, 0.0, 1.0)
+axislegend(ax_sr; position=:rb)
+
+fig3</code></pre><p><img src="../37_whitefly_autoparasitoid_files/figure-commonmark/cell-14-output-1.png" alt/></p><h2 id="Analysis-—-Biocontrol-Efficacy"><a class="docs-heading-anchor" href="#Analysis-—-Biocontrol-Efficacy">Analysis — Biocontrol Efficacy</a><a id="Analysis-—-Biocontrol-Efficacy-1"></a><a class="docs-heading-anchor-permalink" href="#Analysis-—-Biocontrol-Efficacy" title="Permalink"></a></h2><h3 id="Whitefly-Suppression-Index"><a class="docs-heading-anchor" href="#Whitefly-Suppression-Index">Whitefly Suppression Index</a><a id="Whitefly-Suppression-Index-1"></a><a class="docs-heading-anchor-permalink" href="#Whitefly-Suppression-Index" title="Permalink"></a></h3><p>We quantify biocontrol efficacy as the proportional reduction in cumulative whitefly abundance relative to the uncontrolled baseline.</p><pre><code class="language-julia hljs">cum_no_control = sum(results[&quot;No parasitoids&quot;].traj_wf)
+
+println(&quot;Biocontrol Efficacy (% reduction in cumulative whitefly):&quot;)
+println(&quot;=&quot;^60)
+for (name, _) in scenarios[2:end]
+    cum = sum(results[name].traj_wf)
+    reduction = 100.0 * (1.0 - cum / cum_no_control)
+    println(&quot;  $(rpad(name, 30)) $(round(reduction, digits=1))%&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Biocontrol Efficacy (% reduction in cumulative whitefly):
+============================================================
+  P₁ only (primary)              0.0%
+  P₂ only (obligate auto)        0.0%
+  P₃ only (facultative)          0.0%
+  P₁ + P₂                        0.0%
+  P₁ + P₃                        0.0%
+  All three                      0.0%</code></pre><h3 id="Cotton-Yield-Impact"><a class="docs-heading-anchor" href="#Cotton-Yield-Impact">Cotton Yield Impact</a><a id="Cotton-Yield-Impact-1"></a><a class="docs-heading-anchor-permalink" href="#Cotton-Yield-Impact" title="Permalink"></a></h3><p>The relationship between whitefly abundance and cotton yield follows a negative exponential, consistent with the yield–pest curve in Mills &amp; Gutierrez (1996, fig. 5): <span>$B = 33.5(1 - 10^{-2.87 + 0.55 \cdot \log_{10} Y})$</span> where <span>$Y$</span> is cumulative whitefly abundance.</p><pre><code class="language-julia hljs">function cotton_yield(cum_whitefly)
+    Y = max(1.0, cum_whitefly)
+    return 33.5 * (1.0 - 10.0^(-2.87 + 0.55 * log10(Y)))
+end
+
+fig4 = Figure(size=(650, 400))
+ax = Axis(fig4[1, 1],
+    xlabel=&quot;Parasitoid combination&quot;,
+    ylabel=&quot;Cotton yield (g/plant)&quot;,
+    title=&quot;Predicted Cotton Yield Under Biocontrol Scenarios&quot;,
+    xticks=(1:length(scenarios), [s[1] for s in scenarios]),
+    xticklabelrotation=π/4)
+
+yields = [cotton_yield(sum(results[s[1]].traj_wf)) for s in scenarios]
+barplot!(ax, 1:length(scenarios), yields, color=colors)
+
+fig4</code></pre><p><img src="../37_whitefly_autoparasitoid_files/figure-commonmark/cell-16-output-1.png" alt/></p><h3 id="Stability-Analysis"><a class="docs-heading-anchor" href="#Stability-Analysis">Stability Analysis</a><a id="Stability-Analysis-1"></a><a class="docs-heading-anchor-permalink" href="#Stability-Analysis" title="Permalink"></a></h3><p>Following Schreiber et al. (2001), obligate autoparasitoids stabilize the equilibrium because male production is self-limiting — more females means more secondary hosts for males, creating a negative feedback loop. We illustrate this by comparing the coefficient of variation in whitefly abundance across scenarios.</p><pre><code class="language-julia hljs">println(&quot;Stability of Whitefly Dynamics (CV of last 100 days):&quot;)
+println(&quot;=&quot;^55)
+for (name, _) in scenarios
+    wf_late = results[name].traj_wf[end-100:end]
+    cv = std(wf_late) / mean(wf_late)
+    println(&quot;  $(rpad(name, 30)) CV = $(round(cv, digits=3))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Stability of Whitefly Dynamics (CV of last 100 days):
+=======================================================
+  No parasitoids                 CV = 0.0
+  P₁ only (primary)              CV = 0.0
+  P₂ only (obligate auto)        CV = 0.0
+  P₃ only (facultative)          CV = 0.0
+  P₁ + P₂                        CV = 0.0
+  P₁ + P₃                        CV = 0.0
+  All three                      CV = 0.0</code></pre><h2 id="Parameter-Sources"><a class="docs-heading-anchor" href="#Parameter-Sources">Parameter Sources</a><a id="Parameter-Sources-1"></a><a class="docs-heading-anchor-permalink" href="#Parameter-Sources" title="Permalink"></a></h2><table><tr><th style="text-align: left">Parameter</th><th style="text-align: left">Value</th><th style="text-align: left">Source</th></tr><tr><td style="text-align: left"><strong>Temperature thresholds</strong></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Cotton development</td><td style="text-align: left">12 °C</td><td style="text-align: left">Mills and Gutierrez (1996), Table 1</td></tr><tr><td style="text-align: left">Whitefly development</td><td style="text-align: left">13.5 °C</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left">Parasitoid development</td><td style="text-align: left">13.5 °C</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left"><strong>Whitefly life stages (dd)</strong></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Egg</td><td style="text-align: left">0–90</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left">Larva</td><td style="text-align: left">90–200</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left">Pupa</td><td style="text-align: left">200–300</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left">Adult</td><td style="text-align: left">300–800</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left">Oviposition rate</td><td style="text-align: left">0.5 dd⁻¹</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left"><strong>Parasitoid life stages (dd)</strong></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Immature</td><td style="text-align: left">0–250</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left">Pupa</td><td style="text-align: left">250–386</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left">Adult</td><td style="text-align: left">386–475</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left">Oviposition rate</td><td style="text-align: left">0.99 dd⁻¹</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left"><strong>Functional response</strong></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Cotton search efficiency</td><td style="text-align: left">0.80</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left">Whitefly search efficiency</td><td style="text-align: left">0.85</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left">Parasitoid search efficiency</td><td style="text-align: left">0.60</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left"><strong>Sex ratios</strong></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">P₁ (primary): fixed</td><td style="text-align: left">0.50</td><td style="text-align: left">Mills and Gutierrez (1996)</td></tr><tr><td style="text-align: left">P₂ (obligate auto.)</td><td style="text-align: left">density-dependent</td><td style="text-align: left">Schreiber et al. (2001)</td></tr><tr><td style="text-align: left">P₃ (facultative auto.)</td><td style="text-align: left">density-dependent</td><td style="text-align: left">Schreiber et al. (2001)</td></tr><tr><td style="text-align: left"><strong>Initialization</strong></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Cotton start</td><td style="text-align: left">27 March</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left">Whitefly start</td><td style="text-align: left">31 March (30 eggs/plant)</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left">Parasitoid start</td><td style="text-align: left">20 April (1 female/plant)</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left"><strong>Substages</strong></td><td style="text-align: left">20–25</td><td style="text-align: left">numerical choice</td></tr></table><h2 id="Discussion"><a class="docs-heading-anchor" href="#Discussion">Discussion</a><a id="Discussion-1"></a><a class="docs-heading-anchor-permalink" href="#Discussion" title="Permalink"></a></h2><p>This vignette demonstrates several key findings from the biological control analysis of heteronomous hyperparasitism in aphelinid parasitoids:</p><ol><li><p><strong>Primary parasitoids suppress whitefly most effectively</strong> when  acting alone, because all attack effort produces female offspring  that continue to exploit the primary host. This confirms the  classical expectation that a single efficient natural enemy can  outperform a guild.</p></li><li><p><strong>Obligate autoparasitoids stabilize dynamics</strong> but may provide  weaker suppression than primary parasitoids, because male production  diverts attacks to secondary hosts (conspecific females). This  creates a self-regulating sex ratio that tracks whitefly abundance  (Schreiber et al. 2001, Theorem 1).</p></li><li><p><strong>Facultative autoparasitoids are the most disruptive</strong> because they  hyperparasitize all parasitoid species. When P₃ is present, it can  undermine the efficacy of both P₁ and P₂ through intraguild  predation, potentially leading to competitive displacement.</p></li><li><p><strong>Sex ratio dynamics are emergent</strong>: the proportion of female  autoparasitoids tracks whitefly abundance with a time lag. During  whitefly peaks, primary hosts are abundant and sex ratios are  female-biased; during troughs, secondary hosts (parasitized  whiteflies) become the dominant resource and male production  increases.</p></li><li><p><strong>Multiple parasitoid introductions require careful evaluation</strong>.  The model shows that releasing all three species does not  necessarily provide the best control outcome — the combination  depends critically on parasitoid biology, competitive interactions,  and the specific form of autoparasitism.</p></li></ol><p>These results highlight the power of physiologically based tritrophic models for prospective evaluation of biological control programs, where the complex interactions between parasitoid species cannot easily be predicted from single-species experiments alone.</p><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Mills1996Whitefly&quot; class=&quot;csl-entry&quot;&gt;</p><p>Mills, N. J., and A. P. Gutierrez. 1996. “Prospective Modelling in Biological Control: An Analysis of the Dynamics of Heteronomous Hyperparasitism in a Cotton-Whitefly-Parasitoid System.” <em>Journal of Applied Ecology</em> 33 (6): 1379–94. <a href="https://doi.org/10.2307/2404778">https://doi.org/10.2307/2404778</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-Schreiber2001Autoparasitoid&quot; class=&quot;csl-entry&quot;&gt;</p><p>Schreiber, Sebastian J., Nicholas J. Mills, and Andrew P. Gutierrez.</p><ol><li>“Host-Limited Dynamics of Autoparasitoids.” *Journal of</li></ol><p>Theoretical Biology* 212 (2): 141–53. <a href="https://doi.org/10.1006/jtbi.2001.2367">https://doi.org/10.1006/jtbi.2001.2367</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../36_fusarium_nematode/">« Fusarium Wilt and Root-Knot Nematode in Cotton</a><a class="docs-footer-nextpage" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

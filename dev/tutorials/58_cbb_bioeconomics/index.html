@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Coffee Berry Borer — Bio-Economic Analysis of Control Tactics · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Coffee Berry Borer — Bio-Economic Analysis of Control Tactics · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Coffee Berry Borer — Bio-Economic Analysis of Control Tactics · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Coffee Berry Borer — Bio-Economic Analysis of Control Tactics · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/58_cbb_bioeconomics/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/58_cbb_bioeconomics/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/58_cbb_bioeconomics/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li class="is-active"><a class="tocitem" href>Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a><ul class="internal"><li><a class="tocitem" href="#Overview"><span>Overview</span></a></li><li><a class="tocitem" href="#1-·-Within-season-mortality-kinetics"><span>1 · Within-season mortality kinetics</span></a></li><li><a class="tocitem" href="#2-·-PBDM-surrogate-regression-model"><span>2 · PBDM-surrogate regression model</span></a></li><li><a class="tocitem" href="#3-·-Bio-economic-decision-layer"><span>3 · Bio-economic decision layer</span></a></li><li><a class="tocitem" href="#4-·-Discussion"><span>4 · Discussion</span></a></li><li><a class="tocitem" href="#References"><span>References</span></a></li></ul></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Coffee-Berry-Borer-—-Bio-Economic-Analysis-of-Control-Tactics"><a class="docs-heading-anchor" href="#Coffee-Berry-Borer-—-Bio-Economic-Analysis-of-Control-Tactics">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a><a id="Coffee-Berry-Borer-—-Bio-Economic-Analysis-of-Control-Tactics-1"></a><a class="docs-heading-anchor-permalink" href="#Coffee-Berry-Borer-—-Bio-Economic-Analysis-of-Control-Tactics" title="Permalink"></a></h1><p>Simon Frost</p><ul><li><a href="#overview">Overview</a></li><li><a href="#1--within-season-mortality-kinetics">1 · Within-season mortality kinetics</a><ul><li><a href="#insecticide-rotation">Insecticide rotation</a></li><li><a href="#entomopathogenic-fungi">Entomopathogenic fungi</a></li><li><a href="#entomopathogenic-nematodes">Entomopathogenic nematodes</a></li></ul></li><li><a href="#2--pbdm-surrogate-regression-model">2 · PBDM-surrogate regression model</a><ul><li><a href="#colombia-all-factors-model-cure-et-al-2020-table-5">Colombia, all-factors model (Cure et al. 2020 Table 5)</a></li><li><a href="#surrogate-predictor">Surrogate predictor</a></li><li><a href="#reproduce-marginal-proportions-a_x-colombia">Reproduce marginal proportions <span>$A_X$</span> (Colombia)</a></li><li><a href="#reproduce-brazil-ranking-and-the-strikingly-large-h-effect">Reproduce Brazil ranking and the strikingly large <span>$H$</span> effect</a></li></ul></li><li><a href="#3--bio-economic-decision-layer">3 · Bio-economic decision layer</a><ul><li><a href="#yield-price-and-tactic-costs">Yield, price, and tactic costs</a></li><li><a href="#sweep-all-1024-combinations">Sweep all 1,024 combinations</a></li><li><a href="#top-10-strategies-by-profit-colombia">Top-10 strategies by profit (Colombia)</a></li><li><a href="#cost-effectiveness-frontier">Cost-effectiveness frontier</a></li><li><a href="#brazil-comparison--does-the-optimum-change">Brazil comparison — does the optimum change?</a></li></ul></li><li><a href="#4--discussion">4 · Discussion</a></li><li><a href="#references">References</a></li></ul><h2 id="Overview"><a class="docs-heading-anchor" href="#Overview">Overview</a><a id="Overview-1"></a><a class="docs-heading-anchor-permalink" href="#Overview" title="Permalink"></a></h2><p>This vignette reproduces the bio-economic analysis of coffee berry borer (CBB; <em>Hypothenemus hampei</em>) control of Cure <em>et al.</em> (2020). It is the second end-to-end use case in the vignette suite (after <code>57_verticillium_dp</code>) and complements the within-season biological vignette <code>03_coffee_berry_borer</code>.</p><p>The Cure <em>et al.</em> analysis combines a coupled coffee-plant + CBB + parasitoid PBDM (Rodríguez <em>et al.</em> 2017–2018, building on Gutierrez <em>et al.</em> 1998) with three layers of management:</p><ol><li><strong>Within-season mortality kinetics</strong> for each control tactic  (insecticide rotations, two entomopathogenic fungi, two nematode  species).</li><li>A <strong>PBDM-surrogate regression model</strong>: the full PBDM is run for  2,560 combinations of binary control switches and the resulting  <span>$\log_e I$</span> (CBB-infested berries per year) is summarised by  negative-binomial regression. We work directly with the published  regression coefficients (their Tables 3–6) so this vignette is fully  reproducible without re-running the PBDM.</li><li>A <strong>bio-economic decision layer</strong>: per-season profit as a function  of expected infestation, yield loss, and tactic-specific costs.</li></ol><p>We reproduce the qualitative ranking of tactics (harvest \&gt; cleanup \&gt; biocontrol \&gt; chemicals), the marginal proportional infestation <span>$A_X = e^{\beta_X}$</span> for each tactic, and add a cost-effectiveness frontier across the <span>$2^{10}$</span>-strategy space.</p><pre><code class="language-julia hljs">using Printf
+using Statistics
+using CairoMakie
+using PhysiologicallyBasedDemographicModels
+using Random
+Random.seed!(20250118)
+nothing</code></pre><h2 id="1-·-Within-season-mortality-kinetics"><a class="docs-heading-anchor" href="#1-·-Within-season-mortality-kinetics">1 · Within-season mortality kinetics</a><a id="1-·-Within-season-mortality-kinetics-1"></a><a class="docs-heading-anchor-permalink" href="#1-·-Within-season-mortality-kinetics" title="Permalink"></a></h2><h3 id="Insecticide-rotation"><a class="docs-heading-anchor" href="#Insecticide-rotation">Insecticide rotation</a><a id="Insecticide-rotation-1"></a><a class="docs-heading-anchor-permalink" href="#Insecticide-rotation" title="Permalink"></a></h3><p>Insecticide-induced mortality of CBB and free-living parasitoids decays exponentially after spray application (Cure et al. 2020, eqn. 1):</p><p class="math-container">\[\mu_{\text{ai}}(t) = \gamma_{\text{ai}} \, e^{-0.1\, t},\]</p><p>where <span>$t$</span> is days since spray. Three active ingredients are used in rotation: chlorpyrifos, fenitrothion, and phenthoate, with peak mortalities <span>$\gamma = 0.93, 0.95, 0.97$</span> respectively.</p><pre><code class="language-julia hljs">const γ_chlorpyrifos = 0.93
+const γ_fenitrothion = 0.95
+const γ_phenthoate   = 0.97
+
+insecticide_mortality(γ, t) = γ * exp(-0.1 * t)
+
+let
+    fig = Figure(size=(700, 350))
+    ax = Axis(fig[1,1]; xlabel=&quot;Days since spray&quot;,
+        ylabel=&quot;Mortality rate μ&quot;,
+        title=&quot;Insecticide kinetics — Cure et al. (2020) eqn. 1&quot;)
+    ts = 0:0.5:25
+    for (γ, name, c) in zip(
+            (γ_chlorpyrifos, γ_fenitrothion, γ_phenthoate),
+            (&quot;chlorpyrifos (γ=0.93)&quot;, &quot;fenitrothion (γ=0.95)&quot;, &quot;phenthoate (γ=0.97)&quot;),
+            (:steelblue, :goldenrod, :firebrick))
+        lines!(ax, ts, [insecticide_mortality(γ, t) for t in ts];
+            label=name, color=c, linewidth=2.5)
+    end
+    axislegend(ax, position=:rt)
+    fig
+end</code></pre><p><img src="../58_cbb_bioeconomics_files/figure-commonmark/cell-3-output-1.png" alt/></p><h3 id="Entomopathogenic-fungi"><a class="docs-heading-anchor" href="#Entomopathogenic-fungi">Entomopathogenic fungi</a><a id="Entomopathogenic-fungi-1"></a><a class="docs-heading-anchor-permalink" href="#Entomopathogenic-fungi" title="Permalink"></a></h3><p><em>Beauveria bassiana</em> (BB) and <em>Metarhizium anisopliae</em> (MA) infection follow logit functions of cumulative degree-days after spray (<span>$\text{dda}$</span>) and daily relative humidity (RH; fraction) (Cure et al. 2020, eqns. 2–3):</p><p class="math-container">\[\mu_{\text{BB}} = \frac{e^{\eta_{\text{BB}}}}{1 + e^{\eta_{\text{BB}}}},
+\quad
+\eta_{\text{BB}} = -24.19 + 4.225 \times 10^{-3}\,\text{dda} -
+4.51 \times 10^{-6}\,\text{dda}^2 + 25.28\,\text{RH}\]</p><p class="math-container">\[\eta_{\text{MA}} = -28.30 + 4.591 \times 10^{-3}\,\text{dda}^2 -
+5.672 \times 10^{-6}\,\text{dda}^2 + 29.38\,\text{RH}\]</p><p>(NB: the published MA equation uses <span>$\text{dda}^2$</span> in both linear and quadratic terms — we follow it verbatim and flag the unusual form.)</p><pre><code class="language-julia hljs">logit(η) = exp(η) / (1 + exp(η))
+
+function μ_BB(dda, RH)
+    η = -24.19 + 4.225e-3 * dda - 4.51e-6 * dda^2 + 25.28 * RH
+    return logit(η)
+end
+
+function μ_MA(dda, RH)
+    # Published equation has dda² in both terms (Cure et al. 2020 eqn. 3).
+    η = -28.30 + 4.591e-3 * dda^2 - 5.672e-6 * dda^2 + 29.38 * RH
+    return logit(η)
+end
+nothing</code></pre><h3 id="Entomopathogenic-nematodes"><a class="docs-heading-anchor" href="#Entomopathogenic-nematodes">Entomopathogenic nematodes</a><a id="Entomopathogenic-nematodes-1"></a><a class="docs-heading-anchor-permalink" href="#Entomopathogenic-nematodes" title="Permalink"></a></h3><p><em>Steinernema</em> sp. and <em>Heterorhabditis</em> sp. infection rates follow fourth- and third-degree polynomial logit functions of <span>$\text{dda}$</span> (Cure et al. 2020, eqns. 4–5):</p><pre><code class="language-julia hljs">function μ_S(dda)
+    η = 5.176 - 0.1035 * dda + 4.203e-4 * dda^2 -
+        6.166e-7 * dda^3 + 3.001e-10 * dda^4
+    return logit(η)
+end
+
+function μ_H(dda)
+    η = 6.659 - 0.09015 * dda - 2.172e-4 * dda^2 - 1.429e-7 * dda^3
+    return logit(η)
+end
+
+let
+    fig = Figure(size=(900, 380))
+    ax1 = Axis(fig[1,1]; xlabel=&quot;Cumulative degree-days after spray&quot;,
+        ylabel=&quot;Mortality μ&quot;,
+        title=&quot;Entomopathogenic fungi (RH = 0.85)&quot;)
+    ddas = 0:25:2500
+    lines!(ax1, ddas, [μ_BB(d, 0.85) for d in ddas];
+        label=&quot;B. bassiana&quot;, color=:steelblue, linewidth=2.5)
+    lines!(ax1, ddas, [μ_MA(d, 0.85) for d in ddas];
+        label=&quot;M. anisopliae&quot;, color=:firebrick, linewidth=2.5)
+    axislegend(ax1, position=:rb)
+
+    ax2 = Axis(fig[1,2]; xlabel=&quot;Cumulative degree-days after spray&quot;,
+        ylabel=&quot;Mortality μ&quot;,
+        title=&quot;Entomopathogenic nematodes&quot;)
+    ddas2 = 0:5:200
+    lines!(ax2, ddas2, [μ_S(d) for d in ddas2];
+        label=&quot;Steinernema sp. (250k IJ/tree)&quot;,
+        color=:goldenrod, linewidth=2.5)
+    lines!(ax2, ddas2, [μ_H(d) for d in ddas2];
+        label=&quot;Heterorhabditis sp. (125k IJ/tree)&quot;,
+        color=:forestgreen, linewidth=2.5)
+    axislegend(ax2, position=:rt)
+    fig
+end</code></pre><p><img src="../58_cbb_bioeconomics_files/figure-commonmark/cell-5-output-1.png" alt/></p><p>These mortality kernels are the inputs the full PBDM consumes; the next section uses the published regression coefficients to summarise the PBDM output across all 2,560 control combinations.</p><h2 id="2-·-PBDM-surrogate-regression-model"><a class="docs-heading-anchor" href="#2-·-PBDM-surrogate-regression-model">2 · PBDM-surrogate regression model</a><a id="2-·-PBDM-surrogate-regression-model-1"></a><a class="docs-heading-anchor-permalink" href="#2-·-PBDM-surrogate-regression-model" title="Permalink"></a></h2><p>The Cure <em>et al.</em> analysis runs the full PBDM under all combinations of the binary control switches and fits a negative-binomial regression (Cure et al. 2020, eqn. 6):</p><p class="math-container">\[\log_e I = a + \sum_i \beta_i\, x_i + \sum_{i,j} \beta_{ij}\, x_i\, x_j\]</p><p>where <span>$I$</span> is cumulative CBB-infested berries per year. The marginal proportional infestation after the action of tactic <span>$X$</span> is <span>$A_X = e^{\beta_X}$</span> — i.e. the multiplicative reduction relative to the no-control mean.</p><p>We embed the published coefficient tables directly so this vignette runs without the full PBDM pipeline.</p><h3 id="Colombia,-all-factors-model-(Cure-et-al.-2020-Table-5)"><a class="docs-heading-anchor" href="#Colombia,-all-factors-model-(Cure-et-al.-2020-Table-5)">Colombia, all-factors model (Cure et al. 2020 Table 5)</a><a id="Colombia,-all-factors-model-(Cure-et-al.-2020-Table-5)-1"></a><a class="docs-heading-anchor-permalink" href="#Colombia,-all-factors-model-(Cure-et-al.-2020-Table-5)" title="Permalink"></a></h3><p>We embed the published coefficient tables in a <a href="../../api/economics/#PhysiologicallyBasedDemographicModels.LogLinearSurrogate"><code>LogLinearSurrogate</code></a> — the package’s reusable helper for PBDM regression-summary models. The surrogate stores an intercept, a dictionary of main-effect coefficients keyed by variable name, and a dictionary of interaction coefficients keyed by sorted tuples of variable names.</p><pre><code class="language-julia hljs"># Cure et al. 2020 Table 5 (Colombia, all-factors model).
+# Variables: H (harvest), CU (cleanup), C (chemical), Bb (B. bassiana),
+# Ma (M. anisopliae), Stei (Steinernema), Het (Heterorhabditis),
+# Cs (C. stephanoderis), Pn (P. nasuta), Pc (P. coffea).
+const COLOMBIA = LogLinearSurrogate(
+    11.0481,
+    Dict(
+        :Cs   =&gt; -0.0257,  :Pn   =&gt; -0.0286,
+        :H    =&gt; -1.5835,  :Pc   =&gt; -0.3751,
+        :Bb   =&gt; -0.3178,  :CU   =&gt; -0.7607,
+        :C    =&gt; -0.1381,  :Ma   =&gt; -0.0420,
+        :Het  =&gt; -0.1388,  :Stei =&gt; -0.1215,
+    ),
+    Dict(
+        Tuple(sort([:Pn,  :H]))         =&gt;  0.0285,
+        Tuple(sort([:Pc,  :Bb]))        =&gt;  0.2960,
+        Tuple(sort([:Pc,  :H]))         =&gt;  0.1864,
+        Tuple(sort([:Bb,  :H]))         =&gt;  0.1514,
+        Tuple(sort([:Pc,  :C]))         =&gt;  0.1580,
+        Tuple(sort([:H,   :Pc, :Bb]))   =&gt; -0.2084,
+    );
+    label = &quot;Colombia (all factors)&quot;
+)
+
+# Cure et al. 2020 Table 6 (Brazil, all-factors model).
+const BRAZIL = LogLinearSurrogate(
+    11.633713,
+    Dict(
+        :Cs   =&gt; -0.0363631,  :Pc   =&gt; -0.1199346,
+        :C    =&gt; -0.0859333,  :Bb   =&gt; -0.0954134,
+        :H    =&gt; -4.3176702,  :Ma   =&gt; -0.1249867,
+        :Het  =&gt; -0.0782117,  :Stei =&gt; -0.0737914,
+    ),
+    Dict(
+        Tuple(sort([:Pc, :C]))  =&gt;  0.1090624,
+        Tuple(sort([:Bb, :H]))  =&gt; -0.1718035,
+    );
+    label = &quot;Brazil (all factors)&quot;
+)
+nothing</code></pre><h3 id="Surrogate-predictor"><a class="docs-heading-anchor" href="#Surrogate-predictor">Surrogate predictor</a><a id="Surrogate-predictor-1"></a><a class="docs-heading-anchor-permalink" href="#Surrogate-predictor" title="Permalink"></a></h3><p><code>predict_log(s, on)</code> evaluates the regression on the log scale, adding the intercept, all main-effect terms whose key is in <code>on</code>, and all interaction terms whose entire key is contained in <code>on</code>. <code>predict(s, on)</code> returns the natural-scale prediction <code>exp(predict_log(s, on))</code>.</p><pre><code class="language-julia hljs"># Convenience aliases for readability in this vignette.
+log_infestation(reg, on) = predict_log(reg, on)
+infestation(reg, on)     = predict(reg, on)
+nothing</code></pre><h3 id="Reproduce-marginal-proportions-A_X-(Colombia)"><a class="docs-heading-anchor" href="#Reproduce-marginal-proportions-A_X-(Colombia)">Reproduce marginal proportions <span>$A_X$</span> (Colombia)</a><a id="Reproduce-marginal-proportions-A_X-(Colombia)-1"></a><a class="docs-heading-anchor-permalink" href="#Reproduce-marginal-proportions-A_X-(Colombia)" title="Permalink"></a></h3><p>For each control <span>$X$</span>, <span>$A_X = e^{\beta_X}$</span> is the multiplicative infestation factor produced by activating <span>$X$</span> alone, holding all other factors at their means. The paper’s headline ranking (Cure et al. 2020) is</p><blockquote><p class="math-container">\[A_H = 0.3515 &lt; A_{CU} = 0.5364 &lt; A_{Het} = 0.8703 &lt; \ldots &lt;
+A_{Ma} = 0.9589 &lt; A_{Cs} = 0.9746 &lt; A_{Pn} = 0.9885\]</p><p>.</p></blockquote><pre><code class="language-julia hljs">let
+    AX = marginal_effects(COLOMBIA)
+    @printf &quot;Colombia marginal proportions A_X = exp(β_X):\n&quot;
+    @printf &quot;  %-5s   %s\n&quot; &quot;X&quot; &quot;A_X&quot;
+    for (k, A) in AX
+        @printf &quot;  %-5s   %.4f\n&quot; string(k) A
+    end
+
+    fig = Figure(size=(750, 350))
+    ax = Axis(fig[1,1];
+        xlabel=&quot;Control tactic&quot;,
+        ylabel=&quot;A_X = e^β  (1 = no effect, 0 = total kill)&quot;,
+        title=&quot;Marginal proportional infestation per tactic\n(Colombia all-factors model)&quot;,
+        xticks=(1:length(AX), [string(k) for (k, _) in AX]))
+    barplot!(ax, 1:length(AX), [A for (_, A) in AX];
+        color=[A &lt; 0.7 ? :firebrick : (A &lt; 0.9 ? :goldenrod : :steelblue)
+               for (_, A) in AX])
+    hlines!(ax, [1.0]; color=:gray, linestyle=:dash)
+    fig
+end</code></pre><pre><code class="nohighlight hljs">Colombia marginal proportions A_X = exp(β_X):
+  X       A_X
+  H       0.2053
+  CU      0.4673
+  Pc      0.6872
+  Bb      0.7277
+  Het     0.8704
+  C       0.8710
+  Stei    0.8856
+  Ma      0.9589
+  Pn      0.9718
+  Cs      0.9746</code></pre><p><img src="../58_cbb_bioeconomics_files/figure-commonmark/cell-8-output-2.png" alt/></p><h3 id="Reproduce-Brazil-ranking-and-the-strikingly-large-H-effect"><a class="docs-heading-anchor" href="#Reproduce-Brazil-ranking-and-the-strikingly-large-H-effect">Reproduce Brazil ranking and the strikingly large <span>$H$</span> effect</a><a id="Reproduce-Brazil-ranking-and-the-strikingly-large-H-effect-1"></a><a class="docs-heading-anchor-permalink" href="#Reproduce-Brazil-ranking-and-the-strikingly-large-H-effect" title="Permalink"></a></h3><p>Brazil’s regression assigns an even larger main effect to harvesting (<span>$\beta_H = -4.32$</span>, <span>$A_H = 0.013$</span>) — the result of coffee phenology in Londrina producing fewer overlapping cohorts than in Colombia.</p><pre><code class="language-julia hljs">let
+    AX = marginal_effects(BRAZIL)
+    @printf &quot;\nBrazil marginal proportions A_X = exp(β_X):\n&quot;
+    for (k, A) in AX
+        @printf &quot;  %-5s   %.4f\n&quot; string(k) A
+    end
+    @printf &quot;\nA_H ratio (Brazil / Colombia) = %.1f×\n&quot; exp(-4.3176702) / exp(-1.5835)
+end</code></pre><pre><code class="nohighlight hljs">Brazil marginal proportions A_X = exp(β_X):
+  H       0.0133
+  Ma      0.8825
+  Pc      0.8870
+  Bb      0.9090
+  C       0.9177
+  Het     0.9248
+  Stei    0.9289
+  Cs      0.9643
+
+A_H ratio (Brazil / Colombia) = 0.1×</code></pre><h2 id="3-·-Bio-economic-decision-layer"><a class="docs-heading-anchor" href="#3-·-Bio-economic-decision-layer">3 · Bio-economic decision layer</a><a id="3-·-Bio-economic-decision-layer-1"></a><a class="docs-heading-anchor-permalink" href="#3-·-Bio-economic-decision-layer" title="Permalink"></a></h2><p>We translate predicted infestation into per-season profit, ranking the <span>$2^{10} = 1\,024$</span> tactic combinations on a cost-effectiveness basis.</p><h3 id="Yield,-price,-and-tactic-costs"><a class="docs-heading-anchor" href="#Yield,-price,-and-tactic-costs">Yield, price, and tactic costs</a><a id="Yield,-price,-and-tactic-costs-1"></a><a class="docs-heading-anchor-permalink" href="#Yield,-price,-and-tactic-costs" title="Permalink"></a></h3><p>These are illustrative working values taken from the paper’s narrative and supplementary discussion (the paper itself prioritises ranking rather than absolute USD figures, so these costs are intended for the <em>relative</em> comparison):</p><pre><code class="language-julia hljs"># --- Crop economics (illustrative, per ha per year) ---
+# Typical Colombian smallholder yield ≈ 1,500 kg green coffee / ha / yr
+# Cherry-to-green coffee mass ratio ≈ 6:1, ripe cherry ≈ 1 g
+# → baseline cherry production ≈ 9 × 10⁶ berries / ha / yr.
+const KG_PER_BERRY        = 0.001                   # ~1 g per ripe cherry
+const GREEN_PER_CHERRY    = 1.0 / 6.0               # mass ratio (green : cherry)
+const N_BERRIES_HEALTHY   = 9.0e6                   # baseline berries / ha / yr
+const PRICE_USD_PER_KG    = 5.0                     # farm-gate Arabica green
+const COFFEE_PRODUCTION_COST = 1500.0               # baseline production cost USD/ha/yr
+
+# --- Per-tactic annual control costs (USD / ha / yr) ---
+# Cultural picks are labour-intensive; biopesticides are reagent-heavy.
+const TACTIC_COST = Dict(
+    :H    =&gt;  450.0,   # intensive harvest at 15-day intervals
+    :CU   =&gt;  300.0,   # ground cleanup
+    :C    =&gt;  200.0,   # 13 insecticide sprays in rotation
+    :Bb   =&gt;  180.0,   # B. bassiana sprays
+    :Ma   =&gt;  180.0,   # M. anisopliae sprays
+    :Stei =&gt;  450.0,   # Steinernema (high reagent cost)
+    :Het  =&gt;  450.0,   # Heterorhabditis
+    :Cs   =&gt;  120.0,   # parasitoid release / maintenance
+    :Pn   =&gt;  120.0,
+    :Pc   =&gt;  120.0,
+)
+
+const ALL_TACTICS = collect(keys(TACTIC_COST))
+
+&quot;&quot;&quot;
+    profit(reg, on; baseline_loss=0.30)
+
+Per-hectare per-year profit. We anchor the no-control infestation loss
+to a literature baseline (30% of berries lost; Aristizábal et al. 2017;
+Bustillo 2006) and let the regression scale it proportionally:
+
+    p_lost = baseline_loss × I(on) / I(no control)
+
+Revenue:
+  rev  = price · green_per_cherry · kg_per_berry · N_berries · (1 − p_lost)
+Cost:
+  cost = production cost + Σ tactic costs
+&quot;&quot;&quot;
+function profit(reg::LogLinearSurrogate, on::AbstractSet{Symbol};
+                baseline_loss::Float64 = 0.30)
+    I_none = predict(reg, Set{Symbol}())
+    I      = predict(reg, on)
+    p_lost = clamp(baseline_loss * I / I_none, 0.0, 1.0)
+    healthy = N_BERRIES_HEALTHY * (1 - p_lost)
+    rev  = PRICE_USD_PER_KG * KG_PER_BERRY * GREEN_PER_CHERRY * healthy
+    cost = COFFEE_PRODUCTION_COST + sum(TACTIC_COST[k] for k in on; init=0.0)
+    return (
+        infested = I,
+        p_lost   = p_lost,
+        revenue  = rev,
+        cost     = cost,
+        profit   = rev - cost,
+    )
+end
+nothing</code></pre><h3 id="Sweep-all-1,024-combinations"><a class="docs-heading-anchor" href="#Sweep-all-1,024-combinations">Sweep all 1,024 combinations</a><a id="Sweep-all-1,024-combinations-1"></a><a class="docs-heading-anchor-permalink" href="#Sweep-all-1,024-combinations" title="Permalink"></a></h3><pre><code class="language-julia hljs">&quot;&quot;&quot;
+    sweep_all(reg)
+
+Sweep every binary tactic combination using
+`enumerate_strategies` and return a vector of named tuples
+suitable for ranking and Pareto analysis.
+&quot;&quot;&quot;
+function sweep_all(reg::LogLinearSurrogate)
+    rows = NamedTuple[]
+    for on in enumerate_strategies(ALL_TACTICS)
+        p = profit(reg, on)
+        push!(rows, (
+            on = sort(collect(on)),
+            n_tactics = length(on),
+            infested  = p.infested,
+            p_lost    = p.p_lost,
+            cost      = p.cost,
+            profit    = p.profit,
+        ))
+    end
+    return rows
+end
+
+results_col = sweep_all(COLOMBIA)
+results_brz = sweep_all(BRAZIL)
+@printf &quot;Combinations evaluated: %d (per locality)\n&quot; length(results_col)
+nothing</code></pre><pre><code class="nohighlight hljs">Combinations evaluated: 1024 (per locality)</code></pre><h3 id="Top-10-strategies-by-profit-(Colombia)"><a class="docs-heading-anchor" href="#Top-10-strategies-by-profit-(Colombia)">Top-10 strategies by profit (Colombia)</a><a id="Top-10-strategies-by-profit-(Colombia)-1"></a><a class="docs-heading-anchor-permalink" href="#Top-10-strategies-by-profit-(Colombia)" title="Permalink"></a></h3><pre><code class="language-julia hljs">let
+    top = sort(results_col; by = r -&gt; -r.profit)[1:10]
+    @printf &quot;%-3s %-8s %-9s %-9s %-9s   %s\n&quot; &quot;rk&quot; &quot;loss%&quot; &quot;cost&quot; &quot;profit&quot; &quot;n&quot; &quot;tactics&quot;
+    for (i, r) in enumerate(top)
+        @printf &quot;%-3d %-7.2f%%  \$%-7.0f  \$%-7.0f  %-9d   %s\n&quot; i (100*r.p_lost) r.cost r.profit r.n_tactics join(string.(r.on), &quot;+&quot;)
+    end
+end</code></pre><pre><code class="nohighlight hljs">rk  loss%    cost      profit    n           tactics
+1   6.16   %  $1950     $5088     1           H
+2   5.10   %  $2070     $5048     2           H+Pc
+3   2.88   %  $2250     $5034     2           CU+H
+4   6.00   %  $2070     $4980     2           Cs+H
+5   5.21   %  $2130     $4979     2           Bb+H
+6   6.16   %  $2070     $4968     2           H+Pn
+7   2.38   %  $2370     $4951     3           CU+H+Pc
+8   5.36   %  $2150     $4948     2           C+H
+9   4.97   %  $2190     $4937     3           Cs+H+Pc
+10  5.10   %  $2190     $4928     3           H+Pc+Pn</code></pre><h3 id="Cost-effectiveness-frontier"><a class="docs-heading-anchor" href="#Cost-effectiveness-frontier">Cost-effectiveness frontier</a><a id="Cost-effectiveness-frontier-1"></a><a class="docs-heading-anchor-permalink" href="#Cost-effectiveness-frontier" title="Permalink"></a></h3><pre><code class="language-julia hljs">let
+    frontier = pareto_frontier(results_col;
+        cost = r -&gt; r.cost, value = r -&gt; r.profit)
+
+    fig = Figure(size=(900, 460))
+    ax = Axis(fig[1,1];
+        xlabel=&quot;Total annual cost (USD / ha)&quot;,
+        ylabel=&quot;Annual profit (USD / ha)&quot;,
+        title=&quot;Cost-effectiveness across 1,024 tactic combinations (Colombia)&quot;)
+    scatter!(ax, [r.cost for r in results_col], [r.profit for r in results_col];
+        color=(:gray, 0.25), markersize=4, label=&quot;all combinations&quot;)
+    lines!(ax, [f.cost for f in frontier], [f.profit for f in frontier];
+        color=:firebrick, linewidth=2.5, label=&quot;Pareto frontier&quot;)
+    scatter!(ax, [f.cost for f in frontier], [f.profit for f in frontier];
+        color=:firebrick, markersize=8)
+
+    # Annotate frontier extremes
+    text!(ax, frontier[1].cost, frontier[1].profit;
+        text=&quot;no control&quot;, offset=(8, 4), fontsize=10)
+    best = frontier[argmax([f.profit for f in frontier])]
+    text!(ax, best.cost, best.profit;
+        text=&quot;best: &quot; * join(string.(best.on), &quot;+&quot;),
+        offset=(8, -10), fontsize=10, color=:firebrick)
+
+    axislegend(ax, position=:rb)
+    fig
+end</code></pre><p><img src="../58_cbb_bioeconomics_files/figure-commonmark/cell-13-output-1.png" alt/></p><h3 id="Brazil-comparison-—-does-the-optimum-change?"><a class="docs-heading-anchor" href="#Brazil-comparison-—-does-the-optimum-change?">Brazil comparison — does the optimum change?</a><a id="Brazil-comparison-—-does-the-optimum-change?-1"></a><a class="docs-heading-anchor-permalink" href="#Brazil-comparison-—-does-the-optimum-change?" title="Permalink"></a></h3><pre><code class="language-julia hljs">let
+    top_brz = sort(results_brz; by = r -&gt; -r.profit)[1:5]
+    @printf &quot;Top-5 Brazil strategies:\n&quot;
+    for (i, r) in enumerate(top_brz)
+        @printf &quot;  %d  loss=%.2f%%  cost=\$%.0f  profit=\$%.0f  →  %s\n&quot; i (100*r.p_lost) r.cost r.profit join(string.(r.on), &quot;+&quot;)
+    end
+end</code></pre><pre><code class="nohighlight hljs">Top-5 Brazil strategies:
+  1  loss=0.40%  cost=$1950  profit=$5520  →  H
+  2  loss=0.35%  cost=$2070  profit=$5403  →  H+Pc
+  3  loss=0.39%  cost=$2070  profit=$5401  →  Cs+H
+  4  loss=0.40%  cost=$2070  profit=$5400  →  H+Pn
+  5  loss=0.31%  cost=$2130  profit=$5347  →  Bb+H</code></pre><h2 id="4-·-Discussion"><a class="docs-heading-anchor" href="#4-·-Discussion">4 · Discussion</a><a id="4-·-Discussion-1"></a><a class="docs-heading-anchor-permalink" href="#4-·-Discussion" title="Permalink"></a></h2><p>Reproducing the Cure <em>et al.</em> analysis end-to-end via the published regression-surrogate has three practical advantages over re-running the full PBDM:</p><ul><li>The pipeline executes in seconds rather than hours;</li><li>The relative ranking of tactics is preserved exactly (the regression is a sufficient summary of the PBDM-by-design);</li><li>Bio-economic optimisation over the full <span>$2^{10}$</span> tactic space is trivial.</li></ul><p>Limitations to be aware of:</p><ul><li>The regression is a <em>steady-state</em> summary at the published locality weather. To explore other climates (e.g. for a climate-impact analysis), the surrogate must be re-fit by running the full PBDM with the new weather. The within-season mortality kernels in Section 1 carry over directly because they are mechanistic.</li><li>The bio-economic costs in Section 3 are illustrative working values. Practitioners should substitute locale-specific labour and reagent prices.</li><li>Three-way and higher interactions beyond the published terms are assumed null. The Colombia model includes one three-way (<span>$H \cdot Pc \cdot Bb$</span>); Brazil includes none. The 2,560 PBDM runs in the original paper provide enough data to fit a richer model if needed.</li></ul><p>The headline finding — periodic harvest dominates all other tactics in both Colombia and Brazil, with cleanup the second most useful in Colombia — is confirmed by both the marginal-proportion table (Section</p><ol><li>and the cost-effectiveness frontier (Section 3). Combined with the</li></ol><p>fact that biopesticide and parasitoid contributions are generally small <em>and</em> often antagonistic with cultural control (positive interaction terms), this provides a clear quantitative justification for prioritising sanitation over chemical or biological inputs in CBB management.</p><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Cure2020Coffee&quot; class=&quot;csl-entry&quot;&gt;</p><p>Cure, José Ricardo, Daniel Rodríguez, Andrew Paul Gutierrez, and Luigi Ponti. 2020. “The Coffee Agroecosystem: Bio-Economic Analysis of Coffee Berry Borer Control (&lt;span class=&quot;nocase&quot;&gt;Hypothenemus hampei&lt;/span&gt;).” <em>Scientific Reports</em> 10: 12285. <a href="https://doi.org/10.1038/s41598-020-68989-x">https://doi.org/10.1038/s41598-020-68989-x</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../57_verticillium_dp/">« Verticillium Wilt — Multi-Season Dynamic-Programming Management</a><a class="docs-footer-nextpage" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

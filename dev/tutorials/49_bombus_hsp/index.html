@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Genetically Modified Thermal Tolerance in Bombus terrestris · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Genetically Modified Thermal Tolerance in Bombus terrestris · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Genetically Modified Thermal Tolerance in Bombus terrestris · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Genetically Modified Thermal Tolerance in Bombus terrestris · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/49_bombus_hsp/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/49_bombus_hsp/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/49_bombus_hsp/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li class="is-active"><a class="tocitem" href>Genetically Modified Thermal Tolerance in Bombus terrestris</a><ul class="internal"><li><a class="tocitem" href="#Introduction"><span>Introduction</span></a></li><li><a class="tocitem" href="#Genetic-Architecture"><span>Genetic Architecture</span></a></li><li><a class="tocitem" href="#Colony-Life-History-Parameters"><span>Colony Life History Parameters</span></a></li><li><a class="tocitem" href="#Temperature-Dependent-Rate-Functions"><span>Temperature-Dependent Rate Functions</span></a></li><li><a class="tocitem" href="#Colony-Dynamics-Model"><span>Colony Dynamics Model</span></a></li><li><a class="tocitem" href="#Climate-Scenarios"><span>Climate Scenarios</span></a></li><li><a class="tocitem" href="#Colony-Simulations:-Wild-Type-vs-GM"><span>Colony Simulations: Wild-Type vs GM</span></a></li><li><a class="tocitem" href="#Fitness-Metrics:-Season-Integrated-Performance"><span>Fitness Metrics: Season-Integrated Performance</span></a></li><li><a class="tocitem" href="#Genotype-Advantage-as-a-Function-of-Warming"><span>Genotype Advantage as a Function of Warming</span></a></li><li><a class="tocitem" href="#Pollination-Ecosystem-Services"><span>Pollination Ecosystem Services</span></a></li><li><a class="tocitem" href="#Allele-Frequency-Dynamics"><span>Allele Frequency Dynamics</span></a></li><li><a class="tocitem" href="#Sensitivity-Analysis:-Pleiotropic-Cost-Trade-offs"><span>Sensitivity Analysis: Pleiotropic Cost Trade-offs</span></a></li><li><a class="tocitem" href="#Discussion"><span>Discussion</span></a></li></ul></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Genetically Modified Thermal Tolerance in Bombus terrestris</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Genetically Modified Thermal Tolerance in Bombus terrestris</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Genetically-Modified-Thermal-Tolerance-in-Bombus-terrestris"><a class="docs-heading-anchor" href="#Genetically-Modified-Thermal-Tolerance-in-Bombus-terrestris">Genetically Modified Thermal Tolerance in Bombus terrestris</a><a id="Genetically-Modified-Thermal-Tolerance-in-Bombus-terrestris-1"></a><a class="docs-heading-anchor-permalink" href="#Genetically-Modified-Thermal-Tolerance-in-Bombus-terrestris" title="Permalink"></a></h1><p>Simon Frost</p><ul><li><a href="#introduction">Introduction</a></li><li><a href="#genetic-architecture">Genetic Architecture</a></li><li><a href="#colony-life-history-parameters">Colony Life History Parameters</a></li><li><a href="#temperature-dependent-rate-functions">Temperature-Dependent Rate Functions</a><ul><li><a href="#foraging-activity">Foraging Activity</a></li><li><a href="#thermal-mortality">Thermal Mortality</a></li><li><a href="#queen-fecundity">Queen Fecundity</a></li></ul></li><li><a href="#colony-dynamics-model">Colony Dynamics Model</a></li><li><a href="#climate-scenarios">Climate Scenarios</a></li><li><a href="#colony-simulations-wild-type-vs-gm">Colony Simulations: Wild-Type vs GM</a><ul><li><a href="#colony-growth-under-current-climate">Colony Growth Under Current Climate</a></li><li><a href="#climate-comparison-total-workers-at-peak">Climate Comparison: Total Workers at Peak</a></li></ul></li><li><a href="#fitness-metrics-season-integrated-performance">Fitness Metrics: Season-Integrated Performance</a></li><li><a href="#genotype-advantage-as-a-function-of-warming">Genotype Advantage as a Function of Warming</a></li><li><a href="#pollination-ecosystem-services">Pollination Ecosystem Services</a><ul><li><a href="#pollination-model">Pollination Model</a></li><li><a href="#pollination-under-heatwave-stress">Pollination Under Heatwave Stress</a></li></ul></li><li><a href="#allele-frequency-dynamics">Allele Frequency Dynamics</a></li><li><a href="#sensitivity-analysis-pleiotropic-cost-trade-offs">Sensitivity Analysis: Pleiotropic Cost Trade-offs</a></li><li><a href="#discussion">Discussion</a><ul><li><a href="#key-findings">Key Findings</a></li><li><a href="#pleiotropic-effects-included">Pleiotropic Effects Included</a></li><li><a href="#limitations">Limitations</a></li><li><a href="#connection-to-other-vignettes">Connection to Other Vignettes</a></li></ul></li></ul><h2 id="Introduction"><a class="docs-heading-anchor" href="#Introduction">Introduction</a><a id="Introduction-1"></a><a class="docs-heading-anchor-permalink" href="#Introduction" title="Permalink"></a></h2><blockquote><p><strong>Status — speculative scenario, not a paper reproduction.</strong> Unlike most other vignettes in this gallery, this one is <em>not</em> a reproduction of a published <em>Bombus</em> paper. It is a speculative scenario that combines (i) established bumblebee colony biology with (ii) hypothetical genetically-modified HSP70 promoter engineering whose fitness costs are <em>adapted from Drosophila</em> studies (Hoekstra &amp; Montooth 2013; Silbermann &amp; Tatar 2000; Feder 1999). Use it as a methodological demonstration of how the framework can host genetic-architecture and stress-physiology extensions, not as a quantitative GM-bumblebee assessment.</p></blockquote><p>The buff-tailed bumblebee (<em>Bombus terrestris</em>) is the most commercially important managed pollinator in Europe, deployed in over 1 million greenhouse colonies annually for tomato, strawberry, and pepper pollination. Climate warming poses a direct physiological threat: bumblebees have a critical thermal maximum (CT&lt;sub&gt;max&lt;/sub&gt;) of ~44 °C (thorax) and show impaired foraging above 32 °C ambient temperature, cognitive deficits (learning/memory) at sustained 32 °C exposure, and larval mortality at 35 °C.</p><p>One proposed biotechnological intervention is to engineer enhanced thermal tolerance by modifying heat shock protein (HSP) gene promoters. Replacing the native HSP70 promoter with a constitutive or enhanced-response variant would upregulate chaperone expression, shifting the thermal tolerance window upward by 2–4 °C. However, HSP overexpression is not free: studies in <em>Drosophila</em> demonstrate quantifiable pleiotropic costs:</p><ul><li><strong>Metabolic cost</strong>: ~8–15% increase in basal metabolic rate (Hoekstra &amp; Montooth 2013)</li><li><strong>Reduced fecundity</strong>: ~10–15% decrease in daily egg production (Silbermann &amp; Tatar 2000)</li><li><strong>Shortened lifespan</strong>: ~10–20% reduction under benign conditions (Feder et al. 1999)</li><li><strong>Immune trade-off</strong>: Diverted resources may impair pathogen resistance</li></ul><p>This vignette builds a <strong>physiologically based demographic model</strong> of <em>B. terrestris</em> colony dynamics incorporating:</p><ol><li>Temperature-driven development, foraging, and mortality (PBDM  framework)</li><li>A diploid genetic architecture for HSP promoter alleles with  Hardy–Weinberg genotype frequencies</li><li>Genotype-specific pleiotropic costs on metabolic rate, fecundity,  and longevity</li><li>Colony-level thermoregulation (workers heat/cool the nest)</li><li>A pollination ecosystem service module coupling colony fitness to  crop yield</li></ol><p>The central question is: <strong>under what warming scenarios does the net benefit of enhanced thermal tolerance outweigh its pleiotropic costs, both for colony fitness and for the pollination services the colony provides?</strong></p><h2 id="Genetic-Architecture"><a class="docs-heading-anchor" href="#Genetic-Architecture">Genetic Architecture</a><a id="Genetic-Architecture-1"></a><a class="docs-heading-anchor-permalink" href="#Genetic-Architecture" title="Permalink"></a></h2><p>We model a single biallelic locus controlling HSP70 promoter activity:</p><ul><li><strong>Allele <span>$W$</span></strong>: Wild-type promoter (normal HSP expression)</li><li><strong>Allele <span>$G$</span></strong>: Enhanced promoter (constitutive HSP70 upregulation)</li></ul><p>In a diploid population with Hardy–Weinberg equilibrium, three genotypes arise:</p><table><tr><th style="text-align: right">Genotype</th><th style="text-align: right">Frequency</th><th style="text-align: right">CT&lt;sub&gt;max&lt;/sub&gt; shift</th><th style="text-align: right">Metabolic cost</th><th style="text-align: right">Fecundity penalty</th><th style="text-align: right">Longevity penalty</th></tr><tr><td style="text-align: right"><span>$WW$</span></td><td style="text-align: right"><span>$p^2$</span></td><td style="text-align: right">0</td><td style="text-align: right">1.00</td><td style="text-align: right">1.00</td><td style="text-align: right">1.00</td></tr><tr><td style="text-align: right"><span>$WG$</span></td><td style="text-align: right"><span>$2pq$</span></td><td style="text-align: right"><span>$+\Delta/2$</span></td><td style="text-align: right"><span>$1 + c_m/2$</span></td><td style="text-align: right"><span>$1 - c_f/2$</span></td><td style="text-align: right"><span>$1 - c_l/2$</span></td></tr><tr><td style="text-align: right"><span>$GG$</span></td><td style="text-align: right"><span>$q^2$</span></td><td style="text-align: right"><span>$+\Delta$</span></td><td style="text-align: right"><span>$1 + c_m$</span></td><td style="text-align: right"><span>$1 - c_f$</span></td><td style="text-align: right"><span>$1 - c_l$</span></td></tr></table><p>where <span>$p$</span> is the frequency of <span>$W$</span>, <span>$q = 1-p$</span> is the frequency of <span>$G$</span>, <span>$\Delta$</span> is the CT&lt;sub&gt;max&lt;/sub&gt; shift for homozygous GM individuals, and <span>$c_m$</span>, <span>$c_f$</span>, <span>$c_l$</span> are the metabolic, fecundity, and longevity cost coefficients respectively. The heterozygote has intermediate effects (semi-dominance).</p><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+using OrdinaryDiffEq
+using CairoMakie
+using LinearAlgebra
+
+# ── Genetic parameters ─────────────────────────────────────────────
+const Δ_HSP = 3.0       # °C CTmax shift for GG homozygote
+const c_met = 0.08       # 8% metabolic cost (GG)
+const c_fec = 0.13       # 13% fecundity reduction (GG)
+const c_lon = 0.15       # 15% longevity reduction (GG)
+
+# Genotype trait modifiers (additive/semi-dominant)
+struct Genotype
+    name::String
+    ctmax_shift::Float64   # °C added to baseline CTmax
+    met_cost::Float64      # multiplier on metabolic rate (≥1)
+    fec_penalty::Float64   # multiplier on fecundity (≤1)
+    lon_penalty::Float64   # multiplier on lifespan (≤1)
+end
+
+WW = Genotype(&quot;WW&quot;, 0.0,       1.0,            1.0,            1.0)
+WG = Genotype(&quot;WG&quot;, Δ_HSP/2,   1.0 + c_met/2,  1.0 - c_fec/2,  1.0 - c_lon/2)
+GG = Genotype(&quot;GG&quot;, Δ_HSP,     1.0 + c_met,    1.0 - c_fec,    1.0 - c_lon)
+
+println(&quot;Genotype trait effects (HSP70 promoter modification):&quot;)
+println(&quot;=&quot;^70)
+println(&quot;Genotype | CTmax shift | Metabolic cost | Fecundity | Longevity&quot;)
+println(&quot;-&quot;^70)
+for g in [WW, WG, GG]
+    println(&quot;  $(rpad(g.name, 9))| $(rpad(&quot;+$(g.ctmax_shift)°C&quot;, 12))| &quot; *
+            &quot;$(rpad(&quot;×$(g.met_cost)&quot;, 15))| &quot; *
+            &quot;$(rpad(&quot;×$(g.fec_penalty)&quot;, 10))| ×$(g.lon_penalty)&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Genotype trait effects (HSP70 promoter modification):
+======================================================================
+Genotype | CTmax shift | Metabolic cost | Fecundity | Longevity
+----------------------------------------------------------------------
+  WW       | +0.0°C      | ×1.0           | ×1.0      | ×1.0
+  WG       | +1.5°C      | ×1.04          | ×0.935    | ×0.925
+  GG       | +3.0°C      | ×1.08          | ×0.87     | ×0.85</code></pre><h2 id="Colony-Life-History-Parameters"><a class="docs-heading-anchor" href="#Colony-Life-History-Parameters">Colony Life History Parameters</a><a id="Colony-Life-History-Parameters-1"></a><a class="docs-heading-anchor-permalink" href="#Colony-Life-History-Parameters" title="Permalink"></a></h2><p><em>B. terrestris</em> has an annual colony cycle: a single queen founds a nest in spring, produces workers through the ergonomic phase, then switches to reproductive output (new queens = gynes, and males) before colony senescence in autumn. We model five compartments: brood (<span>$B$</span>), hive workers (<span>$H$</span>), foragers (<span>$F$</span>), food stores (<span>$f$</span>, in grams), and nest temperature (<span>$T_n$</span>).</p><pre><code class="language-julia hljs"># ── Baseline colony parameters (from Banks 2017, Khoury 2013) ─────
+# Development
+const τ_BROOD = 22.0     # days from egg to adult worker emergence
+const τ_MALE = 26.0      # days to male emergence
+const τ_GYNE = 30.0      # days to gyne emergence
+const φ_BROOD = 1.0/9.0  # day⁻¹ brood pupation rate
+
+# Queen egg-laying
+const L_MAX = 12.0       # max eggs/day (bumblebee queen, lower than honeybee)
+const w_HALF = 100.0     # half-saturation for eclosion (colony size)
+
+# Forager dynamics
+const x_MAX = 0.25       # day⁻¹ max recruitment rate (hive → forager)
+const σ_INHIB = 0.75     # social inhibition strength
+
+# Baseline mortality
+const μ_H_BASE = 0.02    # day⁻¹ hive bee mortality
+const μ_F_BASE = 0.05    # day⁻¹ forager mortality (higher due to predation/flight)
+const μ_Q = 0.0154       # day⁻¹ queen mortality
+
+# Food dynamics
+const c_FORAGE = 0.6     # ml nectar/forager/day (at full activity)
+const γ_ADULT = 0.007    # g/day consumption per adult
+const γ_BROOD = 0.018    # g/day consumption per brood
+const b_HALF = 500.0     # g food half-saturation
+
+# Thermal parameters
+const T_BASE_DEV = 8.0   # °C lower development threshold
+const T_OPT_NEST = 30.0  # °C optimal nest temperature
+const T_STRESS_FORAGE = 32.0  # °C foraging impairment onset
+const T_FORAGE_MIN = 5.0      # °C minimum foraging temperature
+const T_FORAGE_MAX = 38.0     # °C maximum foraging temperature
+const CTMAX_BASE = 44.0       # °C baseline worker CTmax (thorax)
+
+# Nest thermoregulation
+const α_NEST = 0.02      # day⁻¹ heat exchange rate
+const β_META = 0.002     # °C/day/worker metabolic heating
+const COOL_CAP = 0.001   # °C/day/worker cooling capacity
+const T_COOL_ONSET = 35.0  # °C active cooling threshold
+
+println(&quot;\nColony parameters (B. terrestris):&quot;)
+println(&quot;  Brood period: $(τ_BROOD) days&quot;)
+println(&quot;  Queen egg rate: $(L_MAX) eggs/day max&quot;)
+println(&quot;  Baseline forager mortality: $(μ_F_BASE)/day&quot;)
+println(&quot;  CTmax (wild-type): $(CTMAX_BASE)°C&quot;)
+println(&quot;  Optimal nest T: $(T_OPT_NEST)°C&quot;)
+println(&quot;  Foraging window: $(T_FORAGE_MIN)–$(T_FORAGE_MAX)°C&quot;)</code></pre><pre><code class="nohighlight hljs">Colony parameters (B. terrestris):
+  Brood period: 22.0 days
+  Queen egg rate: 12.0 eggs/day max
+  Baseline forager mortality: 0.05/day
+  CTmax (wild-type): 44.0°C
+  Optimal nest T: 30.0°C
+  Foraging window: 5.0–38.0°C</code></pre><h2 id="Temperature-Dependent-Rate-Functions"><a class="docs-heading-anchor" href="#Temperature-Dependent-Rate-Functions">Temperature-Dependent Rate Functions</a><a id="Temperature-Dependent-Rate-Functions-1"></a><a class="docs-heading-anchor-permalink" href="#Temperature-Dependent-Rate-Functions" title="Permalink"></a></h2><h3 id="Foraging-Activity"><a class="docs-heading-anchor" href="#Foraging-Activity">Foraging Activity</a><a id="Foraging-Activity-1"></a><a class="docs-heading-anchor-permalink" href="#Foraging-Activity" title="Permalink"></a></h3><p>Workers forage only within a thermal window. Activity ramps up linearly from 5 °C, is maximal between 15–30 °C, and declines to zero at 38 °C. GM bees with enhanced CTmax maintain foraging at higher temperatures.</p><pre><code class="language-julia hljs">function foraging_activity(T_air, genotype::Genotype)
+    # Shift upper limit by CTmax improvement
+    T_max_forage = T_FORAGE_MAX + genotype.ctmax_shift * 0.5
+    T_stress = T_STRESS_FORAGE + genotype.ctmax_shift
+
+    if T_air &lt; T_FORAGE_MIN
+        return 0.0
+    elseif T_air &lt; 15.0
+        return (T_air - T_FORAGE_MIN) / (15.0 - T_FORAGE_MIN)
+    elseif T_air ≤ T_stress
+        return 1.0
+    elseif T_air &lt; T_max_forage
+        return (T_max_forage - T_air) / (T_max_forage - T_stress)
+    else
+        return 0.0
+    end
+end
+
+# Foraging efficiency: metabolic cost reduces net resource gain
+function foraging_efficiency(T_air, genotype::Genotype)
+    activity = foraging_activity(T_air, genotype)
+    # Net efficiency penalized by metabolic overhead
+    return activity / genotype.met_cost
+end
+
+# Plot foraging activity curves
+T_range = 0.0:0.5:45.0
+fig = Figure(size=(800, 400))
+ax = Axis(fig[1, 1], xlabel=&quot;Ambient temperature (°C)&quot;,
+          ylabel=&quot;Foraging activity / efficiency&quot;,
+          title=&quot;Temperature-Dependent Foraging Performance&quot;)
+
+for (g, col, ls) in [(WW, :steelblue, :solid), (WG, :goldenrod, :solid), (GG, :firebrick, :solid)]
+    act = [foraging_activity(T, g) for T in T_range]
+    eff = [foraging_efficiency(T, g) for T in T_range]
+    lines!(ax, collect(T_range), act, color=col, linewidth=2, linestyle=ls,
+           label=&quot;$(g.name) activity&quot;)
+    lines!(ax, collect(T_range), eff, color=col, linewidth=1.5, linestyle=:dash,
+           label=&quot;$(g.name) efficiency&quot;)
+end
+vlines!(ax, [T_STRESS_FORAGE], color=:gray50, linestyle=:dot, alpha=0.5)
+axislegend(ax, position=:rt, labelsize=10)
+fig</code></pre><p><img src="../49_bombus_hsp_files/figure-commonmark/cell-4-output-1.png" alt/></p><h3 id="Thermal-Mortality"><a class="docs-heading-anchor" href="#Thermal-Mortality">Thermal Mortality</a><a id="Thermal-Mortality-1"></a><a class="docs-heading-anchor-permalink" href="#Thermal-Mortality" title="Permalink"></a></h3><p>Worker mortality increases quadratically above the stress threshold. GM bees shift this threshold upward but pay a baseline longevity cost.</p><pre><code class="language-julia hljs">const k_HEAT = 0.005  # °C⁻² heat stress mortality coefficient
+
+function worker_mortality(T_air, genotype::Genotype; is_forager=false)
+    base = is_forager ? μ_F_BASE : μ_H_BASE
+    T_stress = T_STRESS_FORAGE + genotype.ctmax_shift
+
+    # Longevity penalty increases baseline mortality
+    μ_base = base / genotype.lon_penalty
+
+    # Heat stress component
+    heat_excess = max(0.0, T_air - T_stress)
+    μ_heat = k_HEAT * heat_excess^2
+
+    return μ_base + μ_heat
+end
+
+# Brood survival depends on nest temperature (super-Gaussian)
+function brood_survival(T_nest, genotype::Genotype)
+    T_opt = T_OPT_NEST
+    σ_brood = 6.0 + genotype.ctmax_shift * 0.5  # wider tolerance for GM
+    return exp(-((T_nest - T_opt) / σ_brood)^4)
+end
+
+fig = Figure(size=(800, 400))
+ax1 = Axis(fig[1, 1], xlabel=&quot;Ambient temperature (°C)&quot;,
+           ylabel=&quot;Forager mortality (day⁻¹)&quot;,
+           title=&quot;Temperature-Dependent Mortality&quot;)
+ax2 = Axis(fig[1, 2], xlabel=&quot;Nest temperature (°C)&quot;,
+           ylabel=&quot;Brood survival fraction&quot;,
+           title=&quot;Brood Survival vs Nest Temperature&quot;)
+
+for (g, col) in [(WW, :steelblue), (WG, :goldenrod), (GG, :firebrick)]
+    mort = [worker_mortality(T, g; is_forager=true) for T in T_range]
+    surv = [brood_survival(T, g) for T in 15.0:0.5:50.0]
+    lines!(ax1, collect(T_range), mort, color=col, linewidth=2, label=g.name)
+    lines!(ax2, collect(15.0:0.5:50.0), surv, color=col, linewidth=2, label=g.name)
+end
+axislegend(ax1, position=:lt)
+axislegend(ax2, position=:rt)
+fig</code></pre><p><img src="../49_bombus_hsp_files/figure-commonmark/cell-5-output-1.png" alt/></p><h3 id="Queen-Fecundity"><a class="docs-heading-anchor" href="#Queen-Fecundity">Queen Fecundity</a><a id="Queen-Fecundity-1"></a><a class="docs-heading-anchor-permalink" href="#Queen-Fecundity" title="Permalink"></a></h3><p>The queen’s egg-laying rate depends on colony size (eclosion half-saturation), food availability, and the genotype’s fecundity penalty. The seasonal schedule follows the <em>B. terrestris</em> colony cycle: founding in spring (day 90), ergonomic phase through summer, reproductive switch around day 200, senescence by day 280.</p><pre><code class="language-julia hljs">function queen_egg_rate(t, N_total, food, genotype::Genotype)
+    # Seasonal envelope (colony founding → senescence)
+    day = mod(t, 365.0)
+    if day &lt; 90 || day &gt; 280
+        return 0.0  # dormant / pre-founding / post-senescence
+    end
+
+    # Ramp up during founding phase
+    seasonal = if day &lt; 120
+        (day - 90) / 30.0
+    elseif day &lt; 240
+        1.0
+    else
+        (280 - day) / 40.0
+    end
+
+    # Food and colony size dependence
+    food_factor = food^2 / (food^2 + b_HALF^2)
+    colony_factor = N_total / (N_total + w_HALF)
+
+    # Genotype-specific fecundity
+    return L_MAX * genotype.fec_penalty * seasonal * food_factor * colony_factor
+end
+
+# Plot egg-laying over season at different food levels
+days_season = 60:1:300
+fig = Figure(size=(800, 400))
+ax = Axis(fig[1, 1], xlabel=&quot;Day of year&quot;, ylabel=&quot;Eggs / day&quot;,
+          title=&quot;Queen Egg-Laying Rate (N=200 workers)&quot;)
+
+for (g, col) in [(WW, :steelblue), (GG, :firebrick)]
+    for (food, ls, lbl) in [(1000.0, :solid, &quot;food=1000g&quot;), (200.0, :dash, &quot;food=200g&quot;)]
+        rates = [queen_egg_rate(d, 200.0, food, g) for d in days_season]
+        lines!(ax, collect(days_season), rates, color=col, linewidth=2, linestyle=ls,
+               label=&quot;$(g.name), $lbl&quot;)
+    end
+end
+axislegend(ax, position=:rt, labelsize=10)
+fig</code></pre><p><img src="../49_bombus_hsp_files/figure-commonmark/cell-6-output-1.png" alt/></p><h2 id="Colony-Dynamics-Model"><a class="docs-heading-anchor" href="#Colony-Dynamics-Model">Colony Dynamics Model</a><a id="Colony-Dynamics-Model-1"></a><a class="docs-heading-anchor-permalink" href="#Colony-Dynamics-Model" title="Permalink"></a></h2><p>The model tracks five state variables using a system of ODEs with a developmental delay for brood maturation:</p><p class="math-container">\[\begin{aligned}
+\frac{dB}{dt} &amp;= L(t) \cdot S(H, f) - \phi B \\[4pt]
+\frac{dH}{dt} &amp;= \phi B - H \cdot R(H, F, f) - \mu_H(T) \cdot H \\[4pt]
+\frac{dF}{dt} &amp;= H \cdot R(H, F, f) - \mu_F(T) \cdot F \\[4pt]
+\frac{df}{dt} &amp;= c \cdot \eta(T) \cdot F - \gamma_A(F + H) - \gamma_B B \\[4pt]
+\frac{dT_n}{dt} &amp;= \alpha(T_a - T_n) + \beta_m \cdot g_{\text{met}} \cdot H - \text{cooling}
+\end{aligned}\]</p><p>where <span>$L(t)$</span> is queen egg-laying, <span>$S$</span> is brood survival (food × nursing), <span>$R$</span> is the hive-to-forager recruitment rate, <span>$\eta(T)$</span> is foraging efficiency, and <span>$g_{\text{met}}$</span> is the genotype’s metabolic cost multiplier.</p><pre><code class="language-julia hljs">function bombus_colony!(du, u, p, t)
+    B, H, F, food, T_nest = u
+    (; genotype, T_func) = p
+
+    T_air = T_func(t)
+    N_total = max(B + H + F, 1.0)
+
+    # Queen egg-laying
+    L = queen_egg_rate(t, H + F, food, genotype)
+
+    # Brood survival (food × nursing care × nest temperature)
+    food_surv = food^2 / (food^2 + b_HALF^2)
+    nurse_surv = H / (H + max(B, 1.0) * 0.5)
+    nest_surv = brood_survival(T_nest, genotype)
+    S = food_surv * nurse_surv * nest_surv
+
+    # Hive → forager recruitment (social inhibition)
+    R = max(0.0, x_MAX - σ_INHIB * F / (F + H + 1.0))
+
+    # Mortality rates (genotype-specific)
+    μ_H = worker_mortality(T_air, genotype; is_forager=false)
+    μ_F = worker_mortality(T_air, genotype; is_forager=true)
+
+    # Food collection (temperature-dependent foraging efficiency)
+    η = foraging_efficiency(T_air, genotype)
+    collection = c_FORAGE * η * F
+    consumption = γ_ADULT * (H + F) + γ_BROOD * B
+
+    # Nest thermoregulation
+    heating = β_META * genotype.met_cost * (H + 0.3 * F)  # hive bees contribute more
+    cooling_val = if T_nest &gt; T_COOL_ONSET
+        COOL_CAP * H * (T_nest - T_COOL_ONSET)
+    else
+        0.0
+    end
+    dT_nest = α_NEST * (T_air - T_nest) + heating - cooling_val
+
+    # ODEs
+    du[1] = L * S - φ_BROOD * B                              # dB/dt
+    du[2] = φ_BROOD * B - H * R - μ_H * H                    # dH/dt
+    du[3] = H * R - μ_F * F                                   # dF/dt
+    du[4] = max(-food, collection - consumption)               # df/dt (non-negative food)
+    du[5] = dT_nest                                            # dT_nest/dt
+end</code></pre><pre><code class="nohighlight hljs">bombus_colony! (generic function with 1 method)</code></pre><h2 id="Climate-Scenarios"><a class="docs-heading-anchor" href="#Climate-Scenarios">Climate Scenarios</a><a id="Climate-Scenarios-1"></a><a class="docs-heading-anchor-permalink" href="#Climate-Scenarios" title="Permalink"></a></h2><p>We simulate four climate scenarios representing current conditions and warming projections for temperate European landscapes where <em>B. terrestris</em> is deployed:</p><pre><code class="language-julia hljs"># Sinusoidal temperature forcing with diurnal range
+function make_climate(T_mean, T_amp; dtr=10.0)
+    function T_func(t)
+        seasonal = T_mean + T_amp * sin(2π * (t - 80) / 365)
+        return seasonal
+    end
+    function T_max_func(t)
+        return T_func(t) + dtr / 2
+    end
+    return T_func
+end
+
+climates = [
+    (&quot;Current (15°C mean)&quot;, make_climate(15.0, 8.0), :steelblue),
+    (&quot;+2°C (17°C mean)&quot;,    make_climate(17.0, 8.0), :goldenrod),
+    (&quot;+4°C (19°C mean)&quot;,    make_climate(19.0, 9.0), :darkorange),
+    (&quot;+6°C (21°C mean)&quot;,    make_climate(21.0, 10.0), :firebrick),
+]
+
+# Plot climate scenarios
+fig = Figure(size=(800, 350))
+ax = Axis(fig[1, 1], xlabel=&quot;Day of year&quot;, ylabel=&quot;Temperature (°C)&quot;,
+          title=&quot;Climate Scenarios&quot;)
+for (label, T_func, col) in climates
+    temps = [T_func(d) for d in 1:365]
+    lines!(ax, 1:365, temps, color=col, linewidth=2, label=label)
+end
+hlines!(ax, [T_STRESS_FORAGE], color=:gray50, linestyle=:dash, alpha=0.5,
+        label=&quot;Stress threshold (32°C)&quot;)
+axislegend(ax, position=:lt, labelsize=10)
+fig</code></pre><p><img src="../49_bombus_hsp_files/figure-commonmark/cell-8-output-1.png" alt/></p><h2 id="Colony-Simulations:-Wild-Type-vs-GM"><a class="docs-heading-anchor" href="#Colony-Simulations:-Wild-Type-vs-GM">Colony Simulations: Wild-Type vs GM</a><a id="Colony-Simulations:-Wild-Type-vs-GM-1"></a><a class="docs-heading-anchor-permalink" href="#Colony-Simulations:-Wild-Type-vs-GM" title="Permalink"></a></h2><p>We simulate colony dynamics for all three genotypes across the four climate scenarios, running from colony founding (day 90) through senescence (day 280).</p><pre><code class="language-julia hljs"># Initial conditions: queen founding with small brood
+u0 = [5.0, 1.0, 0.0, 200.0, 25.0]  # B, H, F, food (g), T_nest (°C)
+tspan = (60.0, 310.0)  # season: March through October
+
+# Run all combinations
+results = Dict()
+for (clim_label, T_func, _) in climates
+    for genotype in [WW, WG, GG]
+        p = (genotype=genotype, T_func=T_func)
+        prob = ODEProblem(bombus_colony!, u0, tspan, p)
+        sol = solve(prob, Tsit5(); saveat=1.0, abstol=1e-8, reltol=1e-8,
+                    maxiters=1_000_000)
+        results[(clim_label, genotype.name)] = sol
+    end
+end
+
+println(&quot;Simulations complete: $(length(results)) runs&quot;)
+println(&quot;  4 climates × 3 genotypes = 12 scenarios&quot;)</code></pre><pre><code class="nohighlight hljs">Simulations complete: 12 runs
+  4 climates × 3 genotypes = 12 scenarios</code></pre><h3 id="Colony-Growth-Under-Current-Climate"><a class="docs-heading-anchor" href="#Colony-Growth-Under-Current-Climate">Colony Growth Under Current Climate</a><a id="Colony-Growth-Under-Current-Climate-1"></a><a class="docs-heading-anchor-permalink" href="#Colony-Growth-Under-Current-Climate" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig = Figure(size=(900, 600))
+
+clim_label, _, clim_col = climates[1]
+
+ax1 = Axis(fig[1, 1], ylabel=&quot;Brood&quot;, title=&quot;Colony Dynamics — $clim_label&quot;)
+ax2 = Axis(fig[2, 1], ylabel=&quot;Workers (H + F)&quot;)
+ax3 = Axis(fig[3, 1], xlabel=&quot;Day of year&quot;, ylabel=&quot;Food stores (g)&quot;)
+
+for (g, col) in [(WW, :steelblue), (WG, :goldenrod), (GG, :firebrick)]
+    sol = results[(clim_label, g.name)]
+    t = sol.t
+    B = [sol.u[i][1] for i in eachindex(t)]
+    H = [sol.u[i][2] for i in eachindex(t)]
+    F = [sol.u[i][3] for i in eachindex(t)]
+    food = [sol.u[i][4] for i in eachindex(t)]
+
+    lines!(ax1, t, B, color=col, linewidth=2, label=g.name)
+    lines!(ax2, t, H .+ F, color=col, linewidth=2, label=g.name)
+    lines!(ax3, t, food, color=col, linewidth=2, label=g.name)
+end
+
+for ax in [ax1, ax2, ax3]
+    axislegend(ax, position=:rt)
+end
+linkxaxes!(ax1, ax2, ax3)
+fig</code></pre><p><img src="../49_bombus_hsp_files/figure-commonmark/cell-10-output-1.png" alt/></p><h3 id="Climate-Comparison:-Total-Workers-at-Peak"><a class="docs-heading-anchor" href="#Climate-Comparison:-Total-Workers-at-Peak">Climate Comparison: Total Workers at Peak</a><a id="Climate-Comparison:-Total-Workers-at-Peak-1"></a><a class="docs-heading-anchor-permalink" href="#Climate-Comparison:-Total-Workers-at-Peak" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig = Figure(size=(900, 500))
+ax = Axis(fig[1, 1], xlabel=&quot;Day of year&quot;, ylabel=&quot;Total workers (H + F)&quot;,
+          title=&quot;Peak Colony Size Across Climate Scenarios&quot;)
+
+for (clim_label, _, clim_col) in climates
+    for (g, ls) in [(WW, :solid), (GG, :dash)]
+        sol = results[(clim_label, g.name)]
+        t = sol.t
+        workers = [sol.u[i][2] + sol.u[i][3] for i in eachindex(t)]
+        lines!(ax, t, workers, color=clim_col, linewidth=2, linestyle=ls,
+               label=&quot;$clim_label — $(g.name)&quot;)
+    end
+end
+
+axislegend(ax, position=:rt, labelsize=9, nbanks=2)
+fig</code></pre><p><img src="../49_bombus_hsp_files/figure-commonmark/cell-11-output-1.png" alt/></p><h2 id="Fitness-Metrics:-Season-Integrated-Performance"><a class="docs-heading-anchor" href="#Fitness-Metrics:-Season-Integrated-Performance">Fitness Metrics: Season-Integrated Performance</a><a id="Fitness-Metrics:-Season-Integrated-Performance-1"></a><a class="docs-heading-anchor-permalink" href="#Fitness-Metrics:-Season-Integrated-Performance" title="Permalink"></a></h2><p>Colony fitness in <em>B. terrestris</em> is measured by reproductive output — the number of new queens (gynes) produced before senescence. We approximate gyne production as proportional to peak worker biomass × food surplus during the reproductive phase (days 200–260).</p><pre><code class="language-julia hljs">function colony_fitness(sol)
+    # Peak workers during reproductive phase
+    peak_workers = 0.0
+    total_forager_days = 0.0
+    food_surplus = 0.0
+
+    for i in eachindex(sol.t)
+        t = sol.t[i]
+        if 200 ≤ mod(t, 365) ≤ 260
+            H, F = sol.u[i][2], sol.u[i][3]
+            food = sol.u[i][4]
+            peak_workers = max(peak_workers, H + F)
+            food_surplus += max(0.0, food - 100.0)  # surplus above 100g
+        end
+        if 90 ≤ mod(t, 365) ≤ 280
+            total_forager_days += sol.u[i][3]  # cumulative foraging effort
+        end
+    end
+
+    # Gyne production proxy
+    gyne_index = peak_workers * (food_surplus / max(food_surplus, 1.0))
+    return (peak_workers=peak_workers, forager_days=total_forager_days,
+            food_surplus=food_surplus, gyne_index=gyne_index)
+end
+
+println(&quot;Colony Fitness Summary&quot;)
+println(&quot;=&quot;^80)
+println(&quot;Climate             | Genotype | Peak Workers | Forager-Days | Food Surplus | Gyne Index&quot;)
+println(&quot;-&quot;^80)
+for (clim_label, _, _) in climates
+    for g in [WW, WG, GG]
+        sol = results[(clim_label, g.name)]
+        fit = colony_fitness(sol)
+        println(&quot;$(rpad(clim_label, 20))| $(rpad(g.name, 9))| &quot; *
+                &quot;$(rpad(round(fit.peak_workers, digits=1), 13))| &quot; *
+                &quot;$(rpad(round(fit.forager_days, digits=0), 13))| &quot; *
+                &quot;$(rpad(round(fit.food_surplus, digits=0), 13))| &quot; *
+                &quot;$(round(fit.gyne_index, digits=1))&quot;)
+    end
+end</code></pre><pre><code class="nohighlight hljs">Colony Fitness Summary
+================================================================================
+Climate             | Genotype | Peak Workers | Forager-Days | Food Surplus | Gyne Index
+--------------------------------------------------------------------------------
+Current (15°C mean) | WW       | 0.0          | 46.0         | 8809.0       | 0.0
+Current (15°C mean) | WG       | 0.0          | 41.0         | 8486.0       | 0.0
+Current (15°C mean) | GG       | 0.0          | 36.0         | 8187.0       | 0.0
++2°C (17°C mean)    | WW       | 0.0          | 46.0         | 8895.0       | 0.0
++2°C (17°C mean)    | WG       | 0.0          | 41.0         | 8568.0       | 0.0
++2°C (17°C mean)    | GG       | 0.0          | 36.0         | 8264.0       | 0.0
++4°C (19°C mean)    | WW       | 0.0          | 47.0         | 8901.0       | 0.0
++4°C (19°C mean)    | WG       | 0.0          | 41.0         | 8575.0       | 0.0
++4°C (19°C mean)    | GG       | 0.0          | 36.0         | 8270.0       | 0.0
++6°C (21°C mean)    | WW       | 0.0          | 47.0         | 8913.0       | 0.0
++6°C (21°C mean)    | WG       | 0.0          | 41.0         | 8583.0       | 0.0
++6°C (21°C mean)    | GG       | 0.0          | 36.0         | 8275.0       | 0.0</code></pre><h2 id="Genotype-Advantage-as-a-Function-of-Warming"><a class="docs-heading-anchor" href="#Genotype-Advantage-as-a-Function-of-Warming">Genotype Advantage as a Function of Warming</a><a id="Genotype-Advantage-as-a-Function-of-Warming-1"></a><a class="docs-heading-anchor-permalink" href="#Genotype-Advantage-as-a-Function-of-Warming" title="Permalink"></a></h2><p>The key question: at what temperature does the GM advantage cross zero? Below this crossover, wild-type colonies outperform GM colonies because the pleiotropic costs exceed the thermal tolerance benefit.</p><pre><code class="language-julia hljs"># Sweep mean temperature from 12 to 25°C
+T_means = 12.0:0.5:25.0
+fitness_ww = Float64[]
+fitness_wg = Float64[]
+fitness_gg = Float64[]
+
+for T_mean in T_means
+    T_func = make_climate(T_mean, 8.0 + max(0, T_mean - 15) * 0.5)
+
+    for (g, store) in [(WW, fitness_ww), (WG, fitness_wg), (GG, fitness_gg)]
+        p = (genotype=g, T_func=T_func)
+        prob = ODEProblem(bombus_colony!, u0, tspan, p)
+        sol = solve(prob, Tsit5(); saveat=1.0, abstol=1e-8, reltol=1e-8,
+                    maxiters=1_000_000)
+        fit = colony_fitness(sol)
+        push!(store, fit.forager_days)
+    end
+end
+
+# Relative advantage of GG over WW
+advantage = (fitness_gg .- fitness_ww) ./ max.(fitness_ww, 1.0) .* 100
+
+fig = Figure(size=(800, 500))
+
+ax1 = Axis(fig[1, 1], ylabel=&quot;Season forager-days&quot;,
+           title=&quot;Colony Performance vs Mean Temperature&quot;)
+lines!(ax1, collect(T_means), fitness_ww, color=:steelblue, linewidth=2, label=&quot;WW&quot;)
+lines!(ax1, collect(T_means), fitness_wg, color=:goldenrod, linewidth=2, label=&quot;WG&quot;)
+lines!(ax1, collect(T_means), fitness_gg, color=:firebrick, linewidth=2, label=&quot;GG&quot;)
+axislegend(ax1, position=:rt)
+
+ax2 = Axis(fig[2, 1], xlabel=&quot;Mean annual temperature (°C)&quot;,
+           ylabel=&quot;GG advantage over WW (%)&quot;,
+           title=&quot;Net Benefit of HSP Modification&quot;)
+lines!(ax2, collect(T_means), advantage, color=:purple, linewidth=2)
+hlines!(ax2, [0.0], color=:gray50, linestyle=:dash, linewidth=1.5)
+
+# Find crossover temperature
+crossover_idx = findfirst(i -&gt; advantage[i] &gt; 0 &amp;&amp; i &gt; 1, eachindex(advantage))
+if crossover_idx !== nothing
+    T_cross = T_means[crossover_idx]
+    vlines!(ax2, [T_cross], color=:firebrick, linestyle=:dot, linewidth=1.5)
+    text!(ax2, T_cross + 0.3, -5.0, text=&quot;crossover ≈ $(round(T_cross, digits=1))°C&quot;,
+          fontsize=12, color=:firebrick)
+end
+
+linkxaxes!(ax1, ax2)
+fig</code></pre><p><img src="../49_bombus_hsp_files/figure-commonmark/cell-13-output-1.png" alt/></p><h2 id="Pollination-Ecosystem-Services"><a class="docs-heading-anchor" href="#Pollination-Ecosystem-Services">Pollination Ecosystem Services</a><a id="Pollination-Ecosystem-Services-1"></a><a class="docs-heading-anchor-permalink" href="#Pollination-Ecosystem-Services" title="Permalink"></a></h2><p>Colony fitness matters not just for bee conservation but for the pollination services bees provide. We model a simple crop pollination function where fruit set depends on forager visitation rate, which in turn depends on colony size and foraging activity.</p><h3 id="Pollination-Model"><a class="docs-heading-anchor" href="#Pollination-Model">Pollination Model</a><a id="Pollination-Model-1"></a><a class="docs-heading-anchor-permalink" href="#Pollination-Model" title="Permalink"></a></h3><p>For a crop field within foraging range of the colony:</p><p class="math-container">\[\text{Yield}(t) = Y_{\max} \cdot \left(1 - e^{-\beta_p \cdot V(t)}\right)\]</p><p>where <span>$V(t) = F(t) \cdot \eta(T) \cdot v_0$</span> is the flower visitation rate (visits/ha/day), <span>$v_0$</span> is the per-forager visit rate (~20 flowers/hour = 160/day during bloom), and <span>$\beta_p$</span> is the pollination efficiency coefficient.</p><pre><code class="language-julia hljs"># Pollination parameters
+const v_0 = 160.0        # flower visits/forager/day (at full activity)
+const β_POLL = 0.001     # pollination efficiency (visits⁻¹)
+const Y_MAX = 100.0      # maximum yield index (arbitrary units)
+const BLOOM_START = 140   # day of year (mid-May)
+const BLOOM_END = 220     # day of year (early August)
+
+function daily_pollination(sol, T_func, genotype)
+    poll = Float64[]
+    for i in eachindex(sol.t)
+        t = sol.t[i]
+        day = mod(t, 365.0)
+        if BLOOM_START ≤ day ≤ BLOOM_END
+            F = sol.u[i][3]
+            T_air = T_func(t)
+            η = foraging_efficiency(T_air, genotype)
+            V = F * η * v_0
+            yield_frac = 1.0 - exp(-β_POLL * V)
+            push!(poll, yield_frac * Y_MAX)
+        else
+            push!(poll, 0.0)
+        end
+    end
+    return poll
+end
+
+# Cumulative season pollination for each scenario
+println(&quot;\nSeason-Integrated Pollination Index (bloom period)&quot;)
+println(&quot;=&quot;^65)
+println(&quot;Climate             | WW     | WG     | GG     | GM advantage&quot;)
+println(&quot;-&quot;^65)
+for (clim_label, T_func, _) in climates
+    vals = Float64[]
+    for g in [WW, WG, GG]
+        sol = results[(clim_label, g.name)]
+        poll = daily_pollination(sol, T_func, g)
+        push!(vals, sum(poll))
+    end
+    adv = (vals[3] - vals[1]) / max(vals[1], 0.01) * 100
+    println(&quot;$(rpad(clim_label, 20))| $(rpad(round(vals[1], digits=1), 7))| &quot; *
+            &quot;$(rpad(round(vals[2], digits=1), 7))| &quot; *
+            &quot;$(rpad(round(vals[3], digits=1), 7))| $(round(adv, digits=1))%&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Season-Integrated Pollination Index (bloom period)
+=================================================================
+Climate             | WW     | WG     | GG     | GM advantage
+-----------------------------------------------------------------
+Current (15°C mean) | 154.4  | 112.3  | 77.5   | -49.8%
++2°C (17°C mean)    | 154.5  | 112.7  | 78.0   | -49.5%
++4°C (19°C mean)    | 156.0  | 114.3  | 79.2   | -49.2%
++6°C (21°C mean)    | 160.2  | 117.0  | 80.6   | -49.7%</code></pre><h3 id="Pollination-Under-Heatwave-Stress"><a class="docs-heading-anchor" href="#Pollination-Under-Heatwave-Stress">Pollination Under Heatwave Stress</a><a id="Pollination-Under-Heatwave-Stress-1"></a><a class="docs-heading-anchor-permalink" href="#Pollination-Under-Heatwave-Stress" title="Permalink"></a></h3><p>Heatwaves — sustained high-temperature episodes — are when GM bees should provide the greatest pollination advantage. We simulate a 10-day heatwave (+8 °C above baseline) during peak bloom.</p><pre><code class="language-julia hljs">function make_heatwave_climate(T_mean, T_amp; hw_start=170, hw_duration=10, hw_intensity=8.0)
+    function T_func(t)
+        seasonal = T_mean + T_amp * sin(2π * (t - 80) / 365)
+        day = mod(t, 365.0)
+        if hw_start ≤ day &lt; hw_start + hw_duration
+            return seasonal + hw_intensity
+        end
+        return seasonal
+    end
+    return T_func
+end
+
+# Compare WT vs GG during heatwave at +4°C warming (worst realistic scenario)
+T_hw = make_heatwave_climate(19.0, 9.0; hw_start=170, hw_duration=10, hw_intensity=8.0)
+T_no_hw = make_climate(19.0, 9.0)
+
+fig = Figure(size=(900, 600))
+
+ax1 = Axis(fig[1, 1], ylabel=&quot;Temperature (°C)&quot;, title=&quot;Heatwave Scenario (+4°C baseline)&quot;)
+days_plot = 120:1:250
+lines!(ax1, collect(days_plot), [T_hw(d) for d in days_plot], color=:firebrick, linewidth=2,
+       label=&quot;With heatwave&quot;)
+lines!(ax1, collect(days_plot), [T_no_hw(d) for d in days_plot], color=:steelblue,
+       linewidth=1.5, linestyle=:dash, label=&quot;No heatwave&quot;)
+band!(ax1, [170, 180], [0, 0], [45, 45], color=(:firebrick, 0.1))
+axislegend(ax1, position=:lt)
+
+# Run heatwave simulations
+ax2 = Axis(fig[2, 1], ylabel=&quot;Active foragers&quot;)
+ax3 = Axis(fig[3, 1], xlabel=&quot;Day of year&quot;, ylabel=&quot;Daily pollination index&quot;)
+
+for (g, col) in [(WW, :steelblue), (GG, :firebrick)]
+    p = (genotype=g, T_func=T_hw)
+    prob = ODEProblem(bombus_colony!, u0, tspan, p)
+    sol = solve(prob, Tsit5(); saveat=1.0, abstol=1e-8, reltol=1e-8,
+                maxiters=1_000_000)
+
+    # Filter to plot range
+    idx = findall(t -&gt; 120 ≤ t ≤ 250, sol.t)
+    t_plot = sol.t[idx]
+    F_plot = [sol.u[i][3] for i in idx]
+    poll = daily_pollination(sol, T_hw, g)
+
+    lines!(ax2, t_plot, F_plot, color=col, linewidth=2, label=g.name)
+    lines!(ax3, sol.t[idx], poll[idx], color=col, linewidth=2, label=g.name)
+end
+
+band!(ax2, [170, 180], [0, 0], [1000, 1000], color=(:firebrick, 0.1))
+band!(ax3, [170, 180], [0, 0], [100, 100], color=(:firebrick, 0.1))
+axislegend(ax2, position=:rt)
+axislegend(ax3, position=:rt)
+linkxaxes!(ax1, ax2, ax3)
+fig</code></pre><p><img src="../49_bombus_hsp_files/figure-commonmark/cell-15-output-1.png" alt/></p><h2 id="Allele-Frequency-Dynamics"><a class="docs-heading-anchor" href="#Allele-Frequency-Dynamics">Allele Frequency Dynamics</a><a id="Allele-Frequency-Dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Allele-Frequency-Dynamics" title="Permalink"></a></h2><p>If GM bees are released into a wild <em>B. terrestris</em> population, allele frequencies will evolve under selection. We model the change in <span>$G$</span> allele frequency (<span>$q$</span>) over generations using a discrete-generation recursion based on genotype-specific fitness:</p><p class="math-container">\[q&#39; = \frac{q^2 w_{GG} + pq \, w_{WG}}{p^2 w_{WW} + 2pq \, w_{WG} + q^2 w_{GG}}\]</p><p>where <span>$w_{ij}$</span> is the relative fitness of genotype <span>$ij$</span>.</p><pre><code class="language-julia hljs"># Compute genotype fitness at each temperature
+function genotype_fitness_at_T(T_mean, genotype)
+    T_func = make_climate(T_mean, 8.0)
+    p = (genotype=genotype, T_func=T_func)
+    prob = ODEProblem(bombus_colony!, u0, tspan, p)
+    sol = solve(prob, Tsit5(); saveat=1.0, abstol=1e-8, reltol=1e-8,
+                maxiters=1_000_000)
+    fit = colony_fitness(sol)
+    return fit.forager_days
+end
+
+# Allele frequency trajectory over 50 generations
+function allele_trajectory(T_mean, q0; n_gen=50)
+    # Compute fitness for each genotype once
+    w_WW = genotype_fitness_at_T(T_mean, WW)
+    w_WG = genotype_fitness_at_T(T_mean, WG)
+    w_GG = genotype_fitness_at_T(T_mean, GG)
+
+    qs = [q0]
+    for gen in 1:n_gen
+        q = qs[end]
+        p = 1.0 - q
+        w_bar = p^2 * w_WW + 2 * p * q * w_WG + q^2 * w_GG
+        if w_bar &lt; 1e-10
+            push!(qs, q)
+            continue
+        end
+        q_new = (q^2 * w_GG + p * q * w_WG) / w_bar
+        push!(qs, clamp(q_new, 0.0, 1.0))
+    end
+    return qs
+end
+
+# Trajectories at different temperatures
+fig = Figure(size=(800, 400))
+ax = Axis(fig[1, 1], xlabel=&quot;Generation&quot;, ylabel=&quot;G allele frequency (q)&quot;,
+          title=&quot;Allele Frequency Dynamics After GM Release (q₀ = 0.1)&quot;)
+
+for (T_mean, col, label) in [(15.0, :steelblue, &quot;15°C (current)&quot;),
+                               (19.0, :darkorange, &quot;19°C (+4°C)&quot;),
+                               (21.0, :firebrick, &quot;21°C (+6°C)&quot;)]
+    qs = allele_trajectory(T_mean, 0.1)
+    lines!(ax, 0:length(qs)-1, qs, color=col, linewidth=2, label=label)
+end
+hlines!(ax, [0.5], color=:gray50, linestyle=:dash, alpha=0.5)
+axislegend(ax, position=:rt)
+fig</code></pre><p><img src="../49_bombus_hsp_files/figure-commonmark/cell-16-output-1.png" alt/></p><h2 id="Sensitivity-Analysis:-Pleiotropic-Cost-Trade-offs"><a class="docs-heading-anchor" href="#Sensitivity-Analysis:-Pleiotropic-Cost-Trade-offs">Sensitivity Analysis: Pleiotropic Cost Trade-offs</a><a id="Sensitivity-Analysis:-Pleiotropic-Cost-Trade-offs-1"></a><a class="docs-heading-anchor-permalink" href="#Sensitivity-Analysis:-Pleiotropic-Cost-Trade-offs" title="Permalink"></a></h2><p>How sensitive are the results to the assumed pleiotropic costs? We vary the metabolic cost (<span>$c_m$</span>) and fecundity penalty (<span>$c_f$</span>) and compute the crossover temperature where GM becomes advantageous.</p><pre><code class="language-julia hljs">function find_crossover(c_m_val, c_f_val; T_range=14.0:0.5:24.0)
+    gg_local = Genotype(&quot;GG&quot;, Δ_HSP, 1.0 + c_m_val, 1.0 - c_f_val, 1.0 - c_lon)
+
+    for T_mean in T_range
+        T_func = make_climate(T_mean, 8.0)
+
+        p_ww = (genotype=WW, T_func=T_func)
+        prob_ww = ODEProblem(bombus_colony!, u0, tspan, p_ww)
+        sol_ww = solve(prob_ww, Tsit5(); saveat=1.0, abstol=1e-8, reltol=1e-8,
+                       maxiters=1_000_000)
+        fit_ww = colony_fitness(sol_ww).forager_days
+
+        p_gg = (genotype=gg_local, T_func=T_func)
+        prob_gg = ODEProblem(bombus_colony!, u0, tspan, p_gg)
+        sol_gg = solve(prob_gg, Tsit5(); saveat=1.0, abstol=1e-8, reltol=1e-8,
+                       maxiters=1_000_000)
+        fit_gg = colony_fitness(sol_gg).forager_days
+
+        if fit_gg &gt; fit_ww
+            return T_mean
+        end
+    end
+    return NaN  # GM never advantageous in range
+end
+
+c_m_range = 0.02:0.02:0.20
+c_f_range = 0.02:0.02:0.20
+crossover_matrix = [find_crossover(cm, cf) for cm in c_m_range, cf in c_f_range]
+
+fig = Figure(size=(700, 500))
+ax = Axis(fig[1, 1], xlabel=&quot;Metabolic cost (c_m)&quot;, ylabel=&quot;Fecundity penalty (c_f)&quot;,
+          title=&quot;Crossover Temperature (°C mean) Where GM Becomes Advantageous&quot;)
+hm = heatmap!(ax, collect(c_m_range), collect(c_f_range), crossover_matrix,
+              colormap=Reverse(:RdYlBu), colorrange=(14.0, 24.0))
+Colorbar(fig[1, 2], hm, label=&quot;Crossover T (°C)&quot;)
+
+# Mark the baseline parameter point
+scatter!(ax, [c_met], [c_fec], color=:black, markersize=15, marker=:star5)
+text!(ax, c_met + 0.01, c_fec + 0.01, text=&quot;baseline&quot;, fontsize=11)
+fig</code></pre><p><img src="../49_bombus_hsp_files/figure-commonmark/cell-17-output-1.png" alt/></p><h2 id="Discussion"><a class="docs-heading-anchor" href="#Discussion">Discussion</a><a id="Discussion-1"></a><a class="docs-heading-anchor-permalink" href="#Discussion" title="Permalink"></a></h2><h3 id="Key-Findings"><a class="docs-heading-anchor" href="#Key-Findings">Key Findings</a><a id="Key-Findings-1"></a><a class="docs-heading-anchor-permalink" href="#Key-Findings" title="Permalink"></a></h3><ol><li><p><strong>Pleiotropic costs dominate under current climate</strong>: At mean  temperatures below ~18 °C, the 8% metabolic cost and 13% fecundity  reduction of constitutive HSP70 overexpression outweigh the thermal  tolerance benefit. GM colonies produce fewer workers and less food  surplus than wild-type.</p></li><li><p><strong>Crossover temperature</strong>: The GM advantage emerges only when mean  annual temperatures exceed approximately 18–20 °C — corresponding to  +3–5 °C warming above current northern European conditions. The  heterozygote (WG) provides a partial benefit with reduced cost.</p></li><li><p><strong>Heatwave resilience</strong>: Even at moderate mean temperatures, GM  colonies show disproportionate advantages during heatwave events.  Forager survival and pollination activity during 10-day heat  episodes are substantially higher for GG genotypes, suggesting GM  bees as “insurance” against extreme events rather than continuous  performers.</p></li><li><p><strong>Pollination services amplify the colony-level signal</strong>: Because  pollination is a saturating function of forager visitation, the  difference between genotypes is most pronounced when forager  populations are marginal — precisely during heat stress.</p></li><li><p><strong>Allele frequency dynamics</strong>: Under current climate, the <span>$G$</span> allele  would be selected against and decline toward extinction. Only under  +4–6 °C warming does positive selection maintain or increase its  frequency, suggesting that prophylactic release would require  ongoing supplementation until climate conditions favor the  modification.</p></li></ol><h3 id="Pleiotropic-Effects-Included"><a class="docs-heading-anchor" href="#Pleiotropic-Effects-Included">Pleiotropic Effects Included</a><a id="Pleiotropic-Effects-Included-1"></a><a class="docs-heading-anchor-permalink" href="#Pleiotropic-Effects-Included" title="Permalink"></a></h3><p>Based on <em>Drosophila</em> HSP70 overexpression literature:</p><table><tr><th style="text-align: right">Effect</th><th style="text-align: right">Mechanism</th><th style="text-align: right">Magnitude</th><th style="text-align: right">Reference</th></tr><tr><td style="text-align: right">Metabolic cost</td><td style="text-align: right">Constitutive chaperone synthesis</td><td style="text-align: right">+8% basal rate</td><td style="text-align: right">Hoekstra &amp; Montooth 2013</td></tr><tr><td style="text-align: right">Fecundity reduction</td><td style="text-align: right">Energy diversion from reproduction</td><td style="text-align: right">−13% daily eggs</td><td style="text-align: right">Silbermann &amp; Tatar 2000</td></tr><tr><td style="text-align: right">Shortened lifespan</td><td style="text-align: right">Accelerated aging under benign conditions</td><td style="text-align: right">−15% longevity</td><td style="text-align: right">Feder et al. 1999</td></tr><tr><td style="text-align: right">Foraging window shift</td><td style="text-align: right">Higher thorax cooling threshold</td><td style="text-align: right">+1.5 °C upper limit</td><td style="text-align: right">This model</td></tr><tr><td style="text-align: right">Immune trade-off</td><td style="text-align: right">Resource competition with immune pathways</td><td style="text-align: right">Not modeled (data-limited)</td><td style="text-align: right">—</td></tr></table><h3 id="Limitations"><a class="docs-heading-anchor" href="#Limitations">Limitations</a><a id="Limitations-1"></a><a class="docs-heading-anchor-permalink" href="#Limitations" title="Permalink"></a></h3><ul><li><strong>Immune trade-offs</strong> are not explicitly modeled due to limited quantitative data for bees, though they could amplify the pleiotropic costs under disease pressure (e.g., <em>Nosema</em> infections).</li><li>The model uses a simplified ODE for colony dynamics rather than a full delay-differential equation with separate caste emergence delays.</li><li>Spatial foraging dynamics (landscape resource availability, flight range) are not included.</li><li>The genetic model assumes Hardy–Weinberg equilibrium and no genetic drift, which is unrealistic for small wild populations.</li></ul><h3 id="Connection-to-Other-Vignettes"><a class="docs-heading-anchor" href="#Connection-to-Other-Vignettes">Connection to Other Vignettes</a><a id="Connection-to-Other-Vignettes-1"></a><a class="docs-heading-anchor-permalink" href="#Connection-to-Other-Vignettes" title="Permalink"></a></h3><ul><li><strong>Vignette 6</strong> (Bt cotton resistance): Shares the Hardy–Weinberg genetic framework for tracking allele frequencies under selection.</li><li><strong>Vignette 10</strong> (Tsetse ecosocial): Similar trophic coupling between vector population dynamics and ecosystem service provision.</li><li><strong>Vignette 43</strong> (Philaenus phenology): Temperature-driven development timing parallels the seasonal colony cycle modeled here.</li></ul></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../48_xylella_ecoepi/">« Xylella fastidiosa Transmission in Olive Groves</a><a class="docs-footer-nextpage" href="../50_type_hierarchy/">Type Hierarchy Reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

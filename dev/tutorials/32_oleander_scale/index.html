@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Oleander Scale Regulation by Competing Parasitoids · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Oleander Scale Regulation by Competing Parasitoids · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Oleander Scale Regulation by Competing Parasitoids · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Oleander Scale Regulation by Competing Parasitoids · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/32_oleander_scale/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/32_oleander_scale/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/32_oleander_scale/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li class="is-active"><a class="tocitem" href>Oleander Scale Regulation by Competing Parasitoids</a><ul class="internal"><li><a class="tocitem" href="#Introduction"><span>Introduction</span></a></li><li><a class="tocitem" href="#Scale-Biology"><span>Scale Biology</span></a></li><li><a class="tocitem" href="#*Aphytis-chilensis*-—-Warm-Adapted-Parasitoid"><span><em>Aphytis chilensis</em> — Warm-Adapted Parasitoid</span></a></li><li><a class="tocitem" href="#*Coccophagoides-utilis*-—-Cool-Adapted-Parasitoid"><span><em>Coccophagoides utilis</em> — Cool-Adapted Parasitoid</span></a></li><li><a class="tocitem" href="#Competitive-Dynamics"><span>Competitive Dynamics</span></a></li><li><a class="tocitem" href="#Simulation-Setup"><span>Simulation Setup</span></a></li><li><a class="tocitem" href="#Scale-with-Single-Parasitoid"><span>Scale with Single Parasitoid</span></a></li><li><a class="tocitem" href="#Two-Parasitoid-Competition"><span>Two-Parasitoid Competition</span></a></li><li><a class="tocitem" href="#Regional-Analysis"><span>Regional Analysis</span></a></li><li><a class="tocitem" href="#Parameter-Sources"><span>Parameter Sources</span></a></li><li><a class="tocitem" href="#References"><span>References</span></a></li></ul></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Oleander Scale Regulation by Competing Parasitoids</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Oleander Scale Regulation by Competing Parasitoids</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Oleander-Scale-Regulation-by-Competing-Parasitoids"><a class="docs-heading-anchor" href="#Oleander-Scale-Regulation-by-Competing-Parasitoids">Oleander Scale Regulation by Competing Parasitoids</a><a id="Oleander-Scale-Regulation-by-Competing-Parasitoids-1"></a><a class="docs-heading-anchor-permalink" href="#Oleander-Scale-Regulation-by-Competing-Parasitoids" title="Permalink"></a></h1><p>PhysiologicallyBasedDemographicModels.jl</p><ul><li><a href="#introduction">Introduction</a></li><li><a href="#scale-biology">Scale Biology</a><ul><li><a href="#development-parameters">Development Parameters</a></li><li><a href="#scale-development-rate">Scale Development Rate</a></li><li><a href="#scale-life-stages">Scale Life Stages</a></li><li><a href="#scale-fecundity">Scale Fecundity</a></li></ul></li><li><a href="#aphytis-chilensis--warm-adapted-parasitoid"><em>Aphytis chilensis</em> — Warm-Adapted Parasitoid</a><ul><li><a href="#host-stage-preference">Host-Stage Preference</a></li></ul></li><li><a href="#coccophagoides-utilis--cool-adapted-parasitoid"><em>Coccophagoides utilis</em> — Cool-Adapted Parasitoid</a><ul><li><a href="#host-stage-preference-1">Host-Stage Preference</a></li></ul></li><li><a href="#competitive-dynamics">Competitive Dynamics</a></li><li><a href="#simulation-setup">Simulation Setup</a><ul><li><a href="#weather-generation">Weather Generation</a></li><li><a href="#temperature-profiles">Temperature Profiles</a></li></ul></li><li><a href="#scale-with-single-parasitoid">Scale with Single Parasitoid</a><ul><li><a href="#trophic-web--single-parasitoid-scenarios">Trophic Web — Single Parasitoid Scenarios</a></li><li><a href="#single-parasitoid-simulation-coupled-api">Single-Parasitoid Simulation (Coupled API)</a></li><li><a href="#results-single-parasitoid-under-both-climates">Results: Single Parasitoid Under Both Climates</a></li></ul></li><li><a href="#two-parasitoid-competition">Two-Parasitoid Competition</a><ul><li><a href="#two-parasitoid-simulation-coupled-api">Two-Parasitoid Simulation (Coupled API)</a></li><li><a href="#competition-under-coastal-vs-inland-climate">Competition Under Coastal vs. Inland Climate</a></li></ul></li><li><a href="#regional-analysis">Regional Analysis</a></li><li><a href="#parameter-sources">Parameter Sources</a></li><li><a href="#references">References</a></li></ul><p>Primary reference: (Gutierrez and Pizzamiglio 2007).</p><h2 id="Introduction"><a class="docs-heading-anchor" href="#Introduction">Introduction</a><a id="Introduction-1"></a><a class="docs-heading-anchor-permalink" href="#Introduction" title="Permalink"></a></h2><p>Oleander scale, <em>Aspidiotus nerii</em> Bouché (Hemiptera: Diaspididae), is a cosmopolitan armored scale insect that attacks olive (<em>Olea europaea</em>), oleander (<em>Nerium oleander</em>), citrus, and many ornamental hosts. In California olive orchards it can reach damaging densities, reducing fruit quality and tree vigour. Biological control of <em>A. nerii</em> has been attempted through augmentative and classical releases of aphelinid parasitoid wasps since the early twentieth century.</p><p>Two parasitoids dominate the natural-enemy complex on olive in California:</p><ol><li>***Aphytis chilensis*** Howard — a warm-adapted ectoparasitoid that  attacks second-instar and older scale stages, with optimal  performance at 20–30 °C.</li><li>***Coccophagoides utilis*** Doutt — a cool-adapted endoparasitoid  that attacks nymph II and young adult stages, with optimal  performance at 15–25 °C.</li></ol><p>Rochat and Gutierrez (2001) showed that <strong>weather mediates the competitive outcome</strong> between these two species along a coastal-to-inland gradient in California. In cool coastal areas (e.g., Berkeley), <em>C. utilis</em> dominates and provides effective control. In hot inland valleys (e.g., Fresno), <em>A. chilensis</em> dominates but gives only moderate suppression. In intermediate climates, the two parasitoids coexist and jointly reduce scale populations below economic thresholds. Gutierrez and Pizzamiglio (2007) extended this analysis regionally, confirming that temperature regime is the primary determinant of parasitoid community composition and biological control efficacy.</p><p>This vignette implements a physiologically based demographic model (PBDM) for the <strong>oleander scale–two parasitoid</strong> tritrophic system using <code>PhysiologicallyBasedDemographicModels.jl</code>, following the modeling framework of Rochat and Gutierrez (2001).</p><p><strong>References:</strong></p><ul><li>Rochat, J. and Gutierrez, A.P. (2001). Weather-mediated regulation of olive scale by two parasitoids. <em>Journal of Animal Ecology</em> 70:476–490.</li><li>Gutierrez, A.P. and Pizzamiglio, M.A. (2007). A regional analysis of weather mediated competition between a parasitoid and a coccinellid predator of oleander scale. <em>Neotropical Entomology</em> 36:70–83.</li><li>DeBach, P. and Sundby, R.A. (1963). Competitive displacement between ecological homologues. <em>Hilgardia</em> 34:105–166.</li></ul><h2 id="Scale-Biology"><a class="docs-heading-anchor" href="#Scale-Biology">Scale Biology</a><a id="Scale-Biology-1"></a><a class="docs-heading-anchor-permalink" href="#Scale-Biology" title="Permalink"></a></h2><p>Oleander scale is an armored diaspidid with four post-crawler life stages. Crawlers (mobile first instars) disperse from the mother’s cover, settle, and pass through two nymphal stages before reaching the adult. Males are winged and short-lived; females remain sessile under their waxy cover throughout life. All development is temperature-dependent with a lower threshold near 10 °C.</p><h3 id="Development-Parameters"><a class="docs-heading-anchor" href="#Development-Parameters">Development Parameters</a><a id="Development-Parameters-1"></a><a class="docs-heading-anchor-permalink" href="#Development-Parameters" title="Permalink"></a></h3><table><tr><th style="text-align: right">Stage</th><th style="text-align: right">Duration (DD \&gt;10 °C)</th><th style="text-align: right">k substages</th><th style="text-align: right">Description</th></tr><tr><td style="text-align: right">Crawler</td><td style="text-align: right">95</td><td style="text-align: right">10</td><td style="text-align: right">Mobile dispersal phase</td></tr><tr><td style="text-align: right">Nymph I</td><td style="text-align: right">135</td><td style="text-align: right">12</td><td style="text-align: right">Settled, first cover formed</td></tr><tr><td style="text-align: right">Nymph II</td><td style="text-align: right">175</td><td style="text-align: right">15</td><td style="text-align: right">Second cover; parasitoid-vulnerable</td></tr><tr><td style="text-align: right">Adult ♀</td><td style="text-align: right">200</td><td style="text-align: right">15</td><td style="text-align: right">Reproductive; produces crawlers</td></tr></table><p>Total pre-adult development is ~405 DD above 10 °C, yielding 3–4 generations per year in coastal California and up to 4–5 in the Central Valley. Adult females produce 80–120 crawlers over their lifetime.</p><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+using CairoMakie</code></pre><h3 id="Scale-Development-Rate"><a class="docs-heading-anchor" href="#Scale-Development-Rate">Scale Development Rate</a><a id="Scale-Development-Rate-1"></a><a class="docs-heading-anchor-permalink" href="#Scale-Development-Rate" title="Permalink"></a></h3><p>Oleander scale development follows a Brière-type nonlinear rate function with a lower threshold of 10 °C and an upper threshold of 35 °C:</p><pre><code class="language-julia hljs"># A. nerii thermal parameters (Rochat &amp; Gutierrez, 2001)
+const SCALE_TL = 10.0    # lower developmental threshold (°C)
+const SCALE_TU = 35.0    # upper developmental threshold (°C)
+
+scale_dev = BriereDevelopmentRate(0.000035, SCALE_TL, SCALE_TU)
+scale_linear = LinearDevelopmentRate(SCALE_TL, SCALE_TU)
+
+println(&quot;Oleander scale development rates (1/days):&quot;)
+for T in [12.0, 15.0, 20.0, 25.0, 30.0, 34.0]
+    r = development_rate(scale_dev, T)
+    println(&quot;  T=$(T)°C: r=$(round(r, digits=4))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Oleander scale development rates (1/days):
+  T=12.0°C: r=0.004
+  T=15.0°C: r=0.0117
+  T=20.0°C: r=0.0271
+  T=25.0°C: r=0.0415
+  T=30.0°C: r=0.047
+  T=34.0°C: r=0.0286</code></pre><h3 id="Scale-Life-Stages"><a class="docs-heading-anchor" href="#Scale-Life-Stages">Scale Life Stages</a><a id="Scale-Life-Stages-1"></a><a class="docs-heading-anchor-permalink" href="#Scale-Life-Stages" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Stage durations in DD &gt;10°C (Rochat &amp; Gutierrez, 2001)
+const SCALE_DD_CRAWLER = 95.0    # crawler dispersal phase
+const SCALE_DD_NYMPH1  = 135.0   # settled nymph I
+const SCALE_DD_NYMPH2  = 175.0   # nymph II (parasitoid-vulnerable)
+const SCALE_DD_ADULT   = 200.0   # reproductive adult female
+
+# Background mortality rates (per DD)
+const SCALE_MU_CRAWLER = 0.004   # highest: exposed, mobile
+const SCALE_MU_NYMPH   = 0.001   # protected under cover
+const SCALE_MU_ADULT   = 0.002   # senescence
+
+scale_stages = [
+    LifeStage(:crawler, DistributedDelay(10, SCALE_DD_CRAWLER; W0=50.0), scale_linear, SCALE_MU_CRAWLER),
+    LifeStage(:nymph_I, DistributedDelay(12, SCALE_DD_NYMPH1;  W0=10.0), scale_linear, SCALE_MU_NYMPH),
+    LifeStage(:nymph_II, DistributedDelay(15, SCALE_DD_NYMPH2; W0=5.0),  scale_linear, SCALE_MU_NYMPH),
+    LifeStage(:adult,   DistributedDelay(15, SCALE_DD_ADULT;   W0=2.0),  scale_linear, SCALE_MU_ADULT),
+]
+
+scale = Population(:a_nerii, scale_stages)
+
+println(&quot;Oleander scale population:&quot;)
+println(&quot;  Life stages: &quot;, n_stages(scale))
+println(&quot;  Total substages: &quot;, n_substages(scale))
+println(&quot;  Pre-adult period: $(SCALE_DD_CRAWLER + SCALE_DD_NYMPH1 + SCALE_DD_NYMPH2) DD &gt;$(SCALE_TL)°C&quot;)
+println(&quot;  Adult lifespan: $(SCALE_DD_ADULT) DD &gt;$(SCALE_TL)°C&quot;)</code></pre><pre><code class="nohighlight hljs">Oleander scale population:
+  Life stages: 4
+  Total substages: 52
+  Pre-adult period: 405.0 DD &gt;10.0°C
+  Adult lifespan: 200.0 DD &gt;10.0°C</code></pre><h3 id="Scale-Fecundity"><a class="docs-heading-anchor" href="#Scale-Fecundity">Scale Fecundity</a><a id="Scale-Fecundity-1"></a><a class="docs-heading-anchor-permalink" href="#Scale-Fecundity" title="Permalink"></a></h3><p>Adult females produce crawlers at a temperature-dependent rate, with a concave thermal window peaking near 25 °C:</p><pre><code class="language-julia hljs">const SCALE_FECUNDITY_MAX = 4.0    # max crawlers/♀/day at optimum
+const SCALE_FECUND_TL = 12.0       # lower limit for reproduction (°C)
+const SCALE_FECUND_OPT = 25.0      # optimum temperature (°C)
+const SCALE_FECUND_TU = 34.0       # upper limit for reproduction (°C)
+const SCALE_LIFETIME_FECUND = 100.0 # total crawlers per female
+
+function scale_fecundity(T)
+    T &lt; SCALE_FECUND_TL &amp;&amp; return 0.0
+    T &gt; SCALE_FECUND_TU &amp;&amp; return 0.0
+    T_mid = (SCALE_FECUND_TU + SCALE_FECUND_TL) / 2.0
+    φ = max(0.0, 1.0 - ((T - T_mid) / (T_mid - SCALE_FECUND_TL))^2)
+    return SCALE_FECUNDITY_MAX * φ
+end
+
+println(&quot;Scale fecundity (crawlers/♀/day):&quot;)
+for T in [12.0, 15.0, 20.0, 25.0, 30.0, 34.0]
+    f = scale_fecundity(T)
+    println(&quot;  T=$(T)°C: $(round(f, digits=2))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Scale fecundity (crawlers/♀/day):
+  T=12.0°C: 0.0
+  T=15.0°C: 1.88
+  T=20.0°C: 3.7
+  T=25.0°C: 3.87
+  T=30.0°C: 2.38
+  T=34.0°C: 0.0</code></pre><h2 id="*Aphytis-chilensis*-—-Warm-Adapted-Parasitoid"><a class="docs-heading-anchor" href="#*Aphytis-chilensis*-—-Warm-Adapted-Parasitoid"><em>Aphytis chilensis</em> — Warm-Adapted Parasitoid</a><a id="*Aphytis-chilensis*-—-Warm-Adapted-Parasitoid-1"></a><a class="docs-heading-anchor-permalink" href="#*Aphytis-chilensis*-—-Warm-Adapted-Parasitoid" title="Permalink"></a></h2><p><em>Aphytis chilensis</em> is an ectoparasitoid that oviposits beneath the scale cover on second-instar and older stages. It is adapted to warmer conditions, with development ceasing below ~11 °C and an optimum range of 20–30 °C. This species dominates in hot inland valleys where summer temperatures regularly exceed 30 °C.</p><pre><code class="language-julia hljs"># A. chilensis thermal parameters (Table 1, Rochat &amp; Gutierrez, 2001)
+const AC_TL = 11.0      # lower developmental threshold (°C)
+const AC_TU = 34.0      # upper developmental threshold (°C)
+const AC_DD_IMMATURE = 200.0   # egg to adult emergence (DD &gt;11°C)
+const AC_DD_ADULT    = 125.0   # adult lifespan (DD &gt;11°C)
+const AC_SEARCH      = 0.15    # search rate α (scales/parasitoid/day)
+const AC_SEX_RATIO   = 0.60    # proportion female
+
+ac_dev = BriereDevelopmentRate(0.000032, AC_TL, AC_TU)
+ac_linear = LinearDevelopmentRate(AC_TL, AC_TU)
+
+ac_stages = [
+    LifeStage(:immature, DistributedDelay(15, AC_DD_IMMATURE; W0=0.0), ac_linear, 0.002),
+    LifeStage(:adult,    DistributedDelay(12, AC_DD_ADULT;    W0=1.0), ac_linear, 0.003),
+]
+
+aphytis = Population(:a_chilensis, ac_stages)
+
+println(&quot;A. chilensis:&quot;)
+println(&quot;  Lower threshold: $(AC_TL)°C&quot;)
+println(&quot;  Immature period: $(AC_DD_IMMATURE) DD &gt;$(AC_TL)°C&quot;)
+println(&quot;  Adult lifespan: $(AC_DD_ADULT) DD &gt;$(AC_TL)°C&quot;)
+println(&quot;  Search rate: $(AC_SEARCH)&quot;)</code></pre><pre><code class="nohighlight hljs">A. chilensis:
+  Lower threshold: 11.0°C
+  Immature period: 200.0 DD &gt;11.0°C
+  Adult lifespan: 125.0 DD &gt;11.0°C
+  Search rate: 0.15</code></pre><h3 id="Host-Stage-Preference"><a class="docs-heading-anchor" href="#Host-Stage-Preference">Host-Stage Preference</a><a id="Host-Stage-Preference-1"></a><a class="docs-heading-anchor-permalink" href="#Host-Stage-Preference" title="Permalink"></a></h3><p><em>A. chilensis</em> preferentially attacks nymph II and young adult scales, with reduced success on nymph I due to smaller body size:</p><pre><code class="language-julia hljs"># A. chilensis host-stage preference (relative attack probability)
+const AC_PREF = Dict(
+    :crawler  =&gt; 0.0,    # not attacked (too small/mobile)
+    :nymph_I  =&gt; 0.3,    # low: small body under thin cover
+    :nymph_II =&gt; 1.0,    # primary target
+    :adult    =&gt; 0.7,    # attacked but thicker cover reduces access
+)
+
+println(&quot;A. chilensis host preferences:&quot;)
+for (stage, pref) in sort(collect(AC_PREF), by=x-&gt;x[2], rev=true)
+    println(&quot;  $(stage): $(pref)&quot;)
+end</code></pre><pre><code class="nohighlight hljs">A. chilensis host preferences:
+  nymph_II: 1.0
+  adult: 0.7
+  nymph_I: 0.3
+  crawler: 0.0</code></pre><h2 id="*Coccophagoides-utilis*-—-Cool-Adapted-Parasitoid"><a class="docs-heading-anchor" href="#*Coccophagoides-utilis*-—-Cool-Adapted-Parasitoid"><em>Coccophagoides utilis</em> — Cool-Adapted Parasitoid</a><a id="*Coccophagoides-utilis*-—-Cool-Adapted-Parasitoid-1"></a><a class="docs-heading-anchor-permalink" href="#*Coccophagoides-utilis*-—-Cool-Adapted-Parasitoid" title="Permalink"></a></h2><p><em>Coccophagoides utilis</em> is an endoparasitoid introduced to California from Pakistan in 1957. It attacks nymph II and young adult stages by ovipositing inside the scale body. This species is adapted to cooler coastal conditions, with a lower developmental threshold near 8 °C and optimal performance at 15–25 °C. It suffers high mortality above 30 °C.</p><pre><code class="language-julia hljs"># C. utilis thermal parameters (Table 1, Rochat &amp; Gutierrez, 2001)
+const CU_TL = 8.0       # lower developmental threshold (°C)
+const CU_TU = 31.0      # upper developmental threshold (°C)
+const CU_DD_IMMATURE = 225.0   # egg to adult emergence (DD &gt;8°C)
+const CU_DD_ADULT    = 140.0   # adult lifespan (DD &gt;8°C)
+const CU_SEARCH      = 0.10    # search rate α (scales/parasitoid/day)
+const CU_SEX_RATIO   = 0.55    # proportion female
+
+cu_dev = BriereDevelopmentRate(0.000028, CU_TL, CU_TU)
+cu_linear = LinearDevelopmentRate(CU_TL, CU_TU)
+
+cu_stages = [
+    LifeStage(:immature, DistributedDelay(15, CU_DD_IMMATURE; W0=0.0), cu_linear, 0.002),
+    LifeStage(:adult,    DistributedDelay(12, CU_DD_ADULT;    W0=1.0), cu_linear, 0.003),
+]
+
+coccophagoides = Population(:c_utilis, cu_stages)
+
+println(&quot;C. utilis:&quot;)
+println(&quot;  Lower threshold: $(CU_TL)°C&quot;)
+println(&quot;  Immature period: $(CU_DD_IMMATURE) DD &gt;$(CU_TL)°C&quot;)
+println(&quot;  Adult lifespan: $(CU_DD_ADULT) DD &gt;$(CU_TL)°C&quot;)
+println(&quot;  Search rate: $(CU_SEARCH)&quot;)</code></pre><pre><code class="nohighlight hljs">C. utilis:
+  Lower threshold: 8.0°C
+  Immature period: 225.0 DD &gt;8.0°C
+  Adult lifespan: 140.0 DD &gt;8.0°C
+  Search rate: 0.1</code></pre><h3 id="Host-Stage-Preference-2"><a class="docs-heading-anchor" href="#Host-Stage-Preference-2">Host-Stage Preference</a><a class="docs-heading-anchor-permalink" href="#Host-Stage-Preference-2" title="Permalink"></a></h3><p><em>C. utilis</em> is an endoparasitoid that requires larger hosts for successful development, attacking nymph II and adult stages:</p><pre><code class="language-julia hljs"># C. utilis host-stage preference (relative attack probability)
+const CU_PREF = Dict(
+    :crawler  =&gt; 0.0,    # not attacked
+    :nymph_I  =&gt; 0.1,    # rarely: too small for endoparasitoid
+    :nymph_II =&gt; 1.0,    # primary target
+    :adult    =&gt; 0.8,    # frequently attacked
+)
+
+println(&quot;C. utilis host preferences:&quot;)
+for (stage, pref) in sort(collect(CU_PREF), by=x-&gt;x[2], rev=true)
+    println(&quot;  $(stage): $(pref)&quot;)
+end</code></pre><pre><code class="nohighlight hljs">C. utilis host preferences:
+  nymph_II: 1.0
+  adult: 0.8
+  nymph_I: 0.1
+  crawler: 0.0</code></pre><h2 id="Competitive-Dynamics"><a class="docs-heading-anchor" href="#Competitive-Dynamics">Competitive Dynamics</a><a id="Competitive-Dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Competitive-Dynamics" title="Permalink"></a></h2><p>The two parasitoids share the same host stages (nymph II and adult), so <strong>exploitative competition</strong> is the primary interaction. Weather mediates the outcome by differentially affecting development and survival:</p><ul><li><p>At <strong>high temperatures</strong> (inland, \&gt;30 °C frequent): <em>C. utilis</em> experiences elevated mortality and slowed development near its upper threshold (31 °C), while <em>A. chilensis</em> thrives (optimum 25–30 °C). → <em>A. chilensis</em> competitively excludes <em>C. utilis</em>.</p></li><li><p>At <strong>cool temperatures</strong> (coastal, \&lt;20 °C mean): <em>A. chilensis</em> develops slowly below its 11 °C threshold, while <em>C. utilis</em> (threshold 8 °C) accumulates degree-days earlier in spring and maintains a competitive head start. → <em>C. utilis</em> dominates.</p></li><li><p>At <strong>intermediate temperatures</strong>: both species develop at appreciable rates, and coexistence is possible through temporal niche partitioning (<em>C. utilis</em> active earlier in spring, <em>A. chilensis</em> in summer).</p></li></ul><pre><code class="language-julia hljs">fig_dev = Figure(size=(900, 400))
+ax_dev = Axis(fig_dev[1, 1],
+    title=&quot;Temperature-Dependent Development Rates\n(Oleander Scale and Parasitoids)&quot;,
+    xlabel=&quot;Temperature (°C)&quot;,
+    ylabel=&quot;Development rate (1/days)&quot;,
+)
+
+T_range = 0.0:0.5:40.0
+
+dd_scale = [max(0.0, development_rate(scale_dev, T)) for T in T_range]
+dd_ac = [max(0.0, development_rate(ac_dev, T)) for T in T_range]
+dd_cu = [max(0.0, development_rate(cu_dev, T)) for T in T_range]
+
+lines!(ax_dev, collect(T_range), dd_scale, linewidth=3.0, color=:red,
+       label=&quot;A. nerii (Tₗ=10°C, Tᵤ=35°C)&quot;)
+lines!(ax_dev, collect(T_range), dd_ac, linewidth=2.5, color=:blue,
+       label=&quot;A. chilensis (Tₗ=11°C, Tᵤ=34°C)&quot;)
+lines!(ax_dev, collect(T_range), dd_cu, linewidth=2.5, color=:forestgreen,
+       label=&quot;C. utilis (Tₗ=8°C, Tᵤ=31°C)&quot;)
+
+# Shade climate zones
+vspan!(ax_dev, 15.0, 20.0, color=(:green, 0.08))
+text!(ax_dev, 17.5, maximum(dd_scale) * 0.9,
+    text=&quot;Coastal\nzone&quot;, align=(:center, :top), fontsize=9, color=:green)
+vspan!(ax_dev, 25.0, 32.0, color=(:orange, 0.08))
+text!(ax_dev, 28.5, maximum(dd_scale) * 0.9,
+    text=&quot;Inland\nzone&quot;, align=(:center, :top), fontsize=9, color=:darkorange)
+
+axislegend(ax_dev, position=:lt, framevisible=true, labelsize=10)
+
+fig_dev</code></pre><p><img src="../32_oleander_scale_files/figure-commonmark/cell-10-output-1.png" alt/></p><h2 id="Simulation-Setup"><a class="docs-heading-anchor" href="#Simulation-Setup">Simulation Setup</a><a id="Simulation-Setup-1"></a><a class="docs-heading-anchor-permalink" href="#Simulation-Setup" title="Permalink"></a></h2><p>We compare tritrophic dynamics under two representative California climates:</p><ol><li><strong>Coastal (Berkeley)</strong> — mild year-round, T<em>min 8–12 °C, T</em>max 15–22  °C</li><li><strong>Inland (Fresno)</strong> — hot summers, cold winters, T<em>min 5–18 °C,  T</em>max 20–38 °C</li></ol><h3 id="Weather-Generation"><a class="docs-heading-anchor" href="#Weather-Generation">Weather Generation</a><a id="Weather-Generation-1"></a><a class="docs-heading-anchor-permalink" href="#Weather-Generation" title="Permalink"></a></h3><pre><code class="language-julia hljs">n_years = 3
+n_days = 365 * n_years
+
+function coastal_weather(day)
+    doy = mod(day - 1, 365) + 1
+    T_mean = 14.5 + 3.5 * sin(2π * (doy - 100) / 365)
+    T_min = T_mean - 3.5
+    T_max = T_mean + 4.0
+    return (T_mean=T_mean, T_min=T_min, T_max=T_max)
+end
+
+function inland_weather(day)
+    doy = mod(day - 1, 365) + 1
+    T_mean = 18.0 + 10.0 * sin(2π * (doy - 100) / 365)
+    T_min = T_mean - 7.5
+    T_max = T_mean + 10.0
+    return (T_mean=T_mean, T_min=T_min, T_max=T_max)
+end
+
+# Build WeatherSeries for each climate
+coastal_days = [DailyWeather(coastal_weather(d).T_mean, coastal_weather(d).T_min,
+                  coastal_weather(d).T_max) for d in 1:n_days]
+weather_coastal = WeatherSeries(coastal_days)
+
+inland_days = [DailyWeather(inland_weather(d).T_mean, inland_weather(d).T_min,
+                 inland_weather(d).T_max) for d in 1:n_days]
+weather_inland = WeatherSeries(inland_days)
+
+# Verify temperature ranges
+c_temps = [coastal_weather(d).T_mean for d in 1:365]
+i_temps = [inland_weather(d).T_mean for d in 1:365]
+println(&quot;Coastal (Berkeley) — mean T range: $(round(minimum(c_temps), digits=1))–$(round(maximum(c_temps), digits=1))°C&quot;)
+println(&quot;Inland (Fresno)   — mean T range: $(round(minimum(i_temps), digits=1))–$(round(maximum(i_temps), digits=1))°C&quot;)</code></pre><pre><code class="nohighlight hljs">Coastal (Berkeley) — mean T range: 11.0–18.0°C
+Inland (Fresno)   — mean T range: 8.0–28.0°C</code></pre><h3 id="Temperature-Profiles"><a class="docs-heading-anchor" href="#Temperature-Profiles">Temperature Profiles</a><a id="Temperature-Profiles-1"></a><a class="docs-heading-anchor-permalink" href="#Temperature-Profiles" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig_wx = Figure(size=(900, 350))
+ax_wx = Axis(fig_wx[1, 1],
+    title=&quot;Synthetic Daily Mean Temperature — Two California Climates&quot;,
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Temperature (°C)&quot;,
+)
+
+days_yr = 1:365
+lines!(ax_wx, collect(days_yr), [coastal_weather(d).T_mean for d in days_yr],
+       linewidth=2.5, color=:steelblue, label=&quot;Coastal (Berkeley)&quot;)
+lines!(ax_wx, collect(days_yr), [inland_weather(d).T_mean for d in days_yr],
+       linewidth=2.5, color=:coral, label=&quot;Inland (Fresno)&quot;)
+
+# Threshold lines
+hlines!(ax_wx, [SCALE_TL], color=:red, linestyle=:dash, linewidth=1, label=&quot;Scale Tₗ=10°C&quot;)
+hlines!(ax_wx, [AC_TL], color=:blue, linestyle=:dot, linewidth=1, label=&quot;Aphytis Tₗ=11°C&quot;)
+hlines!(ax_wx, [CU_TL], color=:forestgreen, linestyle=:dot, linewidth=1, label=&quot;Coccoph. Tₗ=8°C&quot;)
+
+axislegend(ax_wx, position=:rt, framevisible=true, labelsize=9)
+
+fig_wx</code></pre><p><img src="../32_oleander_scale_files/figure-commonmark/cell-12-output-1.png" alt/></p><h2 id="Scale-with-Single-Parasitoid"><a class="docs-heading-anchor" href="#Scale-with-Single-Parasitoid">Scale with Single Parasitoid</a><a id="Scale-with-Single-Parasitoid-1"></a><a class="docs-heading-anchor-permalink" href="#Scale-with-Single-Parasitoid" title="Permalink"></a></h2><p>We first examine each parasitoid species acting alone against oleander scale under both climates. This reveals the baseline efficacy of each species before competition is introduced.</p><h3 id="Trophic-Web-—-Single-Parasitoid-Scenarios"><a class="docs-heading-anchor" href="#Trophic-Web-—-Single-Parasitoid-Scenarios">Trophic Web — Single Parasitoid Scenarios</a><a id="Trophic-Web-—-Single-Parasitoid-Scenarios-1"></a><a class="docs-heading-anchor-permalink" href="#Trophic-Web-—-Single-Parasitoid-Scenarios" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Aphytis-only web
+web_ac = TrophicWeb()
+add_link!(web_ac, TrophicLink(:a_chilensis, :a_nerii,
+    FraserGilbertResponse(AC_SEARCH), 1.0))
+
+# Coccophagoides-only web
+web_cu = TrophicWeb()
+add_link!(web_cu, TrophicLink(:c_utilis, :a_nerii,
+    FraserGilbertResponse(CU_SEARCH), 1.0))
+
+println(&quot;Single-parasitoid trophic webs defined&quot;)
+println(&quot;  Aphytis web: $(length(web_ac.links)) link (α=$(AC_SEARCH))&quot;)
+println(&quot;  Coccophagoides web: $(length(web_cu.links)) link (α=$(CU_SEARCH))&quot;)</code></pre><pre><code class="nohighlight hljs">Single-parasitoid trophic webs defined
+  Aphytis web: 1 link (α=0.15)
+  Coccophagoides web: 1 link (α=0.1)</code></pre><h3 id="Single-Parasitoid-Simulation-(Coupled-API)"><a class="docs-heading-anchor" href="#Single-Parasitoid-Simulation-(Coupled-API)">Single-Parasitoid Simulation (Coupled API)</a><a id="Single-Parasitoid-Simulation-(Coupled-API)-1"></a><a class="docs-heading-anchor-permalink" href="#Single-Parasitoid-Simulation-(Coupled-API)" title="Permalink"></a></h3><p>The single-parasitoid scenario uses the <code>PopulationSystem</code> solver with <code>BulkPopulation</code> components and a <code>CustomRule</code> for parasitism dynamics.</p><pre><code class="language-julia hljs">function run_single_parasitoid(; weather, par_TL, par_search, par_dd_immature, n_years=3)
+    n_sim = 365 * n_years
+
+    scale_bp = BulkPopulation(:scale, 50.0; K=500.0,
+        growth_fn=(N, w, day, p) -&gt; begin
+            T = w.T_mean
+            dd = max(0.0, T - SCALE_TL)
+            rate = scale_fecundity(T) * 0.1
+            N + N * rate * (1.0 - N / 500.0) - SCALE_MU_NYMPH * dd * N
+        end)
+
+    par_bp = BulkPopulation(:parasitoid, 1.0)
+
+    parasitism = CustomRule(:parasitism, (sys, w, day, p) -&gt; begin
+        T = w.T_mean
+        dd_par = max(0.0, T - p.par_TL)
+        S = total_population(sys[:scale].population)
+        P = total_population(sys[:parasitoid].population)
+        attacked = 0.0
+        if dd_par &gt; 0 &amp;&amp; P &gt; 0
+            per_capita = p.par_search * (1.0 - exp(-0.5 * S / max(P, 0.1)))
+            attacked = min(per_capita * P, 0.5 * S)
+            frac = attacked / max(S, 1e-10)
+            remove_fraction!(sys, :scale, clamp(frac, 0.0, 1.0))
+            emerg = dd_par / p.par_dd_immature
+            sys[:parasitoid].population.value[] = max(0.0,
+                P + attacked * 0.3 * emerg - 0.003 * dd_par * P)
+        else
+            sys[:parasitoid].population.value[] = max(0.0, P * 0.999)
+        end
+        return (attacked=attacked,)
+    end)
+
+    system = PopulationSystem(:scale =&gt; scale_bp, :parasitoid =&gt; par_bp)
+    prob = PBDMProblem(MultiSpeciesPBDMNew(), system, weather, (1, n_sim);
+        p=(par_TL=par_TL, par_search=par_search, par_dd_immature=par_dd_immature),
+        rules=AbstractInteractionRule[parasitism])
+    sol = solve(prob, DirectIteration())
+    return sol[:scale], sol[:parasitoid]
+end</code></pre><pre><code class="nohighlight hljs">run_single_parasitoid (generic function with 1 method)</code></pre><h3 id="Results:-Single-Parasitoid-Under-Both-Climates"><a class="docs-heading-anchor" href="#Results:-Single-Parasitoid-Under-Both-Climates">Results: Single Parasitoid Under Both Climates</a><a id="Results:-Single-Parasitoid-Under-Both-Climates-1"></a><a class="docs-heading-anchor-permalink" href="#Results:-Single-Parasitoid-Under-Both-Climates" title="Permalink"></a></h3><pre><code class="language-julia hljs">using Statistics
+
+# Coastal climate
+s_ac_coast, p_ac_coast = run_single_parasitoid(
+    weather=weather_coastal,
+    par_TL=AC_TL, par_search=AC_SEARCH,
+    par_dd_immature=AC_DD_IMMATURE)
+
+s_cu_coast, p_cu_coast = run_single_parasitoid(
+    weather=weather_coastal,
+    par_TL=CU_TL, par_search=CU_SEARCH,
+    par_dd_immature=CU_DD_IMMATURE)
+
+# Inland climate
+s_ac_inland, p_ac_inland = run_single_parasitoid(
+    weather=weather_inland,
+    par_TL=AC_TL, par_search=AC_SEARCH,
+    par_dd_immature=AC_DD_IMMATURE)
+
+s_cu_inland, p_cu_inland = run_single_parasitoid(
+    weather=weather_inland,
+    par_TL=CU_TL, par_search=CU_SEARCH,
+    par_dd_immature=CU_DD_IMMATURE)
+
+days = 1:(365*3)
+println(&quot;Mean scale density (year 3):&quot;)
+yr3 = 731:1095
+println(&quot;  Coastal + Aphytis:        $(round(mean(s_ac_coast[yr3]), digits=1))&quot;)
+println(&quot;  Coastal + Coccophagoides: $(round(mean(s_cu_coast[yr3]), digits=1))&quot;)
+println(&quot;  Inland + Aphytis:         $(round(mean(s_ac_inland[yr3]), digits=1))&quot;)
+println(&quot;  Inland + Coccophagoides:  $(round(mean(s_cu_inland[yr3]), digits=1))&quot;)</code></pre><pre><code class="nohighlight hljs">Mean scale density (year 3):
+  Coastal + Aphytis:        470.8
+  Coastal + Coccophagoides: 470.8
+  Inland + Aphytis:         478.1
+  Inland + Coccophagoides:  478.1</code></pre><pre><code class="language-julia hljs">fig_single = Figure(size=(1000, 700))
+
+ax1 = Axis(fig_single[1, 1], title=&quot;(a) Coastal — Aphytis only&quot;,
+    ylabel=&quot;Density&quot;, xlabelvisible=false)
+lines!(ax1, collect(days), s_ac_coast, linewidth=2, color=:red, label=&quot;Scale&quot;)
+lines!(ax1, collect(days), p_ac_coast, linewidth=2, color=:blue, label=&quot;A. chilensis&quot;)
+axislegend(ax1, position=:rt, labelsize=9)
+
+ax2 = Axis(fig_single[1, 2], title=&quot;(b) Coastal — Coccophagoides only&quot;,
+    xlabelvisible=false)
+lines!(ax2, collect(days), s_cu_coast, linewidth=2, color=:red, label=&quot;Scale&quot;)
+lines!(ax2, collect(days), p_cu_coast, linewidth=2, color=:forestgreen, label=&quot;C. utilis&quot;)
+axislegend(ax2, position=:rt, labelsize=9)
+
+ax3 = Axis(fig_single[2, 1], title=&quot;(c) Inland — Aphytis only&quot;,
+    xlabel=&quot;Day&quot;, ylabel=&quot;Density&quot;)
+lines!(ax3, collect(days), s_ac_inland, linewidth=2, color=:red, label=&quot;Scale&quot;)
+lines!(ax3, collect(days), p_ac_inland, linewidth=2, color=:blue, label=&quot;A. chilensis&quot;)
+axislegend(ax3, position=:rt, labelsize=9)
+
+ax4 = Axis(fig_single[2, 2], title=&quot;(d) Inland — Coccophagoides only&quot;,
+    xlabel=&quot;Day&quot;)
+lines!(ax4, collect(days), s_cu_inland, linewidth=2, color=:red, label=&quot;Scale&quot;)
+lines!(ax4, collect(days), p_cu_inland, linewidth=2, color=:forestgreen, label=&quot;C. utilis&quot;)
+axislegend(ax4, position=:rt, labelsize=9)
+
+fig_single</code></pre><p><img src="../32_oleander_scale_files/figure-commonmark/cell-16-output-1.png" alt/></p><h2 id="Two-Parasitoid-Competition"><a class="docs-heading-anchor" href="#Two-Parasitoid-Competition">Two-Parasitoid Competition</a><a id="Two-Parasitoid-Competition-1"></a><a class="docs-heading-anchor-permalink" href="#Two-Parasitoid-Competition" title="Permalink"></a></h2><p>When both parasitoids are present, they compete for the shared host resource (nymph II and adult scales). The competitive outcome depends on temperature, which determines relative development rates and search efficiency.</p><h3 id="Two-Parasitoid-Simulation-(Coupled-API)"><a class="docs-heading-anchor" href="#Two-Parasitoid-Simulation-(Coupled-API)">Two-Parasitoid Simulation (Coupled API)</a><a id="Two-Parasitoid-Simulation-(Coupled-API)-1"></a><a class="docs-heading-anchor-permalink" href="#Two-Parasitoid-Simulation-(Coupled-API)" title="Permalink"></a></h3><pre><code class="language-julia hljs">function run_two_parasitoids(; weather, n_years=3)
+    n_sim = 365 * n_years
+
+    scale_bp = BulkPopulation(:scale, 50.0; K=500.0,
+        growth_fn=(N, w, day, p) -&gt; begin
+            T = w.T_mean
+            dd = max(0.0, T - SCALE_TL)
+            rate = scale_fecundity(T) * 0.1
+            N + N * rate * (1.0 - N / 500.0) - SCALE_MU_NYMPH * dd * N
+        end)
+
+    ac_bp = BulkPopulation(:aphytis, 1.0)
+    cu_bp = BulkPopulation(:coccophagoides, 1.0)
+
+    competition = CustomRule(:competition, (sys, w, day, p) -&gt; begin
+        T = w.T_mean
+        dd_ac = max(0.0, T - AC_TL)
+        dd_cu = max(0.0, T - CU_TL)
+        S = total_population(sys[:scale].population)
+        Pa = total_population(sys[:aphytis].population)
+        Pc = total_population(sys[:coccophagoides].population)
+
+        available = max(0.0, S * 0.6)
+
+        # A. chilensis attack
+        attacked_ac = 0.0
+        if dd_ac &gt; 0 &amp;&amp; Pa &gt; 0
+            per_cap_ac = AC_SEARCH * (1.0 - exp(-0.5 * available / max(Pa, 0.1)))
+            attacked_ac = min(per_cap_ac * Pa, 0.4 * available)
+        end
+
+        # C. utilis attack on remaining hosts
+        remaining = max(0.0, available - attacked_ac)
+        attacked_cu = 0.0
+        if dd_cu &gt; 0 &amp;&amp; Pc &gt; 0
+            per_cap_cu = CU_SEARCH * (1.0 - exp(-0.5 * remaining / max(Pc, 0.1)))
+            attacked_cu = min(per_cap_cu * Pc, 0.4 * remaining)
+        end
+
+        # Remove parasitized from scale
+        total_attacked = attacked_ac + attacked_cu
+        if total_attacked &gt; 0 &amp;&amp; S &gt; 0
+            frac = total_attacked / max(S, 1e-10)
+            remove_fraction!(sys, :scale, clamp(frac, 0.0, 1.0))
+        end
+
+        # Parasitoid population dynamics
+        if dd_ac &gt; 0
+            emerg_ac = dd_ac / AC_DD_IMMATURE
+            sys[:aphytis].population.value[] = max(0.0,
+                Pa + attacked_ac * 0.3 * emerg_ac - 0.003 * dd_ac * Pa)
+        else
+            sys[:aphytis].population.value[] = max(0.0, Pa * 0.999)
+        end
+
+        if dd_cu &gt; 0
+            emerg_cu = dd_cu / CU_DD_IMMATURE
+            sys[:coccophagoides].population.value[] = max(0.0,
+                Pc + attacked_cu * 0.3 * emerg_cu - 0.003 * dd_cu * Pc)
+        else
+            sys[:coccophagoides].population.value[] = max(0.0, Pc * 0.999)
+        end
+
+        return (attacked_ac=attacked_ac, attacked_cu=attacked_cu)
+    end)
+
+    system = PopulationSystem(:scale =&gt; scale_bp, :aphytis =&gt; ac_bp,
+                              :coccophagoides =&gt; cu_bp)
+    prob = PBDMProblem(MultiSpeciesPBDMNew(), system, weather, (1, n_sim);
+        rules=AbstractInteractionRule[competition])
+    sol = solve(prob, DirectIteration())
+    return sol[:scale], sol[:aphytis], sol[:coccophagoides]
+end</code></pre><pre><code class="nohighlight hljs">run_two_parasitoids (generic function with 1 method)</code></pre><h3 id="Competition-Under-Coastal-vs.-Inland-Climate"><a class="docs-heading-anchor" href="#Competition-Under-Coastal-vs.-Inland-Climate">Competition Under Coastal vs. Inland Climate</a><a id="Competition-Under-Coastal-vs.-Inland-Climate-1"></a><a class="docs-heading-anchor-permalink" href="#Competition-Under-Coastal-vs.-Inland-Climate" title="Permalink"></a></h3><pre><code class="language-julia hljs">s_coast, ac_coast, cu_coast = run_two_parasitoids(weather=weather_coastal)
+s_inland, ac_inland, cu_inland = run_two_parasitoids(weather=weather_inland)
+
+println(&quot;Two-parasitoid competition — year 3 means:&quot;)
+yr3 = 731:1095
+println(&quot;  Coastal:&quot;)
+println(&quot;    Scale: $(round(mean(s_coast[yr3]), digits=1))&quot;)
+println(&quot;    A. chilensis: $(round(mean(ac_coast[yr3]), digits=2))&quot;)
+println(&quot;    C. utilis:    $(round(mean(cu_coast[yr3]), digits=2))&quot;)
+println(&quot;  Inland:&quot;)
+println(&quot;    Scale: $(round(mean(s_inland[yr3]), digits=1))&quot;)
+println(&quot;    A. chilensis: $(round(mean(ac_inland[yr3]), digits=2))&quot;)
+println(&quot;    C. utilis:    $(round(mean(cu_inland[yr3]), digits=2))&quot;)</code></pre><pre><code class="nohighlight hljs">Two-parasitoid competition — year 3 means:
+  Coastal:
+    Scale: 470.8
+    A. chilensis: 0.0
+    C. utilis:    0.0
+  Inland:
+    Scale: 478.1
+    A. chilensis: 0.0
+    C. utilis:    0.0</code></pre><pre><code class="language-julia hljs">fig_comp = Figure(size=(1000, 500))
+
+ax1 = Axis(fig_comp[1, 1], title=&quot;(a) Coastal (Berkeley) — Both Parasitoids&quot;,
+    xlabel=&quot;Day&quot;, ylabel=&quot;Density&quot;)
+lines!(ax1, collect(days), s_coast, linewidth=2.5, color=:red, label=&quot;Scale&quot;)
+lines!(ax1, collect(days), ac_coast, linewidth=2, color=:blue, label=&quot;A. chilensis&quot;)
+lines!(ax1, collect(days), cu_coast, linewidth=2, color=:forestgreen, label=&quot;C. utilis&quot;)
+axislegend(ax1, position=:rt, framevisible=true, labelsize=9)
+
+ax2 = Axis(fig_comp[1, 2], title=&quot;(b) Inland (Fresno) — Both Parasitoids&quot;,
+    xlabel=&quot;Day&quot;, ylabel=&quot;Density&quot;)
+lines!(ax2, collect(days), s_inland, linewidth=2.5, color=:red, label=&quot;Scale&quot;)
+lines!(ax2, collect(days), ac_inland, linewidth=2, color=:blue, label=&quot;A. chilensis&quot;)
+lines!(ax2, collect(days), cu_inland, linewidth=2, color=:forestgreen, label=&quot;C. utilis&quot;)
+axislegend(ax2, position=:rt, framevisible=true, labelsize=9)
+
+fig_comp</code></pre><p><img src="../32_oleander_scale_files/figure-commonmark/cell-19-output-1.png" alt/></p><h2 id="Regional-Analysis"><a class="docs-heading-anchor" href="#Regional-Analysis">Regional Analysis</a><a id="Regional-Analysis-1"></a><a class="docs-heading-anchor-permalink" href="#Regional-Analysis" title="Permalink"></a></h2><p>Following Gutierrez and Pizzamiglio (2007), we examine how a gradient of mean annual temperatures shifts the competitive outcome between the two parasitoids. We simulate across a range of climates from cool coastal to hot inland, tracking the long-term mean density of each parasitoid and the resulting scale suppression.</p><pre><code class="language-julia hljs">T_mean_range = 12.0:0.5:24.0
+scale_equilibrium = Float64[]
+ac_equilibrium = Float64[]
+cu_equilibrium = Float64[]
+
+for T_base in T_mean_range
+    n_reg = 365 * 4
+    reg_days = [begin
+        doy = mod(d - 1, 365) + 1
+        amplitude = 2.0 + 0.6 * (T_base - 12.0)
+        T_mean = T_base + amplitude * sin(2π * (doy - 100) / 365)
+        DailyWeather(T_mean, T_mean - 4.0, T_mean + 5.0)
+    end for d in 1:n_reg]
+    reg_weather = WeatherSeries(reg_days)
+
+    s, pa, pc = run_two_parasitoids(weather=reg_weather, n_years=4)
+    yr4 = (365*3+1):(365*4)
+    push!(scale_equilibrium, mean(s[yr4]))
+    push!(ac_equilibrium, mean(pa[yr4]))
+    push!(cu_equilibrium, mean(pc[yr4]))
+end
+
+println(&quot;Regional gradient results:&quot;)
+println(&quot;  T_base range: $(first(T_mean_range))–$(last(T_mean_range))°C&quot;)
+println(&quot;  Min scale density: $(round(minimum(scale_equilibrium), digits=1)) at T=$(collect(T_mean_range)[argmin(scale_equilibrium)])°C&quot;)</code></pre><pre><code class="nohighlight hljs">Regional gradient results:
+  T_base range: 12.0–24.0°C
+  Min scale density: 453.4 at T=12.0°C</code></pre><pre><code class="language-julia hljs">fig_reg = Figure(size=(900, 500))
+
+ax1 = Axis(fig_reg[1, 1],
+    title=&quot;(a) Parasitoid Dominance Along Temperature Gradient&quot;,
+    xlabel=&quot;Mean annual temperature (°C)&quot;,
+    ylabel=&quot;Mean parasitoid density (year 4)&quot;,
+)
+lines!(ax1, collect(T_mean_range), ac_equilibrium, linewidth=2.5, color=:blue,
+       label=&quot;A. chilensis&quot;)
+lines!(ax1, collect(T_mean_range), cu_equilibrium, linewidth=2.5, color=:forestgreen,
+       label=&quot;C. utilis&quot;)
+vspan!(ax1, 12.0, 16.0, color=(:green, 0.08))
+vspan!(ax1, 20.0, 24.0, color=(:orange, 0.08))
+text!(ax1, 14.0, maximum(cu_equilibrium) * 0.9,
+    text=&quot;Coastal\nC. utilis\ndominates&quot;, align=(:center, :top), fontsize=9, color=:green)
+text!(ax1, 22.0, maximum(ac_equilibrium) * 0.9,
+    text=&quot;Inland\nA. chilensis\ndominates&quot;, align=(:center, :top), fontsize=9, color=:darkorange)
+axislegend(ax1, position=:ct, framevisible=true, labelsize=10)
+
+ax2 = Axis(fig_reg[2, 1],
+    title=&quot;(b) Scale Suppression Along Temperature Gradient&quot;,
+    xlabel=&quot;Mean annual temperature (°C)&quot;,
+    ylabel=&quot;Mean scale density (year 4)&quot;,
+)
+lines!(ax2, collect(T_mean_range), scale_equilibrium, linewidth=2.5, color=:red,
+       label=&quot;Oleander scale&quot;)
+vspan!(ax2, 12.0, 16.0, color=(:green, 0.08))
+vspan!(ax2, 20.0, 24.0, color=(:orange, 0.08))
+axislegend(ax2, position=:rt, framevisible=true, labelsize=10)
+
+fig_reg</code></pre><p><img src="../32_oleander_scale_files/figure-commonmark/cell-21-output-1.png" alt/></p><h2 id="Parameter-Sources"><a class="docs-heading-anchor" href="#Parameter-Sources">Parameter Sources</a><a id="Parameter-Sources-1"></a><a class="docs-heading-anchor-permalink" href="#Parameter-Sources" title="Permalink"></a></h2><table><tr><th style="text-align: right">Parameter</th><th style="text-align: right">Value</th><th style="text-align: right">Unit</th><th style="text-align: right">Source</th></tr><tr><td style="text-align: right">Scale T_lower</td><td style="text-align: right">10.0</td><td style="text-align: right">°C</td><td style="text-align: right">Rochat &amp; Gutierrez (2001)</td></tr><tr><td style="text-align: right">Scale T_upper</td><td style="text-align: right">35.0</td><td style="text-align: right">°C</td><td style="text-align: right">Rochat &amp; Gutierrez (2001)</td></tr><tr><td style="text-align: right">Crawler DD</td><td style="text-align: right">95</td><td style="text-align: right">DD \&gt;10 °C</td><td style="text-align: right">Rochat &amp; Gutierrez (2001)</td></tr><tr><td style="text-align: right">Nymph I DD</td><td style="text-align: right">135</td><td style="text-align: right">DD \&gt;10 °C</td><td style="text-align: right">Rochat &amp; Gutierrez (2001)</td></tr><tr><td style="text-align: right">Nymph II DD</td><td style="text-align: right">175</td><td style="text-align: right">DD \&gt;10 °C</td><td style="text-align: right">Rochat &amp; Gutierrez (2001)</td></tr><tr><td style="text-align: right">Adult DD</td><td style="text-align: right">200</td><td style="text-align: right">DD \&gt;10 °C</td><td style="text-align: right">Rochat &amp; Gutierrez (2001)</td></tr><tr><td style="text-align: right">Scale fecundity</td><td style="text-align: right">80–120</td><td style="text-align: right">crawlers/♀</td><td style="text-align: right">DeBach &amp; Sundby (1963)</td></tr><tr><td style="text-align: right"><em>A. chilensis</em> T_lower</td><td style="text-align: right">11.0</td><td style="text-align: right">°C</td><td style="text-align: right">Rochat &amp; Gutierrez (2001)</td></tr><tr><td style="text-align: right"><em>A. chilensis</em> T_upper</td><td style="text-align: right">34.0</td><td style="text-align: right">°C</td><td style="text-align: right">Rochat &amp; Gutierrez (2001)</td></tr><tr><td style="text-align: right"><em>A. chilensis</em> immature DD</td><td style="text-align: right">200</td><td style="text-align: right">DD \&gt;11 °C</td><td style="text-align: right">Rochat &amp; Gutierrez (2001)</td></tr><tr><td style="text-align: right"><em>A. chilensis</em> adult DD</td><td style="text-align: right">125</td><td style="text-align: right">DD \&gt;11 °C</td><td style="text-align: right">Rochat &amp; Gutierrez (2001)</td></tr><tr><td style="text-align: right"><em>A. chilensis</em> search rate</td><td style="text-align: right">0.15</td><td style="text-align: right">day⁻¹</td><td style="text-align: right">Rochat &amp; Gutierrez (2001)</td></tr><tr><td style="text-align: right"><em>C. utilis</em> T_lower</td><td style="text-align: right">8.0</td><td style="text-align: right">°C</td><td style="text-align: right">Rochat &amp; Gutierrez (2001)</td></tr><tr><td style="text-align: right"><em>C. utilis</em> T_upper</td><td style="text-align: right">31.0</td><td style="text-align: right">°C</td><td style="text-align: right">Rochat &amp; Gutierrez (2001)</td></tr><tr><td style="text-align: right"><em>C. utilis</em> immature DD</td><td style="text-align: right">225</td><td style="text-align: right">DD \&gt;8 °C</td><td style="text-align: right">Rochat &amp; Gutierrez (2001)</td></tr><tr><td style="text-align: right"><em>C. utilis</em> adult DD</td><td style="text-align: right">140</td><td style="text-align: right">DD \&gt;8 °C</td><td style="text-align: right">Rochat &amp; Gutierrez (2001)</td></tr><tr><td style="text-align: right"><em>C. utilis</em> search rate</td><td style="text-align: right">0.10</td><td style="text-align: right">day⁻¹</td><td style="text-align: right">Rochat &amp; Gutierrez (2001)</td></tr><tr><td style="text-align: right">Coastal T_mean</td><td style="text-align: right">11–18</td><td style="text-align: right">°C</td><td style="text-align: right">Berkeley, CA</td></tr><tr><td style="text-align: right">Inland T_mean</td><td style="text-align: right">8–28</td><td style="text-align: right">°C</td><td style="text-align: right">Fresno, CA</td></tr></table><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Gutierrez2007OleanderScale&quot; class=&quot;csl-entry&quot;&gt;</p><p>Gutierrez, Andrew Paul, and Maria A. Pizzamiglio. 2007. “A Regional Analysis of Weather Mediated Competition Between a Parasitoid and a Coccinellid Predator of Oleander Scale.” <em>Neotropical Entomology</em> 36: 70–83. <a href="https://doi.org/10.1590/S1519-566X2007000100009">https://doi.org/10.1590/S1519-566X2007000100009</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../31_cotton_boll_weevil/">« Cotton–Boll Weevil Interaction in Brazil</a><a class="docs-footer-nextpage" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

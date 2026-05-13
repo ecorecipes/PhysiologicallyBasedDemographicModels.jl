@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Cowpea–Thrips Agroecosystem in West Africa · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Cowpea–Thrips Agroecosystem in West Africa · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Cowpea–Thrips Agroecosystem in West Africa · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Cowpea–Thrips Agroecosystem in West Africa · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/29_cowpea_thrips/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/29_cowpea_thrips/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/29_cowpea_thrips/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li class="is-active"><a class="tocitem" href>Cowpea–Thrips Agroecosystem in West Africa</a><ul class="internal"><li><a class="tocitem" href="#Introduction"><span>Introduction</span></a></li><li><a class="tocitem" href="#Cowpea-Plant-Model"><span>Cowpea Plant Model</span></a></li><li><a class="tocitem" href="#Thrips-Population-Model"><span>Thrips Population Model</span></a></li><li><a class="tocitem" href="#Crop-Pest-Coupling"><span>Crop-Pest Coupling</span></a></li><li><a class="tocitem" href="#Implementation"><span>Implementation</span></a></li><li><a class="tocitem" href="#Simulation-Results"><span>Simulation Results</span></a></li><li><a class="tocitem" href="#Planting-Date-Analysis"><span>Planting Date Analysis</span></a></li><li><a class="tocitem" href="#Parameter-Sources"><span>Parameter Sources</span></a></li><li><a class="tocitem" href="#Key-Insights"><span>Key Insights</span></a></li></ul></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Cowpea–Thrips Agroecosystem in West Africa</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Cowpea–Thrips Agroecosystem in West Africa</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Cowpea–Thrips-Agroecosystem-in-West-Africa"><a class="docs-heading-anchor" href="#Cowpea–Thrips-Agroecosystem-in-West-Africa">Cowpea–Thrips Agroecosystem in West Africa</a><a id="Cowpea–Thrips-Agroecosystem-in-West-Africa-1"></a><a class="docs-heading-anchor-permalink" href="#Cowpea–Thrips-Agroecosystem-in-West-Africa" title="Permalink"></a></h1><p>PhysiologicallyBasedDemographicModels.jl</p><ul><li><a href="#introduction">Introduction</a></li><li><a href="#cowpea-plant-model">Cowpea Plant Model</a><ul><li><a href="#phenology">Phenology</a></li><li><a href="#organ-populations">Organ Populations</a></li><li><a href="#carbon-assimilation-and-allocation">Carbon Assimilation and Allocation</a></li><li><a href="#respiration">Respiration</a></li></ul></li><li><a href="#thrips-population-model">Thrips Population Model</a><ul><li><a href="#development-rates">Development Rates</a></li><li><a href="#life-stages">Life Stages</a></li><li><a href="#fecundity">Fecundity</a></li></ul></li><li><a href="#crop-pest-coupling">Crop-Pest Coupling</a><ul><li><a href="#flower-index">Flower Index</a></li><li><a href="#damage-function">Damage Function</a></li></ul></li><li><a href="#implementation">Implementation</a><ul><li><a href="#synthetic-weather-for-west-africa">Synthetic Weather for West Africa</a></li><li><a href="#coupled-simulation">Coupled Simulation</a></li></ul></li><li><a href="#simulation-results">Simulation Results</a><ul><li><a href="#cowpea-phenology">Cowpea Phenology</a></li><li><a href="#thrips-development-rate-curves">Thrips Development Rate Curves</a></li><li><a href="#thrips-population-dynamics-with-flower-availability">Thrips Population Dynamics with Flower Availability</a></li><li><a href="#yield-loss-vs-thrips-density">Yield Loss vs Thrips Density</a></li></ul></li><li><a href="#planting-date-analysis">Planting Date Analysis</a><ul><li><a href="#planting-date-comparison">Planting Date Comparison</a></li><li><a href="#yield-summary">Yield Summary</a></li></ul></li><li><a href="#parameter-sources">Parameter Sources</a></li><li><a href="#key-insights">Key Insights</a></li></ul><p>Primary reference: (Tamò et al. 1993).</p><h2 id="Introduction"><a class="docs-heading-anchor" href="#Introduction">Introduction</a><a id="Introduction-1"></a><a class="docs-heading-anchor-permalink" href="#Introduction" title="Permalink"></a></h2><blockquote><p><strong>Note — pedagogical simplifications.</strong> Stage durations are calibrated to Tamò et al. (1993) Table 2 (egg–adult ≈ 91 DD pupa, ≈ 571 DD adult). However the development functional form here is Brière (rather than the paper’s Logan z(T)=p₁·exp(p₂(T−T₀))), stage mortality is modelled as a constant μ rather than the paper’s T-dependent quartic Ξ_j(T) plus extrinsic survival table, and the fecundity temperature scalar uses a 4x(1−x) quadratic in place of the paper’s cubic (Eq. 11). These simplifications preserve qualitative phenology but understate temperature-driven mortality at thermal extremes.</p></blockquote><p>Cowpea (<em>Vigna unguiculata</em> (L.) Walp.) is the most important grain legume in sub-Saharan Africa, providing a critical source of dietary protein for over 200 million people. West Africa accounts for roughly 80% of global cowpea production, with Nigeria, Niger, Burkina Faso, and Benin as leading producers. Cowpea is especially valued in smallholder farming systems for its drought tolerance, nitrogen-fixing ability, and short maturation period (60–90 days), which allows intercropping with cereals.</p><p>The bean flower thrips, <em>Megalurothrips sjostedti</em> (Trybom) (Thysanoptera: Thripidae), is the most damaging insect pest of cowpea in West Africa. Adults and larvae feed preferentially on pollen and floral tissues, causing flower abortion, reduced pod set, and yield losses of 20–80% in unprotected fields. The severity of damage depends critically on the phenological synchrony between the cowpea flowering window and thrips colonization: early planting can advance flowering past the peak thrips immigration period, while late planting often suffers devastating losses.</p><p>This vignette implements a physiologically based demographic model (PBDM) for the <strong>cowpea–thrips</strong> bitrophic system, following the modeling framework of Tamò, Baumgärtner, and Gutierrez (1993). The cowpea plant model tracks carbon acquisition and allocation to age-structured organ populations (leaves, stems, roots, peduncles, inflorescences, pods), while the thrips population model uses distributed-delay dynamics with temperature-dependent development, fecundity, and mortality across all life stages. The two trophic levels are coupled through flower availability — which gates thrips reproduction and aggregation — and thrips-induced flower bud shedding — which reduces pod set and final yield.</p><p><strong>References:</strong></p><ul><li>Tamò, M., Baumgärtner, J., and Gutierrez, A.P. (1993). Analysis of the cowpea agro-ecosystem in West Africa. II. Modelling the interactions between cowpea and the bean flower thrips <em>Megalurothrips sjostedti</em> (Trybom) (Thysanoptera, Thripidae). <em>Ecological Modelling</em> 70:89–113.</li><li>Tamò, M. and Baumgärtner, J. (1993). Analysis of the cowpea agro-ecosystem in West Africa. I. A demographic model for carbon acquisition and allocation in cowpea. <em>Ecological Modelling</em> 65:95–121.</li><li>Singh, S.R. and Allen, D.J. (1979). Cowpea pests and diseases. <em>IITA Manual Series No. 2.</em> Ibadan, Nigeria.</li><li>Alabi, O.Y., Odebiyi, J.A., and Jackai, L.E.N. (2003). Field evaluation of cowpea cultivars for resistance to flower bud thrips. <em>Crop Protection</em> 22:415–419.</li><li>Bottenberg, H., Tamò, M., Arodokoun, D., Jackai, L.E.N., Singh, B.B., and Youm, O. (1997). Population dynamics and migration of cowpea pests in northern Nigeria: implications for integrated pest management. In <em>Advances in Cowpea Research</em> (pp. 271–284). IITA/JIRCAS.</li></ul><h2 id="Cowpea-Plant-Model"><a class="docs-heading-anchor" href="#Cowpea-Plant-Model">Cowpea Plant Model</a><a id="Cowpea-Plant-Model-1"></a><a class="docs-heading-anchor-permalink" href="#Cowpea-Plant-Model" title="Permalink"></a></h2><p>The cowpea plant model follows the carbon-balance approach of Tamò and Baumgärtner (1993, Part I). The plant is represented as a collection of age-structured organ populations, each modeled as a distributed delay (Erlang model). Carbon assimilated through photosynthesis is allocated to organs using a supply-demand framework with priority ordering that shifts across phenological phases.</p><h3 id="Phenology"><a class="docs-heading-anchor" href="#Phenology">Phenology</a><a id="Phenology-1"></a><a class="docs-heading-anchor-permalink" href="#Phenology" title="Permalink"></a></h3><p>Cowpea development is temperature-driven. Phenological phases are delineated by cumulative degree-day thresholds above a base temperature of ~10 °C:</p><table><tr><th style="text-align: right">Phase</th><th style="text-align: right">Degree-Day Threshold</th><th style="text-align: right">Description</th></tr><tr><td style="text-align: right">Emergence</td><td style="text-align: right">0</td><td style="text-align: right">Planting to emergence</td></tr><tr><td style="text-align: right">Vegetative</td><td style="text-align: right">100</td><td style="text-align: right">Leaf, stem, root expansion</td></tr><tr><td style="text-align: right">Flowering onset</td><td style="text-align: right">450</td><td style="text-align: right">First inflorescences; thrips colonization begins</td></tr><tr><td style="text-align: right">Full flowering</td><td style="text-align: right">550</td><td style="text-align: right">Peak flower production; maximum thrips attraction</td></tr><tr><td style="text-align: right">Pod fill</td><td style="text-align: right">700</td><td style="text-align: right">Assimilate priority shifts to pods</td></tr><tr><td style="text-align: right">Maturity</td><td style="text-align: right">900</td><td style="text-align: right">Harvest; ~70 days at 25 °C</td></tr></table><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+using CairoMakie
+
+# ── Cowpea development ────────────────────────────────────────────
+# Base temperature: 10°C (Singh &amp; Allen 1979; Craufurd et al. 1997)
+# Upper threshold: 40°C (Ehlers &amp; Hall 1996)
+const CP_T_BASE  = 10.0
+const CP_T_UPPER = 40.0
+
+cowpea_dev = LinearDevelopmentRate(CP_T_BASE, CP_T_UPPER)
+
+# Phenological benchmarks in degree-days (Tamò &amp; Baumgärtner 1993 Part I)
+const DD_EMERGENCE    = 0.0     # planting reference
+const DD_VEGETATIVE   = 100.0   # leaf/stem/root expansion
+const DD_FLOWER_ONSET = 450.0   # first inflorescences appear
+const DD_FULL_FLOWER  = 550.0   # peak flowering; maximum thrips attraction
+const DD_POD_FILL     = 700.0   # assimilate priority to pods
+const DD_MATURITY     = 900.0   # harvest maturity (~70 days at 25°C)
+
+println(&quot;Cowpea development: base=$(CP_T_BASE)°C, upper=$(CP_T_UPPER)°C&quot;)
+println(&quot;Season length at 25°C: ~$(round(DD_MATURITY / (25 - CP_T_BASE), digits=0)) days&quot;)</code></pre><pre><code class="nohighlight hljs">Cowpea development: base=10.0°C, upper=40.0°C
+Season length at 25°C: ~60.0 days</code></pre><h3 id="Organ-Populations"><a class="docs-heading-anchor" href="#Organ-Populations">Organ Populations</a><a id="Organ-Populations-1"></a><a class="docs-heading-anchor-permalink" href="#Organ-Populations" title="Permalink"></a></h3><p>The cowpea plant comprises five organ subunits, each modeled as a distributed delay with Erlang-distributed developmental times. Organ longevity (mean residence time) and initial dry mass are parameterized from Tamò and Baumgärtner (1993, Part I).</p><pre><code class="language-julia hljs">k = 25  # Erlang substages (Tamò et al. 1993: k=25 for integration)
+
+# Organ parameters: mean longevity (DD), initial dry mass (g/plant)
+# Tamò &amp; Baumgärtner 1993, Part I
+leaf_delay  = DistributedDelay(k, 500.0;  W0=0.08)   # Leaf blades
+stem_delay  = DistributedDelay(k, 700.0;  W0=0.10)   # Stems + petioles
+root_delay  = DistributedDelay(k, 800.0;  W0=0.04)   # Nodulated roots
+pedun_delay = DistributedDelay(k, 300.0;  W0=0.0)    # Peduncles + inflorescences
+pod_delay   = DistributedDelay(k, 400.0;  W0=0.0)    # Pods (post-flowering)
+
+leaf_stage  = LifeStage(:leaf,         leaf_delay,  cowpea_dev, 0.001)
+stem_stage  = LifeStage(:stem,         stem_delay,  cowpea_dev, 0.0008)
+root_stage  = LifeStage(:root,         root_delay,  cowpea_dev, 0.0005)
+pedun_stage = LifeStage(:inflorescence, pedun_delay, cowpea_dev, 0.002)
+pod_stage   = LifeStage(:pod,          pod_delay,   cowpea_dev, 0.001)
+
+cowpea = Population(:cowpea_kpodjigigu,
+    [leaf_stage, stem_stage, root_stage, pedun_stage, pod_stage])
+
+println(&quot;Cowpea plant: $(n_stages(cowpea)) organ types, $(n_substages(cowpea)) substages&quot;)
+println(&quot;Initial dry mass per plant: $(round(total_population(cowpea), digits=3)) g&quot;)</code></pre><pre><code class="nohighlight hljs">Cowpea plant: 5 organ types, 125 substages
+Initial dry mass per plant: 5.5 g</code></pre><h3 id="Carbon-Assimilation-and-Allocation"><a class="docs-heading-anchor" href="#Carbon-Assimilation-and-Allocation">Carbon Assimilation and Allocation</a><a id="Carbon-Assimilation-and-Allocation-1"></a><a class="docs-heading-anchor-permalink" href="#Carbon-Assimilation-and-Allocation" title="Permalink"></a></h3><p>Photosynthesis uses the Frazer-Gilbert demand-driven functional response (Gutierrez and Wang 1976). Supply is determined by intercepted solar radiation (Beer’s Law), and demand by the combined growth requirements of all organs. The metabolic pool allocates assimilate with priority ordering that shifts across phenological phases:</p><ul><li><strong>Vegetative phase</strong>: roots \&gt; leaves \&gt; stems</li><li><strong>Flowering phase</strong>: inflorescences \&gt; leaves \&gt; roots \&gt; stems</li><li><strong>Pod-fill phase</strong>: pods \&gt; inflorescences \&gt; leaves \&gt; roots \&gt; stems</li></ul><pre><code class="language-julia hljs"># Specific leaf area (Turk et al. 1980; Tamò &amp; Baumgärtner 1993 Part I)
+const SLA_COWPEA = 0.035   # m²/g dry mass
+
+# Light extinction coefficient (Monteith 1965)
+const EXTINCTION_COEFF = 0.65
+
+# Photosynthetic conversion: MJ/m²/day → g CH₂O/m²/day
+const RADIATION_CONV = 0.26  # Loomis &amp; Williams 1963
+
+# Frazer-Gilbert functional response for photosynthesis
+photo_response = FraserGilbertResponse(1.0)
+
+function cowpea_photosynthesis(leaf_mass::Real, radiation_MJ::Real;
+                               plant_density::Real=13.3)
+    lai = leaf_mass * SLA_COWPEA * plant_density  # m²/m²
+    Φ = 1.0 - exp(-EXTINCTION_COEFF * lai)
+    supply = Φ * radiation_MJ * RADIATION_CONV / plant_density  # g CH₂O per plant
+    return supply
+end
+
+# Allocation priority by phenological phase
+function allocation_priorities(cum_dd::Real)
+    if cum_dd &lt; DD_FLOWER_ONSET
+        return [:root, :leaf, :stem]  # vegetative
+    elseif cum_dd &lt; DD_POD_FILL
+        return [:inflorescence, :leaf, :root, :stem]  # flowering
+    else
+        return [:pod, :inflorescence, :leaf, :root, :stem]  # pod-fill
+    end
+end
+
+# Demonstrate allocation shift
+for dd in [200.0, 500.0, 750.0]
+    p = allocation_priorities(dd)
+    println(&quot;At $(dd) DD: priorities = $(join(string.(p), &quot; &gt; &quot;))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">At 200.0 DD: priorities = root &gt; leaf &gt; stem
+At 500.0 DD: priorities = inflorescence &gt; leaf &gt; root &gt; stem
+At 750.0 DD: priorities = pod &gt; inflorescence &gt; leaf &gt; root &gt; stem</code></pre><h3 id="Respiration"><a class="docs-heading-anchor" href="#Respiration">Respiration</a><a id="Respiration-1"></a><a class="docs-heading-anchor-permalink" href="#Respiration" title="Permalink"></a></h3><p>Maintenance respiration follows a Q₁₀ = 2.0 temperature scaling. Growth respiration consumes ~28% of newly allocated carbon.</p><pre><code class="language-julia hljs"># Respiration parameters (Penning de Vries &amp; van Laar 1982)
+resp_leaf = Q10Respiration(0.015, 2.0, 25.0)   # 1.5%/day at 25°C
+resp_stem = Q10Respiration(0.010, 2.0, 25.0)   # 1.0%/day
+resp_root = Q10Respiration(0.008, 2.0, 25.0)   # 0.8%/day (N-fixation cost included)
+resp_repr = Q10Respiration(0.012, 2.0, 25.0)   # 1.2%/day for reproductive organs
+
+const GROWTH_RESP_FRAC = 0.28  # fraction of new growth lost to growth respiration
+
+println(&quot;Maintenance respiration at 25°C:&quot;)
+for (name, r) in [(&quot;Leaf&quot;, resp_leaf), (&quot;Stem&quot;, resp_stem),
+                   (&quot;Root&quot;, resp_root), (&quot;Reproductive&quot;, resp_repr)]
+    println(&quot;  $name: $(round(respiration_rate(r, 25.0) * 100, digits=2))%/day&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Maintenance respiration at 25°C:
+  Leaf: 1.5%/day
+  Stem: 1.0%/day
+  Root: 0.8%/day
+  Reproductive: 1.2%/day</code></pre><h2 id="Thrips-Population-Model"><a class="docs-heading-anchor" href="#Thrips-Population-Model">Thrips Population Model</a><a id="Thrips-Population-Model-1"></a><a class="docs-heading-anchor-permalink" href="#Thrips-Population-Model" title="Permalink"></a></h2><p><em>Megalurothrips sjostedti</em> is modeled with five life stages: egg, two larval instars (combined), prepupa, pupa, and reproductive adult female. Development rates follow the Logan et al. (1976) nonlinear temperature model for immature stages and a linear degree-day model for adult senescence. Parameters are from Tamò et al. (1993, Tables 1–2), fitted to life-table experiments at 15, 20, 25, 30, and 37 °C.</p><h3 id="Development-Rates"><a class="docs-heading-anchor" href="#Development-Rates">Development Rates</a><a id="Development-Rates-1"></a><a class="docs-heading-anchor-permalink" href="#Development-Rates" title="Permalink"></a></h3><p>For immature stages (egg, larva, pupa), a nonlinear Brière-type curve captures the asymmetric temperature response with a steep decline near the upper threshold:</p><p class="math-container">\[r(T) = a \cdot T \cdot (T - T_L) \cdot \sqrt{\max(0,\; T_U - T)}, \quad T_L \leq T \leq T_U\]</p><p>For adult female senescence, a linear degree-day model applies between <span>$T_0 = 13$</span> °C and <span>$T_{\text{opt}} = 30$</span> °C (Tamò et al. 1993, Eq. 6).</p><pre><code class="language-julia hljs"># ── Thrips thermal biology ────────────────────────────────────────
+
+# Lower developmental thresholds (°C)
+# Estimated from Tamò et al. 1993 Table 2 (no development at 37°C;
+# back-extrapolation of rates gives lower limits ~10–12°C)
+const THRIPS_T_LOWER_EGG   = 10.0
+const THRIPS_T_LOWER_LARVA = 10.0
+const THRIPS_T_LOWER_PUPA  = 10.0
+const THRIPS_T_LOWER_ADULT = 13.0   # Tamò et al. 1993, Eq. 6
+
+# Upper developmental thresholds (°C)
+# No survival at 37°C for any immature stage (Table 2)
+const THRIPS_T_UPPER_EGG   = 35.0
+const THRIPS_T_UPPER_LARVA = 35.0
+const THRIPS_T_UPPER_PUPA  = 35.0
+const THRIPS_T_UPPER_ADULT = 30.0   # Topt for adults (Eq. 6)
+
+# Degree-day requirements (from mean developmental times at 25°C, Table 2)
+# DD = (T - T_lower) × days
+# Egg: 4.7 days at 25°C → (25-10)×4.7 ≈ 70 DD
+# Larva: 5.8 days at 25°C → (25-10)×5.8 ≈ 87 DD
+# Pupa: 4.2 days at 25°C → (25-10)×4.2 ≈ 63 DD
+# Total egg-adult ≈ 220 DD (~15 days at 25°C)
+const THRIPS_DD_EGG   = 70.0    # ~4.7 days at 25°C (Table 2)
+const THRIPS_DD_LARVA = 87.0    # ~5.8 days at 25°C (instars 1+2 combined)
+const THRIPS_DD_PUPA  = 91.4    # Tamò et al. 1993 Table 2: 6.091 d at 25 °C → ≈91 DD
+const THRIPS_DD_ADULT = 571.0   # Tamò et al. 1993: β₁₂=0.00175/°C/day → ~48 d at 25 °C → ≈571 DD
+
+# Brière coefficients fitted to match observed development times (Table 2)
+# r(25) ≈ 1/4.7 (egg), 1/5.8 (larva), 1/4.2 (pupa)
+const THRIPS_BRIERE_A_EGG   = 0.0000850
+const THRIPS_BRIERE_A_LARVA = 0.0000690
+const THRIPS_BRIERE_A_PUPA  = 0.0000950
+
+# Build development rate models
+thrips_egg_dev   = BriereDevelopmentRate(THRIPS_BRIERE_A_EGG,   THRIPS_T_LOWER_EGG,   THRIPS_T_UPPER_EGG)
+thrips_larva_dev = BriereDevelopmentRate(THRIPS_BRIERE_A_LARVA, THRIPS_T_LOWER_LARVA, THRIPS_T_UPPER_LARVA)
+thrips_pupa_dev  = BriereDevelopmentRate(THRIPS_BRIERE_A_PUPA,  THRIPS_T_LOWER_PUPA,  THRIPS_T_UPPER_PUPA)
+thrips_adult_dev = LinearDevelopmentRate(THRIPS_T_LOWER_ADULT, THRIPS_T_UPPER_ADULT)
+
+println(&quot;M. sjostedti development rates (1/day) at representative temperatures:&quot;)
+println(&quot;=&quot;^70)
+println(&quot;T(°C)  | Egg r(T)  | Larva r(T) | Pupa r(T) | Adult DD/day&quot;)
+println(&quot;-&quot;^70)
+for T in [15.0, 20.0, 25.0, 28.0, 30.0, 33.0]
+    r_egg   = development_rate(thrips_egg_dev, T)
+    r_larva = development_rate(thrips_larva_dev, T)
+    r_pupa  = development_rate(thrips_pupa_dev, T)
+    dd_adult = degree_days(thrips_adult_dev, T)
+    println(&quot;  $(rpad(T, 6)) | $(rpad(round(r_egg, digits=5), 10))| &quot; *
+            &quot;$(rpad(round(r_larva, digits=5), 11))| &quot; *
+            &quot;$(rpad(round(r_pupa, digits=5), 10))| $(round(dd_adult, digits=1))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">M. sjostedti development rates (1/day) at representative temperatures:
+======================================================================
+T(°C)  | Egg r(T)  | Larva r(T) | Pupa r(T) | Adult DD/day
+----------------------------------------------------------------------
+  15.0   | 0.02851   | 0.02314    | 0.03186   | 2.0
+  20.0   | 0.06584   | 0.05345    | 0.07359   | 7.0
+  25.0   | 0.1008    | 0.08182    | 0.11266   | 12.0
+  28.0   | 0.11334   | 0.09201    | 0.12668   | 15.0
+  30.0   | 0.11404   | 0.09257    | 0.12746   | 17.0
+  33.0   | 0.09124   | 0.07406    | 0.10197   | 20.0</code></pre><h3 id="Life-Stages"><a class="docs-heading-anchor" href="#Life-Stages">Life Stages</a><a id="Life-Stages-1"></a><a class="docs-heading-anchor-permalink" href="#Life-Stages" title="Permalink"></a></h3><p>The thrips lifecycle is modeled with four distributed-delay stages (two larval instars combined, prepupa and pupa combined):</p><table><tr><th style="text-align: right">Stage</th><th style="text-align: right">DD Requirement</th><th style="text-align: right">k Substages</th><th style="text-align: right">T_lower</th><th style="text-align: right">T_upper</th><th style="text-align: right">Source</th></tr><tr><td style="text-align: right">Egg</td><td style="text-align: right">70 DD</td><td style="text-align: right">25</td><td style="text-align: right">10 °C</td><td style="text-align: right">35 °C</td><td style="text-align: right">Tamò et al. 1993, Table 2</td></tr><tr><td style="text-align: right">Larva (1+2)</td><td style="text-align: right">87 DD</td><td style="text-align: right">25</td><td style="text-align: right">10 °C</td><td style="text-align: right">35 °C</td><td style="text-align: right">Table 2</td></tr><tr><td style="text-align: right">Pupa (pre+pupa)</td><td style="text-align: right">63 DD</td><td style="text-align: right">25</td><td style="text-align: right">10 °C</td><td style="text-align: right">35 °C</td><td style="text-align: right">Table 2</td></tr><tr><td style="text-align: right">Adult female</td><td style="text-align: right">250 DD</td><td style="text-align: right">15</td><td style="text-align: right">13 °C</td><td style="text-align: right">30 °C</td><td style="text-align: right">Eq. 6, β₁₂=0.00175</td></tr></table><p>Eggs are embedded in floral tissue; larvae feed on pollen and plant tissue; pupae develop in soil; adults colonize flowers and oviposit.</p><pre><code class="language-julia hljs"># ── Mortality and survivorship ────────────────────────────────────
+# Temperature-dependent survivorship (Tamò et al. 1993, Table 1, Eq. 15)
+# At 25°C: egg survival ~87.5%, larva ~87.5%, pupa ~74.6% (Table 2)
+# At 37°C: all stages → 0% survival
+
+# Background mortality rates (per DD)
+const THRIPS_MU_EGG   = 0.002   # ~15% total egg mortality
+const THRIPS_MU_LARVA = 0.002   # larval mortality (feeding + predation)
+const THRIPS_MU_PUPA  = 0.003   # pupal mortality in soil (predation, fungi)
+const THRIPS_MU_ADULT = 0.001   # adult senescence
+
+# Predation/parasitism survival (Table 3, Tamò et al. 1993)
+const THRIPS_PRED_EGG   = 0.86
+const THRIPS_PRED_LARVA = 0.90
+const THRIPS_PRED_PUPA  = 0.85
+
+# Erlang substages
+const THRIPS_K_EGG   = 25   # Table 2: k=32–71 observed; k=25 for integration
+const THRIPS_K_LARVA = 25
+const THRIPS_K_PUPA  = 25
+const THRIPS_K_ADULT = 15
+
+# Build M. sjostedti population
+thrips_stages = [
+    LifeStage(:egg,   DistributedDelay(THRIPS_K_EGG,   THRIPS_DD_EGG;   W0=0.0),
+              thrips_egg_dev, THRIPS_MU_EGG),
+    LifeStage(:larva, DistributedDelay(THRIPS_K_LARVA, THRIPS_DD_LARVA; W0=0.0),
+              thrips_larva_dev, THRIPS_MU_LARVA),
+    LifeStage(:pupa,  DistributedDelay(THRIPS_K_PUPA,  THRIPS_DD_PUPA;  W0=0.0),
+              thrips_pupa_dev, THRIPS_MU_PUPA),
+    LifeStage(:adult, DistributedDelay(THRIPS_K_ADULT, THRIPS_DD_ADULT; W0=5.0),
+              thrips_adult_dev, THRIPS_MU_ADULT),
+]
+
+thrips = Population(:m_sjostedti, thrips_stages)
+
+println(&quot;M. sjostedti population:&quot;)
+println(&quot;  Life stages: &quot;, n_stages(thrips))
+println(&quot;  Total substages: &quot;, n_substages(thrips))
+println(&quot;  Initial adult females: &quot;, total_population(thrips))
+println(&quot;  Egg-to-adult DD: $(THRIPS_DD_EGG + THRIPS_DD_LARVA + THRIPS_DD_PUPA)&quot;)
+println(&quot;  Egg-to-adult at 25°C: ~$(round((THRIPS_DD_EGG + THRIPS_DD_LARVA + THRIPS_DD_PUPA) / 15, digits=1)) days&quot;)</code></pre><pre><code class="nohighlight hljs">M. sjostedti population:
+  Life stages: 4
+  Total substages: 90
+  Initial adult females: 75.0
+  Egg-to-adult DD: 248.4
+  Egg-to-adult at 25°C: ~16.6 days</code></pre><h3 id="Fecundity"><a class="docs-heading-anchor" href="#Fecundity">Fecundity</a><a id="Fecundity-1"></a><a class="docs-heading-anchor-permalink" href="#Fecundity" title="Permalink"></a></h3><p>Age-specific fecundity at 30 °C follows a concave function (Tamò et al. 1993, Eq. 10), with a temperature correction factor φ(T) that peaks near 27–30 °C and falls to zero outside the oviposition window.</p><pre><code class="language-julia hljs"># ── Fecundity parameters ─────────────────────────────────────────
+# Total lifetime fecundity: 40–100 eggs/female (Tamò 1991; Alabi et al. 2003)
+const THRIPS_FECUNDITY  = 70.0    # eggs per female lifetime at 25–30°C
+const THRIPS_SEX_RATIO  = 0.65    # proportion female (parthenogenesis common)
+const THRIPS_OVIP_T_LOW = 15.0    # lower oviposition threshold (°C)
+const THRIPS_OVIP_T_UP  = 35.0    # upper oviposition threshold (°C)
+
+# Preoviposition period: ~2 days at 25–30°C (Tamò 1991)
+const THRIPS_PREOVIP_DD = 30.0    # DD before oviposition begins
+
+# Temperature-dependent oviposition scalar φ(T)
+function thrips_oviposition_scalar(T)
+    T &lt; THRIPS_OVIP_T_LOW &amp;&amp; return 0.0
+    T &gt; THRIPS_OVIP_T_UP  &amp;&amp; return 0.0
+    x = (T - THRIPS_OVIP_T_LOW) / (THRIPS_OVIP_T_UP - THRIPS_OVIP_T_LOW)
+    return 4.0 * x * (1.0 - x)
+end
+
+# Daily egg production per female (at temperature T, with flower availability)
+function thrips_daily_eggs(T::Real, adult_females::Real, flower_index::Real)
+    φ = thrips_oviposition_scalar(T)
+    dd_per_day = max(0.0, T - THRIPS_T_LOWER_ADULT)
+    lifespan_days = dd_per_day &gt; 0 ? THRIPS_DD_ADULT / dd_per_day : Inf
+    daily_rate = lifespan_days &gt; 0 ? THRIPS_FECUNDITY / lifespan_days : 0.0
+    return daily_rate * φ * adult_females * THRIPS_SEX_RATIO * flower_index
+end
+
+println(&quot;Oviposition scalar φ(T):&quot;)
+for T in [12.0, 15.0, 20.0, 25.0, 28.0, 30.0, 33.0, 35.0, 38.0]
+    φ = thrips_oviposition_scalar(T)
+    println(&quot;  T=$(rpad(T, 4))°C: φ=$(round(φ, digits=3))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Oviposition scalar φ(T):
+  T=12.0°C: φ=0.0
+  T=15.0°C: φ=0.0
+  T=20.0°C: φ=0.75
+  T=25.0°C: φ=1.0
+  T=28.0°C: φ=0.91
+  T=30.0°C: φ=0.75
+  T=33.0°C: φ=0.36
+  T=35.0°C: φ=0.0
+  T=38.0°C: φ=0.0</code></pre><h2 id="Crop-Pest-Coupling"><a class="docs-heading-anchor" href="#Crop-Pest-Coupling">Crop-Pest Coupling</a><a id="Crop-Pest-Coupling-1"></a><a class="docs-heading-anchor-permalink" href="#Crop-Pest-Coupling" title="Permalink"></a></h2><p>The cowpea–thrips interaction operates through two key pathways:</p><ol><li><p><strong>Flower availability gates thrips reproduction</strong>: Adult thrips  colonize cowpea at the onset of flowering. Oviposition requires  floral tissue (peduncles and petals), and food (pollen from open  flowers) drives larval growth. The “flower index” quantifies the  fraction of plant reproductive structures available to thrips.</p></li><li><p><strong>Thrips damage reduces yield</strong>: Larvae and adults feeding in  flowers cause bud shedding and flower abortion. Each adult female  causes ~25% of the damage of one larva (adults prefer pollen; larvae  consume green tissue). When active thrips exceed a saturation  threshold (N_max ≈ 90 per inflorescence), additional individuals do  not cause further shedding. Thrips-induced flower loss directly  reduces pod set and final grain yield.</p></li></ol><h3 id="Flower-Index"><a class="docs-heading-anchor" href="#Flower-Index">Flower Index</a><a id="Flower-Index-1"></a><a class="docs-heading-anchor-permalink" href="#Flower-Index" title="Permalink"></a></h3><p>The flower index <span>$\phi_f(d)$</span> controls thrips colonization and reproduction intensity:</p><p class="math-container">\[\phi_f(d) = \min\left(1,\; \frac{Q_{\text{inflor}}(d)}{Q_{\text{inflor,max}}}\right) \cdot \mathbb{1}[\text{DD}(d) \geq \text{DD}_{\text{flower onset}}]\]</p><pre><code class="language-julia hljs"># ── Crop-pest coupling parameters ────────────────────────────────
+# Maximum thrips per inflorescence (saturation; Tamò et al. 1993, p. 104)
+const THRIPS_N_MAX = 90.0
+
+# Adult-to-larva damage equivalence (Tamò et al. 1993, Eq. 19)
+const ADULT_DAMAGE_COEFF = 0.25
+
+# Infestation index (field-specific colonization attractiveness)
+const INFESTATION_INDEX = 0.14   # ξ from Tamò et al. 1993 validation
+
+# Preference constant: reproductive structures 5× more attractive than vegetative
+const REPRO_PREFERENCE = 5.0
+
+# Critical infestation below which plant compensates
+const CRITICAL_XI = 0.10
+
+# Flower index: fraction of reproductive capacity available to thrips
+function flower_index(cum_dd::Real, inflor_mass::Real; inflor_max::Real=5.0)
+    cum_dd &lt; DD_FLOWER_ONSET &amp;&amp; return 0.0
+    return min(1.0, inflor_mass / inflor_max)
+end
+
+# Active thrips causing damage (Eq. 19)
+function active_thrips(n_adults::Real, n_larvae::Real)
+    return ADULT_DAMAGE_COEFF * n_adults + n_larvae
+end
+
+# Flower bud shedding fraction from thrips damage (Eq. 17-18)
+function thrips_shedding_fraction(n_active::Real)
+    n_active &lt;= 0.0 &amp;&amp; return 0.0
+    return min(1.0, n_active / THRIPS_N_MAX)
+end
+
+# Demonstrate coupling
+println(&quot;Flower shedding fraction vs active thrips:&quot;)
+for n in [0.0, 10.0, 30.0, 50.0, 70.0, 90.0, 120.0]
+    sf = thrips_shedding_fraction(n)
+    println(&quot;  N_active=$(rpad(Int(n), 4)): shedding=$(round(sf * 100, digits=1))%&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Flower shedding fraction vs active thrips:
+  N_active=0   : shedding=0.0%
+  N_active=10  : shedding=11.1%
+  N_active=30  : shedding=33.3%
+  N_active=50  : shedding=55.6%
+  N_active=70  : shedding=77.8%
+  N_active=90  : shedding=100.0%
+  N_active=120 : shedding=100.0%</code></pre><h3 id="Damage-Function"><a class="docs-heading-anchor" href="#Damage-Function">Damage Function</a><a id="Damage-Function-1"></a><a class="docs-heading-anchor-permalink" href="#Damage-Function" title="Permalink"></a></h3><p>Yield loss is computed from cumulative thrips-induced flower shedding using an exponential damage function. The model accounts for the plant’s natural compensation capacity: cowpea naturally sheds 84–94% of flower buds (Ojehomon 1968), so thrips attack some flowers that would drop anyway. Damage becomes economically significant only when the infestation index ξ exceeds the critical threshold (~0.1).</p><pre><code class="language-julia hljs"># Exponential damage function: yield_loss = 1 - exp(-a × pest_density)
+# Parameterized to match observed 20-80% yield loss range
+damage_fn = ExponentialDamageFunction(0.015)
+
+println(&quot;Yield loss vs cumulative thrips·days:&quot;)
+for td in [0, 50, 100, 200, 500, 1000, 2000]
+    loss = yield_loss(damage_fn, Float64(td), 1.0)
+    println(&quot;  thrips·days=$(rpad(td, 5)): loss=$(round(loss * 100, digits=1))%&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Yield loss vs cumulative thrips·days:
+  thrips·days=0    : loss=0.0%
+  thrips·days=50   : loss=52.8%
+  thrips·days=100  : loss=77.7%
+  thrips·days=200  : loss=95.0%
+  thrips·days=500  : loss=99.9%
+  thrips·days=1000 : loss=100.0%
+  thrips·days=2000 : loss=100.0%</code></pre><h2 id="Implementation"><a class="docs-heading-anchor" href="#Implementation">Implementation</a><a id="Implementation-1"></a><a class="docs-heading-anchor-permalink" href="#Implementation" title="Permalink"></a></h2><h3 id="Synthetic-Weather-for-West-Africa"><a class="docs-heading-anchor" href="#Synthetic-Weather-for-West-Africa">Synthetic Weather for West Africa</a><a id="Synthetic-Weather-for-West-Africa-1"></a><a class="docs-heading-anchor-permalink" href="#Synthetic-Weather-for-West-Africa" title="Permalink"></a></h3><p>We generate synthetic daily weather representative of the Guinea savanna zone of Benin (~7°N), where cowpea is grown during the second cropping season (September–November). Temperature ranges from 22–32 °C, with declining rainfall as the wet season ends.</p><pre><code class="language-julia hljs"># ── West African climate (Guinea savanna, Benin ~7°N) ─────────────
+# Second cropping season: September–November (~75 days)
+const N_SEASON = 75  # days
+
+# Temperature: warm tropical, slight cooling toward dry season
+temps_mean = Float64[]
+temps_min  = Float64[]
+temps_max  = Float64[]
+radiations = Float64[]
+rainfalls  = Float64[]
+
+for d in 1:N_SEASON
+    # Mean temperature: ~27°C early, ~25°C late
+    T_mean = 27.0 - 2.0 * (d / N_SEASON)
+    T_min = T_mean - 4.0
+    T_max = T_mean + 6.0
+    push!(temps_mean, T_mean)
+    push!(temps_min, T_min)
+    push!(temps_max, T_max)
+
+    # Solar radiation: 15–22 MJ/m²/day, increasing as clouds decrease
+    R = 17.0 + 4.0 * (d / N_SEASON) + 2.0 * sin(2π * d / 15)
+    push!(radiations, max(10.0, R))
+
+    # Rainfall: declining from wet to dry season
+    rain = max(0.0, 6.0 * (1.0 - d / N_SEASON) + 3.0 * rand() * (d &lt; 50 ? 1.0 : 0.3))
+    push!(rainfalls, rain)
+end
+
+weather_days = [DailyWeather(temps_mean[d], temps_min[d], temps_max[d];
+                radiation=radiations[d]) for d in 1:N_SEASON]
+weather = WeatherSeries(weather_days; day_offset=1)
+
+println(&quot;Growing season: $N_SEASON days&quot;)
+println(&quot;Temperature range: $(round(minimum(temps_min), digits=1))–$(round(maximum(temps_max), digits=1))°C&quot;)
+println(&quot;Mean temperature: $(round(sum(temps_mean)/N_SEASON, digits=1))°C&quot;)
+println(&quot;Mean radiation: $(round(sum(radiations)/N_SEASON, digits=1)) MJ/m²/day&quot;)</code></pre><pre><code class="nohighlight hljs">Growing season: 75 days
+Temperature range: 21.0–33.0°C
+Mean temperature: 26.0°C
+Mean radiation: 19.0 MJ/m²/day</code></pre><h3 id="Coupled-Simulation"><a class="docs-heading-anchor" href="#Coupled-Simulation">Coupled Simulation</a><a id="Coupled-Simulation-1"></a><a class="docs-heading-anchor-permalink" href="#Coupled-Simulation" title="Permalink"></a></h3><p>The simulation iterates daily, stepping both the cowpea plant and thrips populations. The coupling logic is:</p><ol><li>Compute cowpea phenology (cumulative degree-days).</li><li>Calculate the flower index from inflorescence biomass.</li><li>Thrips reproduction depends on flower index and temperature.</li><li>Thrips damage reduces inflorescence mass (flower bud shedding).</li><li>Reduced inflorescences → fewer pods → lower grain yield.</li></ol><pre><code class="language-julia hljs">function simulate_cowpea_thrips(weather, n_days;
+                                planting_day_offset::Int=0,
+                                ξ::Float64=INFESTATION_INDEX)
+    # Fresh delay objects for each run (stored in params for CustomRule access)
+    cp_delays = (
+        leaf          = DistributedDelay(k, 500.0;  W0=0.08),
+        stem          = DistributedDelay(k, 700.0;  W0=0.10),
+        root          = DistributedDelay(k, 800.0;  W0=0.04),
+        inflorescence = DistributedDelay(k, 300.0;  W0=0.0),
+        pod           = DistributedDelay(k, 400.0;  W0=0.0),
+    )
+
+    tp_delays = (
+        egg   = DistributedDelay(THRIPS_K_EGG,   THRIPS_DD_EGG;   W0=0.0),
+        larva = DistributedDelay(THRIPS_K_LARVA, THRIPS_DD_LARVA; W0=0.0),
+        pupa  = DistributedDelay(THRIPS_K_PUPA,  THRIPS_DD_PUPA;  W0=0.0),
+        adult = DistributedDelay(THRIPS_K_ADULT, THRIPS_DD_ADULT; W0=0.0),
+    )
+
+    # BulkPopulations mirroring delay totals
+    bp_leaf   = BulkPopulation(:leaf,          delay_total(cp_delays.leaf))
+    bp_stem   = BulkPopulation(:stem,          delay_total(cp_delays.stem))
+    bp_root   = BulkPopulation(:root,          delay_total(cp_delays.root))
+    bp_inflor = BulkPopulation(:inflorescence, delay_total(cp_delays.inflorescence))
+    bp_pod    = BulkPopulation(:pod,           delay_total(cp_delays.pod))
+    bp_tegg   = BulkPopulation(:thrips_egg,    0.0)
+    bp_tlarva = BulkPopulation(:thrips_larva,  0.0)
+    bp_tpupa  = BulkPopulation(:thrips_pupa,   0.0)
+    bp_tadult = BulkPopulation(:thrips_adult,  0.0)
+
+    # Cowpea phenology: replace raw cum_dd ScalarState with a PhenologyState
+    # that also tracks named phase transitions (flower onset, pod fill, …).
+    # `get_state(ps)` still returns cum_dd, so the CustomRule body below is
+    # unchanged.
+    cum_dd_state = PhenologyState(:cum_dd,
+        [(:flower_onset, DD_FLOWER_ONSET),
+         (:full_flower,  DD_FULL_FLOWER),
+         (:pod_fill,     DD_POD_FILL),
+         (:maturity,     DD_MATURITY)];
+        dd_fn=(w, day, p) -&gt; degree_days(cowpea_dev, w.T_mean))
+    cum_td_state = ScalarState(:cum_td, 0.0)
+
+    dynamics = CustomRule(:dynamics, (sys, w, day, p) -&gt; begin
+        T = w.T_mean
+        dd = degree_days(cowpea_dev, T)
+        cum_dd = get_state(sys.state[:cum_dd])
+
+        # ── Cowpea carbon balance ──
+        leaf_mass = delay_total(p.cp.leaf)
+        supply = cowpea_photosynthesis(leaf_mass, radiations[min(day, N_SEASON)])
+        resp_rates = [resp_leaf, resp_stem, resp_root, resp_repr, resp_repr]
+        cp_dls = [p.cp.leaf, p.cp.stem, p.cp.root, p.cp.inflorescence, p.cp.pod]
+        maintenance = sum(respiration_rate(r, T) * delay_total(dl)
+                          for (r, dl) in zip(resp_rates, cp_dls))
+        net_supply = max(0.0, supply - maintenance) * (1.0 - GROWTH_RESP_FRAC)
+
+        # Priority allocation
+        priorities = allocation_priorities(cum_dd)
+        stage_map = Dict(:leaf =&gt; 1, :stem =&gt; 2, :root =&gt; 3,
+                         :inflorescence =&gt; 4, :pod =&gt; 5)
+        remaining = net_supply
+        inflows = zeros(5)
+        for pr in priorities
+            idx = stage_map[pr]
+            demand = max(0.0, delay_total(cp_dls[idx]) * 0.05 * dd)
+            alloc = min(remaining, demand)
+            inflows[idx] = alloc
+            remaining -= alloc
+        end
+
+        # ── Flower index and thrips immigration ──
+        fi = flower_index(cum_dd, delay_total(p.cp.inflorescence))
+
+        if cum_dd &gt;= DD_FLOWER_ONSET &amp;&amp; !p.immigration_done[]
+            immigrant_adults = p.ξ * REPRO_PREFERENCE * max(1.0, fi * 10.0)
+            p.tp.adult.W[1] += immigrant_adults
+        end
+        if delay_total(p.tp.pupa) &gt; 0.1
+            p.immigration_done[] = true
+        end
+
+        # ── Thrips reproduction ──
+        n_adults = delay_total(p.tp.adult)
+        eggs_today = thrips_daily_eggs(T, n_adults, fi)
+
+        # ── Thrips damage ──
+        n_larvae = delay_total(p.tp.larva)
+        n_act = active_thrips(n_adults, n_larvae)
+        sf = thrips_shedding_fraction(n_act)
+        inflor_stress = sf * 0.02
+        inflows[4] *= (1.0 - sf)
+
+        # ── Step cowpea organs ──
+        cp_mus = [0.001, 0.0008, 0.0005, 0.002, 0.001]
+        for (s, dl) in enumerate(cp_dls)
+            stress = s == 4 ? inflor_stress : 0.0
+            step_delay!(dl, dd, inflows[s]; μ=cp_mus[s], stress=stress)
+        end
+
+        if cum_dd &gt;= DD_POD_FILL
+            mat_inflor = delay_total(p.cp.inflorescence) * 0.02 * dd
+            step_delay!(p.cp.pod, dd, mat_inflor * (1.0 - sf); μ=0.001)
+        end
+
+        # ── Step thrips stages ──
+        dd_egg   = max(0.0, T - THRIPS_T_LOWER_EGG)
+        dd_larva = max(0.0, T - THRIPS_T_LOWER_LARVA)
+        dd_pupa  = max(0.0, T - THRIPS_T_LOWER_PUPA)
+        dd_adult = max(0.0, min(T, THRIPS_T_UPPER_ADULT) - THRIPS_T_LOWER_ADULT)
+
+        out_egg, _   = step_delay!(p.tp.egg,   dd_egg,   eggs_today; μ=THRIPS_MU_EGG)
+        out_larva, _ = step_delay!(p.tp.larva, dd_larva, out_egg;    μ=THRIPS_MU_LARVA)
+        out_pupa, _  = step_delay!(p.tp.pupa,  dd_pupa,  out_larva;  μ=THRIPS_MU_PUPA)
+        step_delay!(p.tp.adult, dd_adult, out_pupa; μ=THRIPS_MU_ADULT)
+
+        # Sync BulkPopulation values from delays
+        set_value!(sys[:leaf].population,          delay_total(p.cp.leaf))
+        set_value!(sys[:stem].population,          delay_total(p.cp.stem))
+        set_value!(sys[:root].population,          delay_total(p.cp.root))
+        set_value!(sys[:inflorescence].population, delay_total(p.cp.inflorescence))
+        set_value!(sys[:pod].population,           delay_total(p.cp.pod))
+        set_value!(sys[:thrips_egg].population,    delay_total(p.tp.egg))
+        set_value!(sys[:thrips_larva].population,  delay_total(p.tp.larva))
+        set_value!(sys[:thrips_pupa].population,   delay_total(p.tp.pupa))
+        set_value!(sys[:thrips_adult].population,  delay_total(p.tp.adult))
+
+        # Update cumulative thrips·days
+        cum_td = get_state(sys.state[:cum_td])
+        set_state!(sys.state[:cum_td], cum_td + n_act)
+
+        (flower_idx=fi, shedding_frac=sf)
+    end)
+
+    sys = PopulationSystem(
+        :leaf =&gt; bp_leaf, :stem =&gt; bp_stem, :root =&gt; bp_root,
+        :inflorescence =&gt; bp_inflor, :pod =&gt; bp_pod,
+        :thrips_egg =&gt; bp_tegg, :thrips_larva =&gt; bp_tlarva,
+        :thrips_pupa =&gt; bp_tpupa, :thrips_adult =&gt; bp_tadult;
+        state=[cum_dd_state, cum_td_state])
+
+    wx = weather isa WeatherSeries ? weather : WeatherSeries(weather)
+    prob = PBDMProblem(sys, wx, (1, n_days);
+        rules=[dynamics],
+        p=(cp=cp_delays, tp=tp_delays, ξ=ξ, immigration_done=Ref(false)))
+
+    sol = solve(prob, DirectIteration())
+
+    # Reconstruct original return format (length n_days+1 vectors)
+    init_leaf = delay_total(DistributedDelay(k, 500.0; W0=0.08))
+    init_stem = delay_total(DistributedDelay(k, 700.0; W0=0.10))
+    init_root = delay_total(DistributedDelay(k, 800.0; W0=0.04))
+    leaf_biomass   = vcat(init_leaf, sol[:leaf])
+    stem_biomass   = vcat(init_stem, sol[:stem])
+    root_biomass   = vcat(init_root, sol[:root])
+    inflor_biomass = vcat(0.0, sol[:inflorescence])
+    pod_biomass    = vcat(0.0, sol[:pod])
+    thrips_eggs    = vcat(0.0, sol[:thrips_egg])
+    thrips_larvae  = vcat(0.0, sol[:thrips_larva])
+    thrips_pupae   = vcat(0.0, sol[:thrips_pupa])
+    thrips_adults  = vcat(0.0, sol[:thrips_adult])
+
+    rule_log = sol.rule_log[:dynamics]
+    flower_idx     = [r.flower_idx for r in rule_log]
+    shedding_frac  = [r.shedding_frac for r in rule_log]
+    cum_dd_traj    = [snap.cum_dd for snap in sol.state_history[:cum_dd]]
+    phase_traj     = [snap.phase for snap in sol.state_history[:cum_dd]]
+    cum_thrips_days = sol.state_history[:cum_td]
+
+    return (; leaf_biomass, stem_biomass, root_biomass, inflor_biomass, pod_biomass,
+              thrips_eggs, thrips_larvae, thrips_pupae, thrips_adults,
+              flower_idx, shedding_frac, cum_dd_traj, phase_traj, cum_thrips_days)
+end
+
+# Run baseline simulation
+result = simulate_cowpea_thrips(weather, N_SEASON)
+
+println(&quot;\nBaseline simulation (ξ=$(INFESTATION_INDEX)):&quot;)
+println(&quot;  Final leaf biomass:  $(round(result.leaf_biomass[end], digits=2)) g/plant&quot;)
+println(&quot;  Final pod biomass:   $(round(result.pod_biomass[end], digits=2)) g/plant&quot;)
+println(&quot;  Peak thrips adults:  $(round(maximum(result.thrips_adults), digits=1))&quot;)
+println(&quot;  Peak thrips larvae:  $(round(maximum(result.thrips_larvae), digits=1))&quot;)
+println(&quot;  Cumulative DD: $(round(result.cum_dd_traj[end], digits=0))&quot;)
+println(&quot;  Cumulative thrips·days: $(round(result.cum_thrips_days[end], digits=0))&quot;)</code></pre><pre><code class="nohighlight hljs">Baseline simulation (ξ=0.14):
+  Final leaf biomass:  0.0 g/plant
+  Final pod biomass:   0.0 g/plant
+  Peak thrips adults:  22.6
+  Peak thrips larvae:  0.0
+  Cumulative DD: 1199.0
+  Cumulative thrips·days: 166.0</code></pre><h2 id="Simulation-Results"><a class="docs-heading-anchor" href="#Simulation-Results">Simulation Results</a><a id="Simulation-Results-1"></a><a class="docs-heading-anchor-permalink" href="#Simulation-Results" title="Permalink"></a></h2><h3 id="Cowpea-Phenology"><a class="docs-heading-anchor" href="#Cowpea-Phenology">Cowpea Phenology</a><a id="Cowpea-Phenology-1"></a><a class="docs-heading-anchor-permalink" href="#Cowpea-Phenology" title="Permalink"></a></h3><p>The following figure shows the temporal dynamics of cowpea organ biomass across the growing season. The transition from vegetative growth (leaf and stem expansion) to reproductive allocation (inflorescences and pods) is clearly visible. Thrips damage reduces inflorescence and pod biomass relative to the undamaged potential.</p><pre><code class="language-julia hljs"># Thrips-free baseline for comparison
+result_clean = simulate_cowpea_thrips(weather, N_SEASON; ξ=0.0)
+
+fig1 = Figure(size=(900, 500))
+
+ax1 = Axis(fig1[1, 1],
+    xlabel=&quot;Days after planting&quot;,
+    ylabel=&quot;Biomass (g/plant)&quot;,
+    title=&quot;Cowpea Organ Dynamics (with thrips, ξ=$(INFESTATION_INDEX))&quot;)
+
+days = 0:N_SEASON
+lines!(ax1, collect(days), result.leaf_biomass,
+       label=&quot;Leaves&quot;, linewidth=2.5, color=:green)
+lines!(ax1, collect(days), result.stem_biomass,
+       label=&quot;Stems&quot;, linewidth=2.0, color=:saddlebrown)
+lines!(ax1, collect(days), result.root_biomass,
+       label=&quot;Roots&quot;, linewidth=2.0, color=:sienna, linestyle=:dash)
+lines!(ax1, collect(days), result.inflor_biomass,
+       label=&quot;Inflorescences&quot;, linewidth=2.5, color=:orchid)
+lines!(ax1, collect(days), result.pod_biomass,
+       label=&quot;Pods&quot;, linewidth=2.5, color=:firebrick)
+
+# Phenological markers
+flower_day = findfirst(d -&gt; d &gt;= DD_FLOWER_ONSET, result.cum_dd_traj)
+podfill_day = findfirst(d -&gt; d &gt;= DD_POD_FILL, result.cum_dd_traj)
+if flower_day !== nothing
+    vlines!(ax1, [flower_day], color=:gray, linestyle=:dot, linewidth=1)
+    text!(ax1, flower_day + 1, maximum(result.leaf_biomass) * 0.9,
+          text=&quot;Flowering&quot;, fontsize=9, color=:gray, rotation=π/2)
+end
+if podfill_day !== nothing
+    vlines!(ax1, [podfill_day], color=:gray, linestyle=:dot, linewidth=1)
+    text!(ax1, podfill_day + 1, maximum(result.leaf_biomass) * 0.7,
+          text=&quot;Pod fill&quot;, fontsize=9, color=:gray, rotation=π/2)
+end
+axislegend(ax1; position=:lt)
+
+# Comparison panel: thrips-free vs with thrips
+ax2 = Axis(fig1[1, 2],
+    xlabel=&quot;Days after planting&quot;,
+    ylabel=&quot;Biomass (g/plant)&quot;,
+    title=&quot;Pod Biomass: Thrips-Free vs Infested&quot;)
+
+lines!(ax2, collect(days), result_clean.pod_biomass,
+       label=&quot;Thrips-free&quot;, linewidth=2.5, color=:steelblue)
+lines!(ax2, collect(days), result.pod_biomass,
+       label=&quot;With thrips (ξ=0.14)&quot;, linewidth=2.5, color=:firebrick, linestyle=:dash)
+lines!(ax2, collect(days), result_clean.inflor_biomass,
+       label=&quot;Inflor. (thrips-free)&quot;, linewidth=1.5, color=:steelblue, linestyle=:dot)
+lines!(ax2, collect(days), result.inflor_biomass,
+       label=&quot;Inflor. (infested)&quot;, linewidth=1.5, color=:firebrick, linestyle=:dot)
+axislegend(ax2; position=:lt, labelsize=10)
+
+fig1</code></pre><p><img src="../29_cowpea_thrips_files/figure-commonmark/cell-13-output-1.png" alt/></p><h3 id="Thrips-Development-Rate-Curves"><a class="docs-heading-anchor" href="#Thrips-Development-Rate-Curves">Thrips Development Rate Curves</a><a id="Thrips-Development-Rate-Curves-1"></a><a class="docs-heading-anchor-permalink" href="#Thrips-Development-Rate-Curves" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig2 = Figure(size=(900, 400))
+
+# Panel A: Development rates vs temperature
+ax1 = Axis(fig2[1, 1],
+    xlabel=&quot;Temperature (°C)&quot;,
+    ylabel=&quot;Development rate (1/day)&quot;,
+    title=&quot;M. sjostedti Development Rates&quot;)
+
+temp_range = 5.0:0.5:40.0
+r_egg   = [development_rate(thrips_egg_dev, T) for T in temp_range]
+r_larva = [development_rate(thrips_larva_dev, T) for T in temp_range]
+r_pupa  = [development_rate(thrips_pupa_dev, T) for T in temp_range]
+
+lines!(ax1, collect(temp_range), r_egg,
+       label=&quot;Egg&quot;, linewidth=2.5, color=:steelblue)
+lines!(ax1, collect(temp_range), r_larva,
+       label=&quot;Larva (1+2)&quot;, linewidth=2.5, color=:orange)
+lines!(ax1, collect(temp_range), r_pupa,
+       label=&quot;Pupa&quot;, linewidth=2.5, color=:forestgreen)
+
+vlines!(ax1, [THRIPS_T_LOWER_EGG], color=:gray, linestyle=:dash, linewidth=1)
+vlines!(ax1, [THRIPS_T_UPPER_EGG], color=:gray, linestyle=:dash, linewidth=1)
+text!(ax1, THRIPS_T_LOWER_EGG + 0.5, maximum(r_pupa) * 0.9,
+    text=&quot;T_L=10°C&quot;, fontsize=9, color=:gray)
+text!(ax1, THRIPS_T_UPPER_EGG - 3.0, maximum(r_pupa) * 0.9,
+    text=&quot;T_U=35°C&quot;, fontsize=9, color=:gray)
+axislegend(ax1, position=:lt)
+
+# Panel B: Oviposition scalar
+ax2 = Axis(fig2[1, 2],
+    xlabel=&quot;Temperature (°C)&quot;,
+    ylabel=&quot;Oviposition scalar φ(T)&quot;,
+    title=&quot;Temperature-Dependent Oviposition&quot;)
+
+φ_vals = [thrips_oviposition_scalar(T) for T in temp_range]
+lines!(ax2, collect(temp_range), φ_vals,
+       linewidth=2.5, color=:orchid)
+vlines!(ax2, [THRIPS_OVIP_T_LOW, THRIPS_OVIP_T_UP],
+        color=:gray, linestyle=:dash, linewidth=1)
+text!(ax2, 25.0, 1.05, text=&quot;Peak ≈ 25°C&quot;, fontsize=10, color=:orchid)
+
+fig2</code></pre><p><img src="../29_cowpea_thrips_files/figure-commonmark/cell-14-output-1.png" alt/></p><h3 id="Thrips-Population-Dynamics-with-Flower-Availability"><a class="docs-heading-anchor" href="#Thrips-Population-Dynamics-with-Flower-Availability">Thrips Population Dynamics with Flower Availability</a><a id="Thrips-Population-Dynamics-with-Flower-Availability-1"></a><a class="docs-heading-anchor-permalink" href="#Thrips-Population-Dynamics-with-Flower-Availability" title="Permalink"></a></h3><p>This figure overlays thrips stage populations with the flower availability index, showing how thrips colonization tracks the flowering window.</p><pre><code class="language-julia hljs">fig3 = Figure(size=(900, 500))
+
+# Panel A: Thrips population dynamics
+ax1 = Axis(fig3[1, 1],
+    xlabel=&quot;Days after planting&quot;,
+    ylabel=&quot;Thrips (individuals/plant)&quot;,
+    title=&quot;M. sjostedti Population Dynamics&quot;)
+
+lines!(ax1, collect(days), result.thrips_eggs,
+       label=&quot;Eggs&quot;, linewidth=2.0, color=:steelblue)
+lines!(ax1, collect(days), result.thrips_larvae,
+       label=&quot;Larvae&quot;, linewidth=2.5, color=:orange)
+lines!(ax1, collect(days), result.thrips_pupae,
+       label=&quot;Pupae&quot;, linewidth=2.0, color=:forestgreen)
+lines!(ax1, collect(days), result.thrips_adults,
+       label=&quot;Adults&quot;, linewidth=2.5, color=:firebrick)
+axislegend(ax1; position=:rt)
+
+# Panel B: Flower index and shedding
+ax2 = Axis(fig3[1, 2],
+    xlabel=&quot;Days after planting&quot;,
+    ylabel=&quot;Index (0–1)&quot;,
+    title=&quot;Flower Availability and Thrips Damage&quot;)
+
+lines!(ax2, collect(1:N_SEASON), result.flower_idx,
+       label=&quot;Flower index&quot;, linewidth=2.5, color=:orchid)
+lines!(ax2, collect(1:N_SEASON), result.shedding_frac,
+       label=&quot;Shedding fraction&quot;, linewidth=2.5, color=:firebrick, linestyle=:dash)
+
+if flower_day !== nothing
+    vlines!(ax2, [flower_day], color=:gray, linestyle=:dot, linewidth=1)
+    text!(ax2, flower_day + 1, 0.9, text=&quot;Flowering\nonset&quot;,
+          fontsize=9, color=:gray)
+end
+axislegend(ax2; position=:rt)
+
+fig3</code></pre><p><img src="../29_cowpea_thrips_files/figure-commonmark/cell-15-output-1.png" alt/></p><h3 id="Yield-Loss-vs-Thrips-Density"><a class="docs-heading-anchor" href="#Yield-Loss-vs-Thrips-Density">Yield Loss vs Thrips Density</a><a id="Yield-Loss-vs-Thrips-Density-1"></a><a class="docs-heading-anchor-permalink" href="#Yield-Loss-vs-Thrips-Density" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig4 = Figure(size=(500, 400))
+
+ax = Axis(fig4[1, 1],
+    xlabel=&quot;Cumulative thrips·days&quot;,
+    ylabel=&quot;Yield loss fraction&quot;,
+    title=&quot;Yield Loss vs Thrips Pressure&quot;)
+
+td_range = 0.0:10.0:3000.0
+losses = [yield_loss(damage_fn, td, 1.0) for td in td_range]
+lines!(ax, collect(td_range), losses, linewidth=2.5, color=:firebrick)
+
+# Mark typical field ranges
+hlines!(ax, [0.2, 0.8], color=:gray, linestyle=:dot, linewidth=1)
+text!(ax, 2500, 0.22, text=&quot;20% loss&quot;, fontsize=9, color=:gray)
+text!(ax, 2500, 0.82, text=&quot;80% loss&quot;, fontsize=9, color=:gray)
+
+# Mark simulation result
+final_td = result.cum_thrips_days[end]
+final_loss = yield_loss(damage_fn, final_td, 1.0)
+scatter!(ax, [final_td], [final_loss], markersize=12, color=:black)
+text!(ax, final_td + 50, final_loss - 0.05,
+      text=&quot;Baseline\n(ξ=0.14)&quot;, fontsize=9, color=:black)
+
+fig4</code></pre><p><img src="../29_cowpea_thrips_files/figure-commonmark/cell-16-output-1.png" alt/></p><h2 id="Planting-Date-Analysis"><a class="docs-heading-anchor" href="#Planting-Date-Analysis">Planting Date Analysis</a><a id="Planting-Date-Analysis-1"></a><a class="docs-heading-anchor-permalink" href="#Planting-Date-Analysis" title="Permalink"></a></h2><p>Planting date is a key management lever in the cowpea–thrips system. By shifting the flowering window relative to thrips immigration pressure, farmers can exploit phenological asynchrony. Early planting advances flowering before peak thrips buildup; late planting may expose the entire flowering period to high thrips populations.</p><p>We simulate three planting dates:</p><ul><li><strong>Early</strong>: 15 August (start of second rains)</li><li><strong>Mid</strong>: 13 September (standard planting; Tamò et al. 1993 validation)</li><li><strong>Late</strong>: 15 October (delayed planting)</li></ul><p>The thrips immigration pressure varies by planting date because environmental conditions (temperature, flowering of wild host plants) shift the timing of adult colonization.</p><pre><code class="language-julia hljs"># Generate weather for extended season (Aug 1 – Dec 31)
+const N_EXTENDED = 120
+
+ext_temps = Float64[]
+ext_rads  = Float64[]
+for d in 1:N_EXTENDED
+    # Aug–Dec temperature trajectory for Guinea savanna
+    T = 27.5 - 1.5 * (d / N_EXTENDED) + 1.0 * sin(2π * d / 30)
+    push!(ext_temps, T)
+    R = 16.0 + 5.0 * (d / N_EXTENDED) + 2.0 * sin(2π * d / 15)
+    push!(ext_rads, max(10.0, R))
+end
+
+ext_weather_days = [DailyWeather(ext_temps[d], ext_temps[d]-4, ext_temps[d]+6;
+                    radiation=ext_rads[d]) for d in 1:N_EXTENDED]
+ext_weather = WeatherSeries(ext_weather_days; day_offset=1)
+
+# Simulate three planting dates
+planting_offsets = [0, 30, 60]  # days relative to Aug 1
+planting_labels = [&quot;Early (Aug 15)&quot;, &quot;Mid (Sep 13)&quot;, &quot;Late (Oct 15)&quot;]
+planting_results = []
+
+for (offset, label) in zip(planting_offsets, planting_labels)
+    n_days = min(N_SEASON, N_EXTENDED - offset)
+    n_days &lt; 40 &amp;&amp; continue
+
+    # Create weather slice for this planting window
+    slice_temps = ext_temps[offset+1:offset+n_days]
+    slice_rads  = ext_rads[offset+1:offset+n_days]
+    slice_weather_days = [DailyWeather(slice_temps[d], slice_temps[d]-4, slice_temps[d]+6;
+                          radiation=slice_rads[d]) for d in 1:n_days]
+    slice_weather = WeatherSeries(slice_weather_days; day_offset=1)
+
+    # Adjust ξ: later planting → higher thrips pressure
+    ξ_adj = INFESTATION_INDEX * (1.0 + offset / 60.0)
+
+    res = simulate_cowpea_thrips(slice_weather, n_days; ξ=ξ_adj)
+    push!(planting_results, (label=label, offset=offset, n_days=n_days,
+                             result=res, ξ=ξ_adj))
+
+    final_pod = res.pod_biomass[end]
+    peak_thrips = maximum(res.thrips_adults)
+    println(&quot;$label: pod=$(round(final_pod, digits=2)) g, &quot; *
+            &quot;peak adults=$(round(peak_thrips, digits=1)), ξ=$(round(ξ_adj, digits=3))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Early (Aug 15): pod=0.0 g, peak adults=20.7, ξ=0.14
+Mid (Sep 13): pod=0.0 g, peak adults=31.7, ξ=0.21
+Late (Oct 15): pod=0.0 g, peak adults=36.9, ξ=0.28</code></pre><h3 id="Planting-Date-Comparison"><a class="docs-heading-anchor" href="#Planting-Date-Comparison">Planting Date Comparison</a><a id="Planting-Date-Comparison-1"></a><a class="docs-heading-anchor-permalink" href="#Planting-Date-Comparison" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig5 = Figure(size=(900, 700))
+
+colors = [:steelblue, :orange, :firebrick]
+
+# Panel A: Pod biomass trajectories
+ax1 = Axis(fig5[1, 1],
+    xlabel=&quot;Days after planting&quot;,
+    ylabel=&quot;Pod biomass (g/plant)&quot;,
+    title=&quot;Pod Accumulation by Planting Date&quot;)
+
+for (i, pr) in enumerate(planting_results)
+    d = 0:pr.n_days
+    lines!(ax1, collect(d), pr.result.pod_biomass,
+           label=pr.label, linewidth=2.5, color=colors[i])
+end
+axislegend(ax1; position=:lt)
+
+# Panel B: Thrips adult dynamics
+ax2 = Axis(fig5[1, 2],
+    xlabel=&quot;Days after planting&quot;,
+    ylabel=&quot;Adult thrips per plant&quot;,
+    title=&quot;Adult Thrips Dynamics by Planting Date&quot;)
+
+for (i, pr) in enumerate(planting_results)
+    d = 0:pr.n_days
+    lines!(ax2, collect(d), pr.result.thrips_adults,
+           label=pr.label, linewidth=2.5, color=colors[i])
+end
+axislegend(ax2; position=:rt)
+
+# Panel C: Flower index comparison
+ax3 = Axis(fig5[2, 1],
+    xlabel=&quot;Days after planting&quot;,
+    ylabel=&quot;Flower index&quot;,
+    title=&quot;Flower Availability by Planting Date&quot;)
+
+for (i, pr) in enumerate(planting_results)
+    lines!(ax3, collect(1:pr.n_days), pr.result.flower_idx,
+           label=pr.label, linewidth=2.0, color=colors[i])
+end
+axislegend(ax3; position=:rt)
+
+# Panel D: Cumulative thrips·days
+ax4 = Axis(fig5[2, 2],
+    xlabel=&quot;Days after planting&quot;,
+    ylabel=&quot;Cumulative thrips·days&quot;,
+    title=&quot;Cumulative Thrips Pressure&quot;)
+
+for (i, pr) in enumerate(planting_results)
+    lines!(ax4, collect(1:pr.n_days), pr.result.cum_thrips_days,
+           label=pr.label, linewidth=2.5, color=colors[i])
+end
+axislegend(ax4; position=:lt)
+
+fig5</code></pre><p><img src="../29_cowpea_thrips_files/figure-commonmark/cell-18-output-1.png" alt/></p><h3 id="Yield-Summary"><a class="docs-heading-anchor" href="#Yield-Summary">Yield Summary</a><a id="Yield-Summary-1"></a><a class="docs-heading-anchor-permalink" href="#Yield-Summary" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Summary bar chart
+fig6 = Figure(size=(600, 400))
+ax = Axis(fig6[1, 1],
+    xlabel=&quot;Planting Date&quot;,
+    ylabel=&quot;Final Pod Biomass (g/plant)&quot;,
+    title=&quot;Yield by Planting Date&quot;,
+    xticks=(1:length(planting_results),
+            [pr.label for pr in planting_results]))
+
+pod_yields = [pr.result.pod_biomass[end] for pr in planting_results]
+barplot!(ax, 1:length(planting_results), pod_yields,
+         color=colors[1:length(planting_results)])
+
+# Add thrips-free reference
+clean_yield = result_clean.pod_biomass[end]
+hlines!(ax, [clean_yield], color=:gray, linestyle=:dash, linewidth=1.5)
+text!(ax, length(planting_results), clean_yield + 0.1,
+      text=&quot;Thrips-free potential&quot;, fontsize=10, color=:gray)
+
+fig6</code></pre><p><img src="../29_cowpea_thrips_files/figure-commonmark/cell-19-output-1.png" alt/></p><h2 id="Parameter-Sources"><a class="docs-heading-anchor" href="#Parameter-Sources">Parameter Sources</a><a id="Parameter-Sources-1"></a><a class="docs-heading-anchor-permalink" href="#Parameter-Sources" title="Permalink"></a></h2><p>The following table summarises every numerical parameter used in this vignette, its value, and whether it comes from published sources or is assumed.</p><table><tr><th style="text-align: left">Parameter</th><th style="text-align: left">Value</th><th style="text-align: left">Source</th><th style="text-align: left">Notes</th></tr><tr><td style="text-align: left"><strong>Cowpea development</strong></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Base temperature</td><td style="text-align: left">10.0 °C</td><td style="text-align: left">Singh &amp; Allen 1979; Craufurd et al. 1997</td><td style="text-align: left">Literature range: 8–12 °C</td></tr><tr><td style="text-align: left">Upper temperature</td><td style="text-align: left">40.0 °C</td><td style="text-align: left">Ehlers &amp; Hall 1996</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">SLA</td><td style="text-align: left">0.035 m²/g</td><td style="text-align: left">Turk et al. 1980</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Light extinction α</td><td style="text-align: left">0.65</td><td style="text-align: left">Monteith 1965</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Radiation conversion</td><td style="text-align: left">0.26</td><td style="text-align: left">Loomis &amp; Williams 1963</td><td style="text-align: left">MJ/m²/day → g CH₂O/m²/day</td></tr><tr><td style="text-align: left">Erlang substages k</td><td style="text-align: left">25</td><td style="text-align: left">Tamò et al. 1993</td><td style="text-align: left">k=25 for integration</td></tr><tr><td style="text-align: left"><strong>Cowpea organ longevity (DD)</strong></td><td style="text-align: left"></td><td style="text-align: left">Tamò &amp; Baumgärtner 1993 Part I</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Leaf blade</td><td style="text-align: left">500</td><td style="text-align: left">Part I</td><td style="text-align: left">W₀ = 0.08 g/plant</td></tr><tr><td style="text-align: left">Stem + petiole</td><td style="text-align: left">700</td><td style="text-align: left">Part I</td><td style="text-align: left">W₀ = 0.10 g/plant</td></tr><tr><td style="text-align: left">Nodulated root</td><td style="text-align: left">800</td><td style="text-align: left">Part I</td><td style="text-align: left">W₀ = 0.04 g/plant</td></tr><tr><td style="text-align: left">Inflorescence</td><td style="text-align: left">300</td><td style="text-align: left">Part I</td><td style="text-align: left">W₀ = 0.0 (post-flowering onset)</td></tr><tr><td style="text-align: left">Pod</td><td style="text-align: left">400</td><td style="text-align: left">Part I</td><td style="text-align: left">W₀ = 0.0 (post-pod fill)</td></tr><tr><td style="text-align: left"><strong>Cowpea phenology (DD)</strong></td><td style="text-align: left"></td><td style="text-align: left">Tamò &amp; Baumgärtner 1993 Part I</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Vegetative onset</td><td style="text-align: left">100</td><td style="text-align: left">Part I</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Flowering onset</td><td style="text-align: left">450</td><td style="text-align: left">Part I</td><td style="text-align: left">Literature: ~40–50 d at 25 °C</td></tr><tr><td style="text-align: left">Full flowering</td><td style="text-align: left">550</td><td style="text-align: left">Part I</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Pod fill</td><td style="text-align: left">700</td><td style="text-align: left">Part I</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Maturity</td><td style="text-align: left">900</td><td style="text-align: left">Part I</td><td style="text-align: left">~70 d at 25 °C</td></tr><tr><td style="text-align: left"><strong>Cowpea respiration</strong></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Leaf base rate (25 °C)</td><td style="text-align: left">1.5%/day</td><td style="text-align: left">Penning de Vries &amp; van Laar 1982</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Q₁₀</td><td style="text-align: left">2.0</td><td style="text-align: left">Penning de Vries &amp; van Laar 1982</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Growth respiration</td><td style="text-align: left">28%</td><td style="text-align: left"><em>assumed</em></td><td style="text-align: left"></td></tr><tr><td style="text-align: left"><strong>Thrips development</strong></td><td style="text-align: left"></td><td style="text-align: left">Tamò et al. 1993, Tables 1–2</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Egg lower threshold</td><td style="text-align: left">10.0 °C</td><td style="text-align: left">Table 2 (back-extrapolated)</td><td style="text-align: left">Literature range: 8–12 °C</td></tr><tr><td style="text-align: left">Egg upper threshold</td><td style="text-align: left">35.0 °C</td><td style="text-align: left">Table 2 (no survival at 37 °C)</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Egg DD</td><td style="text-align: left">70</td><td style="text-align: left">Table 2 (~4.7 d at 25 °C)</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Larva lower threshold</td><td style="text-align: left">10.0 °C</td><td style="text-align: left">Table 2</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Larva DD</td><td style="text-align: left">87</td><td style="text-align: left">Table 2 (~5.8 d at 25 °C)</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Pupa lower threshold</td><td style="text-align: left">10.0 °C</td><td style="text-align: left">Table 2</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Pupa DD</td><td style="text-align: left">63</td><td style="text-align: left">Table 2 (~4.2 d at 25 °C)</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Egg-to-adult total</td><td style="text-align: left">220 DD</td><td style="text-align: left">Derived</td><td style="text-align: left">~15 d at 25 °C (lit. 15–25 d)</td></tr><tr><td style="text-align: left">Adult T₀</td><td style="text-align: left">13.0 °C</td><td style="text-align: left">Tamò et al. 1993, Eq. 6</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Adult T_opt</td><td style="text-align: left">30.0 °C</td><td style="text-align: left">Eq. 6</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Adult β₁₂</td><td style="text-align: left">0.00175/°C/d</td><td style="text-align: left">Eq. 6</td><td style="text-align: left">Senescence rate derivative</td></tr><tr><td style="text-align: left">Adult lifespan DD</td><td style="text-align: left">250</td><td style="text-align: left">Derived from β₁₂</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Brière a (egg)</td><td style="text-align: left">8.50 × 10⁻⁵</td><td style="text-align: left">Fitted to Table 2</td><td style="text-align: left">r(25) ≈ 0.21</td></tr><tr><td style="text-align: left">Brière a (larva)</td><td style="text-align: left">6.90 × 10⁻⁵</td><td style="text-align: left">Fitted to Table 2</td><td style="text-align: left">r(25) ≈ 0.17</td></tr><tr><td style="text-align: left">Brière a (pupa)</td><td style="text-align: left">9.50 × 10⁻⁵</td><td style="text-align: left">Fitted to Table 2</td><td style="text-align: left">r(25) ≈ 0.24</td></tr><tr><td style="text-align: left">Erlang k (all stages)</td><td style="text-align: left">25</td><td style="text-align: left">Tamò et al. 1993, p. 96</td><td style="text-align: left">k_adult = 15</td></tr><tr><td style="text-align: left"><strong>Thrips mortality</strong></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Egg μ</td><td style="text-align: left">0.002/DD</td><td style="text-align: left"><em>assumed</em> from Table 2 survivorship</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Larva μ</td><td style="text-align: left">0.002/DD</td><td style="text-align: left"><em>assumed</em> from Table 2</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Pupa μ</td><td style="text-align: left">0.003/DD</td><td style="text-align: left"><em>assumed</em> (soil predation)</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Adult μ</td><td style="text-align: left">0.001/DD</td><td style="text-align: left"><em>assumed</em></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Predation survival (egg)</td><td style="text-align: left">0.86</td><td style="text-align: left">Tamò et al. 1993, Table 3</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Predation survival (larva)</td><td style="text-align: left">0.90</td><td style="text-align: left">Table 3</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Predation survival (pupa)</td><td style="text-align: left">0.85</td><td style="text-align: left">Table 3</td><td style="text-align: left"></td></tr><tr><td style="text-align: left"><strong>Thrips fecundity</strong></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Lifetime fecundity</td><td style="text-align: left">70 eggs/female</td><td style="text-align: left">Tamò 1991; Alabi et al. 2003</td><td style="text-align: left">Literature: 40–100</td></tr><tr><td style="text-align: left">Sex ratio</td><td style="text-align: left">0.65 female</td><td style="text-align: left">Tamò et al. 1993</td><td style="text-align: left">Parthenogenesis common</td></tr><tr><td style="text-align: left">Oviposition T range</td><td style="text-align: left">15–35 °C</td><td style="text-align: left"><em>assumed</em></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Preoviposition period</td><td style="text-align: left">30 DD</td><td style="text-align: left">Tamò 1991 (~2 d at 25 °C)</td><td style="text-align: left"></td></tr><tr><td style="text-align: left"><strong>Crop-pest coupling</strong></td><td style="text-align: left"></td><td style="text-align: left">Tamò et al. 1993</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">N_max (saturation)</td><td style="text-align: left">90 thrips/inflor.</td><td style="text-align: left">p. 104</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Adult damage coefficient</td><td style="text-align: left">0.25</td><td style="text-align: left">Eq. 19</td><td style="text-align: left">Relative to larva</td></tr><tr><td style="text-align: left">Infestation index ξ</td><td style="text-align: left">0.14</td><td style="text-align: left">Tamò et al. 1993, validation</td><td style="text-align: left">Field-specific</td></tr><tr><td style="text-align: left">Critical ξ*</td><td style="text-align: left">0.10</td><td style="text-align: left">Evaluation 1</td><td style="text-align: left">Below: plant compensates</td></tr><tr><td style="text-align: left">Reproductive preference</td><td style="text-align: left">5×</td><td style="text-align: left">Tamò et al. 1993</td><td style="text-align: left">vs. vegetative organs</td></tr><tr><td style="text-align: left"><strong>Damage function</strong></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Exponential coefficient a</td><td style="text-align: left">0.015</td><td style="text-align: left">Fitted to 20–80% range</td><td style="text-align: left">Bottenberg et al. 1997</td></tr><tr><td style="text-align: left"><strong>Field setup</strong></td><td style="text-align: left"></td><td style="text-align: left">Tamò et al. 1993</td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Cultivar</td><td style="text-align: left">Kpodjigigu</td><td style="text-align: left">p. 102</td><td style="text-align: left">Local, photosensitive, indeterminate</td></tr><tr><td style="text-align: left">Plant spacing</td><td style="text-align: left">0.25 × 0.75 m</td><td style="text-align: left">p. 102</td><td style="text-align: left">~13.3 plants/m²</td></tr><tr><td style="text-align: left">Growing season</td><td style="text-align: left">~75 days</td><td style="text-align: left">p. 102</td><td style="text-align: left">Second cropping season</td></tr><tr><td style="text-align: left">Location</td><td style="text-align: left">Abomey-Calavi, Benin</td><td style="text-align: left">p. 102</td><td style="text-align: left">Guinea savanna, ~7°N</td></tr></table><p><em>Assumed</em> parameters are not given explicitly in the cited papers and represent reasonable modelling choices; sensitivity analysis is recommended.</p><h2 id="Key-Insights"><a class="docs-heading-anchor" href="#Key-Insights">Key Insights</a><a id="Key-Insights-1"></a><a class="docs-heading-anchor-permalink" href="#Key-Insights" title="Permalink"></a></h2><ol><li><p><strong>Phenological synchrony determines damage severity</strong>: The overlap  between the cowpea flowering window (450–700 DD) and thrips  colonization timing is the single most important determinant of  yield loss. When these windows are desynchronized — by early  planting, short-duration varieties, or drought-induced shifts —  thrips damage is substantially reduced.</p></li><li><p><strong>Plant compensation below ξ* ≈ 0.1</strong>: Cowpea naturally sheds  84–94% of its flower buds (Ojehomon 1968). Below the critical  infestation index ξ* ≈ 0.1, the plant can compensate for  thrips-induced flower loss without yield penalty. This implies that  low-level thrips populations need not trigger control interventions.</p></li><li><p><strong>Planting date as IPM strategy</strong>: Early planting advances flowering  past peak thrips immigration. The model predicts that a 30-day  earlier planting can reduce cumulative thrips pressure by 40–60%,  translating to substantial yield recovery — consistent with field  observations by Bottenberg et al. (1997).</p></li><li><p><strong>Temperature drives development rate asymmetry</strong>: The nonlinear  (Brière) development response produces faster thrips generation  turnover at 25–30 °C than at cooler temperatures, leading to higher  population peaks in mid-season. Above 33 °C, immature development  ceases entirely.</p></li><li><p><strong>Saturating damage response</strong>: The N_max saturation at 90 thrips  per inflorescence means that extremely high densities do not cause  proportionally more damage than moderate infestations. This has  implications for economic threshold calculations: the marginal cost  of additional thrips diminishes at high densities.</p></li><li><p><strong>Water and phosphate interactions</strong>: Although not fully implemented  in this simplified vignette, Tamò et al. (1993) showed that drought  and phosphate limitation interact synergistically with thrips  damage: stressed plants have reduced compensation capacity, making  the critical ξ* threshold effectively lower under resource  limitation.</p></li></ol><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Tamo1993Cowpea&quot; class=&quot;csl-entry&quot;&gt;</p><p>Tamò, M., J. Baumgärtner, and A. P. Gutierrez. 1993. “Analysis of the Cowpea Agro-Ecosystem in West Africa. II. Modelling the Interactions Between Cowpea and the Bean Flower Thrips &lt;span class=&quot;nocase&quot;&gt;Megalurothrips sjostedti&lt;/span&gt; (Trybom) (Thysanoptera, Thripidae).” <em>Ecological Modelling</em> 70: 89–113. <a href="https://doi.org/10.1016/0304-3800(93)90074-3">https://doi.org/10.1016/0304-3800(93)90074-3</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../28_olive_bactrocera/">« Olive–Olive Fly System Under Climate Warming</a><a class="docs-footer-nextpage" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

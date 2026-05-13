@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Rice–Fish Integrated Agroecosystem · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Rice–Fish Integrated Agroecosystem · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Rice–Fish Integrated Agroecosystem · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Rice–Fish Integrated Agroecosystem · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/33_rice_fish_agroecosystem/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/33_rice_fish_agroecosystem/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/33_rice_fish_agroecosystem/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li class="is-active"><a class="tocitem" href>Rice–Fish Integrated Agroecosystem</a><ul class="internal"><li><a class="tocitem" href="#Introduction"><span>Introduction</span></a></li><li><a class="tocitem" href="#Rice-Growth-Model"><span>Rice Growth Model</span></a></li><li><a class="tocitem" href="#Aquatic-Food-Web"><span>Aquatic Food Web</span></a></li><li><a class="tocitem" href="#Tilapia-Growth"><span>Tilapia Growth</span></a></li><li><a class="tocitem" href="#System-Coupling"><span>System Coupling</span></a></li><li><a class="tocitem" href="#Weather:-Bang-Sai,-Thailand"><span>Weather: Bang Sai, Thailand</span></a></li><li><a class="tocitem" href="#Simulation-Engine"><span>Simulation Engine</span></a></li><li><a class="tocitem" href="#Scenario-1:-Rice-Only"><span>Scenario 1: Rice Only</span></a></li><li><a class="tocitem" href="#Scenario-2:-Rice-Tilapia-in-Floodwater"><span>Scenario 2: Rice + Tilapia in Floodwater</span></a></li><li><a class="tocitem" href="#Scenario-3:-Rice-Fishpond-(Pellet-Fed)"><span>Scenario 3: Rice + Fishpond (Pellet-Fed)</span></a></li><li><a class="tocitem" href="#Visualization"><span>Visualization</span></a></li><li><a class="tocitem" href="#Discussion"><span>Discussion</span></a></li><li><a class="tocitem" href="#Parameter-Sources"><span>Parameter Sources</span></a></li></ul></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Rice–Fish Integrated Agroecosystem</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Rice–Fish Integrated Agroecosystem</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Rice–Fish-Integrated-Agroecosystem"><a class="docs-heading-anchor" href="#Rice–Fish-Integrated-Agroecosystem">Rice–Fish Integrated Agroecosystem</a><a id="Rice–Fish-Integrated-Agroecosystem-1"></a><a class="docs-heading-anchor-permalink" href="#Rice–Fish-Integrated-Agroecosystem" title="Permalink"></a></h1><p>PhysiologicallyBasedDemographicModels.jl</p><ul><li><a href="#introduction">Introduction</a></li><li><a href="#rice-growth-model">Rice Growth Model</a></li><li><a href="#aquatic-food-web">Aquatic Food Web</a></li><li><a href="#tilapia-growth">Tilapia Growth</a></li><li><a href="#system-coupling">System Coupling</a></li><li><a href="#weather-bang-sai-thailand">Weather: Bang Sai, Thailand</a></li><li><a href="#simulation-engine">Simulation Engine</a></li><li><a href="#scenario-1-rice-only">Scenario 1: Rice Only</a></li><li><a href="#scenario-2-rice--tilapia-in-floodwater">Scenario 2: Rice + Tilapia in Floodwater</a></li><li><a href="#scenario-3-rice--fishpond-pellet-fed">Scenario 3: Rice + Fishpond (Pellet-Fed)</a></li><li><a href="#visualization">Visualization</a></li><li><a href="#discussion">Discussion</a></li><li><a href="#parameter-sources">Parameter Sources</a></li></ul><p>Primary reference: (&lt;span class=&quot;nocase&quot;&gt;d’Oultremont and Gutierrez&lt;/span&gt; 2002).</p><h2 id="Introduction"><a class="docs-heading-anchor" href="#Introduction">Introduction</a><a id="Introduction-1"></a><a class="docs-heading-anchor-permalink" href="#Introduction" title="Permalink"></a></h2><p>Rice–fish culture is practised across Southeast Asia, where Nile tilapia (<em>Oreochromis niloticus</em>) are stocked into flooded paddies at transplanting. d’Oultremont and Gutierrez (2002, Parts I &amp; II, <em>Ecological Modelling</em>) modelled the rice–aquatic ecosystem at Bang Sai, Thailand, coupling 14 meta-species across four trophic levels. Their key finding: <strong>rice canopy shading</strong> limits floodwater phytoplankton, cascading through zooplankton to constrain fish growth. This vignette implements a simplified four-component version: rice plant, phytoplankton, zooplankton, and tilapia.</p><h2 id="Rice-Growth-Model"><a class="docs-heading-anchor" href="#Rice-Growth-Model">Rice Growth Model</a><a id="Rice-Growth-Model-1"></a><a class="docs-heading-anchor-permalink" href="#Rice-Growth-Model" title="Permalink"></a></h2><p>The rice plant follows the carbon-balance approach of Graf et al. (1990). Four organ populations per hill (25 hills/m²) are modelled as distributed delays with temperature-driven development above a base of 10 °C. Tillering peaks at ~21 tillers/hill around 500 DD, declining to ~9 at maturity (~2000 DD).</p><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+using CairoMakie
+
+const RICE_T_BASE = 10.0;  const RICE_T_UPPER = 42.0
+rice_dev = LinearDevelopmentRate(RICE_T_BASE, RICE_T_UPPER)
+const DD_MAX_TILLER = 500.0;  const DD_PANICLE_INIT = 1000.0
+const DD_GRAIN_FILL = 1200.0; const DD_HARVEST = 2000.0
+const SLA_RICE = 0.037;  const EXT_K = 0.6;  const RAD_CONV = 0.26
+const HILLS = 25;  const GROWTH_RESP = 0.28
+k = 25
+resp_culm = Q10Respiration(0.010, 2.0, 25.0)
+resp_leaf = Q10Respiration(0.015, 2.0, 25.0)
+resp_root = Q10Respiration(0.008, 2.0, 25.0)
+resp_grain = Q10Respiration(0.005, 2.0, 25.0)
+
+function tiller_count(dd)
+    dd &lt; 150 &amp;&amp; return 3.0
+    dd &lt; DD_MAX_TILLER &amp;&amp; return 3.0 + 18.0 * (dd - 150) / (DD_MAX_TILLER - 150)
+    return 21.0 - 12.0 * min(1.0, (dd - DD_MAX_TILLER) / (DD_HARVEST - DD_MAX_TILLER))
+end
+function rice_photo(lm, rad, til)
+    lai = min(10.0, lm * SLA_RICE * HILLS * til / 3.0)
+    (1.0 - exp(-EXT_K * lai)) * rad * RAD_CONV / HILLS
+end
+function canopy_transmittance(lm, til)
+    exp(-EXT_K * min(10.0, lm * SLA_RICE * HILLS * til / 3.0))
+end
+function rice_priorities(dd)
+    dd &lt; DD_PANICLE_INIT ? [:root, :leaf, :culm] :
+    dd &lt; DD_GRAIN_FILL   ? [:leaf, :culm, :root, :grain] :
+                           [:grain, :culm, :leaf, :root]
+end</code></pre><pre><code class="nohighlight hljs">rice_priorities (generic function with 1 method)</code></pre><h2 id="Aquatic-Food-Web"><a class="docs-heading-anchor" href="#Aquatic-Food-Web">Aquatic Food Web</a><a id="Aquatic-Food-Web-1"></a><a class="docs-heading-anchor-permalink" href="#Aquatic-Food-Web" title="Permalink"></a></h2><p>Phytoplankton (aggregated <em>Scenedesmus</em>/<em>Chlorella</em>) grow at up to 1.5/day at 30 °C, limited by canopy-transmitted light (Monod half-saturation). Zooplankton (rotifers + cladocerans) graze phytoplankton via a Holling Type II response, peaking at 0.9/day at 28 °C.</p><pre><code class="language-julia hljs">const PHYTO_RMAX = 1.5;  const PHYTO_TOPT = 30.0; const PHYTO_LOSS = 0.15
+const PHYTO_K_LIGHT = 0.3; const PHYTO_CAP = 50.0
+const ZOO_RMAX = 0.9;  const ZOO_TOPT = 28.0;  const ZOO_LOSS = 0.10
+const ZOO_HALF = 5.0;  const ZOO_GMAX = 2.0;   const ZOO_EFF = 0.30
+
+phyto_r(T, lf) = T &lt; 5 ? 0.0 : PHYTO_RMAX * max(0, 1-((T-PHYTO_TOPT)/15)^2) * lf/(PHYTO_K_LIGHT+lf)
+zoo_r(T, P)    = T &lt; 8 ? 0.0 : ZOO_RMAX * max(0, 1-((T-ZOO_TOPT)/12)^2) * P/(ZOO_HALF+P)</code></pre><pre><code class="nohighlight hljs">zoo_r (generic function with 1 method)</code></pre><h2 id="Tilapia-Growth"><a class="docs-heading-anchor" href="#Tilapia-Growth">Tilapia Growth</a><a id="Tilapia-Growth-1"></a><a class="docs-heading-anchor-permalink" href="#Tilapia-Growth" title="Permalink"></a></h2><p>Tilapia are stocked at 2 fish/m², 12 g each. Temperature-dependent growth (optimum 28 °C, base 16 °C) is limited by zooplankton + phytoplankton supply via a demand-driven functional response. Maintenance respiration follows Q₁₀ = 2.2.</p><pre><code class="language-julia hljs">const TIL_TBASE = 16.0;  const TIL_TOPT = 28.0;  const TIL_TMAX = 36.0
+const TIL_W0 = 12.0;     const TIL_DENS = 2.0;   const TIL_GMAX = 0.04
+tilapia_resp = Q10Respiration(0.012, 2.2, 25.0)
+
+function til_tscalar(T)
+    (T &lt; TIL_TBASE || T &gt; TIL_TMAX) &amp;&amp; return 0.0
+    T &lt;= TIL_TOPT ? min(1.0, (T-TIL_TBASE)/(TIL_TOPT-TIL_TBASE)) :
+                    max(0.0, 1-(T-TIL_TOPT)/(TIL_TMAX-TIL_TOPT))
+end</code></pre><pre><code class="nohighlight hljs">til_tscalar (generic function with 1 method)</code></pre><h2 id="System-Coupling"><a class="docs-heading-anchor" href="#System-Coupling">System Coupling</a><a id="System-Coupling-1"></a><a class="docs-heading-anchor-permalink" href="#System-Coupling" title="Permalink"></a></h2><p>Rice canopy shading limits floodwater light → suppresses phytoplankton → limits fish. Fish feces recycle ~10 % of nutrients to rice (fishpond scenario). Area: 90 % rice, 10 % pond; fish spend 80 % of time in paddy.</p><pre><code class="language-julia hljs">const A_RICE = 0.90;  const FISH_T_RICE = 0.80
+const NUTRIENT_BOOST = 0.10;  const PELLET_RATE = 0.03</code></pre><pre><code class="nohighlight hljs">0.03</code></pre><h2 id="Weather:-Bang-Sai,-Thailand"><a class="docs-heading-anchor" href="#Weather:-Bang-Sai,-Thailand">Weather: Bang Sai, Thailand</a><a id="Weather:-Bang-Sai,-Thailand-1"></a><a class="docs-heading-anchor-permalink" href="#Weather:-Bang-Sai,-Thailand" title="Permalink"></a></h2><pre><code class="language-julia hljs">const NDAYS = 150
+wdays = [let T_m = 28.0-1.5d/NDAYS, r = max(12.0, 20+3sin(2π*d/45)-2d/NDAYS)
+    DailyWeather(T_m, T_m-5+sin(2π*d/30), T_m+5+1.5sin(2π*d/30);
+                 radiation=r, photoperiod=12.5) end for d in 1:NDAYS]
+weather = WeatherSeries(wdays; day_offset=1)</code></pre><pre><code class="nohighlight hljs">WeatherSeries{Float64}(DailyWeather{Float64}[DailyWeather{Float64}(27.99, 23.197911690817758, 33.30186753622663, 20.404185969546866, 12.5, 0.0, 0.5), DailyWeather{Float64}(27.98, 23.3867366430758, 33.5901049646137, 20.80024540078433, 12.5, 0.0, 0.5), DailyWeather{Float64}(27.97, 23.557785252292472, 33.85167787843871, 21.180209929227402, 12.5, 0.0, 0.5), DailyWeather{Float64}(27.96, 23.703144825477395, 34.074717238216095, 21.53642445936628, 12.5, 0.0, 0.5), DailyWeather{Float64}(27.95, 23.816025403784437, 34.24903810567666, 21.861696162392953, 12.5, 0.0, 0.5), DailyWeather{Float64}(27.94, 23.891056516295155, 34.36658477444273, 22.149434476432184, 12.5, 0.0, 0.5), DailyWeather{Float64}(27.93, 23.924521895368272, 34.42178284305241, 22.393779384331793, 12.5, 0.0, 0.5), DailyWeather{Float64}(27.92, 23.914521895368274, 34.411782843052414, 22.589715472230836, 12.5, 0.0, 0.5), DailyWeather{Float64}(27.91, 23.861056516295154, 34.33658477444273, 22.73316954888546, 12.5, 0.0, 0.5), DailyWeather{Float64}(27.9, 23.766025403784436, 34.19903810567666, 22.82108992570329, 12.5, 0.0, 0.5)  …  DailyWeather{Float64}(26.59, 20.638943483704846, 30.16341522555727, 20.349434476432176, 12.5, 0.0, 0.5), DailyWeather{Float64}(26.58, 20.585478104631726, 30.08821715694759, 20.59377938433179, 12.5, 0.0, 0.5), DailyWeather{Float64}(26.57, 20.575478104631728, 30.07821715694759, 20.789715472230835, 12.5, 0.0, 0.5), DailyWeather{Float64}(26.56, 20.608943483704845, 30.13341522555727, 20.93316954888546, 12.5, 0.0, 0.5), DailyWeather{Float64}(26.55, 20.68397459621556, 30.25096189432334, 21.02108992570329, 12.5, 0.0, 0.5), DailyWeather{Float64}(26.54, 20.796855174522605, 30.425282761783905, 21.051505814390623, 12.5, 0.0, 0.5), DailyWeather{Float64}(26.53, 20.942214747707528, 30.64832212156129, 21.023565686104817, 12.5, 0.0, 0.5), DailyWeather{Float64}(26.52, 21.1132633569242, 30.9098950353863, 20.93755384549466, 12.5, 0.0, 0.5), DailyWeather{Float64}(26.51, 21.30208830918224, 31.19813246377336, 20.794884897033697, 12.5, 0.0, 0.5), DailyWeather{Float64}(26.5, 21.5, 31.499999999999996, 20.598076211353316, 12.5, 0.0, 0.5)], 1)</code></pre><h2 id="Simulation-Engine"><a class="docs-heading-anchor" href="#Simulation-Engine">Simulation Engine</a><a id="Simulation-Engine-1"></a><a class="docs-heading-anchor-permalink" href="#Simulation-Engine" title="Permalink"></a></h2><pre><code class="language-julia hljs">function sim_rf(weather, nd; fish=true, pond=false, pellet=false)
+    # Rice distributed delays (mutable, passed via params for in-place stepping)
+    rice_delays = (
+        culm  = DistributedDelay(k, 800.0; W0=0.16),
+        leaf  = DistributedDelay(k, 600.0; W0=0.12),
+        root  = DistributedDelay(k, 1000.0; W0=0.06),
+        grain = DistributedDelay(k, 700.0; W0=0.0),
+    )
+    rice_μ = (culm=0.001, leaf=0.001, root=0.0005, grain=0.0005)
+
+    # All components as BulkPopulations
+    culm_bp  = BulkPopulation(:culm,  0.16)
+    leaf_bp  = BulkPopulation(:leaf,  0.12)
+    root_bp  = BulkPopulation(:root,  0.06)
+    grain_bp = BulkPopulation(:grain, 0.0)
+    phyto_bp = BulkPopulation(:phyto, 8.0)
+    zoo_bp   = BulkPopulation(:zoo,   2.0)
+    fish_bp  = BulkPopulation(:fish,  fish ? TIL_W0 : 0.0)
+
+    cum_dd_state = ScalarState(:cum_dd, 0.0;
+        update=(val, sys, w, day, p) -&gt; val + degree_days(rice_dev, w.T_mean))
+
+    dynamics = CustomRule(:dynamics, (sys, w, day, p) -&gt; begin
+        T = w.T_mean
+        dd = degree_days(rice_dev, T)
+        cumd = get_state(sys, :cum_dd)
+        tl = tiller_count(cumd)
+
+        # Rice carbon balance
+        s = rice_photo(delay_total(p.delays.leaf), w.radiation, tl)
+        maint = sum(respiration_rate(r, T) * delay_total(getfield(p.delays, f))
+                    for (f, r) in zip((:culm,:leaf,:root,:grain),
+                                      (resp_culm,resp_leaf,resp_root,resp_grain)))
+        ns = max(0.0, s - maint) * (1 - GROWTH_RESP)
+        p.pond &amp;&amp; p.pellet &amp;&amp; (ns *= 1 + NUTRIENT_BOOST)
+
+        pris = rice_priorities(cumd)
+        rem = ns
+        inf = Dict(:culm=&gt;0.0, :leaf=&gt;0.0, :root=&gt;0.0, :grain=&gt;0.0)
+        for pr in pris
+            a = min(rem, max(0.0, delay_total(getfield(p.delays, pr)) * 0.04 * dd))
+            inf[pr] = a
+            rem -= a
+        end
+
+        for nm in (:culm, :leaf, :root, :grain)
+            step_delay!(getfield(p.delays, nm), dd, inf[nm]; μ=getfield(p.rice_μ, nm))
+        end
+
+        sys[:culm].population.value[]  = delay_total(p.delays.culm)
+        sys[:leaf].population.value[]  = delay_total(p.delays.leaf)
+        sys[:root].population.value[]  = delay_total(p.delays.root)
+        sys[:grain].population.value[] = delay_total(p.delays.grain)
+
+        τ = canopy_transmittance(delay_total(p.delays.leaf), tl)
+
+        # Aquatic dynamics
+        Pv = total_population(sys[:phyto].population)
+        Zv = total_population(sys[:zoo].population)
+
+        gr = ZOO_GMAX * Zv * Pv / (ZOO_HALF + Pv)
+        dP = Pv * (phyto_r(T, τ) * (1 - Pv/PHYTO_CAP) - PHYTO_LOSS) - gr
+        fp = 0.0
+        if p.fish
+            ft = p.pond ? FISH_T_RICE : 1.0
+            fw_val = total_population(sys[:fish].population)
+            fp = 0.5 * til_tscalar(T) * ft * TIL_DENS * (fw_val/100) * Zv / (2 + Zv)
+        end
+        dZ = Zv * (zoo_r(T, Pv) * ZOO_EFF - ZOO_LOSS) - fp
+
+        sys[:phyto].population.value[] = max(0.01, Pv + dP)
+        sys[:zoo].population.value[]   = max(0.01, Zv + dZ)
+
+        # Fish growth
+        if p.fish
+            W = total_population(sys[:fish].population)
+            ts = til_tscalar(T)
+            food = Zv * 0.5 + Pv * 0.05
+            p.pond &amp;&amp; p.pellet &amp;&amp; (food += PELLET_RATE * W)
+            g = min(TIL_GMAX * W * ts, food * TIL_DENS * 0.3)
+            sys[:fish].population.value[] = max(W * 0.95, W + g - respiration_rate(tilapia_resp, T) * W)
+        end
+
+        return (transmit=τ, tiller=tl)
+    end)
+
+    system = PopulationSystem(
+        :culm =&gt; culm_bp, :leaf =&gt; leaf_bp, :root =&gt; root_bp, :grain =&gt; grain_bp,
+        :phyto =&gt; phyto_bp, :zoo =&gt; zoo_bp, :fish =&gt; fish_bp;
+        state=[cum_dd_state])
+    prob = PBDMProblem(MultiSpeciesPBDMNew(), system, weather, (1, nd);
+        p=(delays=rice_delays, rice_μ=rice_μ, fish=fish, pond=pond, pellet=pellet),
+        rules=AbstractInteractionRule[dynamics])
+    sol = solve(prob, DirectIteration())
+
+    # Build output arrays (nd+1 length, with initial values prepended)
+    log = sol.rule_log[:dynamics]
+    cm  = vcat(0.16, sol[:culm])
+    lm  = vcat(0.12, sol[:leaf])
+    rm_ = vcat(0.06, sol[:root])
+    gm  = vcat(0.0,  sol[:grain])
+    P   = vcat(8.0,  sol[:phyto])
+    Z   = vcat(2.0,  sol[:zoo])
+    fw  = vcat(fish ? TIL_W0 : 0.0, sol[:fish])
+    til = vcat(3.0, [r.tiller for r in log])
+    tr  = [r.transmit for r in log]
+    cdd = collect(sol.state_history[:cum_dd])
+
+    (; culm=cm, leaf=lm, root=rm_, grain=gm, tiller=til,
+       phyto=P, zoo=Z, fish=fw, transmit=tr, cum_dd=cdd)
+end</code></pre><pre><code class="nohighlight hljs">sim_rf (generic function with 1 method)</code></pre><h2 id="Scenario-1:-Rice-Only"><a class="docs-heading-anchor" href="#Scenario-1:-Rice-Only">Scenario 1: Rice Only</a><a id="Scenario-1:-Rice-Only-1"></a><a class="docs-heading-anchor-permalink" href="#Scenario-1:-Rice-Only" title="Permalink"></a></h2><pre><code class="language-julia hljs">r1 = sim_rf(weather, NDAYS; fish=false)
+println(&quot;── Rice Only ──&quot;)
+println(&quot;Grain: $(round(r1.grain[end],digits=2)) g/hill  &quot; *
+        &quot;($(round(r1.grain[end]*HILLS/1000,digits=2)) t/ha equiv.)&quot;)
+println(&quot;Peak phyto: $(round(maximum(r1.phyto),digits=1)) mg C/L&quot;)</code></pre><pre><code class="nohighlight hljs">── Rice Only ──
+Grain: 0.0 g/hill  (0.0 t/ha equiv.)
+Peak phyto: 42.0 mg C/L</code></pre><h2 id="Scenario-2:-Rice-Tilapia-in-Floodwater"><a class="docs-heading-anchor" href="#Scenario-2:-Rice-Tilapia-in-Floodwater">Scenario 2: Rice + Tilapia in Floodwater</a><a id="Scenario-2:-Rice-Tilapia-in-Floodwater-1"></a><a class="docs-heading-anchor-permalink" href="#Scenario-2:-Rice-Tilapia-in-Floodwater" title="Permalink"></a></h2><pre><code class="language-julia hljs">r2 = sim_rf(weather, NDAYS; fish=true, pond=false)
+println(&quot;── Rice + Tilapia (floodwater) ──&quot;)
+println(&quot;Grain: $(round(r2.grain[end],digits=2)) g/hill&quot;)
+println(&quot;Fish: $(TIL_W0) → $(round(r2.fish[end],digits=1)) g&quot;)</code></pre><pre><code class="nohighlight hljs">── Rice + Tilapia (floodwater) ──
+Grain: 0.0 g/hill
+Fish: 12.0 → 75.6 g</code></pre><h2 id="Scenario-3:-Rice-Fishpond-(Pellet-Fed)"><a class="docs-heading-anchor" href="#Scenario-3:-Rice-Fishpond-(Pellet-Fed)">Scenario 3: Rice + Fishpond (Pellet-Fed)</a><a id="Scenario-3:-Rice-Fishpond-(Pellet-Fed)-1"></a><a class="docs-heading-anchor-permalink" href="#Scenario-3:-Rice-Fishpond-(Pellet-Fed)" title="Permalink"></a></h2><pre><code class="language-julia hljs">r3 = sim_rf(weather, NDAYS; fish=true, pond=true, pellet=true)
+println(&quot;── Rice + Fishpond ──&quot;)
+println(&quot;Grain: $(round(r3.grain[end],digits=2)) g/hill &quot; *
+        &quot;(+$(round((r3.grain[end]/max(r1.grain[end],1e-10)-1)*100,digits=1))%)&quot;)
+println(&quot;Fish: $(TIL_W0) → $(round(r3.fish[end],digits=1)) g&quot;)</code></pre><pre><code class="nohighlight hljs">── Rice + Fishpond ──
+Grain: 0.0 g/hill (+-100.0%)
+Fish: 12.0 → 191.5 g</code></pre><h2 id="Visualization"><a class="docs-heading-anchor" href="#Visualization">Visualization</a><a id="Visualization-1"></a><a class="docs-heading-anchor-permalink" href="#Visualization" title="Permalink"></a></h2><pre><code class="language-julia hljs">days = 0:NDAYS
+fig = Figure(size=(900, 800))
+ax1 = Axis(fig[1,1], xlabel=&quot;Days&quot;, ylabel=&quot;g/hill&quot;, title=&quot;(a) Rice Organs&quot;)
+lines!(ax1, collect(days), r1.leaf, label=&quot;Leaf&quot;, color=:green, linewidth=2)
+lines!(ax1, collect(days), r1.culm, label=&quot;Culm&quot;, color=:saddlebrown, linewidth=2)
+lines!(ax1, collect(days), r1.grain, label=&quot;Grain&quot;, color=:gold, linewidth=2.5)
+axislegend(ax1; position=:lt)
+
+ax2 = Axis(fig[1,2], xlabel=&quot;Days&quot;, ylabel=&quot;Fraction&quot;, title=&quot;(b) Canopy Transmittance&quot;)
+lines!(ax2, collect(1:NDAYS), r1.transmit, color=:darkorange, linewidth=2.5)
+
+ax3 = Axis(fig[2,1], xlabel=&quot;Days&quot;, ylabel=&quot;mg C/L&quot;, title=&quot;(c) Plankton (no fish vs fish)&quot;)
+lines!(ax3, collect(days), r1.phyto, label=&quot;Phyto (no fish)&quot;, color=:seagreen, linewidth=2)
+lines!(ax3, collect(days), r2.phyto, label=&quot;Phyto (fish)&quot;, color=:seagreen, linewidth=2, linestyle=:dash)
+lines!(ax3, collect(days), r1.zoo, label=&quot;Zoo (no fish)&quot;, color=:steelblue, linewidth=2)
+lines!(ax3, collect(days), r2.zoo, label=&quot;Zoo (fish)&quot;, color=:steelblue, linewidth=2, linestyle=:dash)
+axislegend(ax3; position=:rt)
+
+ax4 = Axis(fig[2,2], xlabel=&quot;Days&quot;, ylabel=&quot;g/fish&quot;, title=&quot;(d) Tilapia Growth&quot;)
+lines!(ax4, collect(days), r2.fish, label=&quot;Floodwater&quot;, color=:royalblue, linewidth=2.5)
+lines!(ax4, collect(days), r3.fish, label=&quot;Fishpond+pellets&quot;, color=:firebrick, linewidth=2.5)
+axislegend(ax4; position=:lt)
+fig</code></pre><p><img src="../33_rice_fish_agroecosystem_files/figure-commonmark/cell-11-output-1.png" alt/></p><h2 id="Discussion"><a class="docs-heading-anchor" href="#Discussion">Discussion</a><a id="Discussion-1"></a><a class="docs-heading-anchor-permalink" href="#Discussion" title="Permalink"></a></h2><p>The model reproduces the central insight of d’Oultremont &amp; Gutierrez (2002): rice canopy closure is the master variable governing aquatic productivity. Light-mediated trophic cascading limits fish growth in floodwater-only systems, while fishpond + pellet-feeding decouples fish from this constraint and recycles nutrients back to rice (~10 % yield gain). The simplification from 14 to 4 species captures qualitative patterns but underestimates nutrient pathway complexity.</p><h2 id="Parameter-Sources"><a class="docs-heading-anchor" href="#Parameter-Sources">Parameter Sources</a><a id="Parameter-Sources-1"></a><a class="docs-heading-anchor-permalink" href="#Parameter-Sources" title="Permalink"></a></h2><table><tr><th style="text-align: right">Parameter</th><th style="text-align: right">Value</th><th style="text-align: right">Source</th></tr><tr><td style="text-align: right">Rice T<em>base / T</em>upper</td><td style="text-align: right">10 / 42 °C</td><td style="text-align: right">Yoshida (1981); Graf et al. (1990)</td></tr><tr><td style="text-align: right">SLA, extinction coeff.</td><td style="text-align: right">0.037 m²/g, 0.6</td><td style="text-align: right">Murata &amp; Togari (1975); Hayashi &amp; Ito (1962)</td></tr><tr><td style="text-align: right">Phyto max growth</td><td style="text-align: right">1.5 /day at 30 °C</td><td style="text-align: right">Eppley (1972); d’Oultremont &amp; Gutierrez (2002)</td></tr><tr><td style="text-align: right">Zoo max growth</td><td style="text-align: right">0.9 /day at 28 °C</td><td style="text-align: right">Allan (1976)</td></tr><tr><td style="text-align: right">Tilapia T<em>base / T</em>opt</td><td style="text-align: right">16 / 28 °C</td><td style="text-align: right">Caulton (1982); d’Oultremont &amp; Gutierrez (2002)</td></tr><tr><td style="text-align: right">Stocking: 2 fish/m², 12 g</td><td style="text-align: right">—</td><td style="text-align: right">d’Oultremont &amp; Gutierrez (2002)</td></tr><tr><td style="text-align: right">Area rice:pond, fish time</td><td style="text-align: right">90:10, 80 %</td><td style="text-align: right">d’Oultremont &amp; Gutierrez (2002)</td></tr><tr><td style="text-align: right">Nutrient yield boost</td><td style="text-align: right">10 %</td><td style="text-align: right">d’Oultremont &amp; Gutierrez (2002, Part II)</td></tr><tr><td style="text-align: right">Growth resp. fraction</td><td style="text-align: right">0.28</td><td style="text-align: right">Penning de Vries &amp; van Laar (1982)</td></tr><tr><td style="text-align: right">Tilapia max growth rate</td><td style="text-align: right">0.04 /day</td><td style="text-align: right"><strong>[assumed]</strong> — calibrated to 100–270 g range</td></tr><tr><td style="text-align: right">Pellet feed rate</td><td style="text-align: right">0.03 g/g/day</td><td style="text-align: right"><strong>[assumed]</strong></td></tr></table><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-DOultremont2002RiceFish&quot; class=&quot;csl-entry&quot;&gt;</p><p>&lt;span class=&quot;nocase&quot;&gt;d’Oultremont, Thibaud, and Andrew Paul Gutierrez&lt;/span&gt;. 2002. “A Multitrophic Model of a Rice–Fish Agroecosystem: II. Linking the Flooded Rice–Fishpond Systems.” <em>Ecological Modelling</em> 155: 159–76. <a href="https://doi.org/10.1016/S0304-3800(02)00130-8">https://doi.org/10.1016/S0304-3800(02)00130-8</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../32_oleander_scale/">« Oleander Scale Regulation by Competing Parasitoids</a><a class="docs-footer-nextpage" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

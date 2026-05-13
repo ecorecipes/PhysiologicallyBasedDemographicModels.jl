@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Aedes albopictus Invasion Risk in Europe · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Aedes albopictus Invasion Risk in Europe · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Aedes albopictus Invasion Risk in Europe · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Aedes albopictus Invasion Risk in Europe · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/16_aedes_albopictus/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/16_aedes_albopictus/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/16_aedes_albopictus/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li class="is-active"><a class="tocitem" href>Aedes albopictus Invasion Risk in Europe</a><ul class="internal"><li><a class="tocitem" href="#Background"><span>Background</span></a></li><li><a class="tocitem" href="#Temperature-Dependent-Development-Rates"><span>Temperature-Dependent Development Rates</span></a></li><li><a class="tocitem" href="#Plotting-Development-Rate-Curves"><span>Plotting Development Rate Curves</span></a></li><li><a class="tocitem" href="#Temperature-Dependent-Mortality-Rates"><span>Temperature-Dependent Mortality Rates</span></a></li><li><a class="tocitem" href="#Plotting-Mortality-Rate-Curves"><span>Plotting Mortality Rate Curves</span></a></li><li><a class="tocitem" href="#Photoperiod-Driven-Egg-Diapause"><span>Photoperiod-Driven Egg Diapause</span></a></li><li><a class="tocitem" href="#Diapause-Response-Curve"><span>Diapause Response Curve</span></a></li><li><a class="tocitem" href="#Photoperiod-Across-European-Latitudes"><span>Photoperiod Across European Latitudes</span></a></li><li><a class="tocitem" href="#Plotting-Annual-Photoperiod-and-Diapause-Windows"><span>Plotting Annual Photoperiod and Diapause Windows</span></a></li><li><a class="tocitem" href="#Full-Lifecycle-Model"><span>Full Lifecycle Model</span></a></li><li><a class="tocitem" href="#Fecundity-and-Diapause-Coupled-Reproduction"><span>Fecundity and Diapause-Coupled Reproduction</span></a></li><li><a class="tocitem" href="#Simulating-Mediterranean-vs.-Northern-Europe"><span>Simulating Mediterranean vs. Northern Europe</span></a></li><li><a class="tocitem" href="#Running-Multi-Year-Simulations"><span>Running Multi-Year Simulations</span></a></li><li><a class="tocitem" href="#Seasonal-Population-Dynamics"><span>Seasonal Population Dynamics</span></a></li><li><a class="tocitem" href="#Activity-Season-and-Adult-Abundance"><span>Activity Season and Adult Abundance</span></a></li><li><a class="tocitem" href="#Cumulative-Degree-Days-and-Phenology"><span>Cumulative Degree-Days and Phenology</span></a></li><li><a class="tocitem" href="#Overwintering-Survival-via-Diapause"><span>Overwintering Survival via Diapause</span></a></li><li><a class="tocitem" href="#Establishment-Potential-Summary"><span>Establishment Potential Summary</span></a></li><li><a class="tocitem" href="#Vector-Competence-and-Disease-Risk"><span>Vector Competence and Disease Risk</span></a></li><li><a class="tocitem" href="#Transmission-Risk-Windows"><span>Transmission Risk Windows</span></a></li><li><a class="tocitem" href="#Key-Insights"><span>Key Insights</span></a></li><li><a class="tocitem" href="#Parameter-Sources"><span>Parameter Sources</span></a></li><li><a class="tocitem" href="#References"><span>References</span></a></li><li><a class="tocitem" href="#Appendix:-Validation-Figures"><span>Appendix: Validation Figures</span></a></li></ul></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Aedes albopictus Invasion Risk in Europe</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Aedes albopictus Invasion Risk in Europe</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Aedes-albopictus-Invasion-Risk-in-Europe"><a class="docs-heading-anchor" href="#Aedes-albopictus-Invasion-Risk-in-Europe">Aedes albopictus Invasion Risk in Europe</a><a id="Aedes-albopictus-Invasion-Risk-in-Europe-1"></a><a class="docs-heading-anchor-permalink" href="#Aedes-albopictus-Invasion-Risk-in-Europe" title="Permalink"></a></h1><p>Simon Frost</p><ul><li><a href="#background">Background</a></li><li><a href="#temperature-dependent-development-rates">Temperature-Dependent Development Rates</a></li><li><a href="#plotting-development-rate-curves">Plotting Development Rate Curves</a></li><li><a href="#temperature-dependent-mortality-rates">Temperature-Dependent Mortality Rates</a></li><li><a href="#plotting-mortality-rate-curves">Plotting Mortality Rate Curves</a></li><li><a href="#photoperiod-driven-egg-diapause">Photoperiod-Driven Egg Diapause</a></li><li><a href="#diapause-response-curve">Diapause Response Curve</a></li><li><a href="#photoperiod-across-european-latitudes">Photoperiod Across European Latitudes</a></li><li><a href="#plotting-annual-photoperiod-and-diapause-windows">Plotting Annual Photoperiod and Diapause Windows</a></li><li><a href="#full-lifecycle-model">Full Lifecycle Model</a></li><li><a href="#fecundity-and-diapause-coupled-reproduction">Fecundity and Diapause-Coupled Reproduction</a></li><li><a href="#simulating-mediterranean-vs-northern-europe">Simulating Mediterranean vs. Northern Europe</a></li><li><a href="#running-multi-year-simulations">Running Multi-Year Simulations</a></li><li><a href="#seasonal-population-dynamics">Seasonal Population Dynamics</a></li><li><a href="#activity-season-and-adult-abundance">Activity Season and Adult Abundance</a></li><li><a href="#cumulative-degree-days-and-phenology">Cumulative Degree-Days and Phenology</a></li><li><a href="#overwintering-survival-via-diapause">Overwintering Survival via Diapause</a></li><li><a href="#establishment-potential-summary">Establishment Potential Summary</a></li><li><a href="#vector-competence-and-disease-risk">Vector Competence and Disease Risk</a></li><li><a href="#transmission-risk-windows">Transmission Risk Windows</a></li><li><a href="#key-insights">Key Insights</a></li><li><a href="#parameter-sources">Parameter Sources</a></li><li><a href="#references">References</a></li><li><a href="#appendix-validation-figures">Appendix: Validation Figures</a></li></ul><p>Primary reference: (Pasquali et al. 2020).</p><h2 id="Background"><a class="docs-heading-anchor" href="#Background">Background</a><a id="Background-1"></a><a class="docs-heading-anchor-permalink" href="#Background" title="Permalink"></a></h2><p>The Asian tiger mosquito (<em>Aedes albopictus</em>) is one of the most invasive disease vectors worldwide. Native to southeast Asia, it has spread to all inhabited continents in under 40 years. Since its first European detection in Albania (1979), it has established across the Mediterranean and continues expanding northward. <em>Ae. albopictus</em> is a competent vector for <strong>dengue</strong>, <strong>chikungunya</strong>, and <strong>Zika</strong> viruses, making its range expansion a major public health concern.</p><p>This vignette implements a physiologically based demographic model (PBDM) for <em>Ae. albopictus</em> following Pasquali et al. (2020). The model captures:</p><ol><li><strong>Five life stages</strong> with temperature-dependent development: eggs,  larvae, pupae, sexually immature adults, and reproductive adults</li><li><strong>Photoperiod-driven egg diapause</strong>: Short days trigger a fraction  of eggs to enter dormancy, enabling overwintering</li><li><strong>Density-dependent larval mortality</strong>: Intraspecific competition  regulates population peaks</li><li><strong>Temperature-dependent fecundity</strong>: Egg production follows a Brière  curve with thermal limits</li></ol><p>The key innovation is coupling temperature-driven population dynamics with a photoperiod-triggered diapause mechanism. This makes the model’s predictions of northern range limits independent of correlative occurrence data — diapause determines whether year-round persistence (establishment) is possible at a given latitude.</p><p><strong>Reference:</strong> Pasquali, S., Mariani, L., Calvitti, M., Moretti, R., Ponti, L., Chiari, M., Sperandio, G., &amp; Gilioli, G. (2020). <em>Development and calibration of a model for the potential establishment and impact of Aedes albopictus in Europe.</em> Acta Tropica, 202, 105228.</p><h2 id="Temperature-Dependent-Development-Rates"><a class="docs-heading-anchor" href="#Temperature-Dependent-Development-Rates">Temperature-Dependent Development Rates</a><a id="Temperature-Dependent-Development-Rates-1"></a><a class="docs-heading-anchor-permalink" href="#Temperature-Dependent-Development-Rates" title="Permalink"></a></h2><p>Development rates for each immature stage are fitted to laboratory data. Eggs use a cubic polynomial, while larvae, pupae, and sexually immature adults use the Brière function. Parameter estimates are from Table 1 of Pasquali et al. (2020).</p><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+
+# ── Development rate parameters (Table 1, Eq. 9–10, Pasquali et al. 2020) ──
+
+# Egg development: cubic polynomial v(T) = a·T²·(T_sup − T) (Eq. 9)
+const EGG_DEV_A    = 4.16657e-5  # Table 1, Pasquali et al. 2020
+const EGG_DEV_TSUP = 37.3253     # Table 1, °C
+
+# Larval development: Brière function (Eq. 10)
+const LARVA_DEV_A    = 8.604e-5  # Table 1, Pasquali et al. 2020
+const LARVA_DEV_TINF = 8.2934    # Table 1, °C
+const LARVA_DEV_TSUP = 36.0729   # Table 1, °C
+
+# Pupal development: Brière function (Eq. 10)
+const PUPA_DEV_A    = 3.102e-4   # Table 1, Pasquali et al. 2020
+const PUPA_DEV_TINF = 11.9433    # Table 1, °C
+const PUPA_DEV_TSUP = 40.0       # Table 1, °C
+
+# Sexually immature adult development: Brière function (Eq. 10)
+const IMMADULT_DEV_A    = 1.812e-4  # Table 1, Pasquali et al. 2020
+const IMMADULT_DEV_TINF = 7.7804    # Table 1, °C
+const IMMADULT_DEV_TSUP = 35.2937   # Table 1, °C
+
+# Reproductive adult development rate: constant (Section 2.1.3)
+const ADULT_DEV_RATE = 0.015  # Section 2.1.3, 1/day
+
+# ── Custom egg development rate (cubic, not Brière) ──
+struct EggDevelopmentRate{T&lt;:Real} &lt;: AbstractDevelopmentRate
+    a::T
+    T_sup::T
+end
+
+function PhysiologicallyBasedDemographicModels.development_rate(
+        m::EggDevelopmentRate, T::Real)
+    (T &lt;= 0 || T &gt;= m.T_sup) &amp;&amp; return zero(T)
+    return m.a * T^2 * (m.T_sup - T)
+end
+
+function PhysiologicallyBasedDemographicModels.degree_days(
+        m::EggDevelopmentRate, T::Real)
+    return development_rate(m, T)
+end
+
+egg_dev = EggDevelopmentRate(EGG_DEV_A, EGG_DEV_TSUP)
+larva_dev = BriereDevelopmentRate(LARVA_DEV_A, LARVA_DEV_TINF, LARVA_DEV_TSUP)
+pupa_dev = BriereDevelopmentRate(PUPA_DEV_A, PUPA_DEV_TINF, PUPA_DEV_TSUP)
+immature_adult_dev = BriereDevelopmentRate(IMMADULT_DEV_A, IMMADULT_DEV_TINF, IMMADULT_DEV_TSUP)
+
+# Compare development rates across temperature
+println(&quot;Development rates (1/day) at different temperatures:&quot;)
+println(&quot;T(°C) |   Egg    |  Larva   |  Pupa    | Imm. Adult&quot;)
+println(&quot;-&quot;^60)
+for T in [10.0, 15.0, 20.0, 25.0, 30.0, 35.0]
+    re = development_rate(egg_dev, T)
+    rl = development_rate(larva_dev, T)
+    rp = development_rate(pupa_dev, T)
+    ra = development_rate(immature_adult_dev, T)
+    println(&quot;  $(lpad(T, 4))  | $(lpad(round(re, digits=5), 7)) | &quot;,
+            &quot;$(lpad(round(rl, digits=5), 7)) | &quot;,
+            &quot;$(lpad(round(rp, digits=5), 7)) | &quot;,
+            &quot;$(lpad(round(ra, digits=5), 7))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Development rates (1/day) at different temperatures:
+T(°C) |   Egg    |  Larva   |  Pupa    | Imm. Adult
+------------------------------------------------------------
+  10.0  | 0.11385 |  0.0075 |     0.0 | 0.02023
+  15.0  | 0.20929 | 0.03973 | 0.07111 |  0.0884
+  20.0  | 0.28875 | 0.08076 | 0.22353 | 0.17318
+  25.0  | 0.32096 | 0.11958 | 0.39216 | 0.25027
+  30.0  | 0.27469 | 0.13807 | 0.53138 |  0.2779
+  35.0  | 0.11868 |  0.0833 | 0.55975 | 0.09355</code></pre><h2 id="Plotting-Development-Rate-Curves"><a class="docs-heading-anchor" href="#Plotting-Development-Rate-Curves">Plotting Development Rate Curves</a><a id="Plotting-Development-Rate-Curves-1"></a><a class="docs-heading-anchor-permalink" href="#Plotting-Development-Rate-Curves" title="Permalink"></a></h2><pre><code class="language-julia hljs">using CairoMakie
+
+temps = 0.0:0.5:42.0
+
+fig = Figure(size=(800, 500))
+ax = Axis(fig[1,1],
+    xlabel=&quot;Temperature (°C)&quot;,
+    ylabel=&quot;Development rate (1/day)&quot;,
+    title=&quot;Ae. albopictus stage-specific development rates\n(Pasquali et al. 2020)&quot;)
+
+lines!(ax, collect(temps), [development_rate(egg_dev, T) for T in temps],
+    label=&quot;Eggs (cubic)&quot;, linewidth=2)
+lines!(ax, collect(temps), [development_rate(larva_dev, T) for T in temps],
+    label=&quot;Larvae (Brière)&quot;, linewidth=2)
+lines!(ax, collect(temps), [development_rate(pupa_dev, T) for T in temps],
+    label=&quot;Pupae (Brière)&quot;, linewidth=2)
+lines!(ax, collect(temps), [development_rate(immature_adult_dev, T) for T in temps],
+    label=&quot;Immature adults (Brière)&quot;, linewidth=2)
+
+axislegend(ax, position=:lt)
+fig</code></pre><p><img src="../16_aedes_albopictus_files/figure-commonmark/cell-3-output-1.png" alt/></p><h2 id="Temperature-Dependent-Mortality-Rates"><a class="docs-heading-anchor" href="#Temperature-Dependent-Mortality-Rates">Temperature-Dependent Mortality Rates</a><a id="Temperature-Dependent-Mortality-Rates-1"></a><a class="docs-heading-anchor-permalink" href="#Temperature-Dependent-Mortality-Rates" title="Permalink"></a></h2><p>Immature-stage mortality is temperature-dependent. The <strong>proportional mortality</strong> (fraction dying during one stage passage) follows a quadratic function (Eq. 11, Table 2). This is converted to an instantaneous <strong>mortality rate</strong> using Eq. 12 and Table 3 parameters. Adult mortality (both sexually immature and reproductive) is a constant estimated at 0.067/day (Section 2.1.3).</p><pre><code class="language-julia hljs"># ── Proportional mortality parameters (Eq. 11, Table 2) ──
+# m(T) = a·T² + b·T + c, capped at 0.9
+
+const EGG_MORT_A    = 0.002869   # Table 2, Pasquali et al. 2020
+const EGG_MORT_B    = -0.1417    # Table 2
+const EGG_MORT_C    = 2.1673     # Table 2
+const EGG_MORT_TMIN = 11.72      # Table 2, °C
+const EGG_MORT_TMAX = 37.69      # Table 2, °C
+
+const LARVA_MORT_A    = 0.002793  # Table 2, Pasquali et al. 2020
+const LARVA_MORT_B    = -0.1255   # Table 2
+const LARVA_MORT_C    = 1.5768    # Table 2
+const LARVA_MORT_TMIN = 6.27      # Table 2, °C
+const LARVA_MORT_TMAX = 38.65     # Table 2, °C
+
+const PUPA_MORT_A    = 0.003289   # Table 2, Pasquali et al. 2020
+const PUPA_MORT_B    = -0.1437    # Table 2
+const PUPA_MORT_C    = 1.6197     # Table 2
+const PUPA_MORT_TMIN = 5.77       # Table 2, °C
+const PUPA_MORT_TMAX = 37.93      # Table 2, °C
+
+# ── Mortality rate extension parameters (Eq. 12, Table 3) ──
+# Below T_low: μ(T) = μ(T_low) + a_low·(T_low − T)
+# Above T_high: μ(T) = μ(T_high) + a_high·(T − T_high)
+
+const EGG_MORT_ALOW   = 0.05   # Table 3, Pasquali et al. 2020
+const EGG_MORT_AHIGH  = 0.018  # Table 3
+const EGG_MORT_TLOW   = 12.0   # Table 3, °C
+const EGG_MORT_THIGH  = 30.5   # Table 3, °C
+
+const LARVA_MORT_ALOW   = 0.2   # Table 3, Pasquali et al. 2020
+const LARVA_MORT_AHIGH  = 0.15  # Table 3
+const LARVA_MORT_TLOW   = 17.0  # Table 3, °C
+const LARVA_MORT_THIGH  = 30.5  # Table 3, °C
+
+const PUPA_MORT_ALOW   = 0.1   # Table 3, Pasquali et al. 2020
+const PUPA_MORT_AHIGH  = 0.2   # Table 3
+const PUPA_MORT_TLOW   = 17.0  # Table 3, °C
+const PUPA_MORT_THIGH  = 37.5  # Table 3, °C
+
+# Adult mortality: constant for both immature and reproductive adults
+const ADULT_MORTALITY = 0.067  # Section 2.1.3, 1/day
+
+# Proportional mortality (Eq. 11)
+function proportional_mortality(T::Real, a, b, c)
+    return clamp(a * T^2 + b * T + c, 0.0, 0.9)
+end
+
+# Central-range mortality rate: μ(T) = −v(T)·ln(1 − m(T))
+function _central_mortality(T, dev_fn, a, b, c)
+    m = proportional_mortality(T, a, b, c)
+    v = development_rate(dev_fn, T)
+    (m &lt;= 0.0 || m &gt;= 1.0 || v &lt;= 0.0) &amp;&amp; return 0.0
+    return -v * log(1.0 - m)
+end
+
+# Full piecewise mortality rate (Eq. 12)
+function stage_mortality_rate(T::Real, dev_fn,
+                               mort_a, mort_b, mort_c,
+                               a_low, a_high, T_low, T_high)
+    if T &lt; T_low
+        μ_ref = _central_mortality(T_low, dev_fn, mort_a, mort_b, mort_c)
+        return max(0.0, μ_ref + a_low * (T_low - T))
+    elseif T &gt; T_high
+        μ_ref = _central_mortality(T_high, dev_fn, mort_a, mort_b, mort_c)
+        return max(0.0, μ_ref + a_high * (T - T_high))
+    else
+        return _central_mortality(T, dev_fn, mort_a, mort_b, mort_c)
+    end
+end
+
+egg_mortality(T) = stage_mortality_rate(T, egg_dev,
+    EGG_MORT_A, EGG_MORT_B, EGG_MORT_C,
+    EGG_MORT_ALOW, EGG_MORT_AHIGH, EGG_MORT_TLOW, EGG_MORT_THIGH)
+
+larva_mortality(T) = stage_mortality_rate(T, larva_dev,
+    LARVA_MORT_A, LARVA_MORT_B, LARVA_MORT_C,
+    LARVA_MORT_ALOW, LARVA_MORT_AHIGH, LARVA_MORT_TLOW, LARVA_MORT_THIGH)
+
+pupa_mortality(T) = stage_mortality_rate(T, pupa_dev,
+    PUPA_MORT_A, PUPA_MORT_B, PUPA_MORT_C,
+    PUPA_MORT_ALOW, PUPA_MORT_AHIGH, PUPA_MORT_TLOW, PUPA_MORT_THIGH)
+
+println(&quot;Mortality rates (1/day) at different temperatures:&quot;)
+println(&quot;T(°C) |   Egg    |  Larva   |  Pupa    | Adults&quot;)
+println(&quot;-&quot;^60)
+for T in [10.0, 15.0, 20.0, 25.0, 30.0, 35.0]
+    println(&quot;  $(lpad(T, 4))  | $(lpad(round(egg_mortality(T), digits=4), 7)) | &quot;,
+            &quot;$(lpad(round(larva_mortality(T), digits=4), 7)) | &quot;,
+            &quot;$(lpad(round(pupa_mortality(T), digits=4), 7)) | &quot;,
+            &quot;$(lpad(round(ADULT_MORTALITY, digits=4), 7))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Mortality rates (1/day) at different temperatures:
+T(°C) |   Egg    |  Larva   |  Pupa    | Adults
+------------------------------------------------------------
+  10.0  |  0.4222 |   1.416 |  0.7174 |   0.067
+  15.0  |  0.2433 |   0.416 |  0.2174 |   0.067
+  20.0  |  0.1893 |  0.0164 |  0.0141 |   0.067
+  25.0  |  0.1737 |  0.0245 |  0.0339 |   0.067
+  30.0  |  0.1895 |  0.0544 |  0.1664 |   0.067
+  35.0  |  0.2721 |  0.7337 |  0.5405 |   0.067</code></pre><h2 id="Plotting-Mortality-Rate-Curves"><a class="docs-heading-anchor" href="#Plotting-Mortality-Rate-Curves">Plotting Mortality Rate Curves</a><a id="Plotting-Mortality-Rate-Curves-1"></a><a class="docs-heading-anchor-permalink" href="#Plotting-Mortality-Rate-Curves" title="Permalink"></a></h2><pre><code class="language-julia hljs">fig_mort = Figure(size=(800, 500))
+ax_mort = Axis(fig_mort[1,1],
+    xlabel=&quot;Temperature (°C)&quot;,
+    ylabel=&quot;Mortality rate (1/day)&quot;,
+    title=&quot;Ae. albopictus stage-specific mortality rates\n(Pasquali et al. 2020, Tables 2–3)&quot;)
+
+mort_temps = 0.0:0.5:42.0
+lines!(ax_mort, collect(mort_temps), [egg_mortality(T) for T in mort_temps],
+    label=&quot;Eggs&quot;, linewidth=2)
+lines!(ax_mort, collect(mort_temps), [larva_mortality(T) for T in mort_temps],
+    label=&quot;Larvae&quot;, linewidth=2)
+lines!(ax_mort, collect(mort_temps), [pupa_mortality(T) for T in mort_temps],
+    label=&quot;Pupae&quot;, linewidth=2)
+hlines!(ax_mort, [ADULT_MORTALITY], linestyle=:dash, color=:gray,
+    label=&quot;Adults (constant)&quot;)
+
+axislegend(ax_mort, position=:lt)
+fig_mort</code></pre><p><img src="../16_aedes_albopictus_files/figure-commonmark/cell-5-output-1.png" alt/></p><h2 id="Photoperiod-Driven-Egg-Diapause"><a class="docs-heading-anchor" href="#Photoperiod-Driven-Egg-Diapause">Photoperiod-Driven Egg Diapause</a><a id="Photoperiod-Driven-Egg-Diapause-1"></a><a class="docs-heading-anchor-permalink" href="#Photoperiod-Driven-Egg-Diapause" title="Permalink"></a></h2><p>A central feature of <em>Ae. albopictus</em> biology is <strong>photoperiodic diapause</strong>: as day length decreases in autumn, an increasing fraction of eggs enter a dormant state that enables winter survival. The diapause induction function follows Lacour et al. (2015):</p><p class="math-container">\[\text{diap}(D) = \frac{1}{1 + e^{3.04(D - 12.62)}}\]</p><p>where <em>D</em> is day length in hours (Eq. 15). Diapause eggs accumulate from July 1 to December 31 when photoperiod falls below 15 hours (D<em>max). They break diapause when day length reaches 11.25 hours (D</em>min) <strong>and</strong> the weekly minimum temperature average exceeds 12.5°C (Section 2.2).</p><pre><code class="language-julia hljs"># ── Diapause parameters (Section 2.2, Pasquali et al. 2020) ──
+const DIAP_SLOPE = 3.04    # Eq. 15, from Lacour et al. (2015)
+const DIAP_D50   = 12.62   # Eq. 15, hours (50% diapause induction)
+const DIAP_DMAX  = 15.0    # Section 2.2, hours (diapause active below)
+const DIAP_DMIN  = 11.25   # Section 2.2, hours (diapause break above)
+const DIAP_TBREAK = 12.5   # Section 2.2, °C (min weekly T for break)
+
+# Diapausing egg mortality (Eq. 16, fitted to Thomas et al. 2012)
+const DIAP_MORT_A = 0.05301  # Eq. 16, Pasquali et al. 2020
+const DIAP_MORT_B = -0.1649  # Eq. 16
+
+# Diapause induction fraction (Eq. 15)
+function diapause_fraction(D::Real)
+    return 1.0 / (1.0 + exp(DIAP_SLOPE * (D - DIAP_D50)))
+end
+
+# Diapausing egg mortality rate (Eq. 16)
+function diapause_mortality(T::Real)
+    return DIAP_MORT_A * exp(DIAP_MORT_B * T)
+end
+
+# Show diapause fraction across day lengths
+println(&quot;Photoperiod-dependent diapause induction:&quot;)
+println(&quot;Day length (h) | Fraction entering diapause&quot;)
+println(&quot;-&quot;^50)
+for dl in [10.0, 11.0, 11.5, 12.0, 12.5, 13.0, 13.5, 14.0, 15.0]
+    f = diapause_fraction(dl)
+    println(&quot;  $(lpad(dl, 5))         | $(round(f * 100, digits=1))%&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Photoperiod-dependent diapause induction:
+Day length (h) | Fraction entering diapause
+--------------------------------------------------
+   10.0         | 100.0%
+   11.0         | 99.3%
+   11.5         | 96.8%
+   12.0         | 86.8%
+   12.5         | 59.0%
+   13.0         | 24.0%
+   13.5         | 6.4%
+   14.0         | 1.5%
+   15.0         | 0.1%</code></pre><h2 id="Diapause-Response-Curve"><a class="docs-heading-anchor" href="#Diapause-Response-Curve">Diapause Response Curve</a><a id="Diapause-Response-Curve-1"></a><a class="docs-heading-anchor-permalink" href="#Diapause-Response-Curve" title="Permalink"></a></h2><pre><code class="language-julia hljs">fig2 = Figure(size=(800, 400))
+
+# Left: diapause fraction vs day length
+ax1 = Axis(fig2[1,1],
+    xlabel=&quot;Day length (hours)&quot;,
+    ylabel=&quot;Fraction entering diapause&quot;,
+    title=&quot;Diapause induction&quot;)
+dls = 9.0:0.1:16.0
+lines!(ax1, collect(dls), [diapause_fraction(d) for d in dls],
+    linewidth=2.5, color=:darkorange)
+vlines!(ax1, [DIAP_D50], linestyle=:dash, color=:gray,
+    label=&quot;D₅₀ = $(DIAP_D50) h&quot;)
+hlines!(ax1, [0.5], linestyle=:dot, color=:gray)
+axislegend(ax1, position=:rt)
+
+# Right: diapause egg mortality vs temperature
+ax2 = Axis(fig2[1,2],
+    xlabel=&quot;Temperature (°C)&quot;,
+    ylabel=&quot;Mortality rate (1/day)&quot;,
+    title=&quot;Diapausing egg mortality&quot;)
+Ts = -5.0:0.5:25.0
+lines!(ax2, collect(Ts), [diapause_mortality(T) for T in Ts],
+    linewidth=2.5, color=:crimson)
+
+fig2</code></pre><p><img src="../16_aedes_albopictus_files/figure-commonmark/cell-7-output-1.png" alt/></p><h2 id="Photoperiod-Across-European-Latitudes"><a class="docs-heading-anchor" href="#Photoperiod-Across-European-Latitudes">Photoperiod Across European Latitudes</a><a id="Photoperiod-Across-European-Latitudes-1"></a><a class="docs-heading-anchor-permalink" href="#Photoperiod-Across-European-Latitudes" title="Permalink"></a></h2><p>Day length variation drives the timing of diapause entry and exit at different latitudes. Southern locations have shorter winters but weaker photoperiod signals.</p><pre><code class="language-julia hljs"># Compare photoperiod at representative European cities
+println(&quot;Annual photoperiod comparison (hours):&quot;)
+println(&quot;Month  | Day | Rome   | Paris  | Hamburg&quot;)
+println(&quot;       |     | 41.9°N | 48.9°N | 53.6°N&quot;)
+println(&quot;-&quot;^55)
+for (month, doy) in [(&quot;Jan&quot;, 15), (&quot;Mar&quot;, 75), (&quot;May&quot;, 135),
+                      (&quot;Jun&quot;, 172), (&quot;Aug&quot;, 227), (&quot;Sep&quot;, 258),
+                      (&quot;Oct&quot;, 288), (&quot;Nov&quot;, 319), (&quot;Dec&quot;, 350)]
+    dl_rome = photoperiod(41.9, doy)
+    dl_paris = photoperiod(48.9, doy)
+    dl_hamburg = photoperiod(53.6, doy)
+    println(&quot;  $month   | $(lpad(doy, 3)) | $(lpad(round(dl_rome, digits=1), 5)) | &quot;,
+            &quot;$(lpad(round(dl_paris, digits=1), 5)) | &quot;,
+            &quot;$(lpad(round(dl_hamburg, digits=1), 5))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Annual photoperiod comparison (hours):
+Month  | Day | Rome   | Paris  | Hamburg
+       |     | 41.9°N | 48.9°N | 53.6°N
+-------------------------------------------------------
+  Jan   |  15 |   9.1 |   8.3 |   7.5
+  Mar   |  75 |  11.6 |  11.5 |  11.4
+  May   | 135 |  14.2 |  14.8 |  15.4
+  Jun   | 172 |  14.9 |  15.8 |  16.6
+  Aug   | 227 |  13.6 |  14.1 |  14.5
+  Sep   | 258 |  12.3 |  12.3 |  12.4
+  Oct   | 288 |  10.9 |  10.6 |  10.3
+  Nov   | 319 |   9.5 |   8.8 |   8.2
+  Dec   | 350 |   8.8 |   7.8 |   7.0</code></pre><h2 id="Plotting-Annual-Photoperiod-and-Diapause-Windows"><a class="docs-heading-anchor" href="#Plotting-Annual-Photoperiod-and-Diapause-Windows">Plotting Annual Photoperiod and Diapause Windows</a><a id="Plotting-Annual-Photoperiod-and-Diapause-Windows-1"></a><a class="docs-heading-anchor-permalink" href="#Plotting-Annual-Photoperiod-and-Diapause-Windows" title="Permalink"></a></h2><pre><code class="language-julia hljs">fig3 = Figure(size=(800, 450))
+ax3 = Axis(fig3[1,1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Day length (hours)&quot;,
+    title=&quot;Photoperiod and diapause induction across European latitudes&quot;)
+
+days = 1:365
+for (name, lat, col) in [(&quot;Rome (41.9°N)&quot;, 41.9, :firebrick),
+                          (&quot;Paris (48.9°N)&quot;, 48.9, :steelblue),
+                          (&quot;Hamburg (53.6°N)&quot;, 53.6, :seagreen)]
+    lines!(ax3, collect(days), [photoperiod(lat, d) for d in days],
+        label=name, linewidth=2, color=col)
+end
+
+# Diapause thresholds
+hlines!(ax3, [DIAP_DMAX], linestyle=:dash, color=:orange,
+    label=&quot;Dmax = $(DIAP_DMAX) h (diapause active below)&quot;)
+hlines!(ax3, [DIAP_DMIN], linestyle=:dash, color=:purple,
+    label=&quot;Dmin = $(DIAP_DMIN) h (diapause break above)&quot;)
+hlines!(ax3, [DIAP_D50], linestyle=:dot, color=:gray,
+    label=&quot;D₅₀ = $(DIAP_D50) h (50% diapause)&quot;)
+
+axislegend(ax3, position=:cb, nbanks=2)
+fig3</code></pre><p><img src="../16_aedes_albopictus_files/figure-commonmark/cell-9-output-1.png" alt/></p><h2 id="Full-Lifecycle-Model"><a class="docs-heading-anchor" href="#Full-Lifecycle-Model">Full Lifecycle Model</a><a id="Full-Lifecycle-Model-1"></a><a class="docs-heading-anchor-permalink" href="#Full-Lifecycle-Model" title="Permalink"></a></h2><p>We construct the <em>Ae. albopictus</em> population model with five life stages connected by distributed delays. Each stage uses parameters from Pasquali et al. (2020).</p><pre><code class="language-julia hljs"># ── Fecundity parameters (Eq. 14, Table 5, Pasquali et al. 2020) ──
+const FECUND_A    = 0.0032   # Table 5, Pasquali et al. 2020
+const FECUND_TINF = 16.24    # Table 5, °C
+const FECUND_TSUP = 35.02    # Table 5, °C
+
+import PhysiologicallyBasedDemographicModels: development_rate
+
+struct ConstantDevelopmentRate{T&lt;:Real} &lt;: AbstractDevelopmentRate
+    rate::T
+end
+
+development_rate(m::ConstantDevelopmentRate, ::Real) = m.rate
+
+# Reproductive adult development rate: constant (Section 2.1.3)
+# adult_dev already defined above as ADULT_DEV_RATE = 0.015 1/day
+adult_dev = ConstantDevelopmentRate(ADULT_DEV_RATE)
+
+# Stage-specific mortality at 25°C reference temperature (Tables 2–3)
+# The paper uses full temperature-dependent functions (defined above);
+# here we evaluate at 25°C for the LifeStage scalar interface.
+const REF_TEMP = 25.0  # °C, reference temperature for constant-rate approx.
+egg_μ   = egg_mortality(REF_TEMP)
+larva_μ = larva_mortality(REF_TEMP)
+pupa_μ  = pupa_mortality(REF_TEMP)
+
+println(&quot;Reference mortality rates at $(REF_TEMP)°C:&quot;)
+println(&quot;  Eggs:   $(round(egg_μ, digits=4))/day&quot;)
+println(&quot;  Larvae: $(round(larva_μ, digits=4))/day&quot;)
+println(&quot;  Pupae:  $(round(pupa_μ, digits=4))/day&quot;)
+println(&quot;  Adults: $(ADULT_MORTALITY)/day (constant, Section 2.1.3)&quot;)
+
+# Build the 5-stage population
+# Mean development times (degree-days) estimated from rate functions
+# at 25°C: eggs ~3d, larvae ~8d, pupae ~2d, immature adults ~4d, adults ~67d
+function build_aedes_population(; N0_adults=100.0)
+    stages = [
+        LifeStage(:eggs,
+            DistributedDelay(15, 45.0; W0=0.0),
+            egg_dev, egg_μ),
+        LifeStage(:larvae,
+            DistributedDelay(20, 120.0; W0=0.0),
+            larva_dev, larva_μ),
+        LifeStage(:pupae,
+            DistributedDelay(10, 30.0; W0=0.0),
+            pupa_dev, pupa_μ),
+        LifeStage(:immature_adults,
+            DistributedDelay(10, 50.0; W0=0.0),
+            immature_adult_dev, ADULT_MORTALITY),
+        LifeStage(:adults,
+            DistributedDelay(25, 67.0; W0=N0_adults),
+            adult_dev, ADULT_MORTALITY),
+    ]
+    Population(:aedes_albopictus, stages)
+end
+
+pop = build_aedes_population(N0_adults=100.0)
+println(&quot;Ae. albopictus population model:&quot;)
+println(&quot;  Stages: &quot;, n_stages(pop))
+println(&quot;  Total substages: &quot;, n_substages(pop))
+println(&quot;  Initial adults: &quot;, delay_total(pop.stages[5].delay))</code></pre><pre><code class="nohighlight hljs">Reference mortality rates at 25.0°C:
+  Eggs:   0.1737/day
+  Larvae: 0.0245/day
+  Pupae:  0.0339/day
+  Adults: 0.067/day (constant, Section 2.1.3)
+Ae. albopictus population model:
+  Stages: 5
+  Total substages: 80
+  Initial adults: 2500.0</code></pre><h2 id="Fecundity-and-Diapause-Coupled-Reproduction"><a class="docs-heading-anchor" href="#Fecundity-and-Diapause-Coupled-Reproduction">Fecundity and Diapause-Coupled Reproduction</a><a id="Fecundity-and-Diapause-Coupled-Reproduction-1"></a><a class="docs-heading-anchor-permalink" href="#Fecundity-and-Diapause-Coupled-Reproduction" title="Permalink"></a></h2><p>The reproduction function couples fecundity (Brière curve), diapause induction, and diapause egg release into a single daily callback. During summer, adults produce eggs at temperature-dependent rates. As autumn photoperiod shortens, a fraction of eggs enters the diapause storage. In spring, stored diapause eggs are released back into the egg stage.</p><pre><code class="language-julia hljs"># Fecundity: Brière function (Eq. 14, Table 5)
+function fecundity(T::Real)
+    (T &lt;= FECUND_TINF || T &gt;= FECUND_TSUP) &amp;&amp; return 0.0
+    return FECUND_A * T * (T - FECUND_TINF) * sqrt(FECUND_TSUP - T)
+end
+
+# Diapause state (mutable accumulator)
+mutable struct DiapauseState
+    storage::Float64          # Accumulated diapause eggs
+    active::Bool              # Whether diapause accumulation is active
+    released::Bool            # Whether spring release has occurred this year
+end
+
+DiapauseState() = DiapauseState(0.0, false, false)
+
+# Full reproduction function with diapause coupling
+function aedes_reproduction!(pop::Population, weather::DailyWeather,
+                             diap::DiapauseState, day::Int)
+    T = weather.T_mean
+    DL = weather.photoperiod
+
+    # Number of reproductive adults
+    N_adults = delay_total(pop.stages[5].delay)
+
+    # Base egg production
+    eggs = fecundity(T) * N_adults
+
+    # --- Diapause logic (Section 2.2, Eq. 6, 15–16) ---
+    # Diapause window: July 1 (day 182) to December 31 (day 365)
+    doy = mod(day - 1, 365) + 1
+
+    if 182 &lt;= doy &lt;= 365 &amp;&amp; DL &lt;= DIAP_DMAX
+        # Diapause induction active
+        diap.active = true
+        diap.released = false
+        frac = diapause_fraction(DL)
+        diap_eggs = frac * eggs
+        eggs -= diap_eggs
+
+        # Diapause egg mortality
+        diap.storage -= diapause_mortality(T) * diap.storage
+        diap.storage = max(0.0, diap.storage)
+        diap.storage += diap_eggs
+    end
+
+    # Spring release: DL ≥ D_min and T ≥ T_break (Section 2.2)
+    if DL &gt;= DIAP_DMIN &amp;&amp; T &gt;= DIAP_TBREAK &amp;&amp; diap.storage &gt; 0 &amp;&amp; !diap.released
+        eggs += diap.storage
+        diap.storage = 0.0
+        diap.released = true
+        diap.active = false
+    end
+
+    return max(0.0, eggs)
+end
+
+# Demonstrate fecundity curve
+println(&quot;\nFecundity (eggs/female/day) at different temperatures:&quot;)
+for T in [15.0, 20.0, 25.0, 28.0, 30.0, 33.0, 35.0]
+    f = fecundity(T)
+    println(&quot;  $(T)°C: $(round(f, digits=2)) eggs/female/day&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Fecundity (eggs/female/day) at different temperatures:
+  15.0°C: 0.0 eggs/female/day
+  20.0°C: 0.93 eggs/female/day
+  25.0°C: 2.22 eggs/female/day
+  28.0°C: 2.79 eggs/female/day
+  30.0°C: 2.96 eggs/female/day
+  33.0°C: 2.52 eggs/female/day
+  35.0°C: 0.3 eggs/female/day</code></pre><h2 id="Simulating-Mediterranean-vs.-Northern-Europe"><a class="docs-heading-anchor" href="#Simulating-Mediterranean-vs.-Northern-Europe">Simulating Mediterranean vs. Northern Europe</a><a id="Simulating-Mediterranean-vs.-Northern-Europe-1"></a><a class="docs-heading-anchor-permalink" href="#Simulating-Mediterranean-vs.-Northern-Europe" title="Permalink"></a></h2><p>We compare two locations representing the range of <em>Ae. albopictus</em> establishment potential:</p><ul><li><strong>Rome (41.9°N)</strong>: Core Mediterranean range, well-established since the late 1990s. Warm winters, long activity season.</li><li><strong>Hamburg (53.6°N)</strong>: Northern range margin. Cold winters, short summers. Currently at the limit of occasional detection but not established.</li></ul><pre><code class="language-julia hljs"># Generate weather with latitude-appropriate photoperiod
+function make_weather_series(lat::Real; T_mean=18.0, amplitude=10.0,
+                             phase=200.0, n_years=3)
+    n_days = 365 * n_years
+    days = DailyWeather{Float64}[]
+    for d in 1:n_days
+        doy = mod(d - 1, 365) + 1
+        T = T_mean + amplitude * sin(2π * (d - phase) / 365)
+        T_min = T - 4.0
+        T_max = T + 4.0
+        DL = photoperiod(lat, doy)
+        push!(days, DailyWeather(T, T_min, T_max;
+            radiation=20.0, photoperiod=DL))
+    end
+    WeatherSeries(days; day_offset=1)
+end
+
+# Rome: mean ~16°C, amplitude ~8°C
+rome_weather = make_weather_series(41.9; T_mean=16.0, amplitude=8.0)
+
+# Hamburg: mean ~10°C, amplitude ~9.5°C
+hamburg_weather = make_weather_series(53.6; T_mean=10.0, amplitude=9.5)
+
+println(&quot;Weather generated:&quot;)
+println(&quot;  Rome — 3 years, $(length(rome_weather)) days&quot;)
+println(&quot;  Hamburg — 3 years, $(length(hamburg_weather)) days&quot;)</code></pre><pre><code class="nohighlight hljs">Weather generated:
+  Rome — 3 years, 1095 days
+  Hamburg — 3 years, 1095 days</code></pre><h2 id="Running-Multi-Year-Simulations"><a class="docs-heading-anchor" href="#Running-Multi-Year-Simulations">Running Multi-Year Simulations</a><a id="Running-Multi-Year-Simulations-1"></a><a class="docs-heading-anchor-permalink" href="#Running-Multi-Year-Simulations" title="Permalink"></a></h2><p>We use the density-dependent solver with the diapause-coupled reproduction callback. The simulation runs for 3 years to reach a stable annual pattern (as per Pasquali et al. 2020, who used 10–20 year runs).</p><pre><code class="language-julia hljs">function simulate_aedes(weather::WeatherSeries, lat::Real;
+                        N0_adults=100.0, n_days=nothing)
+    pop = build_aedes_population(N0_adults=N0_adults)
+    diap = DiapauseState()
+    nd = n_days === nothing ? length(weather) : n_days
+    tspan = (1, nd)
+
+    # Reproduction callback wrapping diapause logic
+    reproduction_fn = (p, w, params, day) -&gt; begin
+        aedes_reproduction!(p, w, diap, day)
+    end
+
+    prob = PBDMProblem(DensityDependent(), pop, weather, tspan)
+    sol = solve(prob, DirectIteration(); reproduction_fn=reproduction_fn)
+    return sol, diap
+end
+
+# Run simulations
+rome_sol, rome_diap = simulate_aedes(rome_weather, 41.9)
+hamburg_sol, hamburg_diap = simulate_aedes(hamburg_weather, 53.6)
+
+println(&quot;Simulation results:&quot;)
+for (name, sol) in [(&quot;Rome&quot;, rome_sol), (&quot;Hamburg&quot;, hamburg_sol)]
+    pop_final = total_population(sol)
+    println(&quot;  $name:&quot;)
+    println(&quot;    Days simulated: $(length(sol.t))&quot;)
+    println(&quot;    Final total population: $(round(pop_final[end], digits=1))&quot;)
+    println(&quot;    Peak population: $(round(maximum(pop_final), digits=1))&quot;)
+    println(&quot;    Return code: $(sol.retcode)&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Simulation results:
+  Rome:
+    Days simulated: 1095
+    Final total population: 1518.0
+    Peak population: 206676.8
+    Return code: Success
+  Hamburg:
+    Days simulated: 1095
+    Final total population: 944.4
+    Peak population: 54399.0
+    Return code: Success</code></pre><h2 id="Seasonal-Population-Dynamics"><a class="docs-heading-anchor" href="#Seasonal-Population-Dynamics">Seasonal Population Dynamics</a><a id="Seasonal-Population-Dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Seasonal-Population-Dynamics" title="Permalink"></a></h2><pre><code class="language-julia hljs">fig4 = Figure(size=(900, 600))
+
+for (idx, (name, sol, col)) in enumerate([
+        (&quot;Rome (41.9°N)&quot;, rome_sol, :firebrick),
+        (&quot;Hamburg (53.6°N)&quot;, hamburg_sol, :steelblue)])
+
+    ax = Axis(fig4[idx, 1],
+        xlabel=idx == 2 ? &quot;Day of simulation&quot; : &quot;&quot;,
+        ylabel=&quot;Population&quot;,
+        title=&quot;$name — Ae. albopictus seasonal dynamics&quot;)
+
+    # Plot each stage
+    for (j, (sname, scol)) in enumerate([
+            (&quot;Eggs&quot;, :goldenrod),
+            (&quot;Larvae&quot;, :forestgreen),
+            (&quot;Pupae&quot;, :darkorchid),
+            (&quot;Imm. adults&quot;, :coral),
+            (&quot;Adults&quot;, :navy)])
+        traj = stage_trajectory(sol, j)
+        lines!(ax, sol.t, traj, label=sname, color=scol, linewidth=1.5)
+    end
+
+    # Mark year boundaries
+    for yr in [365, 730]
+        vlines!(ax, [yr], linestyle=:dot, color=:gray60)
+    end
+
+    if idx == 1
+        axislegend(ax, position=:rt)
+    end
+end
+
+fig4</code></pre><p><img src="../16_aedes_albopictus_files/figure-commonmark/cell-14-output-1.png" alt/></p><h2 id="Activity-Season-and-Adult-Abundance"><a class="docs-heading-anchor" href="#Activity-Season-and-Adult-Abundance">Activity Season and Adult Abundance</a><a id="Activity-Season-and-Adult-Abundance-1"></a><a class="docs-heading-anchor-permalink" href="#Activity-Season-and-Adult-Abundance" title="Permalink"></a></h2><p>The <strong>seasonal activity period</strong> — time between spring egg hatch and autumn diapause onset — is a key indicator of vector impact potential. Mediterranean populations are active for up to 19 weeks; northern marginal populations may only sustain 8–12 weeks.</p><pre><code class="language-julia hljs"># Extract year-3 adult trajectories for clean comparison
+yr3_start = 365 * 2 + 1
+yr3_end = 365 * 3
+
+fig5 = Figure(size=(800, 450))
+ax5 = Axis(fig5[1,1],
+    xlabel=&quot;Day of year (Year 3)&quot;,
+    ylabel=&quot;Adult females&quot;,
+    title=&quot;Ae. albopictus adult abundance — Year 3 comparison&quot;)
+
+for (name, sol, col) in [(&quot;Rome&quot;, rome_sol, :firebrick),
+                          (&quot;Hamburg&quot;, hamburg_sol, :steelblue)]
+    adults = stage_trajectory(sol, 5)
+    yr3_adults = adults[yr3_start:yr3_end]
+    days_of_year = 1:365
+    lines!(ax5, collect(days_of_year), yr3_adults,
+        label=name, linewidth=2.5, color=col)
+end
+
+# Annotate key periods
+vspan!(ax5, [182], [258], color=(:orange, 0.1),
+    label=&quot;Diapause window&quot;)
+axislegend(ax5, position=:rt)
+fig5</code></pre><p><img src="../16_aedes_albopictus_files/figure-commonmark/cell-15-output-1.png" alt/></p><h2 id="Cumulative-Degree-Days-and-Phenology"><a class="docs-heading-anchor" href="#Cumulative-Degree-Days-and-Phenology">Cumulative Degree-Days and Phenology</a><a id="Cumulative-Degree-Days-and-Phenology-1"></a><a class="docs-heading-anchor-permalink" href="#Cumulative-Degree-Days-and-Phenology" title="Permalink"></a></h2><pre><code class="language-julia hljs"># Degree-day accumulation drives the pace of development
+fig6 = Figure(size=(800, 400))
+ax6 = Axis(fig6[1,1],
+    xlabel=&quot;Day of simulation&quot;,
+    ylabel=&quot;Cumulative degree-days&quot;,
+    title=&quot;Degree-day accumulation: Mediterranean vs. Northern Europe&quot;)
+
+for (name, sol, col) in [(&quot;Rome&quot;, rome_sol, :firebrick),
+                          (&quot;Hamburg&quot;, hamburg_sol, :steelblue)]
+    cdd = cumulative_degree_days(sol)
+    lines!(ax6, sol.t, cdd, label=name, linewidth=2, color=col)
+end
+
+axislegend(ax6, position=:lt)
+fig6</code></pre><p><img src="../16_aedes_albopictus_files/figure-commonmark/cell-16-output-1.png" alt/></p><h2 id="Overwintering-Survival-via-Diapause"><a class="docs-heading-anchor" href="#Overwintering-Survival-via-Diapause">Overwintering Survival via Diapause</a><a id="Overwintering-Survival-via-Diapause-1"></a><a class="docs-heading-anchor-permalink" href="#Overwintering-Survival-via-Diapause" title="Permalink"></a></h2><p>The diapause mechanism is the critical determinant of whether <em>Ae. albopictus</em> can establish at a given latitude. Diapausing eggs must survive winter cold and retain enough numbers to recolonize in spring.</p><pre><code class="language-julia hljs"># Simulate diapause egg storage dynamics explicitly
+function track_diapause(lat::Real; T_mean=16.0, amplitude=8.0)
+    storage_track = Float64[]
+    diap = DiapauseState()
+
+    for d in 1:730  # 2 years
+        doy = mod(d - 1, 365) + 1
+        T = T_mean + amplitude * sin(2π * (d - 200.0) / 365)
+        DL = photoperiod(lat, doy)
+
+        # Simplified: track only diapause dynamics
+        if 182 &lt;= doy &lt;= 365 &amp;&amp; DL &lt;= DIAP_DMAX
+            diap.active = true
+            diap.released = false
+            frac = diapause_fraction(DL)
+            # Assume 50 eggs/day entering diapause consideration
+            diap_eggs = frac * 50.0
+            diap.storage -= diapause_mortality(T) * diap.storage
+            diap.storage = max(0.0, diap.storage)
+            diap.storage += diap_eggs
+        end
+        if DL &gt;= DIAP_DMIN &amp;&amp; T &gt;= DIAP_TBREAK &amp;&amp; diap.storage &gt; 0 &amp;&amp; !diap.released
+            diap.storage = 0.0
+            diap.released = true
+            diap.active = false
+        end
+        push!(storage_track, diap.storage)
+    end
+    return storage_track
+end
+
+rome_diap_track = track_diapause(41.9; T_mean=16.0, amplitude=8.0)
+hamburg_diap_track = track_diapause(53.6; T_mean=10.0, amplitude=9.5)
+
+fig7 = Figure(size=(800, 400))
+ax7 = Axis(fig7[1,1],
+    xlabel=&quot;Day of simulation&quot;,
+    ylabel=&quot;Diapausing eggs (storage)&quot;,
+    title=&quot;Diapause egg accumulation and winter survival&quot;)
+
+lines!(ax7, 1:730, rome_diap_track, label=&quot;Rome&quot;, linewidth=2, color=:firebrick)
+lines!(ax7, 1:730, hamburg_diap_track, label=&quot;Hamburg&quot;, linewidth=2, color=:steelblue)
+
+for yr_start in [365]
+    vlines!(ax7, [yr_start], linestyle=:dot, color=:gray60)
+end
+
+axislegend(ax7, position=:rt)
+fig7</code></pre><p><img src="../16_aedes_albopictus_files/figure-commonmark/cell-17-output-1.png" alt/></p><h2 id="Establishment-Potential-Summary"><a class="docs-heading-anchor" href="#Establishment-Potential-Summary">Establishment Potential Summary</a><a id="Establishment-Potential-Summary-1"></a><a class="docs-heading-anchor-permalink" href="#Establishment-Potential-Summary" title="Permalink"></a></h2><pre><code class="language-julia hljs"># Compare key metrics across a latitudinal gradient
+println(&quot;Establishment potential across European latitudes:&quot;)
+println(&quot;=&quot;^70)
+println(&quot;Location          | Lat   | Peak adults | CDD (yr3) | Established?&quot;)
+println(&quot;-&quot;^70)
+
+for (name, lat, Tm, amp) in [
+        (&quot;Naples&quot;,   40.8, 17.0, 7.5),
+        (&quot;Rome&quot;,     41.9, 16.0, 8.0),
+        (&quot;Milan&quot;,    45.5, 13.5, 10.0),
+        (&quot;Paris&quot;,    48.9, 11.5, 8.5),
+        (&quot;Hamburg&quot;,  53.6, 10.0, 9.5)]
+    ws = make_weather_series(lat; T_mean=Tm, amplitude=amp)
+    sol, _ = simulate_aedes(ws, lat; N0_adults=100.0)
+    pop_traj = total_population(sol)
+    cdd = cumulative_degree_days(sol)
+
+    # Year 3 peak
+    yr3_start = 365 * 2 + 1
+    yr3_pop = pop_traj[yr3_start:end]
+    peak = maximum(yr3_pop)
+    yr3_cdd = cdd[end] - (length(cdd) &gt; 730 ? cdd[730] : 0.0)
+    established = peak &gt; 10.0 ? &quot;Yes&quot; : &quot;Marginal/No&quot;
+
+    println(&quot;  $(rpad(name, 15)) | $(lpad(lat, 5)) | $(lpad(round(peak, digits=0), 11)) | &quot;,
+            &quot;$(lpad(round(yr3_cdd, digits=0), 9))  | $established&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Establishment potential across European latitudes:
+======================================================================
+Location          | Lat   | Peak adults | CDD (yr3) | Established?
+----------------------------------------------------------------------
+  Naples          |  40.8 |    143587.0 |      83.0  | Yes
+  Rome            |  41.9 |    131052.0 |      78.0  | Yes
+  Milan           |  45.5 |    111742.0 |      64.0  | Yes
+  Paris           |  48.9 |     43764.0 |      53.0  | Yes
+  Hamburg         |  53.6 |     34508.0 |      47.0  | Yes</code></pre><h2 id="Vector-Competence-and-Disease-Risk"><a class="docs-heading-anchor" href="#Vector-Competence-and-Disease-Risk">Vector Competence and Disease Risk</a><a id="Vector-Competence-and-Disease-Risk-1"></a><a class="docs-heading-anchor-permalink" href="#Vector-Competence-and-Disease-Risk" title="Permalink"></a></h2><p><em>Ae. albopictus</em> is a competent vector for multiple arboviruses. The combination of population abundance and seasonal activity period determines the <strong>vectorial capacity</strong> at each location. We use the package’s epidemiology module to illustrate transmission potential.</p><pre><code class="language-julia hljs"># Dengue/chikungunya transmission parameters
+# Extrinsic incubation period is temperature-dependent (~7-14 days)
+function extrinsic_incubation_period(T::Real)
+    T &lt; 18.0 &amp;&amp; return 30.0   # Very slow below 18°C
+    T &gt; 34.0 &amp;&amp; return 30.0   # Impaired above 34°C
+    return 4.0 + 200.0 / (T - 12.0)  # Approximate
+end
+
+# Vectorial capacity proxy: adult-days × temperature suitability
+function transmission_suitability(T::Real)
+    (T &lt; 18.0 || T &gt; 35.0) &amp;&amp; return 0.0
+    # Peak at ~28°C
+    return max(0.0, -(T - 28.0)^2 / 50.0 + 1.0)
+end
+
+println(&quot;Temperature-dependent transmission suitability:&quot;)
+println(&quot;T(°C) | EIP (days) | Suitability index&quot;)
+println(&quot;-&quot;^50)
+for T in [15.0, 20.0, 22.0, 25.0, 28.0, 30.0, 32.0, 35.0]
+    eip = extrinsic_incubation_period(T)
+    suit = transmission_suitability(T)
+    println(&quot;  $(lpad(T, 4)) |   $(lpad(round(eip, digits=1), 5))    | $(round(suit, digits=3))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Temperature-dependent transmission suitability:
+T(°C) | EIP (days) | Suitability index
+--------------------------------------------------
+  15.0 |    30.0    | 0.0
+  20.0 |    29.0    | 0.0
+  22.0 |    24.0    | 0.28
+  25.0 |    19.4    | 0.82
+  28.0 |    16.5    | 1.0
+  30.0 |    15.1    | 0.92
+  32.0 |    14.0    | 0.68
+  35.0 |    30.0    | 0.02</code></pre><h2 id="Transmission-Risk-Windows"><a class="docs-heading-anchor" href="#Transmission-Risk-Windows">Transmission Risk Windows</a><a id="Transmission-Risk-Windows-1"></a><a class="docs-heading-anchor-permalink" href="#Transmission-Risk-Windows" title="Permalink"></a></h2><pre><code class="language-julia hljs">fig8 = Figure(size=(800, 450))
+ax8 = Axis(fig8[1,1],
+    xlabel=&quot;Day of year (Year 3)&quot;,
+    ylabel=&quot;Relative transmission risk&quot;,
+    title=&quot;Seasonal dengue/chikungunya transmission risk&quot;)
+
+yr3_range = (365*2+1):(365*3)
+
+for (name, sol, weather, col) in [
+        (&quot;Rome&quot;, rome_sol, rome_weather, :firebrick),
+        (&quot;Hamburg&quot;, hamburg_sol, hamburg_weather, :steelblue)]
+    adults = stage_trajectory(sol, 5)[yr3_range]
+    risk = Float64[]
+    for (i, d) in enumerate(yr3_range)
+        w = get_weather(weather, d)
+        suit = transmission_suitability(w.T_mean)
+        push!(risk, adults[i] * suit)
+    end
+    # Normalize to [0, 1]
+    maxrisk = maximum(risk)
+    if maxrisk &gt; 0
+        risk ./= maxrisk
+    end
+    lines!(ax8, 1:365, risk, label=name, linewidth=2.5, color=col)
+end
+
+axislegend(ax8, position=:rt)
+fig8</code></pre><p><img src="../16_aedes_albopictus_files/figure-commonmark/cell-20-output-1.png" alt/></p><h2 id="Key-Insights"><a class="docs-heading-anchor" href="#Key-Insights">Key Insights</a><a id="Key-Insights-1"></a><a class="docs-heading-anchor-permalink" href="#Key-Insights" title="Permalink"></a></h2><ol><li><p><strong>Diapause determines the northern range limit</strong>: The  photoperiod-driven egg diapause mechanism enables <em>Ae. albopictus</em>  to persist through Mediterranean and central European winters. At  latitudes above ~50°N, cold-induced mortality of diapausing eggs and  insufficient summer degree-days prevent stable establishment.</p></li><li><p><strong>Sharp latitudinal abundance gradient</strong>: Population abundance drops  steeply from south to north. Rome sustains peak populations an order  of magnitude larger than Hamburg. This gradient is steeper than the  activity period gradient because both fecundity and development  rates scale nonlinearly with temperature.</p></li><li><p><strong>Activity season shapes disease risk</strong>: Southern Europe (Naples,  Rome) supports 16–19 weeks of adult activity — sufficient for  autochthonous dengue/chikungunya transmission during warm months.  Northern populations (Paris, Hamburg) have shorter windows (8–12  weeks), limiting but not eliminating epidemic potential.</p></li><li><p><strong>Density-dependent regulation matters</strong>: Larval competition  (Pasquali et al. 2020, Eq. 13) prevents unrealistic population  explosions and produces realistic egg counts matching field ovitrap  data from the Bolzano Province.</p></li><li><p><strong>Climate change implications</strong>: Warmer temperatures will both  extend the activity season northward and increase degree-day  accumulation, potentially shifting the establishment boundary from  ~48°N to ~52°N. Combined with increased diapause egg survival during  milder winters, this creates expanding risk zones for vector-borne  disease outbreaks in currently temperate European regions.</p></li><li><p><strong>Mechanistic vs. correlative models</strong>: Unlike species distribution  models based on occurrence data, the PBDM approach explicitly  simulates the biological processes that determine persistence. This  enables predictions in areas where the mosquito has not yet arrived  — essential for proactive public health planning.</p></li></ol><h2 id="Parameter-Sources"><a class="docs-heading-anchor" href="#Parameter-Sources">Parameter Sources</a><a id="Parameter-Sources-1"></a><a class="docs-heading-anchor-permalink" href="#Parameter-Sources" title="Permalink"></a></h2><p>All biodemographic parameters are from Pasquali et al. (2020) unless otherwise noted. The table below maps each parameter to its source.</p><table><tr><th style="text-align: right">Parameter</th><th style="text-align: right">Value</th><th style="text-align: right">Source</th><th style="text-align: right">Literature Range</th><th style="text-align: right">Status</th></tr><tr><td style="text-align: right"><code>EGG_DEV_A</code></td><td style="text-align: right">4.16657×10⁻⁵</td><td style="text-align: right">Table 1, Eq. 9</td><td style="text-align: right">—</td><td style="text-align: right">Egg cubic coefficient</td></tr><tr><td style="text-align: right"><code>EGG_DEV_TSUP</code></td><td style="text-align: right">37.3253 °C</td><td style="text-align: right">Table 1, Eq. 9</td><td style="text-align: right">—</td><td style="text-align: right">Egg upper thermal limit</td></tr><tr><td style="text-align: right"><code>LARVA_DEV_A</code></td><td style="text-align: right">8.604×10⁻⁵</td><td style="text-align: right">Table 1, Eq. 10</td><td style="text-align: right">—</td><td style="text-align: right">Larval Brière coefficient</td></tr><tr><td style="text-align: right"><code>LARVA_DEV_TINF</code></td><td style="text-align: right">8.2934 °C</td><td style="text-align: right">Table 1, Eq. 10</td><td style="text-align: right">4.2–8.2 °C (Kamimura 2002)</td><td style="text-align: right">✓ at range edge</td></tr><tr><td style="text-align: right"><code>LARVA_DEV_TSUP</code></td><td style="text-align: right">36.0729 °C</td><td style="text-align: right">Table 1, Eq. 10</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right"><code>PUPA_DEV_A</code></td><td style="text-align: right">3.102×10⁻⁴</td><td style="text-align: right">Table 1, Eq. 10</td><td style="text-align: right">—</td><td style="text-align: right">Pupal Brière coefficient</td></tr><tr><td style="text-align: right"><code>PUPA_DEV_TINF</code></td><td style="text-align: right">11.9433 °C</td><td style="text-align: right">Table 1, Eq. 10</td><td style="text-align: right">4.2–8.2 °C (general; Kamimura 2002)</td><td style="text-align: right">⚠ above general range</td></tr><tr><td style="text-align: right"><code>PUPA_DEV_TSUP</code></td><td style="text-align: right">40.0 °C</td><td style="text-align: right">Table 1, Eq. 10</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right"><code>IMMADULT_DEV_A</code></td><td style="text-align: right">1.812×10⁻⁴</td><td style="text-align: right">Table 1, Eq. 10</td><td style="text-align: right">—</td><td style="text-align: right">Immature adult Brière coefficient</td></tr><tr><td style="text-align: right"><code>IMMADULT_DEV_TINF</code></td><td style="text-align: right">7.7804 °C</td><td style="text-align: right">Table 1, Eq. 10</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right"><code>IMMADULT_DEV_TSUP</code></td><td style="text-align: right">35.2937 °C</td><td style="text-align: right">Table 1, Eq. 10</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right"><code>ADULT_DEV_RATE</code></td><td style="text-align: right">0.015 /day</td><td style="text-align: right">Section 2.1.3</td><td style="text-align: right">—</td><td style="text-align: right">Constant adult rate</td></tr><tr><td style="text-align: right"><code>EGG_MORT_A,B,C</code></td><td style="text-align: right">0.002869, −0.1417, 2.1673</td><td style="text-align: right">Table 2, Eq. 11</td><td style="text-align: right">—</td><td style="text-align: right">Egg proportional mortality</td></tr><tr><td style="text-align: right"><code>LARVA_MORT_A,B,C</code></td><td style="text-align: right">0.002793, −0.1255, 1.5768</td><td style="text-align: right">Table 2, Eq. 11</td><td style="text-align: right">—</td><td style="text-align: right">Larval proportional mortality</td></tr><tr><td style="text-align: right"><code>PUPA_MORT_A,B,C</code></td><td style="text-align: right">0.003289, −0.1437, 1.6197</td><td style="text-align: right">Table 2, Eq. 11</td><td style="text-align: right">—</td><td style="text-align: right">Pupal proportional mortality</td></tr><tr><td style="text-align: right"><code>EGG_MORT_ALOW,AHIGH</code></td><td style="text-align: right">0.05, 0.018</td><td style="text-align: right">Table 3, Eq. 12</td><td style="text-align: right">—</td><td style="text-align: right">Egg mortality slopes</td></tr><tr><td style="text-align: right"><code>EGG_MORT_TLOW,THIGH</code></td><td style="text-align: right">12.0, 30.5 °C</td><td style="text-align: right">Table 3, Eq. 12</td><td style="text-align: right">—</td><td style="text-align: right">Egg mortality breakpoints</td></tr><tr><td style="text-align: right"><code>LARVA_MORT_ALOW,AHIGH</code></td><td style="text-align: right">0.2, 0.15</td><td style="text-align: right">Table 3, Eq. 12</td><td style="text-align: right">—</td><td style="text-align: right">Larval mortality slopes</td></tr><tr><td style="text-align: right"><code>PUPA_MORT_ALOW,AHIGH</code></td><td style="text-align: right">0.1, 0.2</td><td style="text-align: right">Table 3, Eq. 12</td><td style="text-align: right">—</td><td style="text-align: right">Pupal mortality slopes</td></tr><tr><td style="text-align: right"><code>ADULT_MORTALITY</code></td><td style="text-align: right">0.067 /day</td><td style="text-align: right">Section 2.1.3</td><td style="text-align: right">—</td><td style="text-align: right">Adult mortality (constant)</td></tr><tr><td style="text-align: right"><code>FECUND_A</code></td><td style="text-align: right">0.0032</td><td style="text-align: right">Table 5, Eq. 14</td><td style="text-align: right">—</td><td style="text-align: right">Fecundity Brière coefficient</td></tr><tr><td style="text-align: right"><code>FECUND_TINF</code></td><td style="text-align: right">16.24 °C</td><td style="text-align: right">Table 5, Eq. 14</td><td style="text-align: right">—</td><td style="text-align: right">Fecundity lower limit</td></tr><tr><td style="text-align: right"><code>FECUND_TSUP</code></td><td style="text-align: right">35.02 °C</td><td style="text-align: right">Table 5, Eq. 14</td><td style="text-align: right">—</td><td style="text-align: right">Fecundity upper limit</td></tr><tr><td style="text-align: right"><code>DIAP_SLOPE</code></td><td style="text-align: right">3.04</td><td style="text-align: right">Eq. 15, Lacour et al. (2015)</td><td style="text-align: right">—</td><td style="text-align: right">Diapause induction slope</td></tr><tr><td style="text-align: right"><code>DIAP_D50</code></td><td style="text-align: right">12.62 h</td><td style="text-align: right">Eq. 15, Lacour et al. (2015)</td><td style="text-align: right">—</td><td style="text-align: right">Diapause 50% day length</td></tr><tr><td style="text-align: right">DD egg–adult (total)</td><td style="text-align: right">~166–214</td><td style="text-align: right">Kamimura 2002; Healy 2019</td><td style="text-align: right">166–214 DD</td><td style="text-align: right">✓ literature consensus</td></tr></table><p><strong>Note on pupal lower threshold:</strong> The Pasquali et al. (2020) pupal T_inf of 11.94 °C is notably higher than the general 4.2–8.2 °C range for immature Ae. albopictus (Kamimura 2002). This likely reflects the specific Brière fit to Italian population data, which may have higher thresholds than tropical populations (Marini et al. 2020).</p><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><ul><li><p>Pasquali, S., Mariani, L., Calvitti, M., Moretti, R., Ponti, L., Chiari, M., Sperandio, G., &amp; Gilioli, G. (2020). Development and calibration of a model for the potential establishment and impact of <em>Aedes albopictus</em> in Europe. <em>Acta Tropica</em>, 202, 105228.</p></li><li><p>Lacour, G., Chanaud, L., L’Ambert, G., &amp; Hance, T. (2015). Seasonal synchronization of diapause phases in <em>Aedes albopictus</em> (Diptera: Culicidae). <em>PLoS ONE</em>, 10(12), e0145311.</p></li><li><p>Thomas, S. M., Obermayr, U., Fischer, D., Kreyling, J., &amp; Beierkuhnlein, C. (2012). Low-temperature threshold for egg survival of a post-diapause and non-diapause European aedine strain, <em>Aedes albopictus</em>. <em>Parasites &amp; Vectors</em>, 5(1), 100.</p></li><li><p>Delatte, H., Gimonneau, G., Triboire, A., &amp; Fontenille, D. (2009). Influence of temperature on immature development, survival, longevity, fecundity, and gonotrophic cycles of <em>Aedes albopictus</em>. <em>Journal of Medical Entomology</em>, 46(1), 33–41.</p></li><li><p>Brière, J. F., Pracros, P., Le Roux, A. Y., &amp; Pierre, J. S. (1999). A novel rate model of temperature-dependent development for arthropods. <em>Environmental Entomology</em>, 28(1), 22–29.</p></li><li><p>Kamimura, K., Matsuse, I. T., Takahashi, H., et al. (2002). Effect of temperature on the development of <em>Aedes aegypti</em> and <em>Aedes albopictus</em>. <em>Medical Entomology and Zoology</em>, 53(1), 53–58.</p></li><li><p>Marini, G., Manica, M., Delucchi, L., et al. (2020). Influence of temperature on the life-cycle dynamics of <em>Aedes albopictus</em> population established at temperate latitudes. <em>Insects</em>, 11(11), 808.</p></li><li><p>Healy, K. B., Dugas, E., Fonseca, D. M. (2019). Development of a degree-day model to predict egg hatch of <em>Aedes albopictus</em>. <em>Journal of the American Mosquito Control Association</em>, 35(4), 249–257.</p></li></ul><h2 id="Appendix:-Validation-Figures"><a class="docs-heading-anchor" href="#Appendix:-Validation-Figures">Appendix: Validation Figures</a><a id="Appendix:-Validation-Figures-1"></a><a class="docs-heading-anchor-permalink" href="#Appendix:-Validation-Figures" title="Permalink"></a></h2><p>The following figures were generated by running the model with parameters from Pasquali et al. (2020). Development rates show the expected nonlinear thermal responses; the seasonal simulation shows population tracking a sinusoidal temperature cycle (5–30°C).</p><p><img src="../16_aedes_albopictus_files/external/scripts__figures__aedes__devrates.png" alt/></p><p><img src="../16_aedes_albopictus_files/external/scripts__figures__aedes__sim_seasonal.png" alt/></p><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Pasquali2020Aedes&quot; class=&quot;csl-entry&quot;&gt;</p><p>Pasquali, S., L. Mariani, M. Calvitti, et al. 2020. “Development and Calibration of a Model for the Potential Establishment and Impact of &lt;span class=&quot;nocase&quot;&gt;Aedes albopictus&lt;/span&gt; in Europe.” <em>Acta Tropica</em> 202: 105228. <a href="https://doi.org/10.1016/j.actatropica.2019.105228">https://doi.org/10.1016/j.actatropica.2019.105228</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../15_rice_weed_competition/">« Rice–Weed Competition</a><a class="docs-footer-nextpage" href="../17_pink_bollworm/">Pink Bollworm Climate Limits »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

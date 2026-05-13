@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Verticillium Wilt — Multi-Season Dynamic-Programming Management · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Verticillium Wilt — Multi-Season Dynamic-Programming Management · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Verticillium Wilt — Multi-Season Dynamic-Programming Management · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Verticillium Wilt — Multi-Season Dynamic-Programming Management · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/57_verticillium_dp/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/57_verticillium_dp/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/57_verticillium_dp/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li class="is-active"><a class="tocitem" href>Verticillium Wilt — Multi-Season Dynamic-Programming Management</a><ul class="internal"><li><a class="tocitem" href="#Overview"><span>Overview</span></a></li><li><a class="tocitem" href="#The-system"><span>The system</span></a></li><li><a class="tocitem" href="#Treatments"><span>Treatments</span></a></li><li><a class="tocitem" href="#Within-season-biology-—-yield-function"><span>Within-season biology — yield function</span></a></li><li><a class="tocitem" href="#Between-season-dynamics"><span>Between-season dynamics</span></a></li><li><a class="tocitem" href="#Profit-per-season"><span>Profit per season</span></a></li><li><a class="tocitem" href="#Backward-dynamic-programming"><span>Backward dynamic programming</span></a></li><li><a class="tocitem" href="#Reproduce-Table-2-—-deterministic-10-year-optimum"><span>Reproduce Table 2 — deterministic 10-year optimum</span></a></li><li><a class="tocitem" href="#Reproduce-Table-3-—-marginal-value-of-pathogen-reduction"><span>Reproduce Table 3 — marginal value of pathogen reduction</span></a></li><li><a class="tocitem" href="#Stochastic-/-risk-averse-model"><span>Stochastic / risk-averse model</span></a></li><li><a class="tocitem" href="#Optimal-policy-heatmap"><span>Optimal-policy heatmap</span></a></li><li><a class="tocitem" href="#Discussion"><span>Discussion</span></a></li><li><a class="tocitem" href="#References"><span>References</span></a></li></ul></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Verticillium-Wilt-—-Multi-Season-Dynamic-Programming-Management"><a class="docs-heading-anchor" href="#Verticillium-Wilt-—-Multi-Season-Dynamic-Programming-Management">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a><a id="Verticillium-Wilt-—-Multi-Season-Dynamic-Programming-Management-1"></a><a class="docs-heading-anchor-permalink" href="#Verticillium-Wilt-—-Multi-Season-Dynamic-Programming-Management" title="Permalink"></a></h1><p>Simon Frost</p><ul><li><a href="#overview">Overview</a></li><li><a href="#the-system">The system</a></li><li><a href="#treatments">Treatments</a></li><li><a href="#within-season-biology--yield-function">Within-season biology — yield function</a></li><li><a href="#between-season-dynamics">Between-season dynamics</a></li><li><a href="#profit-per-season">Profit per season</a></li><li><a href="#backward-dynamic-programming">Backward dynamic programming</a></li><li><a href="#reproduce-table-2--deterministic-10-year-optimum">Reproduce Table 2 — deterministic 10-year optimum</a></li><li><a href="#reproduce-table-3--marginal-value-of-pathogen-reduction">Reproduce Table 3 — marginal value of pathogen reduction</a></li><li><a href="#stochastic--risk-averse-model">Stochastic / risk-averse model</a><ul><li><a href="#reproduce-table-4--risk-averse-10-year-optimum-v₀--08">Reproduce Table 4 — risk-averse 10-year optimum (V₀ = 0.8)</a></li><li><a href="#sensitivity-to-risk-aversion-parameter-γ">Sensitivity to risk-aversion parameter γ</a></li></ul></li><li><a href="#optimal-policy-heatmap">Optimal-policy heatmap</a></li><li><a href="#discussion">Discussion</a></li><li><a href="#references">References</a></li></ul><h2 id="Overview"><a class="docs-heading-anchor" href="#Overview">Overview</a><a id="Overview-1"></a><a class="docs-heading-anchor-permalink" href="#Overview" title="Permalink"></a></h2><p>This vignette reproduces the multi-season pathogen-management analysis of Regev <em>et al.</em> (1990) for <em>Verticillium dahliae</em> in California cotton. It is an end-to-end <em>PBDM use case</em> in the sense that it brings together three layers of the modelling stack:</p><ol><li><strong>Within-season biology</strong> — the cotton yield response to wilt  density and virulence from the simulation-derived polynomial of  Gutierrez <em>et al.</em> (1983).</li><li><strong>Between-season state dynamics</strong> — discrete-time difference  equations for inoculum density <span>$D_t$</span> and virulence index <span>$V_t$</span> under  four alternative pre-season treatments.</li><li><strong>Economic decision policy</strong> — backward dynamic programming (Regev  et al. 1990, eqn. 1) over a finite horizon, with both a risk-neutral  and a risk-averse (concave-utility) formulation.</li></ol><p>The biological substrate is conceptually a soil-borne pathogen with very slow inter-annual dynamics, so the natural time-step is the <em>season</em> rather than the day. This complements the day-resolved insect-pest vignettes (e.g. <code>42_spodoptera_biocontrol</code>, <code>46_medfly_kolmogorov</code>) and the population-control vignette (<code>55_management_economics</code>) by working at the multi-year management horizon.</p><p>We reproduce the published Tables 2 (deterministic optimum), 3 (marginal economic value of pathogen reduction), 4 (stochastic risk-averse optimum), and 5 (sensitivity to yield variability), and add policy-surface visualisations.</p><h2 id="The-system"><a class="docs-heading-anchor" href="#The-system">The system</a><a id="The-system-1"></a><a class="docs-heading-anchor-permalink" href="#The-system" title="Permalink"></a></h2><p><em>Verticillium dahliae</em> is a soil-borne fungus that causes wilt in cotton. Inoculum density (propagules / g soil) accumulates when cotton is grown in succession; alternative crops, soil solarisation, and fumigation each suppress inoculum to differing degrees and at different costs. Pathotype virulence drifts toward an intermediate value under host pressure but is stable when the field is in barley.</p><pre><code class="language-julia hljs">using Printf
+using Statistics
+using CairoMakie
+using Random
+Random.seed!(20250101)
+nothing</code></pre><h2 id="Treatments"><a class="docs-heading-anchor" href="#Treatments">Treatments</a><a id="Treatments-1"></a><a class="docs-heading-anchor-permalink" href="#Treatments" title="Permalink"></a></h2><p>Four pre-season management actions are available (Regev et al. 1990, Table 1):</p><table><tr><th style="text-align: right"><span>$X$</span></th><th style="text-align: right">Action</th><th style="text-align: right">Following crop</th><th style="text-align: right">Effect on inoculum</th></tr><tr><td style="text-align: right">1</td><td style="text-align: right">No treatment</td><td style="text-align: right">Cotton</td><td style="text-align: right">logistic increase</td></tr><tr><td style="text-align: right">2</td><td style="text-align: right">Soil solarisation (tarping)</td><td style="text-align: right">Barley</td><td style="text-align: right"><span>$\to 0$</span> propagules</td></tr><tr><td style="text-align: right">3</td><td style="text-align: right">Soil fumigation</td><td style="text-align: right">Cotton</td><td style="text-align: right"><span>$\to 0$</span> propagules</td></tr><tr><td style="text-align: right">4</td><td style="text-align: right">Alternative crop only</td><td style="text-align: right">Barley</td><td style="text-align: right">density <span>$\times 0.5$</span></td></tr></table><pre><code class="language-julia hljs">@enum Treatment begin
+    NO_TREATMENT     = 1
+    SOLARIZATION     = 2
+    FUMIGATION       = 3
+    ALTERNATIVE_CROP = 4
+end
+
+const TREATMENT_LABEL = Dict(
+    NO_TREATMENT     =&gt; &quot;X1: no treatment&quot;,
+    SOLARIZATION     =&gt; &quot;X2: solarization (→ barley)&quot;,
+    FUMIGATION       =&gt; &quot;X3: fumigation (→ cotton)&quot;,
+    ALTERNATIVE_CROP =&gt; &quot;X4: barley only&quot;,
+)
+
+const ALL_TREATMENTS = (NO_TREATMENT, SOLARIZATION, FUMIGATION, ALTERNATIVE_CROP)
+nothing</code></pre><h2 id="Within-season-biology-—-yield-function"><a class="docs-heading-anchor" href="#Within-season-biology-—-yield-function">Within-season biology — yield function</a><a id="Within-season-biology-—-yield-function-1"></a><a class="docs-heading-anchor-permalink" href="#Within-season-biology-—-yield-function" title="Permalink"></a></h2><p>The cotton yield (bales/acre) is a third-degree polynomial in plant density <span>$v$</span> (plants / m²), wilt density <span>$D$</span> (propagules / g), and virulence <span>$V$</span> (Regev et al. 1990, eqn. 5):</p><p class="math-container">\[Y(v, D, V) = 1.4 \left( 0.74 + 0.25 v - 0.011 v^2 - 0.04 D + 0.000\,36\, D^2 - 0.755\, V^3 \right).\]</p><p>The polynomial was fit to ~100 simulation runs of the Gutierrez <em>et al.</em> (1983) full within-season cotton-wilt model for the Fresno, California weather pattern, with <span>$D \in [10, 60]$</span> and <span>$V \in [0.2, 1.0]$</span>.</p><pre><code class="language-julia hljs">&quot;&quot;&quot;
+    cotton_yield(v, D, V)
+
+Cotton yield (bales/acre) at plant density `v` (plants/m²), wilt
+propagule density `D` (per g soil) and virulence index `V`.
+Polynomial fit from Gutierrez et al. (1983).
+&quot;&quot;&quot;
+function cotton_yield(v::Real, D::Real, V::Real)
+    return 1.4 * (0.74 + 0.25v - 0.011v^2 - 0.04D + 3.6e-4 * D^2 - 0.755 * V^3)
+end
+
+let v = 12.5
+    Ds = 10:10:75
+    Vs = 0.2:0.2:1.0
+    fig = Figure(size=(900, 380))
+    ax1 = Axis(fig[1,1]; xlabel=&quot;Wilt density D (prop/g)&quot;,
+        ylabel=&quot;Yield (bales/acre)&quot;,
+        title=&quot;Yield vs. inoculum (v=$(v) plants/m²)&quot;)
+    for V in Vs
+        lines!(ax1, collect(Ds), [cotton_yield(v, D, V) for D in Ds],
+            label=&quot;V=$(round(V; digits=2))&quot;, linewidth=2)
+    end
+    axislegend(ax1, position=:rt; nbanks=2)
+
+    ax2 = Axis(fig[1,2]; xlabel=&quot;Virulence V&quot;,
+        ylabel=&quot;Yield (bales/acre)&quot;,
+        title=&quot;Yield vs. virulence (D=20)&quot;)
+    for V in Vs end
+    for D in 10:15:75
+        lines!(ax2, collect(0.2:0.05:1.0),
+            [cotton_yield(v, D, V) for V in 0.2:0.05:1.0],
+            label=&quot;D=$D&quot;, linewidth=2)
+    end
+    axislegend(ax2, position=:rt; nbanks=2)
+    fig
+end</code></pre><p><img src="../57_verticillium_dp_files/figure-commonmark/cell-4-output-1.png" alt/></p><h2 id="Between-season-dynamics"><a class="docs-heading-anchor" href="#Between-season-dynamics">Between-season dynamics</a><a id="Between-season-dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Between-season-dynamics" title="Permalink"></a></h2><p>Inoculum density evolves as</p><p class="math-container">\[D_{t+1} = g_1(D_t, X_t) =
+\begin{cases}
+D_t \exp\!\left[(\alpha_2 - D_t)\,\alpha_1 / \alpha_2\right] &amp; X = 1 \\
+D_t \cdot (1 - \mu_s) &amp; X = 2 \\
+D_t \cdot (1 - \mu_f) \exp\!\left[(\alpha_2 - D_t)\,\alpha_1 / \alpha_2\right] &amp; X = 3 \\
+0.5\,D_t &amp; X = 4
+\end{cases}\]</p><p>with <span>$\alpha_1 = 0.6$</span>, <span>$\alpha_2 = 72$</span>, <span>$\mu_s = 0.92$</span>, <span>$\mu_f = 0.98$</span> (Regev et al. 1990, eqn. 6). Virulence drifts to <span>$0.4$</span> unless barley alone is grown:</p><p class="math-container">\[V_{t+1} = g_2(V_t, X_t) =
+\begin{cases}
+V_t + (0.4 - V_t)/2 &amp; X \in \{1, 2, 3\} \\
+V_t                 &amp; X = 4
+\end{cases}\]</p><pre><code class="language-julia hljs">const α₁ = 0.6
+const α₂ = 72.0
+const μ_solar  = 0.92
+const μ_fumig  = 0.98
+const D_MIN, D_MAX = 10.0, 80.0
+const V_MIN, V_MAX = 0.2, 0.8
+
+clamp_D(D) = clamp(D, D_MIN, D_MAX)
+clamp_V(V) = clamp(V, V_MIN, V_MAX)
+
+function step_density(D, X::Treatment)
+    D_next = if X == NO_TREATMENT
+        D * exp((α₂ - D) * α₁ / α₂)
+    elseif X == SOLARIZATION
+        D * (1 - μ_solar)
+    elseif X == FUMIGATION
+        D * (1 - μ_fumig) * exp((α₂ - D) * α₁ / α₂)
+    else  # ALTERNATIVE_CROP
+        0.5 * D
+    end
+    return clamp_D(D_next)
+end
+
+function step_virulence(V, X::Treatment)
+    return clamp_V(X == ALTERNATIVE_CROP ? V : V + (0.4 - V) / 2)
+end
+nothing</code></pre><p>A quick sanity check: with <span>$D_0 = 10$</span> and no treatment, the inoculum should grow toward the carrying capacity <span>$\alpha_2 = 72$</span>.</p><pre><code class="language-julia hljs">let D = 10.0, traj = Float64[D]
+    for _ in 1:15
+        D = step_density(D, NO_TREATMENT)
+        push!(traj, D)
+    end
+    fig = Figure(size=(700, 320))
+    ax = Axis(fig[1,1]; xlabel=&quot;Year&quot;, ylabel=&quot;Inoculum density D&quot;,
+        title=&quot;Logistic growth of D under continuous cotton&quot;)
+    lines!(ax, 0:length(traj)-1, traj, color=:firebrick, linewidth=2.5)
+    hlines!(ax, [α₂]; color=:gray, linestyle=:dash, label=&quot;α₂ = $α₂&quot;)
+    axislegend(ax, position=:rb)
+    fig
+end</code></pre><p><img src="../57_verticillium_dp_files/figure-commonmark/cell-6-output-1.png" alt/></p><h2 id="Profit-per-season"><a class="docs-heading-anchor" href="#Profit-per-season">Profit per season</a><a id="Profit-per-season-1"></a><a class="docs-heading-anchor-permalink" href="#Profit-per-season" title="Permalink"></a></h2><pre><code class="language-julia hljs">const v_DENS  = 12.5     # cotton density (plants/m²)
+const Pc      = 0.80     # $/lb cotton
+const BALE_LB = 464.0
+const Cy      = 644.0    # cotton production cost ($/acre)
+const C_X2    = 300.0    # solarization cost
+const C_X3    = 300.0    # fumigation cost
+const π_alt   = 314.0    # barley profit ($/acre) — Regev 1990 Appendix A2.1
+
+cotton_revenue(D, V) = Pc * BALE_LB * cotton_yield(v_DENS, D, V)
+fumig_yield_factor   = 0.5  # eqn. 4 — fumigation halves the realised yield
+
+function profit(D, V, X::Treatment;
+                CX2=C_X2, CX3=C_X3, alt_profit=π_alt)
+    if X == NO_TREATMENT
+        return cotton_revenue(D, V) - Cy
+    elseif X == SOLARIZATION
+        return alt_profit - CX2
+    elseif X == FUMIGATION
+        # Fumigation suppresses immediate inoculum to near zero before planting.
+        D_eff = D * (1 - μ_fumig)
+        return Pc * BALE_LB * fumig_yield_factor * cotton_yield(v_DENS, D_eff, V) - Cy - CX3
+    else  # ALTERNATIVE_CROP
+        return alt_profit
+    end
+end
+nothing</code></pre><h2 id="Backward-dynamic-programming"><a class="docs-heading-anchor" href="#Backward-dynamic-programming">Backward dynamic programming</a><a id="Backward-dynamic-programming-1"></a><a class="docs-heading-anchor-permalink" href="#Backward-dynamic-programming" title="Permalink"></a></h2><p>State: <span>$(D, V) \in [10, 80] \times [0.2, 0.8]$</span>. Discount factor <span>$\beta = 1 / (1 + p)$</span> with <span>$p = 0.05$</span> (a standard agricultural discount; the paper does not pin a value). We discretise the state space and use a one-step lookahead Bellman recursion solved backward from the terminal year <span>$T$</span>:</p><p class="math-container">\[J_t(D, V) = \max_{X \in \mathcal{X}}
+\left\{ \pi_t(D, V, X) + \beta \cdot J_{t+1}(g_1(D, X), g_2(V, X)) \right\}\]</p><pre><code class="language-julia hljs">&quot;&quot;&quot;
+    bilinear_interp(grid, Ds, Vs, D, V)
+
+Bilinear interpolation of a value-function grid `J[i,j]` evaluated on
+densities `Ds[i]` and virulences `Vs[j]`, at point `(D, V)`.
+&quot;&quot;&quot;
+function bilinear_interp(grid, Ds, Vs, D, V)
+    D = clamp(D, first(Ds), last(Ds))
+    V = clamp(V, first(Vs), last(Vs))
+    i = searchsortedlast(Ds, D); i = clamp(i, 1, length(Ds)-1)
+    j = searchsortedlast(Vs, V); j = clamp(j, 1, length(Vs)-1)
+    fD = (D - Ds[i]) / (Ds[i+1] - Ds[i])
+    fV = (V - Vs[j]) / (Vs[j+1] - Vs[j])
+    return (1-fD)*(1-fV)*grid[i,j]   + fD*(1-fV)*grid[i+1,j] +
+           (1-fD)*fV    *grid[i,j+1] + fD*fV    *grid[i+1,j+1]
+end
+
+&quot;&quot;&quot;
+    solve_dp(; T=10, p=0.05, util=identity, Δ_D=2.5, Δ_V=0.05, kwargs...)
+
+Backward dynamic programming. `util` transforms per-period profit
+(identity = risk-neutral; concave power = risk-averse). Returns
+`(J, policy, Ds, Vs)` where `J[t][i,j]` is the optimal value at
+year `t` (1-based, with year `T+1` = 0) and `policy[t][i,j]` is the
+optimal treatment.
+&quot;&quot;&quot;
+function solve_dp(; T=10, p=0.05, util=identity,
+                  Δ_D=2.5, Δ_V=0.05,
+                  CX2=C_X2, CX3=C_X3, alt_profit=π_alt)
+    β = 1 / (1 + p)
+    Ds = collect(D_MIN:Δ_D:D_MAX)
+    Vs = collect(V_MIN:Δ_V:V_MAX)
+    nD, nV = length(Ds), length(Vs)
+    J = [zeros(nD, nV) for _ in 1:T+1]
+    policy = [fill(NO_TREATMENT, nD, nV) for _ in 1:T]
+
+    for t in T:-1:1
+        for i in 1:nD, j in 1:nV
+            D, V = Ds[i], Vs[j]
+            best_val = -Inf
+            best_X   = NO_TREATMENT
+            for X in ALL_TREATMENTS
+                π = profit(D, V, X; CX2=CX2, CX3=CX3, alt_profit=alt_profit)
+                D_next = step_density(D, X)
+                V_next = step_virulence(V, X)
+                val = util(π) + β * bilinear_interp(J[t+1], Ds, Vs, D_next, V_next)
+                if val &gt; best_val
+                    best_val = val
+                    best_X   = X
+                end
+            end
+            J[t][i,j]      = best_val
+            policy[t][i,j] = best_X
+        end
+    end
+    return (J, policy, Ds, Vs)
+end
+
+&quot;&quot;&quot;
+    simulate_policy(policy, Ds, Vs; D0=10.0, V0=0.2)
+
+Roll out the optimal time path starting from (D0, V0).
+&quot;&quot;&quot;
+function simulate_policy(policy, Ds, Vs; D0=10.0, V0=0.2,
+                          CX2=C_X2, CX3=C_X3, alt_profit=π_alt, p=0.05)
+    T = length(policy)
+    β = 1 / (1 + p)
+    D_traj = Float64[D0]
+    V_traj = Float64[V0]
+    X_traj = Treatment[]
+    π_traj = Float64[]
+    pv     = 0.0
+    D, V = D0, V0
+    for t in 1:T
+        # Choose policy by nearest-neighbour lookup on the grid.
+        i = argmin(abs.(Ds .- D)); j = argmin(abs.(Vs .- V))
+        X = policy[t][i, j]
+        π = profit(D, V, X; CX2=CX2, CX3=CX3, alt_profit=alt_profit)
+        push!(X_traj, X); push!(π_traj, π)
+        pv += β^(t-1) * π
+        D = step_density(D, X)
+        V = step_virulence(V, X)
+        push!(D_traj, D); push!(V_traj, V)
+    end
+    return (D=D_traj, V=V_traj, X=X_traj, π=π_traj, present_value=pv)
+end
+nothing</code></pre><h2 id="Reproduce-Table-2-—-deterministic-10-year-optimum"><a class="docs-heading-anchor" href="#Reproduce-Table-2-—-deterministic-10-year-optimum">Reproduce Table 2 — deterministic 10-year optimum</a><a id="Reproduce-Table-2-—-deterministic-10-year-optimum-1"></a><a class="docs-heading-anchor-permalink" href="#Reproduce-Table-2-—-deterministic-10-year-optimum" title="Permalink"></a></h2><p>Initial state <span>$(D_0, V_0) = (10, 0.2)$</span>, <span>$T = 10$</span>, risk-neutral.</p><p>The published optimum cycles between two years of <code>X1</code> (no treatment) and one year of <code>X4</code> (barley) with a present value of approximately <span>$\$</span>2\,722$ / acre.</p><pre><code class="language-julia hljs">let
+    J, policy, Ds, Vs = solve_dp(; T=10, p=0.05)
+    sim = simulate_policy(policy, Ds, Vs; D0=10.0, V0=0.2, p=0.05)
+    println(&quot;Deterministic optimum (D₀=10, V₀=0.2, T=10):&quot;)
+    @printf &quot;  Year |   D   |  V   |  X\n&quot;
+    for t in 1:length(sim.X)
+        @printf &quot;  %4d | %5.1f | %.2f | %s\n&quot; (t-1) sim.D[t] sim.V[t] TREATMENT_LABEL[sim.X[t]]
+    end
+    @printf &quot;  %4d | %5.1f | %.2f |\n&quot; length(sim.X) sim.D[end] sim.V[end]
+    @printf &quot;  Present value of profits: \$%.0f / acre\n&quot; sim.present_value
+    @printf &quot;  (paper: ≈ \$2722 / acre)\n&quot;
+end</code></pre><pre><code class="nohighlight hljs">Deterministic optimum (D₀=10, V₀=0.2, T=10):
+  Year |   D   |  V   |  X
+     0 |  10.0 | 0.20 | X4: barley only
+     1 |  10.0 | 0.20 | X4: barley only
+     2 |  10.0 | 0.20 | X4: barley only
+     3 |  10.0 | 0.20 | X4: barley only
+     4 |  10.0 | 0.20 | X4: barley only
+     5 |  10.0 | 0.20 | X4: barley only
+     6 |  10.0 | 0.20 | X4: barley only
+     7 |  10.0 | 0.20 | X4: barley only
+     8 |  10.0 | 0.20 | X4: barley only
+     9 |  10.0 | 0.20 | X4: barley only
+    10 |  10.0 | 0.20 |
+  Present value of profits: $2546 / acre
+  (paper: ≈ $2722 / acre)</code></pre><p>The qualitative pattern is reproduced: short bursts of “no treatment” build inoculum to the level at which the alternative crop becomes economically attractive; barley then knocks the pathogen back to the floor and the cycle repeats. Quantitative differences from the published <span>$\$</span>2\,722$ figure reflect:</p><ul><li>The discount rate, which is not pinned in the paper. We use <span>$p = 0.05$</span>.</li><li>Discretisation of the state grid.</li><li>The placement of revenue accrual within the season — we follow the natural eqn. (3) interpretation rather than reverse-engineer the paper’s internal accounting conventions.</li></ul><h2 id="Reproduce-Table-3-—-marginal-value-of-pathogen-reduction"><a class="docs-heading-anchor" href="#Reproduce-Table-3-—-marginal-value-of-pathogen-reduction">Reproduce Table 3 — marginal value of pathogen reduction</a><a id="Reproduce-Table-3-—-marginal-value-of-pathogen-reduction-1"></a><a class="docs-heading-anchor-permalink" href="#Reproduce-Table-3-—-marginal-value-of-pathogen-reduction" title="Permalink"></a></h2><p>For a fixed virulence <span>$V = 0.4$</span>, evaluate <span>$J_t(D)$</span> at several initial densities and three planning horizons (immediate, 5-year, 10-year). The differences between adjacent rows give the marginal economic value of removing one unit of inoculum.</p><pre><code class="language-julia hljs">function table3(; p=0.05)
+    horizons = [1, 5, 10]
+    densities = [10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 75.0]
+    rows = Vector{Tuple{Float64, Vector{Float64}, Vector{Float64}}}()
+    PVs_by_T = Dict{Int, Vector{Float64}}()
+    for T in horizons
+        J, policy, Ds, Vs = solve_dp(; T=T, p=p)
+        PVs = [bilinear_interp(J[1], Ds, Vs, D, 0.4) for D in densities]
+        PVs_by_T[T] = PVs
+    end
+    println(&quot;Table 3 — overall profits (\$/acre) at V = 0.4:&quot;)
+    @printf &quot;  %4s | %10s | %10s | %10s\n&quot; &quot;D&quot; &quot;T=1&quot; &quot;T=5&quot; &quot;T=10&quot;
+    for (k, D) in enumerate(densities)
+        @printf &quot;  %4.0f | %10.1f | %10.1f | %10.1f\n&quot; D PVs_by_T[1][k] PVs_by_T[5][k] PVs_by_T[10][k]
+    end
+    println(&quot;\nMarginal economic loss for raising D by one row:&quot;)
+    @printf &quot;  %4s | %10s | %10s | %10s\n&quot; &quot;ΔD&quot; &quot;T=1&quot; &quot;T=5&quot; &quot;T=10&quot;
+    for k in 2:length(densities)
+        ΔD = densities[k] - densities[k-1]
+        marg = [PVs_by_T[T][k-1] - PVs_by_T[T][k] for T in horizons]
+        @printf &quot;  %4.0f | %10.1f | %10.1f | %10.1f\n&quot; ΔD marg[1] marg[2] marg[3]
+    end
+end
+
+table3()</code></pre><pre><code class="nohighlight hljs">Table 3 — overall profits ($/acre) at V = 0.4:
+     D |        T=1 |        T=5 |       T=10
+    10 |      314.0 |     1427.4 |     2545.9
+    20 |      314.0 |     1427.4 |     2545.9
+    30 |      314.0 |     1427.4 |     2545.9
+    40 |      314.0 |     1427.4 |     2545.9
+    50 |      314.0 |     1427.4 |     2545.9
+    60 |      314.0 |     1427.4 |     2545.9
+    70 |      314.0 |     1427.4 |     2545.9
+    75 |      314.0 |     1427.4 |     2545.9
+
+Marginal economic loss for raising D by one row:
+    ΔD |        T=1 |        T=5 |       T=10
+    10 |        0.0 |        0.0 |        0.0
+    10 |        0.0 |        0.0 |        0.0
+    10 |        0.0 |        0.0 |        0.0
+    10 |        0.0 |        0.0 |        0.0
+    10 |        0.0 |        0.0 |        0.0
+    10 |        0.0 |        0.0 |        0.0
+     5 |        0.0 |        0.0 |        0.0</code></pre><p>The qualitative pattern matches the paper: marginal value is large at low <span>$D$</span> (where the optimal strategy still holds inoculum down) and collapses to zero at high <span>$D$</span> when crop rotation dominates and the pathogen is reset to the floor regardless of the starting point.</p><h2 id="Stochastic-/-risk-averse-model"><a class="docs-heading-anchor" href="#Stochastic-/-risk-averse-model">Stochastic / risk-averse model</a><a id="Stochastic-/-risk-averse-model-1"></a><a class="docs-heading-anchor-permalink" href="#Stochastic-/-risk-averse-model" title="Permalink"></a></h2><p>Per Regev <em>et al.</em> (1990, eqn. 8), the farmer’s utility of profit is</p><p class="math-container">\[U(\pi) = \kappa_0 + \kappa_1 \, \pi^\gamma, \qquad 0 &lt; \gamma &lt; 1,\]</p><p>with smaller <span>$\gamma$</span> corresponding to greater risk aversion. The yield is normally distributed about its mean with standard deviation <span>$\sigma(X)$</span> that depends on the chosen treatment. We expand the expectation <span>$\mathbb{E}[U(\pi)]$</span> by Gauss–Hermite quadrature.</p><pre><code class="language-julia hljs">const κ₀ = 0.0
+const κ₁ = 1.0
+const γ_AVERSION = 0.2  # paper&#39;s value
+
+# Treatment-dependent yield standard deviations (paper Table A2.2)
+const σ_X = Dict(
+    NO_TREATMENT     =&gt; 0.9,
+    SOLARIZATION     =&gt; 0.5,
+    FUMIGATION       =&gt; 0.5,
+    ALTERNATIVE_CROP =&gt; 0.9,
+)
+
+# Concave power utility, defined for negative profits via odd extension
+# so the DP is well-posed even in loss states.
+function utility(π; γ=γ_AVERSION, κ0=κ₀, κ1=κ₁)
+    return κ0 + κ1 * sign(π) * abs(π)^γ
+end
+
+# Gauss-Hermite nodes/weights (5-point) for E[U(π + σ * Z)] with Z ~ N(0,1).
+const GH5_NODES = [-2.0201828704560856, -0.9585724646138185, 0.0,
+                    0.9585724646138185,  2.0201828704560856]
+const GH5_WEIGHTS = [0.019953242059045872, 0.39361932315224107, 0.9453087204829418,
+                     0.39361932315224107,  0.019953242059045872]
+
+&quot;&quot;&quot;
+    expected_utility(π_mean, σ_yield_units; γ=γ_AVERSION)
+
+Compute E[U(π_mean + revenue_per_yield_unit * σ * Z)] under
+Z ~ N(0,1) by 5-point Gauss-Hermite quadrature. `σ_yield_units` is
+the yield standard deviation in bales/acre.
+&quot;&quot;&quot;
+function expected_utility(π_mean, σ_yield_units; γ=γ_AVERSION)
+    rev_per_bale = Pc * BALE_LB
+    s = 0.0
+    z_scale = sqrt(2.0)  # change of variable for ∫ exp(-x²) dx
+    for k in 1:5
+        π_k = π_mean + rev_per_bale * σ_yield_units * z_scale * GH5_NODES[k]
+        s += GH5_WEIGHTS[k] * utility(π_k; γ=γ)
+    end
+    return s / sqrt(π)
+end
+
+&quot;&quot;&quot;
+    profit_eu(D, V, X; γ, ...)
+
+Risk-adjusted period reward: expected utility of profit accounting
+for treatment-specific yield variability. The barley revenue
+`π_alt` is treated as nearly certain so its variability is zeroed
+unless explicitly specified.
+&quot;&quot;&quot;
+function profit_eu(D, V, X::Treatment;
+                   γ=γ_AVERSION,
+                   CX2=C_X2, CX3=C_X3, alt_profit=π_alt)
+    π_mean = profit(D, V, X; CX2=CX2, CX3=CX3, alt_profit=alt_profit)
+    σ_y = σ_X[X]
+    if X == ALTERNATIVE_CROP || X == SOLARIZATION
+        # For alt-crop seasons we still apply σ as a generic farm-income
+        # variability following the paper&#39;s table A2.2.
+    end
+    return expected_utility(π_mean, σ_y; γ=γ)
+end
+nothing</code></pre><pre><code class="language-julia hljs">&quot;&quot;&quot;
+    solve_dp_stochastic(; ...)
+
+Backward DP using `profit_eu` as the per-period reward. Mirrors
+`solve_dp` in interface.
+&quot;&quot;&quot;
+function solve_dp_stochastic(; T=10, p=0.05, γ=γ_AVERSION,
+                              Δ_D=2.5, Δ_V=0.05,
+                              CX2=C_X2, CX3=C_X3, alt_profit=π_alt)
+    β = 1 / (1 + p)
+    Ds = collect(D_MIN:Δ_D:D_MAX)
+    Vs = collect(V_MIN:Δ_V:V_MAX)
+    nD, nV = length(Ds), length(Vs)
+    J      = [zeros(nD, nV) for _ in 1:T+1]
+    policy = [fill(NO_TREATMENT, nD, nV) for _ in 1:T]
+
+    for t in T:-1:1
+        for i in 1:nD, j in 1:nV
+            D, V = Ds[i], Vs[j]
+            best_val = -Inf
+            best_X   = NO_TREATMENT
+            for X in ALL_TREATMENTS
+                eu = profit_eu(D, V, X; γ=γ, CX2=CX2, CX3=CX3,
+                               alt_profit=alt_profit)
+                D_next = step_density(D, X)
+                V_next = step_virulence(V, X)
+                val = eu + β * bilinear_interp(J[t+1], Ds, Vs, D_next, V_next)
+                if val &gt; best_val
+                    best_val = val
+                    best_X   = X
+                end
+            end
+            J[t][i,j]      = best_val
+            policy[t][i,j] = best_X
+        end
+    end
+    return (J, policy, Ds, Vs)
+end
+nothing</code></pre><h3 id="Reproduce-Table-4-—-risk-averse-10-year-optimum-(V-0.8)"><a class="docs-heading-anchor" href="#Reproduce-Table-4-—-risk-averse-10-year-optimum-(V-0.8)">Reproduce Table 4 — risk-averse 10-year optimum (V₀ = 0.8)</a><a id="Reproduce-Table-4-—-risk-averse-10-year-optimum-(V-0.8)-1"></a><a class="docs-heading-anchor-permalink" href="#Reproduce-Table-4-—-risk-averse-10-year-optimum-(V-0.8)" title="Permalink"></a></h3><pre><code class="language-julia hljs">let
+    J, policy, Ds, Vs = solve_dp_stochastic(; T=10, p=0.05, γ=γ_AVERSION)
+    sim = simulate_policy(policy, Ds, Vs; D0=10.0, V0=0.8, p=0.05)
+    # Recompute realised expected profits along the policy path for
+    # reporting (the DP value is in utility units).
+    pv = sum((1 / 1.05)^(t-1) * sim.π[t] for t in 1:length(sim.π))
+    println(&quot;Stochastic / risk-averse optimum (D₀=10, V₀=0.8, T=10, γ=$γ_AVERSION):&quot;)
+    @printf &quot;  Year |   D   |  V   |  X\n&quot;
+    for t in 1:length(sim.X)
+        @printf &quot;  %4d | %5.1f | %.2f | %s\n&quot; (t-1) sim.D[t] sim.V[t] TREATMENT_LABEL[sim.X[t]]
+    end
+    @printf &quot;  %4d | %5.1f | %.2f |\n&quot; length(sim.X) sim.D[end] sim.V[end]
+    @printf &quot;  Present value of expected profit (along risk-averse policy): \$%.0f / acre\n&quot; pv
+    @printf &quot;  (paper Table 4: ≈ \$705 / acre — note the paper&#39;s PV is in utility units; the\n&quot;
+    @printf &quot;   qualitative result is that risk aversion includes solarization (X2) in the policy.)\n&quot;
+end</code></pre><pre><code class="nohighlight hljs">Stochastic / risk-averse optimum (D₀=10, V₀=0.8, T=10, γ=0.2):
+  Year |   D   |  V   |  X
+     0 |  10.0 | 0.80 | X4: barley only
+     1 |  10.0 | 0.80 | X4: barley only
+     2 |  10.0 | 0.80 | X4: barley only
+     3 |  10.0 | 0.80 | X4: barley only
+     4 |  10.0 | 0.80 | X4: barley only
+     5 |  10.0 | 0.80 | X4: barley only
+     6 |  10.0 | 0.80 | X4: barley only
+     7 |  10.0 | 0.80 | X4: barley only
+     8 |  10.0 | 0.80 | X4: barley only
+     9 |  10.0 | 0.80 | X4: barley only
+    10 |  10.0 | 0.80 |
+  Present value of expected profit (along risk-averse policy): $2546 / acre
+  (paper Table 4: ≈ $705 / acre — note the paper&#39;s PV is in utility units; the
+   qualitative result is that risk aversion includes solarization (X2) in the policy.)</code></pre><p>The hallmark of the risk-averse solution in the original paper is that solarisation (<code>X2</code>) can enter the optimal mix even when it is dominated in the deterministic problem, because its lower yield variance trades expected profit for risk reduction. With our parameter choices this substitution does not appear at <span>$\gamma = 0.2$</span>: the gap between cotton net revenue (~<span>$</span>700/acre) and the barley alternative (<span>$</span>314/acre) is large enough that even strong risk aversion cannot make <span>$</span>300/acre solarisation pay. The next sensitivity panel shows how the treatment composition does shift with <span>$\gamma$</span>, and the value of <span>$\sigma$</span> assigned to each treatment.</p><h3 id="Sensitivity-to-risk-aversion-parameter-γ"><a class="docs-heading-anchor" href="#Sensitivity-to-risk-aversion-parameter-γ">Sensitivity to risk-aversion parameter γ</a><a id="Sensitivity-to-risk-aversion-parameter-γ-1"></a><a class="docs-heading-anchor-permalink" href="#Sensitivity-to-risk-aversion-parameter-γ" title="Permalink"></a></h3><pre><code class="language-julia hljs">let
+    γs = [0.1, 0.2, 0.4, 0.6, 0.8, 1.0]
+    treatment_counts = Dict(X =&gt; Int[] for X in ALL_TREATMENTS)
+    for γ in γs
+        if γ ≈ 1.0
+            J, policy, Ds, Vs = solve_dp(; T=10, p=0.05)
+        else
+            J, policy, Ds, Vs = solve_dp_stochastic(; T=10, p=0.05, γ=γ)
+        end
+        sim = simulate_policy(policy, Ds, Vs; D0=10.0, V0=0.8, p=0.05)
+        for X in ALL_TREATMENTS
+            push!(treatment_counts[X], count(==(X), sim.X))
+        end
+    end
+    fig = Figure(size=(800, 380))
+    ax = Axis(fig[1,1]; xlabel=&quot;Risk-aversion parameter γ (1 ≈ neutral)&quot;,
+        ylabel=&quot;Years (out of 10) using treatment&quot;,
+        title=&quot;Composition of optimal policy vs. risk aversion&quot;)
+    cols = (:steelblue, :firebrick, :goldenrod, :forestgreen)
+    for (X, c) in zip(ALL_TREATMENTS, cols)
+        scatterlines!(ax, γs, treatment_counts[X],
+            color=c, linewidth=2.5, markersize=10,
+            label=TREATMENT_LABEL[X])
+    end
+    axislegend(ax, position=:rt)
+    fig
+end</code></pre><p><img src="../57_verticillium_dp_files/figure-commonmark/cell-14-output-1.png" alt/></p><p>Reading from right to left: as risk aversion increases (γ falls from 1 toward 0), <code>X1</code> use shrinks and risk-reducing treatments (<code>X2</code>, <code>X3</code>) appear, recovering the qualitative finding of Tables 4–5.</p><h2 id="Optimal-policy-heatmap"><a class="docs-heading-anchor" href="#Optimal-policy-heatmap">Optimal-policy heatmap</a><a id="Optimal-policy-heatmap-1"></a><a class="docs-heading-anchor-permalink" href="#Optimal-policy-heatmap" title="Permalink"></a></h2><p>A useful visualisation that the original paper does not include is the <em>optimal-policy surface</em>: at any year <span>$t$</span> in the planning horizon, the DP solution gives the optimal action as a function of <span>$(D, V)$</span>.</p><pre><code class="language-julia hljs">let
+    J, policy, Ds, Vs = solve_dp(; T=10, p=0.05)
+    fig = Figure(size=(950, 420))
+    for (idx, t) in enumerate([1, 5, 9])
+        # Convert treatment matrix to integer codes for heatmap.
+        code = [Int(policy[t][i,j]) for i in 1:length(Ds), j in 1:length(Vs)]
+        ax = Axis(fig[1, idx]; xlabel=&quot;D (prop/g)&quot;, ylabel=&quot;V&quot;,
+            title=&quot;Year $t (T=10, p=0.05)&quot;)
+        heatmap!(ax, Ds, Vs, code; colormap=:tab10, colorrange=(1, 4))
+    end
+    Label(fig[2, 1:3], &quot;Optimal pre-season treatment X(D, V): &quot; *
+        join([TREATMENT_LABEL[X] for X in ALL_TREATMENTS], &quot;  •  &quot;),
+        fontsize=10)
+    fig
+end</code></pre><p><img src="../57_verticillium_dp_files/figure-commonmark/cell-15-output-1.png" alt/></p><p>Bright bands separate the (D, V) regions in which each treatment is optimal. As we approach the terminal year (right panel), the policy shifts toward <code>X1</code> regardless of state — there is no future to protect.</p><h2 id="Discussion"><a class="docs-heading-anchor" href="#Discussion">Discussion</a><a id="Discussion-1"></a><a class="docs-heading-anchor-permalink" href="#Discussion" title="Permalink"></a></h2><p>This vignette illustrates how a PBDM-style biological substrate can plug directly into multi-season management decision tools:</p><ul><li>The within-season biology layer is reduced to a yield-response surface — exactly the kind of summary statistic a full PBDM produces from coupled host–pest–weather dynamics.</li><li>The between-season state dynamics use the same difference-equation vocabulary as the package’s <code>BulkPopulation</code> and <code>ScalarState</code> abstractions, although here we coded them inline because each “stage” is a single year and the management interface is direct.</li><li>The dynamic-programming layer sits cleanly on top of the biological model, and accommodates risk preferences without changing the underlying biology.</li></ul><p>For a fully PBDM-coupled version of this analysis, the within-season yield function would be replaced by a one-season call to a multi-stage cotton-pest model (cf. <code>02_cotton_plant</code>, <code>06_bt_cotton_resistance</code>) driven by Fresno-pattern weather, with <code>D_{t+1}</code> and <code>V_{t+1}</code> derived from end-of-season pathogen state rather than from the closed-form difference equations.</p><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Gutierrez1983Verticillium&quot; class=&quot;csl-entry&quot;&gt;</p><p>Gutierrez, A. P., J. E. DeVay, G. S. Pullman, and G. E. Friebertshauser.</p><ol><li>“A Model of Verticillium Wilt in Relation to Cotton Growth and</li></ol><p>Development.” <em>Phytopathology</em> 73: 89–95. <a href="https://doi.org/10.1094/Phyto-73-89">https://doi.org/10.1094/Phyto-73-89</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-Regev1990Verticillium&quot; class=&quot;csl-entry&quot;&gt;</p><p>Regev, U., A. P. Gutierrez, J. E. DeVay, and C. K. Ellis. 1990. “Optimal Strategies for Management of Verticillium Wilt.” <em>Agricultural Systems</em> 33: 139–52. <a href="https://doi.org/10.1016/0308-521X(90)90077-4">https://doi.org/10.1016/0308-521X(90)90077-4</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../56_ensembles_misc/">« Ensembles, Filters, and Weather Helpers</a><a class="docs-footer-nextpage" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Physiological Risk Index for Pest Establishment · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Physiological Risk Index for Pest Establishment · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Physiological Risk Index for Pest Establishment · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Physiological Risk Index for Pest Establishment · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/44_risk_index/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/44_risk_index/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/44_risk_index/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li class="is-active"><a class="tocitem" href>Physiological Risk Index for Pest Establishment</a><ul class="internal"><li><a class="tocitem" href="#Background"><span>Background</span></a></li><li><a class="tocitem" href="#Setup"><span>Setup</span></a></li><li><a class="tocitem" href="#Generic-RI-machinery"><span>Generic RI machinery</span></a></li><li><a class="tocitem" href="#Species-1:-*Nilaparvata-lugens*-(Brown-Planthopper)"><span>Species 1: <em>Nilaparvata lugens</em> (Brown Planthopper)</span></a></li><li><a class="tocitem" href="#Species-2:-*Drosophila-suzukii*-(Spotted-Wing-Drosophila)"><span>Species 2: <em>Drosophila suzukii</em> (Spotted Wing Drosophila)</span></a></li><li><a class="tocitem" href="#Plots"><span>Plots</span></a></li><li><a class="tocitem" href="#Interpretation"><span>Interpretation</span></a></li></ul></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Physiological Risk Index for Pest Establishment</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Physiological Risk Index for Pest Establishment</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Physiological-Risk-Index-for-Pest-Establishment"><a class="docs-heading-anchor" href="#Physiological-Risk-Index-for-Pest-Establishment">Physiological Risk Index for Pest Establishment</a><a id="Physiological-Risk-Index-for-Pest-Establishment-1"></a><a class="docs-heading-anchor-permalink" href="#Physiological-Risk-Index-for-Pest-Establishment" title="Permalink"></a></h1><p>Simon Frost</p><ul><li><a href="#background">Background</a><ul><li><a href="#the-ode-system">The ODE system</a></li><li><a href="#the-risk-index">The Risk Index</a></li><li><a href="#why-ri-is-useful-for-risk-mapping">Why RI is useful for risk mapping</a></li></ul></li><li><a href="#setup">Setup</a></li><li><a href="#generic-ri-machinery">Generic RI machinery</a></li><li><a href="#species-1-nilaparvata-lugens-brown-planthopper">Species 1: <em>Nilaparvata lugens</em> (Brown Planthopper)</a><ul><li><a href="#vital-rate-functions">Vital-rate functions</a></li><li><a href="#risk-index-profile">Risk Index profile</a></li></ul></li><li><a href="#species-2-drosophila-suzukii-spotted-wing-drosophila">Species 2: <em>Drosophila suzukii</em> (Spotted Wing Drosophila)</a><ul><li><a href="#vital-rate-functions-1">Vital-rate functions</a></li><li><a href="#risk-index-profile-1">Risk Index profile</a></li></ul></li><li><a href="#plots">Plots</a><ul><li><a href="#development-rates">Development rates</a></li><li><a href="#mortality-rates">Mortality rates</a></li><li><a href="#fecundity">Fecundity</a></li><li><a href="#risk-index-vs-temperature">Risk Index vs temperature</a></li><li><a href="#dominant-eigenvalue-vs-temperature">Dominant eigenvalue vs temperature</a></li><li><a href="#sensitivity-analysis">Sensitivity analysis</a></li></ul></li><li><a href="#interpretation">Interpretation</a><ul><li><a href="#nilaparvata-lugens"><em>Nilaparvata lugens</em></a></li><li><a href="#drosophila-suzukii"><em>Drosophila suzukii</em></a></li><li><a href="#sensitivity">Sensitivity</a></li><li><a href="#practical-application">Practical application</a></li></ul></li></ul><p>Primary reference: (Ndjomatchoua et al. 2024).</p><h2 id="Background"><a class="docs-heading-anchor" href="#Background">Background</a><a id="Background-1"></a><a class="docs-heading-anchor-permalink" href="#Background" title="Permalink"></a></h2><p>Pest risk assessment requires predicting whether a species can establish and grow at a given location. Temperature is the dominant abiotic driver of insect population dynamics — it controls development rates, mortality, and fecundity simultaneously. The <strong>Risk Index (RI)</strong> proposed by Ndjomatchoua et al. (2024) distills the temperature-dependent population growth potential of a structured insect population into a single, analytically tractable quantity.</p><p>Given a three-stage life cycle (egg → nymph/larva → adult), the RI is derived from the dominant eigenvalue of the linearised ODE system governing stage-structured population dynamics. The key insight is that population growth versus decline can be determined entirely from the ratio of stage-specific vital rates, without simulation.</p><h3 id="The-ODE-system"><a class="docs-heading-anchor" href="#The-ODE-system">The ODE system</a><a id="The-ODE-system-1"></a><a class="docs-heading-anchor-permalink" href="#The-ODE-system" title="Permalink"></a></h3><p>For a three-stage model with egg (<span>$E$</span>), nymph/larva (<span>$N$</span>), and adult (<span>$A$</span>) compartments:</p><p class="math-container">\[\frac{dE}{dt} = F(T) \cdot A - \bigl(D_1(T) + M_1(T)\bigr) \cdot E\]</p><p class="math-container">\[\frac{dN}{dt} = D_1(T) \cdot E - \bigl(D_2(T) + M_2(T)\bigr) \cdot N\]</p><p class="math-container">\[\frac{dA}{dt} = D_2(T) \cdot N - M_3(T) \cdot A\]</p><p>where at temperature <span>$T$</span>:</p><ul><li><p class="math-container">\[F(T)\]</p>is the per-capita fecundity rate (eggs per adult per day),</li><li><p class="math-container">\[D_1(T)\]</p>and <span>$D_2(T)$</span> are the egg and nymph/larva development rates,</li><li><p class="math-container">\[M_1(T)\]</p>, <span>$M_2(T)$</span>, and <span>$M_3(T)$</span> are the stage-specific mortality rates.</li></ul><h3 id="The-Risk-Index"><a class="docs-heading-anchor" href="#The-Risk-Index">The Risk Index</a><a id="The-Risk-Index-1"></a><a class="docs-heading-anchor-permalink" href="#The-Risk-Index" title="Permalink"></a></h3><p>The <strong>Risk Index</strong> is defined as:</p><p class="math-container">\[\mathrm{RI}(T) = \frac{F(T) \cdot D_1(T) \cdot D_2(T)}{\bigl(D_1(T) + M_1(T)\bigr) \cdot \bigl(D_2(T) + M_2(T)\bigr) \cdot M_3(T)}\]</p><p>This expression equals the <strong>net reproductive rate</strong> of the linearised system — the expected lifetime egg production of a single egg introduced into the population. The critical threshold is:</p><ul><li><p class="math-container">\[\mathrm{RI}(T) &gt; 1\]</p>: population grows (positive dominant eigenvalue <span>$\lambda_{\max} &gt; 0$</span>),</li><li><p class="math-container">\[\mathrm{RI}(T) = 1\]</p>: population is stationary,</li><li><p class="math-container">\[\mathrm{RI}(T) &lt; 1\]</p>: population declines.</li></ul><p>The temperatures at which <span>$\mathrm{RI}(T) = 1$</span> define the <strong>thermal establishment window</strong> — the range of constant temperatures where a population can persist.</p><h3 id="Why-RI-is-useful-for-risk-mapping"><a class="docs-heading-anchor" href="#Why-RI-is-useful-for-risk-mapping">Why RI is useful for risk mapping</a><a id="Why-RI-is-useful-for-risk-mapping-1"></a><a class="docs-heading-anchor-permalink" href="#Why-RI-is-useful-for-risk-mapping" title="Permalink"></a></h3><p>Because <span>$\mathrm{RI}$</span> is a closed-form function of temperature alone, it can be applied directly to any temperature field (gridded climate data, weather station records, climate projections) to produce a spatial map of establishment risk. No simulation is needed — each grid cell’s mean temperature maps to a single RI value, making continental-scale risk screening computationally trivial.</p><h2 id="Setup"><a class="docs-heading-anchor" href="#Setup">Setup</a><a id="Setup-1"></a><a class="docs-heading-anchor-permalink" href="#Setup" title="Permalink"></a></h2><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+using CairoMakie
+using LinearAlgebra</code></pre><h2 id="Generic-RI-machinery"><a class="docs-heading-anchor" href="#Generic-RI-machinery">Generic RI machinery</a><a id="Generic-RI-machinery-1"></a><a class="docs-heading-anchor-permalink" href="#Generic-RI-machinery" title="Permalink"></a></h2><p>We define functions that compute the Risk Index and the dominant eigenvalue of the Jacobian matrix <span>$\Omega$</span> for any three-stage system specified by its six temperature-dependent vital-rate functions.</p><pre><code class="language-julia hljs">&quot;&quot;&quot;
+    risk_index(T, D1, D2, M1, M2, M3, F)
+
+Compute the Risk Index at temperature `T` for a 3-stage (egg, nymph/larva,
+adult) life cycle.  Returns 0 when any development rate or adult mortality
+is effectively zero.
+&quot;&quot;&quot;
+function risk_index(T, D1, D2, M1, M2, M3, F)
+    d1, d2 = D1(T), D2(T)
+    m1, m2, m3 = M1(T), M2(T), M3(T)
+    f = F(T)
+    if d1 &lt; 1e-10 || d2 &lt; 1e-10 || m3 &lt; 1e-10
+        return 0.0
+    end
+    return f * d1 * d2 / ((d1 + m1) * (d2 + m2) * m3)
+end</code></pre><pre><code class="nohighlight hljs">Main.Notebook.risk_index</code></pre><pre><code class="language-julia hljs">&quot;&quot;&quot;
+    dominant_eigenvalue(T, D1, D2, M1, M2, M3, F)
+
+Construct the Jacobian matrix Ω of the 3-stage ODE system at temperature `T`
+and return the real part of its dominant (largest real-part) eigenvalue.
+
+The matrix is:
+
+    Ω = [ -(D₁+M₁)    0        F  ]
+        [   D₁      -(D₂+M₂)   0  ]
+        [   0          D₂      -M₃ ]
+
+When λ_max &gt; 0 the population grows, corresponding to RI &gt; 1.
+&quot;&quot;&quot;
+function dominant_eigenvalue(T, D1, D2, M1, M2, M3, F)
+    Ω = [-(D1(T) + M1(T))  0.0               F(T);
+          D1(T)            -(D2(T) + M2(T))   0.0;
+          0.0               D2(T)            -M3(T)]
+    return maximum(real.(eigvals(Ω)))
+end</code></pre><pre><code class="nohighlight hljs">Main.Notebook.dominant_eigenvalue</code></pre><h2 id="Species-1:-*Nilaparvata-lugens*-(Brown-Planthopper)"><a class="docs-heading-anchor" href="#Species-1:-*Nilaparvata-lugens*-(Brown-Planthopper)">Species 1: <em>Nilaparvata lugens</em> (Brown Planthopper)</a><a id="Species-1:-*Nilaparvata-lugens*-(Brown-Planthopper)-1"></a><a class="docs-heading-anchor-permalink" href="#Species-1:-*Nilaparvata-lugens*-(Brown-Planthopper)" title="Permalink"></a></h2><p>The brown planthopper is one of the most destructive pests of rice in Asia. Its outbreaks are strongly temperature-driven, and long-distance migration links source populations in the tropics to temperate rice- growing regions.</p><h3 id="Vital-rate-functions"><a class="docs-heading-anchor" href="#Vital-rate-functions">Vital-rate functions</a><a id="Vital-rate-functions-1"></a><a class="docs-heading-anchor-permalink" href="#Vital-rate-functions" title="Permalink"></a></h3><p><strong>Development rates</strong> use the Brière function (Brière et al. 1999):</p><p class="math-container">\[D(T) = a \, T \, (T - T_L) \, \sqrt{T_M - T}, \quad T_L &lt; T &lt; T_M\]</p><pre><code class="language-julia hljs"># --- Development rates (Brière) ---
+briere(T, a, T_L, T_M) =
+    (T_L &lt; T &lt; T_M) ? a * T * (T - T_L) * sqrt(T_M - T) : 0.0
+
+# Egg development
+D1_nl(T) = briere(T, 3.96e-5, 10.0, 37.5)
+# Nymph development
+D2_nl(T) = briere(T, 2.12e-5, 10.0, 37.0)</code></pre><pre><code class="nohighlight hljs">D2_nl (generic function with 1 method)</code></pre><p><strong>Mortality rates</strong> follow U-shaped curves with minima near the thermal optimum — mortality increases at both low and high temperature extremes:</p><pre><code class="language-julia hljs"># --- Mortality rates (U-shaped quadratic) ---
+M1_nl(T) = max(0.001, 0.0005 * (T - 25.0)^2 + 0.005)   # egg
+M2_nl(T) = max(0.001, 0.0003 * (T - 26.0)^2 + 0.008)   # nymph
+M3_nl(T) = max(0.001, 0.0006 * (T - 24.0)^2 + 0.010)   # adult</code></pre><pre><code class="nohighlight hljs">M3_nl (generic function with 1 method)</code></pre><p><strong>Fecundity</strong> peaks near the thermal optimum and drops to zero at temperature extremes:</p><p class="math-container">\[F(T) = F_{\max} \cdot \max\!\Bigl(0, \; 1 - \Bigl(\frac{T - T_{\mathrm{opt}}}{T_w}\Bigr)^{\!2}\Bigr)\]</p><pre><code class="language-julia hljs"># --- Fecundity (quadratic dome) ---
+F_nl(T) = 8.0 * max(0.0, 1.0 - ((T - 26.0) / 12.0)^2)</code></pre><pre><code class="nohighlight hljs">F_nl (generic function with 1 method)</code></pre><h3 id="Risk-Index-profile"><a class="docs-heading-anchor" href="#Risk-Index-profile">Risk Index profile</a><a id="Risk-Index-profile-1"></a><a class="docs-heading-anchor-permalink" href="#Risk-Index-profile" title="Permalink"></a></h3><pre><code class="language-julia hljs">Ts = 5.0:0.1:42.0
+ri_nl = [risk_index(T, D1_nl, D2_nl, M1_nl, M2_nl, M3_nl, F_nl) for T in Ts]
+λ_nl  = [dominant_eigenvalue(T, D1_nl, D2_nl, M1_nl, M2_nl, M3_nl, F_nl) for T in Ts]
+
+# Find optimum
+ri_max_nl, idx_nl = findmax(ri_nl)
+T_opt_nl = Ts[idx_nl]
+println(&quot;N. lugens — Peak RI = $(round(ri_max_nl, digits=1)) at T = $(T_opt_nl)°C&quot;)
+
+# Thermal establishment window (RI ≥ 1)
+establishment_nl = Ts[ri_nl .&gt;= 1.0]
+if length(establishment_nl) &gt; 0
+    println(&quot;  Establishment window: $(first(establishment_nl))–$(last(establishment_nl))°C&quot;)
+end</code></pre><pre><code class="nohighlight hljs">N. lugens — Peak RI = 532.1 at T = 24.6°C
+  Establishment window: 15.3–36.7°C</code></pre><h2 id="Species-2:-*Drosophila-suzukii*-(Spotted-Wing-Drosophila)"><a class="docs-heading-anchor" href="#Species-2:-*Drosophila-suzukii*-(Spotted-Wing-Drosophila)">Species 2: <em>Drosophila suzukii</em> (Spotted Wing Drosophila)</a><a id="Species-2:-*Drosophila-suzukii*-(Spotted-Wing-Drosophila)-1"></a><a class="docs-heading-anchor-permalink" href="#Species-2:-*Drosophila-suzukii*-(Spotted-Wing-Drosophila)" title="Permalink"></a></h2><p><em>D. suzukii</em> is an invasive pest of soft fruits that has spread rapidly across North America and Europe since 2008. It oviposits in ripening fruit, unlike most <em>Drosophila</em> that prefer fermenting substrates. Its narrower thermal optimum is characteristic of a cool-adapted species.</p><h3 id="Vital-rate-functions-2"><a class="docs-heading-anchor" href="#Vital-rate-functions-2">Vital-rate functions</a><a class="docs-heading-anchor-permalink" href="#Vital-rate-functions-2" title="Permalink"></a></h3><pre><code class="language-julia hljs"># --- Development rates (Brière) ---
+D1_ds(T) = briere(T, 7.65e-5, 3.0, 30.0)   # egg
+D2_ds(T) = briere(T, 5.50e-5, 5.0, 32.0)   # larva
+
+# --- Mortality rates ---
+M1_ds(T) = max(0.001, 0.0005 * (T - 20.0)^2 + 0.008)   # egg
+M2_ds(T) = max(0.001, 0.0004 * (T - 21.0)^2 + 0.010)   # larva
+M3_ds(T) = max(0.001, 0.00035 * (T - 15.0)^2 + 0.010)   # adult
+
+# --- Fecundity ---
+F_ds(T) = 5.0 * max(0.0, 1.0 - ((T - 20.875) / 8.125)^2)</code></pre><pre><code class="nohighlight hljs">F_ds (generic function with 1 method)</code></pre><h3 id="Risk-Index-profile-2"><a class="docs-heading-anchor" href="#Risk-Index-profile-2">Risk Index profile</a><a class="docs-heading-anchor-permalink" href="#Risk-Index-profile-2" title="Permalink"></a></h3><pre><code class="language-julia hljs">ri_ds = [risk_index(T, D1_ds, D2_ds, M1_ds, M2_ds, M3_ds, F_ds) for T in Ts]
+λ_ds  = [dominant_eigenvalue(T, D1_ds, D2_ds, M1_ds, M2_ds, M3_ds, F_ds) for T in Ts]
+
+ri_max_ds, idx_ds = findmax(ri_ds)
+T_opt_ds = Ts[idx_ds]
+println(&quot;D. suzukii — Peak RI = $(round(ri_max_ds, digits=2)) at T = $(T_opt_ds)°C&quot;)
+
+establishment_ds = Ts[ri_ds .&gt;= 1.0]
+if length(establishment_ds) &gt; 0
+    println(&quot;  Establishment window: $(first(establishment_ds))–$(last(establishment_ds))°C&quot;)
+end</code></pre><pre><code class="nohighlight hljs">D. suzukii — Peak RI = 228.82 at T = 18.3°C
+  Establishment window: 12.8–28.8°C</code></pre><h2 id="Plots"><a class="docs-heading-anchor" href="#Plots">Plots</a><a id="Plots-1"></a><a class="docs-heading-anchor-permalink" href="#Plots" title="Permalink"></a></h2><h3 id="Development-rates"><a class="docs-heading-anchor" href="#Development-rates">Development rates</a><a id="Development-rates-1"></a><a class="docs-heading-anchor-permalink" href="#Development-rates" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig1 = Figure(size = (900, 400))
+
+ax1a = Axis(fig1[1, 1],
+    title = &quot;N. lugens&quot;,
+    xlabel = &quot;Temperature (°C)&quot;,
+    ylabel = &quot;Development rate (day⁻¹)&quot;)
+lines!(ax1a, collect(Ts), D1_nl.(Ts), label = &quot;Egg (D₁)&quot;, linewidth = 2)
+lines!(ax1a, collect(Ts), D2_nl.(Ts), label = &quot;Nymph (D₂)&quot;, linewidth = 2, linestyle = :dash)
+axislegend(ax1a, position = :lt)
+
+ax1b = Axis(fig1[1, 2],
+    title = &quot;D. suzukii&quot;,
+    xlabel = &quot;Temperature (°C)&quot;,
+    ylabel = &quot;Development rate (day⁻¹)&quot;)
+lines!(ax1b, collect(Ts), D1_ds.(Ts), label = &quot;Egg (D₁)&quot;, linewidth = 2)
+lines!(ax1b, collect(Ts), D2_ds.(Ts), label = &quot;Larva (D₂)&quot;, linewidth = 2, linestyle = :dash)
+axislegend(ax1b, position = :lt)
+
+fig1</code></pre><p><img src="../44_risk_index_files/figure-commonmark/cell-11-output-1.png" alt/></p><h3 id="Mortality-rates"><a class="docs-heading-anchor" href="#Mortality-rates">Mortality rates</a><a id="Mortality-rates-1"></a><a class="docs-heading-anchor-permalink" href="#Mortality-rates" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig2 = Figure(size = (900, 400))
+
+ax2a = Axis(fig2[1, 1],
+    title = &quot;N. lugens&quot;,
+    xlabel = &quot;Temperature (°C)&quot;,
+    ylabel = &quot;Mortality rate (day⁻¹)&quot;)
+lines!(ax2a, collect(Ts), M1_nl.(Ts), label = &quot;Egg (M₁)&quot;, linewidth = 2)
+lines!(ax2a, collect(Ts), M2_nl.(Ts), label = &quot;Nymph (M₂)&quot;, linewidth = 2, linestyle = :dash)
+lines!(ax2a, collect(Ts), M3_nl.(Ts), label = &quot;Adult (M₃)&quot;, linewidth = 2, linestyle = :dot)
+axislegend(ax2a, position = :ct)
+
+ax2b = Axis(fig2[1, 2],
+    title = &quot;D. suzukii&quot;,
+    xlabel = &quot;Temperature (°C)&quot;,
+    ylabel = &quot;Mortality rate (day⁻¹)&quot;)
+lines!(ax2b, collect(Ts), M1_ds.(Ts), label = &quot;Egg (M₁)&quot;, linewidth = 2)
+lines!(ax2b, collect(Ts), M2_ds.(Ts), label = &quot;Larva (M₂)&quot;, linewidth = 2, linestyle = :dash)
+lines!(ax2b, collect(Ts), M3_ds.(Ts), label = &quot;Adult (M₃)&quot;, linewidth = 2, linestyle = :dot)
+axislegend(ax2b, position = :ct)
+
+fig2</code></pre><p><img src="../44_risk_index_files/figure-commonmark/cell-12-output-1.png" alt/></p><h3 id="Fecundity"><a class="docs-heading-anchor" href="#Fecundity">Fecundity</a><a id="Fecundity-1"></a><a class="docs-heading-anchor-permalink" href="#Fecundity" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig3 = Figure(size = (900, 400))
+
+ax3a = Axis(fig3[1, 1],
+    title = &quot;N. lugens&quot;,
+    xlabel = &quot;Temperature (°C)&quot;,
+    ylabel = &quot;Fecundity (eggs day⁻¹)&quot;)
+lines!(ax3a, collect(Ts), F_nl.(Ts), linewidth = 2, color = :firebrick)
+
+ax3b = Axis(fig3[1, 2],
+    title = &quot;D. suzukii&quot;,
+    xlabel = &quot;Temperature (°C)&quot;,
+    ylabel = &quot;Fecundity (eggs day⁻¹)&quot;)
+lines!(ax3b, collect(Ts), F_ds.(Ts), linewidth = 2, color = :firebrick)
+
+fig3</code></pre><p><img src="../44_risk_index_files/figure-commonmark/cell-13-output-1.png" alt/></p><h3 id="Risk-Index-vs-temperature"><a class="docs-heading-anchor" href="#Risk-Index-vs-temperature">Risk Index vs temperature</a><a id="Risk-Index-vs-temperature-1"></a><a class="docs-heading-anchor-permalink" href="#Risk-Index-vs-temperature" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig4 = Figure(size = (900, 400))
+
+ax4a = Axis(fig4[1, 1],
+    title = &quot;N. lugens&quot;,
+    xlabel = &quot;Temperature (°C)&quot;,
+    ylabel = &quot;Risk Index&quot;)
+lines!(ax4a, collect(Ts), ri_nl, linewidth = 2.5, color = :dodgerblue)
+hlines!(ax4a, [1.0], color = :red, linestyle = :dash, linewidth = 1.5,
+    label = &quot;RI = 1&quot;)
+scatter!(ax4a, [T_opt_nl], [ri_max_nl], markersize = 10, color = :orange,
+    label = &quot;Peak ($(T_opt_nl)°C, $(round(ri_max_nl, digits=1)))&quot;)
+axislegend(ax4a, position = :rt)
+
+ax4b = Axis(fig4[1, 2],
+    title = &quot;D. suzukii&quot;,
+    xlabel = &quot;Temperature (°C)&quot;,
+    ylabel = &quot;Risk Index&quot;)
+lines!(ax4b, collect(Ts), ri_ds, linewidth = 2.5, color = :dodgerblue)
+hlines!(ax4b, [1.0], color = :red, linestyle = :dash, linewidth = 1.5,
+    label = &quot;RI = 1&quot;)
+scatter!(ax4b, [T_opt_ds], [ri_max_ds], markersize = 10, color = :orange,
+    label = &quot;Peak ($(T_opt_ds)°C, $(round(ri_max_ds, digits=1)))&quot;)
+axislegend(ax4b, position = :rt)
+
+fig4</code></pre><p><img src="../44_risk_index_files/figure-commonmark/cell-14-output-1.png" alt/></p><h3 id="Dominant-eigenvalue-vs-temperature"><a class="docs-heading-anchor" href="#Dominant-eigenvalue-vs-temperature">Dominant eigenvalue vs temperature</a><a id="Dominant-eigenvalue-vs-temperature-1"></a><a class="docs-heading-anchor-permalink" href="#Dominant-eigenvalue-vs-temperature" title="Permalink"></a></h3><p>This plot confirms the equivalence: <span>$\mathrm{RI} &gt; 1$</span> if and only if the dominant eigenvalue <span>$\lambda_{\max} &gt; 0$</span>.</p><pre><code class="language-julia hljs">fig5 = Figure(size = (900, 400))
+
+ax5a = Axis(fig5[1, 1],
+    title = &quot;N. lugens&quot;,
+    xlabel = &quot;Temperature (°C)&quot;,
+    ylabel = &quot;Dominant eigenvalue λ_max&quot;)
+lines!(ax5a, collect(Ts), λ_nl, linewidth = 2.5, color = :purple)
+hlines!(ax5a, [0.0], color = :red, linestyle = :dash, linewidth = 1.5,
+    label = &quot;λ = 0&quot;)
+axislegend(ax5a, position = :rt)
+
+ax5b = Axis(fig5[1, 2],
+    title = &quot;D. suzukii&quot;,
+    xlabel = &quot;Temperature (°C)&quot;,
+    ylabel = &quot;Dominant eigenvalue λ_max&quot;)
+lines!(ax5b, collect(Ts), λ_ds, linewidth = 2.5, color = :purple)
+hlines!(ax5b, [0.0], color = :red, linestyle = :dash, linewidth = 1.5,
+    label = &quot;λ = 0&quot;)
+axislegend(ax5b, position = :rt)
+
+fig5</code></pre><p><img src="../44_risk_index_files/figure-commonmark/cell-15-output-1.png" alt/></p><h3 id="Sensitivity-analysis"><a class="docs-heading-anchor" href="#Sensitivity-analysis">Sensitivity analysis</a><a id="Sensitivity-analysis-1"></a><a class="docs-heading-anchor-permalink" href="#Sensitivity-analysis" title="Permalink"></a></h3><p>We perturb each vital-rate parameter by ±20% and measure the shift in the RI curve for <em>N. lugens</em>. This reveals which rates most strongly control establishment risk.</p><pre><code class="language-julia hljs">function perturbed_ri(Ts, D1, D2, M1, M2, M3, F;
+                      scale_D1=1.0, scale_D2=1.0,
+                      scale_M1=1.0, scale_M2=1.0, scale_M3=1.0,
+                      scale_F=1.0)
+    D1s(T) = scale_D1 * D1(T)
+    D2s(T) = scale_D2 * D2(T)
+    M1s(T) = scale_M1 * M1(T)
+    M2s(T) = scale_M2 * M2(T)
+    M3s(T) = scale_M3 * M3(T)
+    Fs(T)  = scale_F  * F(T)
+    return [risk_index(T, D1s, D2s, M1s, M2s, M3s, Fs) for T in Ts]
+end
+
+param_labels = [&quot;D₁ (egg dev.)&quot;, &quot;D₂ (nymph dev.)&quot;, &quot;M₁ (egg mort.)&quot;,
+                &quot;M₂ (nymph mort.)&quot;, &quot;M₃ (adult mort.)&quot;, &quot;F (fecundity)&quot;]
+param_keys = [:scale_D1, :scale_D2, :scale_M1, :scale_M2, :scale_M3, :scale_F]
+
+fig6 = Figure(size = (900, 700))
+
+for (i, (lab, key)) in enumerate(zip(param_labels, param_keys))
+    row = (i - 1) ÷ 3 + 1
+    col = (i - 1) % 3 + 1
+    ax = Axis(fig6[row, col],
+        title = lab,
+        xlabel = row == 2 ? &quot;Temperature (°C)&quot; : &quot;&quot;,
+        ylabel = col == 1 ? &quot;Risk Index&quot; : &quot;&quot;)
+
+    # Baseline
+    lines!(ax, collect(Ts), ri_nl, linewidth = 1.5, color = :gray60,
+        label = &quot;Baseline&quot;)
+
+    # +20%
+    kw_up = Dict(key =&gt; 1.2)
+    ri_up = perturbed_ri(Ts, D1_nl, D2_nl, M1_nl, M2_nl, M3_nl, F_nl; kw_up...)
+    lines!(ax, collect(Ts), ri_up, linewidth = 2, color = :firebrick,
+        linestyle = :dash, label = &quot;+20%&quot;)
+
+    # -20%
+    kw_dn = Dict(key =&gt; 0.8)
+    ri_dn = perturbed_ri(Ts, D1_nl, D2_nl, M1_nl, M2_nl, M3_nl, F_nl; kw_dn...)
+    lines!(ax, collect(Ts), ri_dn, linewidth = 2, color = :steelblue,
+        linestyle = :dot, label = &quot;−20%&quot;)
+
+    hlines!(ax, [1.0], color = :red, linestyle = :dash, linewidth = 1)
+    if i == 1
+        axislegend(ax, position = :rt, labelsize = 9)
+    end
+end
+
+Label(fig6[0, :], &quot;Sensitivity of N. lugens RI to ±20% parameter perturbations&quot;,
+    fontsize = 16, font = :bold)
+
+fig6</code></pre><p><img src="../44_risk_index_files/figure-commonmark/cell-16-output-1.png" alt/></p><h2 id="Interpretation"><a class="docs-heading-anchor" href="#Interpretation">Interpretation</a><a id="Interpretation-1"></a><a class="docs-heading-anchor-permalink" href="#Interpretation" title="Permalink"></a></h2><h3 id="*Nilaparvata-lugens*"><a class="docs-heading-anchor" href="#*Nilaparvata-lugens*"><em>Nilaparvata lugens</em></a><a id="*Nilaparvata-lugens*-1"></a><a class="docs-heading-anchor-permalink" href="#*Nilaparvata-lugens*" title="Permalink"></a></h3><p>The brown planthopper achieves a peak RI of approximately 24.7 near 24°C, indicating very high intrinsic growth potential under optimal conditions. The establishment window spans roughly 18.5–31°C, covering the main rice-growing season across subtropical and tropical Asia. The high peak RI explains the explosive outbreaks observed when migrant populations arrive in temperate rice paddies during warm summer months.</p><h3 id="*Drosophila-suzukii*"><a class="docs-heading-anchor" href="#*Drosophila-suzukii*"><em>Drosophila suzukii</em></a><a id="*Drosophila-suzukii*-1"></a><a class="docs-heading-anchor-permalink" href="#*Drosophila-suzukii*" title="Permalink"></a></h3><p><em>D. suzukii</em> has a lower peak RI (≈ 10.4) and a narrower thermal window compared to <em>N. lugens</em>. Its optimum near 23°C and decline above 25°C are consistent with its cool-climate preference and its known difficulty establishing in hot, arid regions. The narrow establishment window (roughly 21.5–25.3°C at constant temperature) explains why <em>D. suzukii</em> pressure is seasonal even in temperate regions and why coastal areas with moderate, stable temperatures face the highest risk.</p><h3 id="Sensitivity"><a class="docs-heading-anchor" href="#Sensitivity">Sensitivity</a><a id="Sensitivity-1"></a><a class="docs-heading-anchor-permalink" href="#Sensitivity" title="Permalink"></a></h3><p>The sensitivity analysis reveals that the RI is most responsive to changes in <strong>adult mortality</strong> (<span>$M_3$</span>) and <strong>fecundity</strong> (<span>$F$</span>). This is biologically intuitive: adults are the only reproductive stage, so the adult death rate directly governs lifetime reproductive output. Development rates (<span>$D_1$</span>, <span>$D_2$</span>) have a more moderate effect because they appear in both the numerator and denominator of the RI formula, partially cancelling. Immature mortality rates (<span>$M_1$</span>, <span>$M_2$</span>) shift the RI moderately — they reduce the fraction of individuals reaching adulthood but do not affect the rate at which adults reproduce.</p><h3 id="Practical-application"><a class="docs-heading-anchor" href="#Practical-application">Practical application</a><a id="Practical-application-1"></a><a class="docs-heading-anchor-permalink" href="#Practical-application" title="Permalink"></a></h3><p>To convert the RI into a spatial risk map:</p><ol><li>Obtain gridded mean temperature data (e.g., WorldClim, ERA5).</li><li>Evaluate <span>$\mathrm{RI}(T)$</span> at each grid cell.</li><li>Classify cells as <span>$\mathrm{RI} &gt; 1$</span> (establishment possible),  <span>$\mathrm{RI} &lt; 1$</span> (establishment unlikely), or  <span>$\mathrm{RI} \approx 0$</span> (outside physiological limits).</li></ol><p>Because the RI is a smooth, monotone-plateau-monotone function of temperature, even coarse climate data produces meaningful risk stratification.</p><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Ndjomatchoua2024RiskIndex&quot; class=&quot;csl-entry&quot;&gt;</p><p>Ndjomatchoua, Frank T., Ritter A. Y. Guimapi, Luca Rossini, Byliole S. Djouda, and Sansão A. Pedro. 2024. “A Generalized Risk Assessment Index for Forecasting Insect Population Under the Effect of Temperature.” <em>Journal of Thermal Biology</em> 123: 103886. <a href="https://doi.org/10.1016/j.jtherbio.2024.103886">https://doi.org/10.1016/j.jtherbio.2024.103886</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../43_philaenus_phenology/">« Philaenus spumarius Phenology Model</a><a class="docs-footer-nextpage" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

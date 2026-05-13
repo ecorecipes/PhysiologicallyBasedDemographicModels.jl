@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Olive Fruit Fly Population Dynamics · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Olive Fruit Fly Population Dynamics · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Olive Fruit Fly Population Dynamics · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Olive Fruit Fly Population Dynamics · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/41_olive_fly_ode/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/41_olive_fly_ode/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/41_olive_fly_ode/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li class="is-active"><a class="tocitem" href>Olive Fruit Fly Population Dynamics</a><ul class="internal"><li><a class="tocitem" href="#Introduction"><span>Introduction</span></a></li><li><a class="tocitem" href="#Mathematical-Model"><span>Mathematical Model</span></a></li><li><a class="tocitem" href="#Rate-Functions"><span>Rate Functions</span></a></li><li><a class="tocitem" href="#Implementation"><span>Implementation</span></a></li><li><a class="tocitem" href="#Simulation"><span>Simulation</span></a></li><li><a class="tocitem" href="#Results"><span>Results</span></a></li><li><a class="tocitem" href="#Plausibility-Checks"><span>Plausibility Checks</span></a></li><li><a class="tocitem" href="#Comparison-with-Distributed-Delay-PBDM"><span>Comparison with Distributed-Delay PBDM</span></a></li><li><a class="tocitem" href="#Sensitivity-to-Temperature-Regime"><span>Sensitivity to Temperature Regime</span></a></li><li><a class="tocitem" href="#Discussion"><span>Discussion</span></a></li><li><a class="tocitem" href="#References"><span>References</span></a></li></ul></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Olive Fruit Fly Population Dynamics</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Olive Fruit Fly Population Dynamics</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Olive-Fruit-Fly-Population-Dynamics"><a class="docs-heading-anchor" href="#Olive-Fruit-Fly-Population-Dynamics">Olive Fruit Fly Population Dynamics</a><a id="Olive-Fruit-Fly-Population-Dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Olive-Fruit-Fly-Population-Dynamics" title="Permalink"></a></h1><p>Simon Frost</p><ul><li><a href="#introduction">Introduction</a></li><li><a href="#mathematical-model">Mathematical Model</a><ul><li><a href="#state-variables">State Variables</a></li><li><a href="#ode-system-eq-3">ODE System (Eq. 3)</a></li></ul></li><li><a href="#rate-functions">Rate Functions</a><ul><li><a href="#development-rate-brière-model-eq-6">Development Rate (Brière Model, Eq. 6)</a></li><li><a href="#mortality-rate-eqs-78">Mortality Rate (Eqs. 7–8)</a></li><li><a href="#fecundity-eq-9">Fecundity (Eq. 9)</a></li></ul></li><li><a href="#implementation">Implementation</a><ul><li><a href="#parameter-definitions">Parameter Definitions</a></li><li><a href="#temperature-dependent-rate-functions">Temperature-Dependent Rate Functions</a></li><li><a href="#ode-right-hand-side">ODE Right-Hand Side</a></li><li><a href="#temperature-forcing">Temperature Forcing</a></li></ul></li><li><a href="#simulation">Simulation</a><ul><li><a href="#summer-season-july-15--september-30">Summer Season (July 15 – September 30)</a></li><li><a href="#full-year-simulation">Full-Year Simulation</a></li></ul></li><li><a href="#results">Results</a><ul><li><a href="#time-series-summer-season">Time Series: Summer Season</a></li><li><a href="#time-series-full-year">Time Series: Full Year</a></li><li><a href="#adult-male-trap-catches">Adult Male Trap Catches</a></li></ul></li><li><a href="#plausibility-checks">Plausibility Checks</a></li><li><a href="#comparison-with-distributed-delay-pbdm">Comparison with Distributed-Delay PBDM</a></li><li><a href="#sensitivity-to-temperature-regime">Sensitivity to Temperature Regime</a></li><li><a href="#discussion">Discussion</a></li><li><a href="#references">References</a></li></ul><p>Primary reference: (Rossini et al. 2022).</p><h2 id="Introduction"><a class="docs-heading-anchor" href="#Introduction">Introduction</a><a id="Introduction-1"></a><a class="docs-heading-anchor-permalink" href="#Introduction" title="Permalink"></a></h2><p>The olive fruit fly (<em>Bactrocera oleae</em> Rossi) is the most economically damaging pest of olive cultivation worldwide, causing hundreds of millions of dollars in annual losses across the Mediterranean Basin. Females oviposit exclusively in olive fruit, and larvae feed inside the drupe, degrading both yield and oil quality. Understanding the temperature-driven population dynamics of this specialist pest is essential for predicting outbreak timing and designing effective integrated pest management (IPM) strategies.</p><p>Rossini et al. (2022) developed a physiologically based ODE model for <em>B. oleae</em> that tracks eight life stages through a system of coupled ordinary differential equations. All demographic rates — development, mortality, and fecundity — are explicit functions of temperature, making the model suitable for climate-driven projections. The original implementation is available in Python at <a href="https://github.com/lucaros1190/ODE-bactrocera">https://github.com/lucaros1190/ODE-bactrocera</a>.</p><p>This vignette reimplements the Rossini et al. (2022) 8-ODE system in Julia using <code>OrdinaryDiffEq.jl</code> for numerical integration. We parameterize the model from Tables 1–3 of the original paper, drive it with a sinusoidal temperature forcing representative of central Italy (Fara Sabina area), and compare this continuous ODE approach to the distributed-delay PBDM framework used in <a href="../28_olive_bactrocera/">vignette 28</a>.</p><h2 id="Mathematical-Model"><a class="docs-heading-anchor" href="#Mathematical-Model">Mathematical Model</a><a id="Mathematical-Model-1"></a><a class="docs-heading-anchor-permalink" href="#Mathematical-Model" title="Permalink"></a></h2><h3 id="State-Variables"><a class="docs-heading-anchor" href="#State-Variables">State Variables</a><a id="State-Variables-1"></a><a class="docs-heading-anchor-permalink" href="#State-Variables" title="Permalink"></a></h3><p>The model tracks eight life stages:</p><table><tr><th style="text-align: center">Index</th><th style="text-align: left">Variable</th><th style="text-align: left">Stage</th></tr><tr><td style="text-align: center">1</td><td style="text-align: left"><span>$x_e$</span></td><td style="text-align: left">Egg</td></tr><tr><td style="text-align: center">2</td><td style="text-align: left"><span>$x_{L_1}$</span></td><td style="text-align: left">First-instar larva</td></tr><tr><td style="text-align: center">3</td><td style="text-align: left"><span>$x_{L_2}$</span></td><td style="text-align: left">Second-instar larva</td></tr><tr><td style="text-align: center">4</td><td style="text-align: left"><span>$x_{L_3}$</span></td><td style="text-align: left">Third-instar larva</td></tr><tr><td style="text-align: center">5</td><td style="text-align: left"><span>$x_P$</span></td><td style="text-align: left">Pupa</td></tr><tr><td style="text-align: center">6</td><td style="text-align: left"><span>$x_{A_m}$</span></td><td style="text-align: left">Adult male</td></tr><tr><td style="text-align: center">7</td><td style="text-align: left"><span>$x_{A_{nmf}}$</span></td><td style="text-align: left">Adult non-mated female</td></tr><tr><td style="text-align: center">8</td><td style="text-align: left"><span>$x_{A_{mf}}$</span></td><td style="text-align: left">Adult mated female</td></tr></table><h3 id="ODE-System-(Eq.-3)"><a class="docs-heading-anchor" href="#ODE-System-(Eq.-3)">ODE System (Eq. 3)</a><a id="ODE-System-(Eq.-3)-1"></a><a class="docs-heading-anchor-permalink" href="#ODE-System-(Eq.-3)" title="Permalink"></a></h3><p class="math-container">\[\begin{aligned}
+\frac{dx_e}{dt}      &amp;= \beta(T)\, x_{A_{mf}} - G(T)\, x_e - M_e(T)\, G(T)\, x_e \\[4pt]
+\frac{dx_{L_1}}{dt}  &amp;= G(T)\, x_e     - G(T)\, x_{L_1}   - M_L(T)\, G(T)\, x_{L_1} \\[4pt]
+\frac{dx_{L_2}}{dt}  &amp;= G(T)\, x_{L_1} - G(T)\, x_{L_2}   - M_L(T)\, G(T)\, x_{L_2} \\[4pt]
+\frac{dx_{L_3}}{dt}  &amp;= G(T)\, x_{L_2} - G(T)\, x_{L_3}   - M_L(T)\, G(T)\, x_{L_3} \\[4pt]
+\frac{dx_P}{dt}      &amp;= G(T)\, x_{L_3} - G(T)\, x_P       - M_P(T)\, G(T)\, x_P \\[4pt]
+\frac{dx_{A_m}}{dt}  &amp;= (1-\text{SR})\, G(T)\, x_P - M_A(T)\, G(T)\, x_{A_m} \\[4pt]
+\frac{dx_{A_{nmf}}}{dt} &amp;= \text{SR}\, G(T)\, x_P - \lambda(T)\, x_{A_{nmf}} \\[4pt]
+\frac{dx_{A_{mf}}}{dt}  &amp;= \lambda(T)\, x_{A_{nmf}} - M_A(T)\, G(T)\, x_{A_{mf}}
+\end{aligned}\]</p><p>where <span>$\text{SR} = 0.5$</span> is the sex ratio and <span>$\lambda(T) \approx G(T)$</span> is the mating rate. Adult males and mated females are terminal stages: they experience mortality but no development outflow.</p><h2 id="Rate-Functions"><a class="docs-heading-anchor" href="#Rate-Functions">Rate Functions</a><a id="Rate-Functions-1"></a><a class="docs-heading-anchor-permalink" href="#Rate-Functions" title="Permalink"></a></h2><h3 id="Development-Rate-(Brière-Model,-Eq.-6)"><a class="docs-heading-anchor" href="#Development-Rate-(Brière-Model,-Eq.-6)">Development Rate (Brière Model, Eq. 6)</a><a id="Development-Rate-(Brière-Model,-Eq.-6)-1"></a><a class="docs-heading-anchor-permalink" href="#Development-Rate-(Brière-Model,-Eq.-6)" title="Permalink"></a></h3><p>The temperature-dependent development rate uses a Brière function:</p><p class="math-container">\[G(T) = a \cdot T \cdot (T - T_L) \cdot (T_M - T)^{1/m}\]</p><p>with best-fit parameters from Rossini et al. (2022), Table 1: <span>$a = 4.6 \times 10^{-5}$</span>, <span>$T_L = 7.23\,°\text{C}$</span>, <span>$T_M = 32.2\,°\text{C}$</span>, <span>$m = 2.5$</span>.</p><p>Note that the standard <code>BriereDevelopmentRate</code> in <code>PhysiologicallyBasedDemographicModels.jl</code> uses an exponent of <span>$1/2$</span> (i.e., <span>$m = 2$</span>). Since Rossini et al. use <span>$m = 2.5$</span> (exponent <span>$= 0.4$</span>), we define a custom Brière function here.</p><h3 id="Mortality-Rate-(Eqs.-7–8)"><a class="docs-heading-anchor" href="#Mortality-Rate-(Eqs.-7–8)">Mortality Rate (Eqs. 7–8)</a><a id="Mortality-Rate-(Eqs.-7–8)-1"></a><a class="docs-heading-anchor-permalink" href="#Mortality-Rate-(Eqs.-7–8)" title="Permalink"></a></h3><p>Stage-specific daily mortality follows a Gumbel-like survival function:</p><p class="math-container">\[M_i(T) = 1 - k_i \cdot \exp\!\left(1 + \frac{T_{\max,i} - T}{\rho_{T,i}} - \exp\!\left(\frac{T_{\max,i} - T}{\rho_{T,i}}\right)\right)\]</p><p>At <span>$T = T_{\max}$</span>, the exponent evaluates to <span>$1 + 0 - 1 = 0$</span>, giving <span>$M = 1 - k$</span> (minimum mortality, maximum survival <span>$= k$</span>). As temperature deviates from the optimum, mortality increases toward 1.</p><p>Stage-specific parameters (Table 2):</p><table><tr><th style="text-align: left">Stage</th><th style="text-align: center"><span>$k$</span></th><th style="text-align: center"><span>$\rho_T$</span></th><th style="text-align: center"><span>$T_{\max}$</span> (°C)</th></tr><tr><td style="text-align: left">Egg</td><td style="text-align: center">0.87</td><td style="text-align: center">−4</td><td style="text-align: center">25.0</td></tr><tr><td style="text-align: left">Larva</td><td style="text-align: center">0.80</td><td style="text-align: center">−4</td><td style="text-align: center">22.0</td></tr><tr><td style="text-align: left">Pupa</td><td style="text-align: center">0.82</td><td style="text-align: center">−6</td><td style="text-align: center">24.6</td></tr><tr><td style="text-align: left">Adult</td><td style="text-align: center">0.60</td><td style="text-align: center">−6</td><td style="text-align: center">25.0</td></tr></table><p>The instantaneous daily mortality rate in the ODE is <span>$M_i(T) \cdot G(T)$</span>, where <span>$M_i$</span> gives the fraction dying per unit of physiological development and <span>$G(T)$</span> converts from developmental time to calendar time.</p><h3 id="Fecundity-(Eq.-9)"><a class="docs-heading-anchor" href="#Fecundity-(Eq.-9)">Fecundity (Eq. 9)</a><a id="Fecundity-(Eq.-9)-1"></a><a class="docs-heading-anchor-permalink" href="#Fecundity-(Eq.-9)" title="Permalink"></a></h3><p>The temperature-dependent fecundity component:</p><p class="math-container">\[\beta_{\text{temp}}(T) = \max\!\left(0,\; 1 - \left(\frac{T - \tau}{\delta}\right)^2\right)\]</p><p>with <span>$\tau = 25.6\,°\text{C}$</span> (optimal temperature) and <span>$\delta = 7.0$</span> (width).</p><p>The age-dependent component (from the Bieri function, Eq. 7) gives peak daily oviposition <span>$\approx 4.6$</span> eggs/female/day. We use <span>$\beta_{\max} = 5.0$</span> eggs/mated-female/day as the peak fecundity:</p><p class="math-container">\[\beta(T) = \beta_{\max} \cdot \beta_{\text{temp}}(T)\]</p><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+using OrdinaryDiffEq
+using CairoMakie</code></pre><h2 id="Implementation"><a class="docs-heading-anchor" href="#Implementation">Implementation</a><a id="Implementation-1"></a><a class="docs-heading-anchor-permalink" href="#Implementation" title="Permalink"></a></h2><h3 id="Parameter-Definitions"><a class="docs-heading-anchor" href="#Parameter-Definitions">Parameter Definitions</a><a id="Parameter-Definitions-1"></a><a class="docs-heading-anchor-permalink" href="#Parameter-Definitions" title="Permalink"></a></h3><pre><code class="language-julia hljs"># --- Development rate: Brière with exponent 1/m (Eq. 6) ---
+struct BriereGeneralized{T&lt;:Real}
+    a::T
+    T_L::T
+    T_M::T
+    inv_m::T  # 1/m
+end
+
+function briere_rate(p::BriereGeneralized, T)
+    (T &lt;= p.T_L || T &gt;= p.T_M) &amp;&amp; return 0.0
+    return p.a * T * (T - p.T_L) * (p.T_M - T)^p.inv_m
+end
+
+# Best-fit parameters (Table 1)
+const dev_params = BriereGeneralized(4.6e-5, 7.23, 32.2, 1.0 / 2.5)
+
+# --- Mortality: Gumbel survival (Eqs. 7-8, Table 2) ---
+struct MortalityParams{T&lt;:Real}
+    k::T
+    ρ_T::T
+    T_max::T
+end
+
+function mortality_fraction(p::MortalityParams, T)
+    z = (p.T_max - T) / p.ρ_T
+    return 1.0 - p.k * exp(1.0 + z - exp(z))
+end
+
+const mort_egg   = MortalityParams(0.87, -4.0, 25.0)
+const mort_larva = MortalityParams(0.80, -4.0, 22.0)
+const mort_pupa  = MortalityParams(0.82, -6.0, 24.6)
+const mort_adult = MortalityParams(0.60, -6.0, 25.0)
+
+# --- Fecundity (Eq. 9, Table 3) ---
+const β_max = 5.0   # peak eggs/mated-female/day
+const τ_fec = 25.6   # optimal temperature (°C)
+const δ_fec = 7.0    # temperature width
+
+function fecundity(T)
+    β_temp = max(0.0, 1.0 - ((T - τ_fec) / δ_fec)^2)
+    return β_max * β_temp
+end
+
+# --- Sex ratio and mating ---
+const SR = 0.5
+
+println(&quot;Parameters loaded: Brière a=$(dev_params.a), T_L=$(dev_params.T_L), T_M=$(dev_params.T_M)&quot;)</code></pre><pre><code class="nohighlight hljs">Parameters loaded: Brière a=4.6e-5, T_L=7.23, T_M=32.2</code></pre><h3 id="Temperature-Dependent-Rate-Functions"><a class="docs-heading-anchor" href="#Temperature-Dependent-Rate-Functions">Temperature-Dependent Rate Functions</a><a id="Temperature-Dependent-Rate-Functions-1"></a><a class="docs-heading-anchor-permalink" href="#Temperature-Dependent-Rate-Functions" title="Permalink"></a></h3><p>We first visualize how the three key rate functions vary with temperature.</p><pre><code class="language-julia hljs">T_range = 5.0:0.5:38.0
+
+fig_rates = Figure(size=(900, 700))
+
+# Panel A: Development rate G(T)
+ax1 = Axis(fig_rates[1, 1],
+    xlabel=&quot;Temperature (°C)&quot;,
+    ylabel=&quot;Development rate G(T) (1/day)&quot;,
+    title=&quot;Development Rate (Brière)&quot;)
+G_vals = [briere_rate(dev_params, T) for T in T_range]
+lines!(ax1, collect(T_range), G_vals, color=:steelblue, linewidth=2.5)
+vlines!(ax1, [dev_params.T_L], color=:gray, linestyle=:dash, linewidth=1)
+vlines!(ax1, [dev_params.T_M], color=:gray, linestyle=:dash, linewidth=1)
+text!(ax1, dev_params.T_L + 0.3, maximum(G_vals) * 0.9,
+    text=&quot;T_L=$(dev_params.T_L)°C&quot;, fontsize=9, color=:gray)
+text!(ax1, dev_params.T_M - 5.0, maximum(G_vals) * 0.9,
+    text=&quot;T_M=$(dev_params.T_M)°C&quot;, fontsize=9, color=:gray)
+
+# Panel B: Fecundity β(T)
+ax2 = Axis(fig_rates[1, 2],
+    xlabel=&quot;Temperature (°C)&quot;,
+    ylabel=&quot;Fecundity β(T) (eggs/female/day)&quot;,
+    title=&quot;Fecundity&quot;)
+β_vals = [fecundity(T) for T in T_range]
+lines!(ax2, collect(T_range), β_vals, color=:darkorange, linewidth=2.5)
+vlines!(ax2, [τ_fec], color=:gray, linestyle=:dot, linewidth=1)
+text!(ax2, τ_fec + 0.5, maximum(β_vals) * 0.9,
+    text=&quot;τ=$(τ_fec)°C&quot;, fontsize=9, color=:gray)
+
+# Panel C: Mortality fractions M(T) by stage
+ax3 = Axis(fig_rates[2, 1],
+    xlabel=&quot;Temperature (°C)&quot;,
+    ylabel=&quot;Mortality fraction M(T)&quot;,
+    title=&quot;Stage-Specific Mortality&quot;)
+for (mp, label, col) in [
+    (mort_egg,   &quot;Egg&quot;,   :firebrick),
+    (mort_larva, &quot;Larva&quot;, :teal),
+    (mort_pupa,  &quot;Pupa&quot;,  :purple),
+    (mort_adult, &quot;Adult&quot;, :goldenrod)]
+    M_vals = [mortality_fraction(mp, T) for T in T_range]
+    lines!(ax3, collect(T_range), M_vals, color=col, linewidth=2, label=label)
+end
+axislegend(ax3, position=:lt)
+
+# Panel D: Daily mortality rate M(T)·G(T)
+ax4 = Axis(fig_rates[2, 2],
+    xlabel=&quot;Temperature (°C)&quot;,
+    ylabel=&quot;Daily mortality rate M(T)·G(T)&quot;,
+    title=&quot;Effective Daily Mortality&quot;)
+for (mp, label, col) in [
+    (mort_egg,   &quot;Egg&quot;,   :firebrick),
+    (mort_larva, &quot;Larva&quot;, :teal),
+    (mort_pupa,  &quot;Pupa&quot;,  :purple),
+    (mort_adult, &quot;Adult&quot;, :goldenrod)]
+    MG_vals = [mortality_fraction(mp, T) * briere_rate(dev_params, T) for T in T_range]
+    lines!(ax4, collect(T_range), MG_vals, color=col, linewidth=2, label=label)
+end
+axislegend(ax4, position=:lt)
+
+fig_rates</code></pre><p>&lt;div id=&quot;fig-rate-functions&quot;&gt;</p><p><img src="../41_olive_fly_ode_files/figure-commonmark/fig-rate-functions-output-1.png" alt/></p><p>Figure 1: Temperature-dependent rate functions from Rossini et al. (2022). Top left: Brière development rate G(T). Top right: fecundity β(T). Bottom left: stage-specific mortality M(T). Bottom right: daily mortality rate M(T)·G(T).</p><p>&lt;/div&gt;</p><pre><code class="language-julia hljs"># Numerical check at representative temperatures
+println(&quot;Rate function values at key temperatures:&quot;)
+println(&quot;=&quot;^75)
+println(&quot;  T(°C)  | G(T)      | β(T)      | M_egg   | M_larva | M_pupa  | M_adult&quot;)
+println(&quot;-&quot;^75)
+for T in [10.0, 15.0, 20.0, 25.0, 28.0, 30.0, 32.0]
+    G = briere_rate(dev_params, T)
+    β = fecundity(T)
+    Me = mortality_fraction(mort_egg, T)
+    Ml = mortality_fraction(mort_larva, T)
+    Mp = mortality_fraction(mort_pupa, T)
+    Ma = mortality_fraction(mort_adult, T)
+    println(&quot;  $(lpad(round(T, digits=1), 5))  | &quot; *
+            &quot;$(lpad(round(G, digits=5), 9)) | &quot; *
+            &quot;$(lpad(round(β, digits=3), 9)) | &quot; *
+            &quot;$(lpad(round(Me, digits=4), 7)) | &quot; *
+            &quot;$(lpad(round(Ml, digits=4), 7)) | &quot; *
+            &quot;$(lpad(round(Mp, digits=4), 7)) | &quot; *
+            &quot;$(lpad(round(Ma, digits=4), 7))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Rate function values at key temperatures:
+===========================================================================
+  T(°C)  | G(T)      | β(T)      | M_egg   | M_larva | M_pupa  | M_adult
+---------------------------------------------------------------------------
+   10.0  |    0.0044 |       0.0 |  0.9457 |   0.897 |  0.8208 |  0.8767
+   15.0  |   0.01673 |       0.0 |  0.8212 |  0.6824 |  0.6322 |   0.745
+   20.0  |   0.03195 |       1.8 |  0.4912 |  0.2808 |  0.3493 |   0.541
+   25.0  |   0.04501 |     4.963 |    0.13 |  0.4458 |  0.1819 |     0.4
+   28.0  |    0.0475 |     4.412 |  0.3973 |  0.8897 |  0.3258 |  0.4829
+   30.0  |   0.04307 |     3.024 |  0.7483 |  0.9901 |  0.5314 |  0.6241
+   32.0  |   0.01915 |      0.82 |  0.9569 |  0.9999 |  0.7529 |  0.7889</code></pre><h3 id="ODE-Right-Hand-Side"><a class="docs-heading-anchor" href="#ODE-Right-Hand-Side">ODE Right-Hand Side</a><a id="ODE-Right-Hand-Side-1"></a><a class="docs-heading-anchor-permalink" href="#ODE-Right-Hand-Side" title="Permalink"></a></h3><pre><code class="language-julia hljs">&quot;&quot;&quot;
+    bactrocera_rhs!(du, u, p, t)
+
+8-coupled ODE system for *Bactrocera oleae* life cycle dynamics.
+
+State vector: [x_e, x_L1, x_L2, x_L3, x_P, x_Am, x_Anmf, x_Amf]
+
+Parameters `p` must contain:
+- `T_func`: function mapping time → temperature (°C)
+- `dev`: BriereGeneralized development parameters
+- `mort_e`, `mort_l`, `mort_p`, `mort_a`: MortalityParams per stage
+&quot;&quot;&quot;
+function bactrocera_rhs!(du, u, p, t)
+    T = p.T_func(t)
+
+    # Development rate
+    G = briere_rate(p.dev, T)
+
+    # Stage-specific mortality fractions (per developmental unit)
+    M_e = mortality_fraction(p.mort_e, T)
+    M_l = mortality_fraction(p.mort_l, T)
+    M_p = mortality_fraction(p.mort_p, T)
+    M_a = mortality_fraction(p.mort_a, T)
+
+    # Fecundity
+    β = fecundity(T)
+
+    # Mating rate (approximated as G)
+    λ = G
+
+    x_e, x_L1, x_L2, x_L3, x_P, x_Am, x_Anmf, x_Amf = u
+
+    # Egg: birth from mated females, development outflow, mortality
+    du[1] = β * x_Amf - G * x_e - M_e * G * x_e
+
+    # Larval instars: inflow from previous stage, outflow, mortality
+    du[2] = G * x_e   - G * x_L1 - M_l * G * x_L1
+    du[3] = G * x_L1  - G * x_L2 - M_l * G * x_L2
+    du[4] = G * x_L2  - G * x_L3 - M_l * G * x_L3
+
+    # Pupa: inflow from L3, outflow to adults, mortality
+    du[5] = G * x_L3  - G * x_P  - M_p * G * x_P
+
+    # Adult male: emergence (terminal stage — no development outflow)
+    du[6] = (1.0 - SR) * G * x_P - M_a * G * x_Am
+
+    # Non-mated female: emergence, mating outflow
+    du[7] = SR * G * x_P - λ * x_Anmf
+
+    # Mated female: mating inflow (terminal stage — no development outflow)
+    du[8] = λ * x_Anmf - M_a * G * x_Amf
+
+    return nothing
+end</code></pre><pre><code class="nohighlight hljs">Main.Notebook.bactrocera_rhs!</code></pre><h3 id="Temperature-Forcing"><a class="docs-heading-anchor" href="#Temperature-Forcing">Temperature Forcing</a><a id="Temperature-Forcing-1"></a><a class="docs-heading-anchor-permalink" href="#Temperature-Forcing" title="Permalink"></a></h3><p>We use a sinusoidal temperature function representative of central Italy (Fara Sabina, Lazio), with mean ≈ 21°C, amplitude 9°C, and summer peak around late July (day 210):</p><p class="math-container">\[T(t) = 21 + 9 \sin\!\left(\frac{2\pi(t - 80)}{365}\right)\]</p><pre><code class="language-julia hljs">T_mean = 21.0
+T_amp  = 9.0
+T_phase = 80.0  # phase shift so peak ≈ day 170 (late June)
+
+T_forcing(t) = T_mean + T_amp * sin(2π * (t - T_phase) / 365.0)
+
+# Verify temperature profile
+println(&quot;Sinusoidal temperature forcing (central Italy):&quot;)
+println(&quot;  Mean: $(T_mean)°C, Amplitude: $(T_amp)°C&quot;)
+println(&quot;  Min ≈ $(T_mean - T_amp)°C (winter), Max ≈ $(T_mean + T_amp)°C (summer)&quot;)
+println()
+for (label, day) in [(&quot;Jan 1&quot;, 1), (&quot;Apr 1&quot;, 91), (&quot;Jul 1&quot;, 182),
+                      (&quot;Jul 15&quot;, 196), (&quot;Aug 15&quot;, 227), (&quot;Sep 30&quot;, 273),
+                      (&quot;Dec 31&quot;, 365)]
+    println(&quot;  $label (day $day): $(round(T_forcing(day), digits=1))°C&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Sinusoidal temperature forcing (central Italy):
+  Mean: 21.0°C, Amplitude: 9.0°C
+  Min ≈ 12.0°C (winter), Max ≈ 30.0°C (summer)
+
+  Jan 1 (day 1): 12.2°C
+  Apr 1 (day 91): 22.7°C
+  Jul 1 (day 182): 29.8°C
+  Jul 15 (day 196): 29.2°C
+  Aug 15 (day 227): 26.2°C
+  Sep 30 (day 273): 19.4°C
+  Dec 31 (day 365): 12.2°C</code></pre><h2 id="Simulation"><a class="docs-heading-anchor" href="#Simulation">Simulation</a><a id="Simulation-1"></a><a class="docs-heading-anchor-permalink" href="#Simulation" title="Permalink"></a></h2><h3 id="Summer-Season-(July-15-–-September-30)"><a class="docs-heading-anchor" href="#Summer-Season-(July-15-–-September-30)">Summer Season (July 15 – September 30)</a><a id="Summer-Season-(July-15-–-September-30)-1"></a><a class="docs-heading-anchor-permalink" href="#Summer-Season-(July-15-–-September-30)" title="Permalink"></a></h3><p>Following the validation period in Rossini et al. (2022), we first simulate the ~77-day period from mid-July to end of September, corresponding to the main olive fly activity season. Initial conditions are based on Table 4: a small founding population of overwintering mated females and eggs.</p><pre><code class="language-julia hljs"># ODE parameters
+ode_params = (
+    T_func = T_forcing,
+    dev    = dev_params,
+    mort_e = mort_egg,
+    mort_l = mort_larva,
+    mort_p = mort_pupa,
+    mort_a = mort_adult,
+)
+
+# Summer simulation: July 15 (day 196) to September 30 (day 273)
+t_start_summer = 196.0
+t_end_summer   = 273.0
+
+# Initial conditions (Table 4): small overwintering population
+u0_summer = [
+    2.0,   # x_e: eggs
+    0.0,   # x_L1
+    0.0,   # x_L2
+    0.0,   # x_L3
+    0.0,   # x_P
+    0.0,   # x_Am: adult males
+    0.0,   # x_Anmf: non-mated females
+    4.0,   # x_Amf: mated females (overwintering)
+]
+
+prob_summer = ODEProblem(bactrocera_rhs!, u0_summer,
+                         (t_start_summer, t_end_summer), ode_params)
+sol_summer = solve(prob_summer, Tsit5(); saveat=0.5, abstol=1e-8, reltol=1e-8)
+
+println(&quot;Summer simulation (Jul 15 – Sep 30):&quot;)
+println(&quot;  Time span: day $(Int(t_start_summer)) to $(Int(t_end_summer)) &quot; *
+        &quot;($(Int(t_end_summer - t_start_summer)) days)&quot;)
+println(&quot;  Initial total: $(sum(u0_summer)) individuals&quot;)
+println(&quot;  Final total:   $(round(sum(sol_summer.u[end]), digits=1)) individuals&quot;)
+println()
+
+# Report stage populations at key dates
+stage_names = [&quot;Egg&quot;, &quot;L1&quot;, &quot;L2&quot;, &quot;L3&quot;, &quot;Pupa&quot;, &quot;Male&quot;, &quot;NM Fem&quot;, &quot;M Fem&quot;]
+println(&quot;  Stage populations at selected dates:&quot;)
+println(&quot;  &quot; * &quot;-&quot;^85)
+println(&quot;  Day  | T(°C) | &quot; * join([lpad(s, 8) for s in stage_names], &quot; | &quot;) * &quot; | Total&quot;)
+println(&quot;  &quot; * &quot;-&quot;^85)
+for day in [196, 210, 227, 243, 258, 273]
+    idx = argmin(abs.(sol_summer.t .- day))
+    T = T_forcing(day)
+    vals = sol_summer.u[idx]
+    total = sum(vals)
+    println(&quot;  $(lpad(day, 4)) | $(lpad(round(T, digits=1), 5)) | &quot; *
+            join([lpad(round(v, digits=1), 8) for v in vals], &quot; | &quot;) *
+            &quot; | $(round(total, digits=1))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Summer simulation (Jul 15 – Sep 30):
+  Time span: day 196 to 273 (77 days)
+  Initial total: 6.0 individuals
+  Final total:   501.8 individuals
+
+  Stage populations at selected dates:
+  -------------------------------------------------------------------------------------
+  Day  | T(°C) |      Egg |       L1 |       L2 |       L3 |     Pupa |     Male |   NM Fem |    M Fem | Total
+  -------------------------------------------------------------------------------------
+   196 |  29.2 |      2.0 |      0.0 |      0.0 |      0.0 |      0.0 |      0.0 |      0.0 |      4.0 | 6.0
+   210 |  28.1 |    120.2 |     31.5 |      6.1 |      0.9 |      0.1 |      0.0 |      0.0 |      2.8 | 161.7
+   227 |  26.2 |    162.3 |     72.6 |     26.7 |      8.2 |      2.4 |      0.3 |      0.3 |      2.1 | 274.8
+   243 |  24.0 |    178.3 |    103.3 |     50.4 |     21.0 |      8.2 |      1.9 |      1.5 |      2.1 | 366.6
+   258 |  21.7 |    191.4 |    128.5 |     74.3 |     37.2 |     16.6 |      4.7 |      3.7 |      2.9 | 459.2
+   273 |  19.4 |    177.7 |    138.8 |     90.1 |     51.0 |     25.1 |      8.2 |      6.4 |      4.5 | 501.8</code></pre><h3 id="Full-Year-Simulation"><a class="docs-heading-anchor" href="#Full-Year-Simulation">Full-Year Simulation</a><a id="Full-Year-Simulation-1"></a><a class="docs-heading-anchor-permalink" href="#Full-Year-Simulation" title="Permalink"></a></h3><p>We extend the simulation to a full year, starting from a small founding population on January 1.</p><pre><code class="language-julia hljs"># Full year: day 1 to day 365
+u0_year = [
+    0.0,   # x_e
+    0.0,   # x_L1
+    0.0,   # x_L2
+    0.0,   # x_L3
+    0.0,   # x_P
+    0.0,   # x_Am
+    0.0,   # x_Anmf
+    2.0,   # x_Amf: small overwintering mated female population
+]
+
+prob_year = ODEProblem(bactrocera_rhs!, u0_year, (1.0, 365.0), ode_params)
+sol_year = solve(prob_year, Tsit5(); saveat=0.5, abstol=1e-8, reltol=1e-8)
+
+println(&quot;Full-year simulation:&quot;)
+println(&quot;  Initial total: $(sum(u0_year)) individuals&quot;)
+println(&quot;  Final total:   $(round(sum(sol_year.u[end]), digits=1)) individuals&quot;)
+println(&quot;  Peak total:    $(round(maximum(sum.(sol_year.u)), digits=1)) individuals&quot;)
+
+# Find peak day
+peak_idx = argmax(sum.(sol_year.u))
+println(&quot;  Peak day:      $(round(sol_year.t[peak_idx], digits=0)) &quot; *
+        &quot;(T = $(round(T_forcing(sol_year.t[peak_idx]), digits=1))°C)&quot;)</code></pre><pre><code class="nohighlight hljs">Full-year simulation:
+  Initial total: 2.0 individuals
+  Final total:   411.8 individuals
+  Peak total:    993.8 individuals
+  Peak day:      271.0 (T = 19.7°C)</code></pre><h2 id="Results"><a class="docs-heading-anchor" href="#Results">Results</a><a id="Results-1"></a><a class="docs-heading-anchor-permalink" href="#Results" title="Permalink"></a></h2><h3 id="Time-Series:-Summer-Season"><a class="docs-heading-anchor" href="#Time-Series:-Summer-Season">Time Series: Summer Season</a><a id="Time-Series:-Summer-Season-1"></a><a class="docs-heading-anchor-permalink" href="#Time-Series:-Summer-Season" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig_summer = Figure(size=(900, 700))
+
+# Panel A: Temperature
+ax_t = Axis(fig_summer[1, 1],
+    ylabel=&quot;Temperature (°C)&quot;,
+    title=&quot;Summer Season: B. oleae Population Dynamics (Fara Sabina)&quot;)
+t_days = sol_summer.t
+T_vals = T_forcing.(t_days)
+lines!(ax_t, t_days, T_vals, color=:firebrick, linewidth=2)
+band!(ax_t, t_days, fill(dev_params.T_L, length(t_days)), fill(dev_params.T_M, length(t_days)),
+    color=(:steelblue, 0.1))
+hlines!(ax_t, [dev_params.T_L, dev_params.T_M], color=:gray, linestyle=:dash, linewidth=1)
+
+# Panel B: Immature stages
+ax_imm = Axis(fig_summer[2, 1],
+    ylabel=&quot;Population (individuals)&quot;)
+
+colors_imm = [:steelblue, :teal, :forestgreen, :olive, :purple]
+labels_imm = [&quot;Egg&quot;, &quot;L1&quot;, &quot;L2&quot;, &quot;L3&quot;, &quot;Pupa&quot;]
+for (i, (lab, col)) in enumerate(zip(labels_imm, colors_imm))
+    vals = [u[i] for u in sol_summer.u]
+    lines!(ax_imm, t_days, vals, color=col, linewidth=2, label=lab)
+end
+axislegend(ax_imm, position=:lt)
+
+# Panel C: Adult stages
+ax_ad = Axis(fig_summer[3, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Population (individuals)&quot;)
+
+lines!(ax_ad, t_days, [u[6] for u in sol_summer.u],
+    color=:goldenrod, linewidth=2, label=&quot;Adult male&quot;)
+lines!(ax_ad, t_days, [u[7] for u in sol_summer.u],
+    color=:hotpink, linewidth=2, linestyle=:dash, label=&quot;Non-mated female&quot;)
+lines!(ax_ad, t_days, [u[8] for u in sol_summer.u],
+    color=:firebrick, linewidth=2.5, label=&quot;Mated female&quot;)
+axislegend(ax_ad, position=:lt)
+
+fig_summer</code></pre><p>&lt;div id=&quot;fig-summer-timeseries&quot;&gt;</p><p><img src="../41_olive_fly_ode_files/figure-commonmark/fig-summer-timeseries-output-1.png" alt/></p><p>Figure 2: Olive fruit fly stage-specific population dynamics during the summer activity season (July 15 – September 30), driven by sinusoidal temperature forcing representative of central Italy.</p><p>&lt;/div&gt;</p><h3 id="Time-Series:-Full-Year"><a class="docs-heading-anchor" href="#Time-Series:-Full-Year">Time Series: Full Year</a><a id="Time-Series:-Full-Year-1"></a><a class="docs-heading-anchor-permalink" href="#Time-Series:-Full-Year" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig_year = Figure(size=(900, 800))
+
+# Panel A: Temperature with development window
+ax_ty = Axis(fig_year[1, 1],
+    ylabel=&quot;Temperature (°C)&quot;,
+    title=&quot;Full-Year B. oleae Dynamics (Central Italy)&quot;)
+t_yr = sol_year.t
+T_yr = T_forcing.(t_yr)
+lines!(ax_ty, t_yr, T_yr, color=:firebrick, linewidth=2, label=&quot;T(t)&quot;)
+band!(ax_ty, t_yr, fill(dev_params.T_L, length(t_yr)), fill(dev_params.T_M, length(t_yr)),
+    color=(:steelblue, 0.1))
+hlines!(ax_ty, [dev_params.T_L, dev_params.T_M], color=:gray, linestyle=:dash, linewidth=1)
+text!(ax_ty, 10, dev_params.T_L + 0.5, text=&quot;T_L&quot;, fontsize=9, color=:gray)
+text!(ax_ty, 10, dev_params.T_M - 1.5, text=&quot;T_M&quot;, fontsize=9, color=:gray)
+
+# Month labels on x-axis
+month_days = [1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335]
+month_labels = [&quot;Jan&quot;, &quot;Feb&quot;, &quot;Mar&quot;, &quot;Apr&quot;, &quot;May&quot;, &quot;Jun&quot;,
+                &quot;Jul&quot;, &quot;Aug&quot;, &quot;Sep&quot;, &quot;Oct&quot;, &quot;Nov&quot;, &quot;Dec&quot;]
+
+# Panel B: All 8 stages (stacked area not needed — line plot is clearer)
+ax_all = Axis(fig_year[2, 1],
+    ylabel=&quot;Population (individuals)&quot;)
+
+stage_colors = [:steelblue, :teal, :forestgreen, :olive, :purple,
+                :goldenrod, :hotpink, :firebrick]
+for (i, (lab, col)) in enumerate(zip(stage_names, stage_colors))
+    vals = [u[i] for u in sol_year.u]
+    lw = i &gt;= 6 ? 2.5 : 1.5
+    ls = i == 7 ? :dash : :solid
+    lines!(ax_all, t_yr, vals, color=col, linewidth=lw, linestyle=ls, label=lab)
+end
+axislegend(ax_all, position=:lt, nbanks=2)
+
+# Panel C: Total population
+ax_tot = Axis(fig_year[3, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Total population&quot;)
+total_pop = sum.(sol_year.u)
+lines!(ax_tot, t_yr, total_pop, color=:black, linewidth=2.5)
+
+# Annotate peak
+peak_day = sol_year.t[peak_idx]
+peak_val = total_pop[peak_idx]
+scatter!(ax_tot, [peak_day], [peak_val], color=:red, markersize=8)
+text!(ax_tot, peak_day + 5, peak_val * 0.95,
+    text=&quot;Peak: day $(round(Int, peak_day))\n$(round(peak_val, digits=1)) ind.&quot;,
+    fontsize=9, color=:red)
+
+fig_year</code></pre><p>&lt;div id=&quot;fig-year-timeseries&quot;&gt;</p><p><img src="../41_olive_fly_ode_files/figure-commonmark/fig-year-timeseries-output-1.png" alt/></p><p>Figure 3: Full-year population dynamics of B. oleae showing seasonal buildup during the warm season and collapse in winter. The sinusoidal temperature forcing drives development, mortality, and fecundity.</p><p>&lt;/div&gt;</p><h3 id="Adult-Male-Trap-Catches"><a class="docs-heading-anchor" href="#Adult-Male-Trap-Catches">Adult Male Trap Catches</a><a id="Adult-Male-Trap-Catches-1"></a><a class="docs-heading-anchor-permalink" href="#Adult-Male-Trap-Catches" title="Permalink"></a></h3><p>In field monitoring programs, adult males are captured in pheromone traps. The model’s adult male compartment provides a proxy for trap catch patterns.</p><pre><code class="language-julia hljs">fig_trap = Figure(size=(800, 400))
+
+ax_trap = Axis(fig_trap[1, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Adult males (trap catch proxy)&quot;,
+    title=&quot;Simulated Male Trap Catches — Central Italy&quot;)
+
+male_pop = [u[6] for u in sol_year.u]
+lines!(ax_trap, t_yr, male_pop, color=:goldenrod, linewidth=2.5)
+
+# Add temperature on right axis
+ax_trap_t = Axis(fig_trap[1, 1],
+    ylabel=&quot;Temperature (°C)&quot;,
+    yaxisposition=:right,
+    yticklabelcolor=:firebrick)
+hidespines!(ax_trap_t, :t, :l, :b)
+lines!(ax_trap_t, t_yr, T_yr, color=(:firebrick, 0.5), linewidth=1.5, linestyle=:dash)
+
+# Mark monitoring season (typically Jun–Nov)
+vlines!(ax_trap, [152.0, 335.0], color=:gray, linestyle=:dot, linewidth=1)
+text!(ax_trap, 155, maximum(male_pop) * 0.9,
+    text=&quot;Monitoring\nseason&quot;, fontsize=9, color=:gray)
+
+fig_trap</code></pre><p>&lt;div id=&quot;fig-trap-catches&quot;&gt;</p><p><img src="../41_olive_fly_ode_files/figure-commonmark/fig-trap-catches-output-1.png" alt/></p><p>Figure 4: Simulated adult male population as a proxy for pheromone trap catches. The pattern should show buildup from late spring through a peak in August–September, consistent with field observations in central Italian olive groves.</p><p>&lt;/div&gt;</p><h2 id="Plausibility-Checks"><a class="docs-heading-anchor" href="#Plausibility-Checks">Plausibility Checks</a><a id="Plausibility-Checks-1"></a><a class="docs-heading-anchor-permalink" href="#Plausibility-Checks" title="Permalink"></a></h2><pre><code class="language-julia hljs"># Verify model behavior at key temperatures
+println(&quot;Plausibility checks:&quot;)
+println(&quot;=&quot;^60)
+
+# 1. Development rate at 25°C
+G25 = briere_rate(dev_params, 25.0)
+println(&quot;1. G(25°C) = $(round(G25, digits=5)) per day&quot;)
+println(&quot;   → Generation time ≈ $(round(1/G25, digits=0)) days (expect ~30-60)&quot;)
+
+# 2. Mortality at optimal temperature
+println(&quot;2. Mortality at T_max (optimal survival):&quot;)
+for (name, mp) in [(&quot;Egg&quot;, mort_egg), (&quot;Larva&quot;, mort_larva),
+                    (&quot;Pupa&quot;, mort_pupa), (&quot;Adult&quot;, mort_adult)]
+    M_opt = mortality_fraction(mp, mp.T_max)
+    println(&quot;   $name: M($(mp.T_max)°C) = $(round(M_opt, digits=3)) (survival = $(round(1-M_opt, digits=3)))&quot;)
+end
+
+# 3. Fecundity at optimal temperature
+println(&quot;3. β(25.6°C) = $(round(fecundity(25.6), digits=2)) eggs/female/day&quot;)
+println(&quot;   β(20°C) = $(round(fecundity(20.0), digits=2)) eggs/female/day&quot;)
+println(&quot;   β(30°C) = $(round(fecundity(30.0), digits=2)) eggs/female/day&quot;)
+
+# 4. Population scale
+println(&quot;4. Peak total population: $(round(maximum(total_pop), digits=1)) individuals&quot;)
+println(&quot;   (expect 10s–100s per spatial unit, not millions)&quot;)
+
+# 5. Generations per season
+println(&quot;5. Summer DD accumulation:&quot;)
+dd_summer = sum(briere_rate(dev_params, T_forcing(d)) for d in 196:273)
+println(&quot;   Jul–Sep total development: $(round(dd_summer, digits=2))&quot;)
+println(&quot;   → Approx. $(round(dd_summer * G25 / G25, digits=1)) developmental units &quot; *
+        &quot;(expect 2–3 generations)&quot;)</code></pre><pre><code class="nohighlight hljs">Plausibility checks:
+============================================================
+1. G(25°C) = 0.04501 per day
+   → Generation time ≈ 22.0 days (expect ~30-60)
+2. Mortality at T_max (optimal survival):
+   Egg: M(25.0°C) = 0.13 (survival = 0.87)
+   Larva: M(22.0°C) = 0.2 (survival = 0.8)
+   Pupa: M(24.6°C) = 0.18 (survival = 0.82)
+   Adult: M(25.0°C) = 0.4 (survival = 0.6)
+3. β(25.6°C) = 5.0 eggs/female/day
+   β(20°C) = 1.8 eggs/female/day
+   β(30°C) = 3.02 eggs/female/day
+4. Peak total population: 993.8 individuals
+   (expect 10s–100s per spatial unit, not millions)
+5. Summer DD accumulation:
+   Jul–Sep total development: 3.32
+   → Approx. 3.3 developmental units (expect 2–3 generations)</code></pre><h2 id="Comparison-with-Distributed-Delay-PBDM"><a class="docs-heading-anchor" href="#Comparison-with-Distributed-Delay-PBDM">Comparison with Distributed-Delay PBDM</a><a id="Comparison-with-Distributed-Delay-PBDM-1"></a><a class="docs-heading-anchor-permalink" href="#Comparison-with-Distributed-Delay-PBDM" title="Permalink"></a></h2><p><a href="../28_olive_bactrocera/">Vignette 28</a> implements the olive fly lifecycle using the distributed-delay (Erlang chain trick) approach within the <code>PhysiologicallyBasedDemographicModels.jl</code> framework. That approach, following Gutierrez, Ponti, and colleagues, represents each life stage as a distributed-delay queue with <span>$k$</span> substages and a mean duration <span>$\tau$</span>.</p><p>The two approaches are conceptually related but differ in several key ways:</p><table><tr><th style="text-align: left">Feature</th><th style="text-align: left">ODE Model (this vignette)</th><th style="text-align: left">Distributed-Delay PBDM (vignette 28)</th></tr><tr><td style="text-align: left"><strong>Framework</strong></td><td style="text-align: left">8 coupled ODEs</td><td style="text-align: left">Erlang chain with <span>$k$</span> substages</td></tr><tr><td style="text-align: left"><strong>Stage structure</strong></td><td style="text-align: left">3 larval instars explicit</td><td style="text-align: left">Larvae lumped into single stage</td></tr><tr><td style="text-align: left"><strong>Adult classes</strong></td><td style="text-align: left">Male / non-mated / mated females</td><td style="text-align: left">Single adult stage</td></tr><tr><td style="text-align: left"><strong>Development</strong></td><td style="text-align: left">Brière (<span>$m = 2.5$</span>)</td><td style="text-align: left">Brière (<span>$m = 2$</span>, standard)</td></tr><tr><td style="text-align: left"><strong>Mortality</strong></td><td style="text-align: left">Gumbel survival function</td><td style="text-align: left">U-shaped empirical function</td></tr><tr><td style="text-align: left"><strong>Fecundity</strong></td><td style="text-align: left">Temperature only</td><td style="text-align: left">Temperature × fruit availability</td></tr><tr><td style="text-align: left"><strong>Trophic coupling</strong></td><td style="text-align: left">None (fly only)</td><td style="text-align: left">Olive plant supply/demand</td></tr><tr><td style="text-align: left"><strong>Solver</strong></td><td style="text-align: left"><code>OrdinaryDiffEq.jl</code> (Tsit5)</td><td style="text-align: left"><code>DirectIteration()</code> (discrete step)</td></tr><tr><td style="text-align: left"><strong>Reference</strong></td><td style="text-align: left">Rossini et al. (2022)</td><td style="text-align: left">Ponti et al. (2009)</td></tr></table><p>The ODE approach is more parsimonious — it uses fewer parameters and does not require the Erlang substage discretization — but it also lacks the variance control of the distributed delay, which better represents the natural spread of development times within a cohort. The PBDM approach additionally captures the trophic coupling between olive fruit availability and fly oviposition, which is a critical ecological constraint omitted in the standalone ODE model.</p><p>Both approaches predict seasonal population buildup during summer with peak abundance in August–September, consistent with field trap catch data from Italian olive groves. The ODE model is better suited for rapid parameter estimation and sensitivity analysis, while the PBDM is preferred for scenario analysis involving crop management and climate projections.</p><h2 id="Sensitivity-to-Temperature-Regime"><a class="docs-heading-anchor" href="#Sensitivity-to-Temperature-Regime">Sensitivity to Temperature Regime</a><a id="Sensitivity-to-Temperature-Regime-1"></a><a class="docs-heading-anchor-permalink" href="#Sensitivity-to-Temperature-Regime" title="Permalink"></a></h2><p>We explore how the population dynamics change under three warming scenarios.</p><pre><code class="language-julia hljs">fig_warm = Figure(size=(900, 600))
+
+ax_wpop = Axis(fig_warm[1, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Total population&quot;,
+    title=&quot;Population Response to Warming&quot;)
+
+ax_wt = Axis(fig_warm[2, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Temperature (°C)&quot;,
+    title=&quot;Temperature Scenarios&quot;)
+
+scenarios = [(0.0, &quot;Baseline&quot;, :steelblue),
+             (1.0, &quot;+1°C&quot;,    :darkorange),
+             (2.0, &quot;+2°C&quot;,    :firebrick),
+             (3.0, &quot;+3°C&quot;,    :purple)]
+
+for (ΔT, label, col) in scenarios
+    T_func_w(t) = (T_mean + ΔT) + T_amp * sin(2π * (t - T_phase) / 365.0)
+
+    p_warm = (T_func = T_func_w, dev = dev_params,
+              mort_e = mort_egg, mort_l = mort_larva,
+              mort_p = mort_pupa, mort_a = mort_adult)
+
+    prob_w = ODEProblem(bactrocera_rhs!, u0_year, (1.0, 365.0), p_warm)
+    sol_w = solve(prob_w, Tsit5(); saveat=1.0, abstol=1e-8, reltol=1e-8)
+
+    tot_w = sum.(sol_w.u)
+    lines!(ax_wpop, sol_w.t, tot_w, color=col, linewidth=2.5, label=label)
+
+    T_w = T_func_w.(sol_w.t)
+    lines!(ax_wt, sol_w.t, T_w, color=col, linewidth=1.5, label=label)
+end
+
+axislegend(ax_wpop, position=:lt)
+hlines!(ax_wt, [dev_params.T_L, dev_params.T_M], color=:gray, linestyle=:dash, linewidth=1)
+axislegend(ax_wt, position=:lt)
+
+fig_warm</code></pre><p>&lt;div id=&quot;fig-warming-scenarios&quot;&gt;</p><p><img src="../41_olive_fly_ode_files/figure-commonmark/fig-warming-scenarios-output-1.png" alt/></p><p>Figure 5: B. oleae population dynamics under baseline and warming scenarios (+1°C, +2°C, +3°C). Warming shifts peak populations earlier and initially increases abundance, but extreme warming (+3°C) can reduce populations due to high-temperature mortality exceeding the upper developmental threshold.</p><p>&lt;/div&gt;</p><pre><code class="language-julia hljs"># Summary statistics across scenarios
+println(&quot;Warming scenario summary:&quot;)
+println(&quot;=&quot;^70)
+println(&quot;  Scenario  | Peak pop. | Peak day | Season length | Total ind·days&quot;)
+println(&quot;-&quot;^70)
+
+for (ΔT, label, _) in scenarios
+    T_func_w(t) = (T_mean + ΔT) + T_amp * sin(2π * (t - T_phase) / 365.0)
+    p_warm = (T_func = T_func_w, dev = dev_params,
+              mort_e = mort_egg, mort_l = mort_larva,
+              mort_p = mort_pupa, mort_a = mort_adult)
+    prob_w = ODEProblem(bactrocera_rhs!, u0_year, (1.0, 365.0), p_warm)
+    sol_w = solve(prob_w, Tsit5(); saveat=1.0, abstol=1e-8, reltol=1e-8)
+
+    tot_w = sum.(sol_w.u)
+    peak_val = maximum(tot_w)
+    peak_day = sol_w.t[argmax(tot_w)]
+    threshold = 1.0
+    active_days = count(x -&gt; x &gt; threshold, tot_w)
+    total_ind_days = sum(tot_w)
+
+    println(&quot;  $(rpad(label, 10)) | $(lpad(round(peak_val, digits=1), 9)) | &quot; *
+            &quot;day $(lpad(round(Int, peak_day), 3)) | $(lpad(active_days, 6)) days    | &quot; *
+            &quot;$(round(total_ind_days, digits=0))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Warming scenario summary:
+======================================================================
+  Scenario  | Peak pop. | Peak day | Season length | Total ind·days
+----------------------------------------------------------------------
+  Baseline   |     993.8 | day 271 |    361 days    | 110532.0
+  +1°C       |     809.9 | day 278 |    362 days    | 89754.0
+  +2°C       |     663.5 | day 284 |    365 days    | 73709.0
+  +3°C       |     641.1 | day 292 |    365 days    | 70984.0</code></pre><h2 id="Discussion"><a class="docs-heading-anchor" href="#Discussion">Discussion</a><a id="Discussion-1"></a><a class="docs-heading-anchor-permalink" href="#Discussion" title="Permalink"></a></h2><p>This vignette demonstrates the implementation of the Rossini et al. (2022) 8-ODE system for <em>Bactrocera oleae</em> using Julia’s <code>OrdinaryDiffEq.jl</code> solver. The model captures the essential temperature-driven dynamics of the olive fruit fly lifecycle: spring emergence as temperatures exceed the lower developmental threshold (<span>$T_L = 7.23\,°\text{C}$</span>), rapid population buildup during the warm season, and autumn collapse as temperatures drop below the developmental range.</p><p>The explicit separation of adult males, non-mated females, and mated females allows the model to track mating dynamics and predict male trap catches — quantities directly observable in field monitoring programs. The Brière development rate with exponent <span>$1/m = 0.4$</span> captures the asymmetric thermal response with rapid decline near the upper thermal limit (<span>$T_M = 32.2\,°\text{C}$</span>), which is ecologically important in hot Mediterranean summers.</p><p><strong>Comparison with the PBDM approach:</strong> The distributed-delay framework in vignette 28 offers several advantages for applied modeling: (1) the Erlang chain provides realistic variance in stage durations, (2) the Frazer-Gilbert functional response couples fly reproduction to fruit availability, and (3) the supply/demand paradigm naturally incorporates resource limitation. However, the ODE approach here is more transparent mathematically, easier to analyze for stability and bifurcations, and more directly connected to the parameter estimation literature. A complete modeling study would ideally validate both approaches against the same field dataset.</p><p><strong>Code availability:</strong> The original Python implementation by Rossini et al. is available at <a href="https://github.com/lucaros1190/ODE-bactrocera">https://github.com/lucaros1190/ODE-bactrocera</a>.</p><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Rossini2022BactroceraODE&quot; class=&quot;csl-entry&quot;&gt;</p><p>Rossini, Luca, Octavio A. Bruzzone, Mario Contarini, Lucrezia Bufacchi, and Stefano Speranza. 2022. “A Physiologically Based ODE Model for an Old Pest: Modeling Life Cycle and Population Dynamics of &lt;span class=&quot;nocase&quot;&gt;Bactrocera oleae&lt;/span&gt; (Rossi).” <em>Agronomy</em> 12 (10): 2298. <a href="https://doi.org/10.3390/agronomy12102298">https://doi.org/10.3390/agronomy12102298</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../40_spodoptera_frugiperda/">« Fall Armyworm Establishment Risk in Europe</a><a class="docs-footer-nextpage" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

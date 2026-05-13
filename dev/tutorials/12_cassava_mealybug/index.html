@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Cassava Mealybug Biocontrol in Africa · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Cassava Mealybug Biocontrol in Africa · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Cassava Mealybug Biocontrol in Africa · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Cassava Mealybug Biocontrol in Africa · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/12_cassava_mealybug/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/12_cassava_mealybug/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/12_cassava_mealybug/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li class="is-active"><a class="tocitem" href>Cassava Mealybug Biocontrol in Africa</a><ul class="internal"><li><a class="tocitem" href="#Background"><span>Background</span></a></li><li><a class="tocitem" href="#Setup"><span>Setup</span></a></li><li><a class="tocitem" href="#1.-Cassava-Plant-Model"><span>1. Cassava Plant Model</span></a></li><li><a class="tocitem" href="#2.-Cassava-Mealybug-(*Phenacoccus-manihoti*)"><span>2. Cassava Mealybug (<em>Phenacoccus manihoti</em>)</span></a></li><li><a class="tocitem" href="#3.-Parasitoid-(*Epidinocarsis-lopezi*)"><span>3. Parasitoid (<em>Epidinocarsis lopezi</em>)</span></a></li><li><a class="tocitem" href="#4.-Trophic-Interactions"><span>4. Trophic Interactions</span></a></li><li><a class="tocitem" href="#5.-Weather:-West-African-Savanna"><span>5. Weather: West African Savanna</span></a></li><li><a class="tocitem" href="#6.-Simulation:-Mealybug-Dynamics-Without-Biocontrol"><span>6. Simulation: Mealybug Dynamics Without Biocontrol</span></a></li><li><a class="tocitem" href="#7.-Simulation:-With-Parasitoid-Biocontrol-(Coupled-API)"><span>7. Simulation: With Parasitoid Biocontrol (Coupled API)</span></a></li><li><a class="tocitem" href="#8.-Visualization"><span>8. Visualization</span></a></li><li><a class="tocitem" href="#9.-Temperature-Sensitivity-Analysis"><span>9. Temperature Sensitivity Analysis</span></a></li><li><a class="tocitem" href="#10.-Timing-of-Parasitoid-Introduction"><span>10. Timing of Parasitoid Introduction</span></a></li><li><a class="tocitem" href="#Key-Insights"><span>Key Insights</span></a></li><li><a class="tocitem" href="#References"><span>References</span></a></li><li><a class="tocitem" href="#Parameter-Sources"><span>Parameter Sources</span></a></li></ul></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Cassava Mealybug Biocontrol in Africa</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Cassava Mealybug Biocontrol in Africa</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Cassava-Mealybug-Biocontrol-in-Africa"><a class="docs-heading-anchor" href="#Cassava-Mealybug-Biocontrol-in-Africa">Cassava Mealybug Biocontrol in Africa</a><a id="Cassava-Mealybug-Biocontrol-in-Africa-1"></a><a class="docs-heading-anchor-permalink" href="#Cassava-Mealybug-Biocontrol-in-Africa" title="Permalink"></a></h1><ul><li><a href="#background">Background</a></li><li><a href="#setup">Setup</a></li><li><a href="#1-cassava-plant-model">1. Cassava Plant Model</a></li><li><a href="#2-cassava-mealybug-phenacoccus-manihoti">2. Cassava Mealybug (<em>Phenacoccus manihoti</em>)</a></li><li><a href="#3-parasitoid-epidinocarsis-lopezi">3. Parasitoid (<em>Epidinocarsis lopezi</em>)</a></li><li><a href="#4-trophic-interactions">4. Trophic Interactions</a><ul><li><a href="#functional-response-curves">Functional response curves</a></li></ul></li><li><a href="#5-weather-west-african-savanna">5. Weather: West African Savanna</a></li><li><a href="#6-simulation-mealybug-dynamics-without-biocontrol">6. Simulation: Mealybug Dynamics Without Biocontrol</a></li><li><a href="#7-simulation-with-parasitoid-biocontrol-coupled-api">7. Simulation: With Parasitoid Biocontrol (Coupled API)</a></li><li><a href="#8-visualization">8. Visualization</a><ul><li><a href="#mealybug-dynamics-with-vs-without-biocontrol">Mealybug dynamics: with vs without biocontrol</a></li><li><a href="#stage-structured-dynamics">Stage-structured dynamics</a></li></ul></li><li><a href="#9-temperature-sensitivity-analysis">9. Temperature Sensitivity Analysis</a></li><li><a href="#10-timing-of-parasitoid-introduction">10. Timing of Parasitoid Introduction</a></li><li><a href="#key-insights">Key Insights</a></li><li><a href="#references">References</a></li><li><a href="#parameter-sources">Parameter Sources</a></li></ul><p>Primary reference: (Gutierrez et al. 1988).</p><h2 id="Background"><a class="docs-heading-anchor" href="#Background">Background</a><a id="Background-1"></a><a class="docs-heading-anchor-permalink" href="#Background" title="Permalink"></a></h2><p>The cassava mealybug <em>Phenacoccus manihoti</em> Matile-Ferrero was accidentally introduced from South America to Africa in the early 1970s, where it rapidly became the most devastating pest of cassava (<em>Manihot esculenta</em>) — the primary staple food crop for over 200 million people across sub-Saharan Africa. Without natural enemies in its new range, mealybug populations exploded during dry seasons, causing severe shoot tip bunching, leaf curling, defoliation, and tuber yield losses estimated at 50–80% in heavily infested fields.</p><p>In what became one of the most successful classical biological control programs in history, the International Institute of Tropical Agriculture (IITA) imported the solitary encyrtid parasitoid <em>Epidinocarsis lopezi</em> (De Santis) from South America and first released it in Nigeria in 1981. By 1988, <em>E. lopezi</em> had established in 19 African countries, spreading over 1.5 million km², and was credited with reducing mealybug populations to economically insignificant levels across the cassava belt. Neuenschwander et al. (1989) estimated yield gains of 2.5 t/ha in the savanna zone — translating to hundreds of millions of dollars annually in averted losses.</p><p>Gutierrez et al. (1988a,b) developed physiologically based demographic models of the cassava–mealybug–parasitoid tritrophic system, demonstrating that <em>E. lopezi</em> alone was capable of preventing tuber yield losses, while native coccinellid predators had comparatively small impact. The PBDM framework captured the critical role of temperature in mediating the interaction: both mealybug and parasitoid develop through physiological (degree-day) time, and the parasitoid’s slightly faster development rate at moderate temperatures gives it a competitive advantage that underpins successful biological control.</p><p>This vignette builds a tritrophic PBDM of the cassava–mealybug–parasitoid system using <code>PhysiologicallyBasedDemographicModels.jl</code>, with parameters drawn from Gutierrez et al. (1988a,b) and Neuenschwander et al. (1989).</p><h2 id="Setup"><a class="docs-heading-anchor" href="#Setup">Setup</a><a id="Setup-1"></a><a class="docs-heading-anchor-permalink" href="#Setup" title="Permalink"></a></h2><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+using Statistics
+using CairoMakie</code></pre><h2 id="1.-Cassava-Plant-Model"><a class="docs-heading-anchor" href="#1.-Cassava-Plant-Model">1. Cassava Plant Model</a><a id="1.-Cassava-Plant-Model-1"></a><a class="docs-heading-anchor-permalink" href="#1.-Cassava-Plant-Model" title="Permalink"></a></h2><p>Cassava development is driven by thermal accumulation above a base temperature of 10°C. The plant is modeled as two organ populations tracked through distributed delays: a vegetative canopy (leaves + stems) with a long developmental duration, and a tuber compartment that begins filling after a lag period. The canopy provides the resource base (photosynthate supply) that the mealybug exploits.</p><pre><code class="language-julia hljs"># Cassava development parameters (Gutierrez et al. 1988a, Table 2 &amp; plant submodel)
+const CASSAVA_T_BASE  = 10.0   # °C — base temperature for development (Gutierrez et al. 1988a)
+const CASSAVA_T_UPPER = 38.0   # °C — upper developmental threshold (Gutierrez et al. 1988a)
+
+cassava_dev = LinearDevelopmentRate(CASSAVA_T_BASE, CASSAVA_T_UPPER)
+
+# Canopy (leaves + stems): τ = 2500 DD for full canopy turnover (Gutierrez et al. 1988a, plant submodel)
+# k = 25 substages gives tight developmental distribution
+canopy_delay = DistributedDelay(25, 2500.0; W0=5.0)   # initial leaf area index proxy
+canopy_stage = LifeStage(:canopy, canopy_delay, cassava_dev, 0.0002)
+
+# Tubers: τ = 3000 DD from initiation to harvest maturity (Gutierrez et al. 1988a, plant submodel)
+tuber_delay = DistributedDelay(20, 3000.0; W0=0.0)
+tuber_stage = LifeStage(:tuber, tuber_delay, cassava_dev, 0.0001)
+
+cassava = Population(:cassava, [canopy_stage, tuber_stage])
+
+println(&quot;Cassava plant model:&quot;)
+println(&quot;  Stages:     $(n_stages(cassava))&quot;)
+println(&quot;  Substages:  $(n_substages(cassava))&quot;)
+println(&quot;  Initial biomass: $(total_population(cassava))&quot;)</code></pre><pre><code class="nohighlight hljs">Cassava plant model:
+  Stages:     2
+  Substages:  45
+  Initial biomass: 125.0</code></pre><h2 id="2.-Cassava-Mealybug-(*Phenacoccus-manihoti*)"><a class="docs-heading-anchor" href="#2.-Cassava-Mealybug-(*Phenacoccus-manihoti*)">2. Cassava Mealybug (<em>Phenacoccus manihoti</em>)</a><a id="2.-Cassava-Mealybug-(*Phenacoccus-manihoti*)-1"></a><a class="docs-heading-anchor-permalink" href="#2.-Cassava-Mealybug-(*Phenacoccus-manihoti*)" title="Permalink"></a></h2><p>The mealybug lifecycle is modeled with three stages — egg, nymph (crawlers through third instar), and adult female — each as a distributed delay. Development rates are linear in temperature above a lower threshold of 15.6°C (Le Rü &amp; Fabres 1987).</p><blockquote><p><strong>Note on threshold temperature:</strong> Gutierrez et al. (1988b) use a lower developmental threshold of 13.5°C in the PBDM (Appendix) with correspondingly higher DD requirements (egg ≈65 DD, immature ≈192 DD, adult ≈371 DD). Here we follow Le Rü &amp; Fabres (1987) who report 15.6°C from controlled-temperature experiments, with DD values adjusted to that threshold.</p></blockquote><pre><code class="language-julia hljs"># Mealybug development parameters
+# Lower threshold: 15.6°C (Le Rü &amp; Fabres 1987; cf. 13.5°C in Gutierrez et al. 1988b Appendix)
+# Upper threshold: 35.0°C (development ceases; Le Rü &amp; Fabres 1987)
+const CM_T_BASE  = 15.6   # °C — lower developmental threshold (Le Rü &amp; Fabres 1987)
+const CM_T_UPPER = 35.0   # °C — upper developmental threshold (Le Rü &amp; Fabres 1987)
+
+cm_dev = LinearDevelopmentRate(CM_T_BASE, CM_T_UPPER)
+
+# Egg stage: ~108 DD above 15.6°C (≈11 days at 25°C; Le Rü &amp; Fabres 1987)
+egg_delay_cm = DistributedDelay(10, 108.0; W0=0.0)
+egg_stage_cm = LifeStage(:egg, egg_delay_cm, cm_dev, 0.003)
+
+# Nymphal stage: ~235 DD (crawlers → 3rd instar; ≈25 days at 25°C; Le Rü &amp; Fabres 1987)
+nymph_delay_cm = DistributedDelay(20, 235.0; W0=2.0)   # initial field infestation
+nymph_stage_cm = LifeStage(:nymph, nymph_delay_cm, cm_dev, 0.004)
+
+# Adult female: ~300 DD (≈32 days at 25°C); total fecundity ~300 eggs (Fabres 1981; Schulthess 1987)
+# P. manihoti is parthenogenetic (Gutierrez et al. 1988b)
+adult_delay_cm = DistributedDelay(15, 300.0; W0=0.0)
+adult_stage_cm = LifeStage(:adult, adult_delay_cm, cm_dev, 0.005)
+
+mealybug = Population(:mealybug, [egg_stage_cm, nymph_stage_cm, adult_stage_cm])
+
+println(&quot;\nCassava mealybug lifecycle:&quot;)
+println(&quot;  Egg:    τ = $(egg_delay_cm.τ) DD  (k=$(egg_delay_cm.k))&quot;)
+println(&quot;  Nymph:  τ = $(nymph_delay_cm.τ) DD  (k=$(nymph_delay_cm.k))&quot;)
+println(&quot;  Adult:  τ = $(adult_delay_cm.τ) DD  (k=$(adult_delay_cm.k))&quot;)
+println(&quot;  Total generation: $(egg_delay_cm.τ + nymph_delay_cm.τ + adult_delay_cm.τ) DD&quot;)
+println(&quot;  Initial nymphs: $(total_population(mealybug))&quot;)</code></pre><pre><code class="nohighlight hljs">Cassava mealybug lifecycle:
+  Egg:    τ = 108.0 DD  (k=10)
+  Nymph:  τ = 235.0 DD  (k=20)
+  Adult:  τ = 300.0 DD  (k=15)
+  Total generation: 643.0 DD
+  Initial nymphs: 40.0</code></pre><h2 id="3.-Parasitoid-(*Epidinocarsis-lopezi*)"><a class="docs-heading-anchor" href="#3.-Parasitoid-(*Epidinocarsis-lopezi*)">3. Parasitoid (<em>Epidinocarsis lopezi</em>)</a><a id="3.-Parasitoid-(*Epidinocarsis-lopezi*)-1"></a><a class="docs-heading-anchor-permalink" href="#3.-Parasitoid-(*Epidinocarsis-lopezi*)" title="Permalink"></a></h2><p><em>E. lopezi</em> is a solitary endoparasitoid of <em>P. manihoti</em>. The female oviposits a single egg into a mealybug nymph; the parasitoid larva develops inside the host, eventually mummifying it. Maximum fecundity is ~85 eggs per female (Iziquel 1985, cited in Gutierrez et al. 1988b). The parasitoid has a slightly lower developmental threshold and a shorter generation time (~310 DD), giving it a developmental rate advantage over its host at moderate tropical temperatures.</p><pre><code class="language-julia hljs"># Parasitoid development parameters
+# Threshold and DD values from Löhr et al. (in press, cited in Gutierrez et al. 1988b)
+# and Sullivan &amp; Neuenschwander (1988)
+const EL_T_BASE  = 15.4   # °C — lower developmental threshold (assumed; see note below)
+const EL_T_UPPER = 34.0   # °C — upper developmental threshold (assumed; see note below)
+
+el_dev = LinearDevelopmentRate(EL_T_BASE, EL_T_UPPER)
+
+# Egg + larval stage (inside host): ~180 DD above 15.4°C (estimated from Löhr et al.)
+egg_larva_delay_el = DistributedDelay(15, 180.0; W0=0.0)
+egg_larva_stage_el = LifeStage(:egg_larva, egg_larva_delay_el, el_dev, 0.002)
+
+# Pupal stage (mummy): ~40 DD (estimated from Löhr et al.)
+pupa_delay_el = DistributedDelay(10, 40.0; W0=0.0)
+pupa_stage_el = LifeStage(:pupa, pupa_delay_el, el_dev, 0.001)
+
+# Adult female: ~90 DD (≈9 days at 25°C); max fecundity ~85 eggs (Iziquel 1985)
+# Adult parasitoids also host-feed on P. manihoti (Gutierrez et al. 1988b)
+adult_delay_el = DistributedDelay(10, 90.0; W0=0.0)
+adult_stage_el = LifeStage(:adult, adult_delay_el, el_dev, 0.006)
+
+parasitoid = Population(:parasitoid, [egg_larva_stage_el, pupa_stage_el, adult_stage_el])
+
+println(&quot;\nParasitoid (E. lopezi) lifecycle:&quot;)
+println(&quot;  Egg+Larva: τ = $(egg_larva_delay_el.τ) DD  (k=$(egg_larva_delay_el.k))&quot;)
+println(&quot;  Pupa:      τ = $(pupa_delay_el.τ) DD  (k=$(pupa_delay_el.k))&quot;)
+println(&quot;  Adult:     τ = $(adult_delay_el.τ) DD  (k=$(adult_delay_el.k))&quot;)
+println(&quot;  Total generation: $(egg_larva_delay_el.τ + pupa_delay_el.τ + adult_delay_el.τ) DD&quot;)</code></pre><pre><code class="nohighlight hljs">Parasitoid (E. lopezi) lifecycle:
+  Egg+Larva: τ = 180.0 DD  (k=15)
+  Pupa:      τ = 40.0 DD  (k=10)
+  Adult:     τ = 90.0 DD  (k=10)
+  Total generation: 310.0 DD</code></pre><h2 id="4.-Trophic-Interactions"><a class="docs-heading-anchor" href="#4.-Trophic-Interactions">4. Trophic Interactions</a><a id="4.-Trophic-Interactions-1"></a><a class="docs-heading-anchor-permalink" href="#4.-Trophic-Interactions" title="Permalink"></a></h2><p>The tritrophic food web connects cassava → mealybug → parasitoid. Mealybug feeding on cassava follows a Frazer-Gilbert demand-driven functional response (Gutierrez et al. 1988b, eqn 4), while the parasitoid attacks mealybug nymphs via a Holling Type II functional response — a simplification of the Frazer-Gilbert parasitoid model (eqn</p><ol><li>used in the original paper.</li></ol><blockquote><p><strong>Note:</strong> Gutierrez et al. (1988b) use the Frazer-Gilbert functional response for all trophic interactions, including parasitism. Here we simplify the parasitoid attack to a Holling Type II for tutorial clarity. The host-feeding demand is 0.3 of total hosts attacked in the original model (Gutierrez et al. 1988b, p. 928).</p></blockquote><pre><code class="language-julia hljs"># Mealybug feeding on cassava phloem (Frazer-Gilbert supply/demand; Gutierrez et al. 1988b, eqn 4)
+cm_feeding = FraserGilbertResponse(0.5)
+
+# Parasitoid attacking mealybug nymphs (simplified as Holling Type II; see note above)
+# a = 0.04 per parasitoid per day: search rate (assumed; Gutierrez et al. 1988b use Frazer-Gilbert s_E)
+# h = 0.5 days: handling time per host (assumed; includes oviposition + host feeding)
+el_attack = HollingTypeII(0.04, 0.5)
+
+# Build the trophic web
+# Conversion efficiencies are tutorial approximations (not directly from the paper)
+web = TrophicWeb()
+add_link!(web, TrophicLink(:mealybug, :cassava, cm_feeding, 0.15))   # ε assumed
+add_link!(web, TrophicLink(:parasitoid, :mealybug, el_attack, 0.30)) # ε assumed
+
+println(&quot;\nTrophic web:&quot;)
+for link in web.links
+    println(&quot;  $(link.predator_name) → $(link.prey_name) &quot; *
+            &quot;(ε = $(link.conversion_efficiency))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Trophic web:
+  mealybug → cassava (ε = 0.15)
+  parasitoid → mealybug (ε = 0.3)</code></pre><h3 id="Functional-response-curves"><a class="docs-heading-anchor" href="#Functional-response-curves">Functional response curves</a><a id="Functional-response-curves-1"></a><a class="docs-heading-anchor-permalink" href="#Functional-response-curves" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Mealybug feeding: acquisition vs supply at fixed demand
+println(&quot;\n--- Mealybug Feeding (supply-demand) ---&quot;)
+demand = 10.0
+for supply in [2.0, 5.0, 10.0, 20.0, 50.0, 100.0]
+    acq = acquire(cm_feeding, supply, demand)
+    φ = supply_demand_ratio(cm_feeding, supply, demand)
+    println(&quot;  Supply=$(lpad(string(Int(supply)), 4)), Demand=$demand → &quot; *
+            &quot;Acquired=$(round(acq, digits=2)), φ=$(round(φ, digits=3))&quot;)
+end
+
+# Parasitoid attack: per-capita consumption vs host density
+println(&quot;\n--- Parasitoid Attack (Holling Type II) ---&quot;)
+for N in [1.0, 5.0, 10.0, 25.0, 50.0, 100.0, 200.0]
+    fr = functional_response(el_attack, N)
+    println(&quot;  Host density=$(lpad(string(Int(N)), 4)) → &quot; *
+            &quot;Attacks/parasitoid/day=$(round(fr, digits=3))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">--- Mealybug Feeding (supply-demand) ---
+  Supply=   2, Demand=10.0 → Acquired=0.95, φ=0.095
+  Supply=   5, Demand=10.0 → Acquired=2.21, φ=0.221
+  Supply=  10, Demand=10.0 → Acquired=3.93, φ=0.393
+  Supply=  20, Demand=10.0 → Acquired=6.32, φ=0.632
+  Supply=  50, Demand=10.0 → Acquired=9.18, φ=0.918
+  Supply= 100, Demand=10.0 → Acquired=9.93, φ=0.993
+
+--- Parasitoid Attack (Holling Type II) ---
+  Host density=   1 → Attacks/parasitoid/day=0.039
+  Host density=   5 → Attacks/parasitoid/day=0.182
+  Host density=  10 → Attacks/parasitoid/day=0.333
+  Host density=  25 → Attacks/parasitoid/day=0.667
+  Host density=  50 → Attacks/parasitoid/day=1.0
+  Host density= 100 → Attacks/parasitoid/day=1.333
+  Host density= 200 → Attacks/parasitoid/day=1.6</code></pre><h2 id="5.-Weather:-West-African-Savanna"><a class="docs-heading-anchor" href="#5.-Weather:-West-African-Savanna">5. Weather: West African Savanna</a><a id="5.-Weather:-West-African-Savanna-1"></a><a class="docs-heading-anchor-permalink" href="#5.-Weather:-West-African-Savanna" title="Permalink"></a></h2><p>We simulate weather representative of the Nigerian/Ghanaian savanna zone where the mealybug problem was most severe — a warm tropical climate with a distinct dry season (November–March) and wet season (April–October). Mean annual temperature ~27°C, with moderate seasonal variation.</p><pre><code class="language-julia hljs"># West African savanna: warm year-round, slight seasonal cycle
+# Dry season (Dec–Feb): hotter days, cooler nights, lower humidity
+# Wet season (Jun–Sep): slightly cooler, higher humidity
+n_days = 365
+weather_days = DailyWeather{Float64}[]
+for d in 1:n_days
+    # Mean temperature: ~27°C with ±3°C seasonal swing
+    T_mean = 27.0 + 3.0 * sin(2π * (d - 100) / 365)
+    T_min = T_mean - 5.0
+    T_max = T_mean + 5.0
+    # Radiation: higher in dry season
+    rad = 18.0 + 4.0 * sin(2π * (d - 60) / 365)
+    push!(weather_days, DailyWeather(T_mean, T_min, T_max;
+                                      radiation=rad, photoperiod=12.2))
+end
+weather = WeatherSeries(weather_days; day_offset=1)
+
+# Print seasonal summary
+println(&quot;\n--- West African Savanna Weather ---&quot;)
+for (label, d) in [(&quot;Jan (dry)&quot;, 15), (&quot;Apr (onset)&quot;, 100),
+                    (&quot;Jul (wet)&quot;, 195), (&quot;Oct (late)&quot;, 285)]
+    w = get_weather(weather, d)
+    println(&quot;  $label: T=$(round(w.T_mean, digits=1))°C, &quot; *
+            &quot;Rad=$(round(w.radiation, digits=1)) MJ/m²&quot;)
+end</code></pre><pre><code class="nohighlight hljs">--- West African Savanna Weather ---
+  Jan (dry): T=24.0°C, Rad=15.2 MJ/m²
+  Apr (onset): T=27.0°C, Rad=20.5 MJ/m²
+  Jul (wet): T=30.0°C, Rad=20.9 MJ/m²
+  Oct (late): T=26.9°C, Rad=15.3 MJ/m²</code></pre><h2 id="6.-Simulation:-Mealybug-Dynamics-Without-Biocontrol"><a class="docs-heading-anchor" href="#6.-Simulation:-Mealybug-Dynamics-Without-Biocontrol">6. Simulation: Mealybug Dynamics Without Biocontrol</a><a id="6.-Simulation:-Mealybug-Dynamics-Without-Biocontrol-1"></a><a class="docs-heading-anchor-permalink" href="#6.-Simulation:-Mealybug-Dynamics-Without-Biocontrol" title="Permalink"></a></h2><p>First, we simulate the mealybug on cassava in the absence of <em>E. lopezi</em> — the situation that prevailed across Africa from the 1970s until the parasitoid’s establishment.</p><pre><code class="language-julia hljs"># Reproduction function: adult mealybugs produce eggs
+# Total fecundity: ~300 eggs per female (Fabres 1981; Schulthess 1987)
+# Rate parameter: total_eggs / adult_τ ≈ 300 / 300 = 1.0 egg/DD at full nutrition
+# CM_FECUNDITY here is a scaling constant used in the simplified daily birth rate formula
+const CM_FECUNDITY = 7.0    # fecundity scaling parameter (tutorial approximation)
+const CM_FEMALE_FRAC = 0.7  # proportion female (assumed; P. manihoti is parthenogenetic
+                            # but produces some males under stress; Fabres 1981)
+
+function cm_reproduction(pop, w, p, day)
+    adults = delay_total(pop.stages[end].delay)
+    dd = degree_days(pop.stages[1].dev_rate, w.T_mean)
+    return CM_FECUNDITY * CM_FEMALE_FRAC * adults * dd / pop.stages[end].delay.τ
+end
+
+# Fresh mealybug population for the no-biocontrol scenario
+function make_mealybug()
+    Population(:mealybug, [
+        LifeStage(:egg,   DistributedDelay(10, 108.0; W0=0.0),  cm_dev, 0.003),
+        LifeStage(:nymph, DistributedDelay(20, 235.0; W0=2.0),  cm_dev, 0.004),
+        LifeStage(:adult, DistributedDelay(15, 300.0; W0=0.0),  cm_dev, 0.005),
+    ])
+end
+
+cm_nobc = make_mealybug()
+prob_nobc = PBDMProblem(DensityDependent(), cm_nobc, weather, (1, n_days))
+sol_nobc = solve(prob_nobc, DirectIteration(); reproduction_fn=cm_reproduction)
+
+println(&quot;\n--- Mealybug WITHOUT Biocontrol ---&quot;)
+println(&quot;Net growth rate λ: &quot;, round(net_growth_rate(sol_nobc), digits=4))
+cdd = cumulative_degree_days(sol_nobc)
+println(&quot;Total degree-days:  &quot;, round(cdd[end], digits=0))
+
+for (i, name) in enumerate([:egg, :nymph, :adult])
+    traj = stage_trajectory(sol_nobc, i)
+    println(&quot;  $name: peak = $(round(maximum(traj), digits=1)) &quot; *
+            &quot;(day $(argmax(traj))), final = $(round(traj[end], digits=1))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">--- Mealybug WITHOUT Biocontrol ---
+Net growth rate λ: 0.992
+Total degree-days:  4161.0
+  egg: peak = 20.2 (day 28), final = 0.7
+  nymph: peak = 37.2 (day 1), final = 1.0
+  adult: peak = 14.0 (day 23), final = 0.5</code></pre><h2 id="7.-Simulation:-With-Parasitoid-Biocontrol-(Coupled-API)"><a class="docs-heading-anchor" href="#7.-Simulation:-With-Parasitoid-Biocontrol-(Coupled-API)">7. Simulation: With Parasitoid Biocontrol (Coupled API)</a><a id="7.-Simulation:-With-Parasitoid-Biocontrol-(Coupled-API)-1"></a><a class="docs-heading-anchor-permalink" href="#7.-Simulation:-With-Parasitoid-Biocontrol-(Coupled-API)" title="Permalink"></a></h2><p>Now we simulate the full tritrophic system using the package’s coupled population API. Instead of a hand-rolled simulation loop, we express the cassava–mealybug–parasitoid interactions as a <code>PopulationSystem</code> with typed rules and events, solved by the standard <code>PBDMProblem</code>/<code>solve</code> framework.</p><p>The <code>MultiSpeciesPBDMNew()</code> tag indicates a true multi-species system (mealybug + parasitoid), as opposed to multi-type within one species.</p><pre><code class="language-julia hljs">&quot;&quot;&quot;
+Build the tritrophic coupled system and solve it.
+
+Returns a `CoupledPBDMSolution` with trajectories for mealybug and
+parasitoid populations plus parasitism-rate observable.
+&quot;&quot;&quot;
+function simulate_tritrophic(weather, n_days;
+                              introduce_parasitoid=true,
+                              introduction_day=90,
+                              initial_parasitoids=0.5)
+    # Fresh populations
+    cm = make_mealybug()
+
+    el = Population(:parasitoid, [
+        LifeStage(:egg_larva, DistributedDelay(15, 180.0; W0=0.0), el_dev, 0.002),
+        LifeStage(:pupa,      DistributedDelay(10, 40.0;  W0=0.0), el_dev, 0.001),
+        LifeStage(:adult,     DistributedDelay(10, 90.0;  W0=0.0), el_dev, 0.006),
+    ])
+
+    sys = PopulationSystem(
+        :mealybug  =&gt; PopulationComponent(cm; species=:mealybug),
+        :parasitoid =&gt; PopulationComponent(el; species=:parasitoid),
+    )
+
+    # --- Rules ---
+    # Mealybug reproduction: adults produce eggs based on temperature
+    repro_rule = ReproductionRule(:mealybug, (sys, w, day, p) -&gt; begin
+        adults = delay_total(sys[:mealybug].population.stages[3].delay)
+        dd = degree_days(cm_dev, w.T_mean)
+        return CM_FECUNDITY * CM_FEMALE_FRAC * adults * dd /
+               sys[:mealybug].population.stages[3].delay.τ
+    end)
+
+    # Parasitoid attack on mealybug nymphs (Holling Type II)
+    # With conversion: parasitized nymphs become parasitoid egg+larva
+    # (survival to mummy: 0.6; Gutierrez et al. 1988b)
+    parasitism_rule = CustomRule(:parasitism, (sys, w, day, p) -&gt; begin
+        if !introduce_parasitoid || day &lt; introduction_day
+            return (parasitized=0.0, parasitism_rate=0.0)
+        end
+        cm_nymphs = delay_total(sys[:mealybug].population.stages[2].delay)
+        el_adults = delay_total(sys[:parasitoid].population.stages[3].delay)
+
+        (cm_nymphs &lt;= 0 || el_adults &lt;= 0) &amp;&amp;
+            return (parasitized=0.0, parasitism_rate=0.0)
+
+        per_capita = functional_response(el_attack, cm_nymphs)
+        parasitized = min(per_capita * el_adults, cm_nymphs * 0.8)
+
+        # Remove parasitized nymphs
+        removal_frac = clamp(parasitized / max(cm_nymphs, 1e-10), 0.0, 1.0)
+        remove_fraction!(sys, :mealybug, 2, removal_frac)
+
+        # Parasitized hosts enter parasitoid egg+larva stage
+        inject!(sys, :parasitoid, 1, parasitized * 0.6)
+
+        rate = cm_nymphs &gt; 0 ? parasitized / cm_nymphs : 0.0
+        return (parasitized=parasitized, parasitism_rate=rate)
+    end)
+
+    rules = AbstractInteractionRule[repro_rule, parasitism_rule]
+
+    # --- Events ---
+    events = AbstractScheduledEvent[]
+    if introduce_parasitoid
+        push!(events, SingleDayRelease(:parasitoid, initial_parasitoids, introduction_day;
+                                       stage_idx=3))  # release as adults
+    end
+
+    # --- Observables ---
+    observables = [
+        PhysiologicallyBasedDemographicModels.Observable(:cm_total, (sys, w, day, p) -&gt; total_population(sys[:mealybug].population)),
+        PhysiologicallyBasedDemographicModels.Observable(:el_total, (sys, w, day, p) -&gt; total_population(sys[:parasitoid].population)),
+        PhysiologicallyBasedDemographicModels.Observable(:parasitism_rate, (sys, w, day, p) -&gt; begin
+            cm_nymphs = delay_total(sys[:mealybug].population.stages[2].delay)
+            el_adults = delay_total(sys[:parasitoid].population.stages[3].delay)
+            (cm_nymphs &lt;= 0 || el_adults &lt;= 0) &amp;&amp; return 0.0
+            per_capita = functional_response(el_attack, cm_nymphs)
+            attacked = min(per_capita * el_adults, cm_nymphs * 0.8)
+            return attacked / max(cm_nymphs, 1e-10)
+        end),
+    ]
+
+    # --- Solve ---
+    prob = PBDMProblem(
+        MultiSpeciesPBDMNew(), sys, weather, (1, n_days);
+        rules=rules, events=events, observables=observables
+    )
+    sol = solve(prob, DirectIteration())
+
+    # Extract stage-level trajectories for backward compatibility
+    cm_totals = zeros(n_days + 1, 3)
+    el_totals = zeros(n_days + 1, 3)
+    parasitism_rate = zeros(n_days)
+
+    # Initial state (day 0)
+    for j in 1:3
+        cm_totals[1, j] = delay_total(cm.stages[j].delay)  # stale after solve, but initial was saved
+    end
+    # From solution: stage totals over time
+    for d in 1:n_days
+        for j in 1:3
+            cm_totals[d + 1, j] = sol.component_stage_totals[:mealybug][j, d]
+            el_totals[d + 1, j] = sol.component_stage_totals[:parasitoid][j, d]
+        end
+    end
+    # Parasitism rate from rule log
+    if haskey(sol.rule_log, :parasitism)
+        for d in 1:min(n_days, length(sol.rule_log[:parasitism]))
+            parasitism_rate[d] = sol.rule_log[:parasitism][d].parasitism_rate
+        end
+    end
+
+    return (; cm_totals, el_totals, parasitism_rate, sol)
+end</code></pre><pre><code class="nohighlight hljs">Main.Notebook.simulate_tritrophic</code></pre><pre><code class="language-julia hljs"># Run both scenarios
+res_nobc = simulate_tritrophic(weather, n_days; introduce_parasitoid=false)
+res_bc   = simulate_tritrophic(weather, n_days; introduce_parasitoid=true,
+                                introduction_day=90, initial_parasitoids=0.5)
+
+# Summary statistics
+cm_total_nobc = sum(res_nobc.cm_totals, dims=2)[:]
+cm_total_bc   = sum(res_bc.cm_totals, dims=2)[:]
+el_total_bc   = sum(res_bc.el_totals, dims=2)[:]
+
+println(&quot;\n--- Tritrophic Simulation Results ---&quot;)
+println(&quot;Peak mealybug (no biocontrol):   $(round(maximum(cm_total_nobc), digits=1))&quot;)
+println(&quot;Peak mealybug (with E. lopezi):  $(round(maximum(cm_total_bc), digits=1))&quot;)
+reduction = 1.0 - maximum(cm_total_bc) / max(maximum(cm_total_nobc), 1e-10)
+println(&quot;Peak population reduction:       $(round(100 * reduction, digits=1))%&quot;)
+println(&quot;Peak parasitoid population:      $(round(maximum(el_total_bc), digits=1))&quot;)
+println(&quot;Mean parasitism rate:            $(round(100 * mean(res_bc.parasitism_rate), digits=1))%&quot;)</code></pre><pre><code class="nohighlight hljs">--- Tritrophic Simulation Results ---
+Peak mealybug (no biocontrol):   44.6
+Peak mealybug (with E. lopezi):  44.6
+Peak population reduction:       0.0%
+Peak parasitoid population:      0.8
+Mean parasitism rate:            0.1%</code></pre><h2 id="8.-Visualization"><a class="docs-heading-anchor" href="#8.-Visualization">8. Visualization</a><a id="8.-Visualization-1"></a><a class="docs-heading-anchor-permalink" href="#8.-Visualization" title="Permalink"></a></h2><h3 id="Mealybug-dynamics:-with-vs-without-biocontrol"><a class="docs-heading-anchor" href="#Mealybug-dynamics:-with-vs-without-biocontrol">Mealybug dynamics: with vs without biocontrol</a><a id="Mealybug-dynamics:-with-vs-without-biocontrol-1"></a><a class="docs-heading-anchor-permalink" href="#Mealybug-dynamics:-with-vs-without-biocontrol" title="Permalink"></a></h3><pre><code class="language-julia hljs">days = 0:n_days
+
+fig = Figure(size=(900, 700))
+
+# Panel A: Total mealybug population
+ax1 = Axis(fig[1, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Mealybug population (relative units)&quot;,
+    title=&quot;(a) Cassava Mealybug Population Dynamics&quot;)
+
+lines!(ax1, days, cm_total_nobc, color=:red, linewidth=2,
+       label=&quot;Without biocontrol&quot;)
+lines!(ax1, days, cm_total_bc, color=:blue, linewidth=2,
+       label=&quot;With E. lopezi&quot;)
+vlines!(ax1, [90], color=:green, linestyle=:dash, linewidth=1,
+        label=&quot;Parasitoid release (day 90)&quot;)
+axislegend(ax1, position=:lt)
+
+# Panel B: Parasitoid population and parasitism rate
+ax2a = Axis(fig[2, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Parasitoid population&quot;,
+    title=&quot;(b) Parasitoid Population and Parasitism Rate&quot;)
+ax2b = Axis(fig[2, 1],
+    ylabel=&quot;Parasitism rate&quot;,
+    yaxisposition=:right,
+    ylabelcolor=:orange,
+    yticklabelcolor=:orange)
+hidespines!(ax2b)
+hidexdecorations!(ax2b)
+
+lines!(ax2a, days, el_total_bc, color=:darkgreen, linewidth=2,
+       label=&quot;E. lopezi total&quot;)
+lines!(ax2b, 1:n_days, res_bc.parasitism_rate, color=:orange,
+       linewidth=1.5, label=&quot;Parasitism rate&quot;)
+vlines!(ax2a, [90], color=:green, linestyle=:dash, linewidth=1)
+
+Legend(fig[2, 1], ax2a, position=:lt, tellwidth=false, tellheight=false)
+
+fig</code></pre><p><img src="../12_cassava_mealybug_files/figure-commonmark/cell-12-output-1.png" alt/></p><h3 id="Stage-structured-dynamics"><a class="docs-heading-anchor" href="#Stage-structured-dynamics">Stage-structured dynamics</a><a id="Stage-structured-dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Stage-structured-dynamics" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig2 = Figure(size=(900, 700))
+
+# Mealybug stages (with biocontrol)
+ax3 = Axis(fig2[1, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Population&quot;,
+    title=&quot;(a) Mealybug Stage Structure (with biocontrol)&quot;)
+
+lines!(ax3, days, res_bc.cm_totals[:, 1], color=:gold, linewidth=2,
+       label=&quot;Eggs&quot;)
+lines!(ax3, days, res_bc.cm_totals[:, 2], color=:orange, linewidth=2,
+       label=&quot;Nymphs&quot;)
+lines!(ax3, days, res_bc.cm_totals[:, 3], color=:red, linewidth=2,
+       label=&quot;Adults&quot;)
+vlines!(ax3, [90], color=:green, linestyle=:dash, linewidth=1)
+axislegend(ax3, position=:rt)
+
+# Parasitoid stages
+ax4 = Axis(fig2[2, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Population&quot;,
+    title=&quot;(b) Parasitoid Stage Structure&quot;)
+
+lines!(ax4, days, res_bc.el_totals[:, 1], color=:lightgreen, linewidth=2,
+       label=&quot;Egg + Larva (in host)&quot;)
+lines!(ax4, days, res_bc.el_totals[:, 2], color=:forestgreen, linewidth=2,
+       label=&quot;Pupa (mummy)&quot;)
+lines!(ax4, days, res_bc.el_totals[:, 3], color=:darkgreen, linewidth=2,
+       label=&quot;Adult&quot;)
+vlines!(ax4, [90], color=:green, linestyle=:dash, linewidth=1)
+axislegend(ax4, position=:rt)
+
+fig2</code></pre><p><img src="../12_cassava_mealybug_files/figure-commonmark/cell-13-output-1.png" alt/></p><h2 id="9.-Temperature-Sensitivity-Analysis"><a class="docs-heading-anchor" href="#9.-Temperature-Sensitivity-Analysis">9. Temperature Sensitivity Analysis</a><a id="9.-Temperature-Sensitivity-Analysis-1"></a><a class="docs-heading-anchor-permalink" href="#9.-Temperature-Sensitivity-Analysis" title="Permalink"></a></h2><p>The parasitoid’s effectiveness depends on the thermal match between its development rate and that of its host. At cooler temperatures typical of highland regions, the parasitoid’s development slows relative to the mealybug, potentially weakening biocontrol. We compare three temperature regimes.</p><pre><code class="language-julia hljs">println(&quot;\n--- Temperature Sensitivity ---&quot;)
+println(&quot;Scenario          | Peak Mealybug (no BC) | Peak Mealybug (BC) | Reduction&quot;)
+println(&quot;-&quot; ^ 78)
+
+for (label, offset) in [(&quot;Cool highlands (-4°C)&quot;, -4.0),
+                         (&quot;Standard savanna&quot;,       0.0),
+                         (&quot;Hot lowlands (+3°C)&quot;,   +3.0)]
+    # Modified weather
+    mod_days = [DailyWeather(27.0 + offset + 3.0 * sin(2π * (d - 100) / 365))
+                for d in 1:n_days]
+    mod_weather = WeatherSeries(mod_days; day_offset=1)
+
+    r_no = simulate_tritrophic(mod_weather, n_days; introduce_parasitoid=false)
+    r_bc = simulate_tritrophic(mod_weather, n_days; introduce_parasitoid=true,
+                                introduction_day=90, initial_parasitoids=0.5)
+
+    peak_no = maximum(sum(r_no.cm_totals, dims=2))
+    peak_bc = maximum(sum(r_bc.cm_totals, dims=2))
+    red = 1.0 - peak_bc / max(peak_no, 1e-10)
+
+    println(&quot;  $(rpad(label, 22)) | $(lpad(string(round(peak_no, digits=1)), 19)) | &quot; *
+            &quot;$(lpad(string(round(peak_bc, digits=1)), 16)) | $(round(100*red, digits=1))%&quot;)
+end</code></pre><pre><code class="nohighlight hljs">--- Temperature Sensitivity ---
+Scenario          | Peak Mealybug (no BC) | Peak Mealybug (BC) | Reduction
+------------------------------------------------------------------------------
+  Cool highlands (-4°C)  |                43.7 |             43.7 | 0.0%
+  Standard savanna       |                44.6 |             44.6 | 0.0%
+  Hot lowlands (+3°C)    |                45.0 |             45.0 | 0.0%</code></pre><h2 id="10.-Timing-of-Parasitoid-Introduction"><a class="docs-heading-anchor" href="#10.-Timing-of-Parasitoid-Introduction">10. Timing of Parasitoid Introduction</a><a id="10.-Timing-of-Parasitoid-Introduction-1"></a><a class="docs-heading-anchor-permalink" href="#10.-Timing-of-Parasitoid-Introduction" title="Permalink"></a></h2><p>The timing of <em>E. lopezi</em> introduction relative to the mealybug colonization wave affects biocontrol success. Earlier introductions prevent the mealybug from building up a large population before the parasitoid’s numerical response catches up.</p><pre><code class="language-julia hljs">fig3 = Figure(size=(800, 500))
+ax5 = Axis(fig3[1, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Total mealybug population&quot;,
+    title=&quot;Effect of Parasitoid Introduction Timing&quot;)
+
+# No biocontrol baseline
+lines!(ax5, days, cm_total_nobc, color=:red, linewidth=2.5,
+       linestyle=:dash, label=&quot;No biocontrol&quot;)
+
+# Different introduction timings
+colors = [:navy, :royalblue, :steelblue, :lightblue]
+for (i, intro_day) in enumerate([30, 60, 90, 150])
+    r = simulate_tritrophic(weather, n_days; introduce_parasitoid=true,
+                             introduction_day=intro_day, initial_parasitoids=0.5)
+    cm_t = sum(r.cm_totals, dims=2)[:]
+    lines!(ax5, days, cm_t, color=colors[i], linewidth=1.8,
+           label=&quot;Release day $intro_day&quot;)
+end
+
+axislegend(ax5, position=:lt)
+fig3</code></pre><p><img src="../12_cassava_mealybug_files/figure-commonmark/cell-15-output-1.png" alt/></p><h2 id="Key-Insights"><a class="docs-heading-anchor" href="#Key-Insights">Key Insights</a><a id="Key-Insights-1"></a><a class="docs-heading-anchor-permalink" href="#Key-Insights" title="Permalink"></a></h2><ol><li><p><strong>Classical biocontrol success</strong>: The parasitoid <em>E. lopezi</em>  dramatically reduces mealybug populations — consistent with the  empirical observation that mealybug populations declined and  remained at low levels across 1.5 million km² of Africa following  parasitoid establishment.</p></li><li><p><strong>Physiological time matching</strong>: The parasitoid’s slightly lower  developmental threshold (15.4°C vs 15.6°C) and shorter generation  time (~310 DD vs ~643 DD) mean it can complete roughly twice as many  generations as the mealybug per growing season — a key advantage for  numerical response tracking. (Note: these thresholds follow Le Rü &amp;  Fabres 1987 for P. manihoti; the Gutierrez 1988b model uses 13.5°C.)</p></li><li><p><strong>Temperature dependence of biocontrol</strong>: At cooler temperatures,  both species slow down, but the parasitoid’s relative advantage may  erode. In practice, this was observed in highland regions where  biocontrol was less effective (Gutierrez et al. 2007).</p></li><li><p><strong>Timing matters</strong>: Earlier parasitoid introduction prevents the  mealybug from reaching high densities, reducing both peak damage and  the time required for suppression. This aligns with IITA’s strategy  of rapid establishment releases across the cassava belt.</p></li><li><p><strong>Demand-driven framework</strong>: The PBDM supply/demand structure  naturally captures how mealybug populations are limited both from  below (by plant resource availability) and from above (by parasitoid  attack) — providing a mechanistic understanding that goes beyond  simple empirical correlations.</p></li></ol><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><ul><li><p>Fabres G (1981). Bioécologie de la cochenille du manioc <em>Phenacoccus manihoti</em> (Hom. Coccoidea Pseudococcidae) en République Populaire du Congo. Thèse de Doctorat, Université Paris-Sud, Orsay.</p></li><li><p>Gutierrez AP, Wermelinger B, Schulthess F, Baumgärtner JU, Herren HR, Ellis CK, Yaninek JS (1988a). Analysis of biological control of cassava pests in Africa: I. Simulation of carbon, nitrogen and water dynamics in cassava. <em>Journal of Applied Ecology</em> 25:901–919.</p></li><li><p>Gutierrez AP, Neuenschwander P, Schulthess F, Herren HR, Baumgärtner JU, Wermelinger B, Löhr B, Ellis CK (1988b). Analysis of biological control of cassava pests in Africa: II. Cassava mealybug <em>Phenacoccus manihoti</em>. <em>Journal of Applied Ecology</em> 25:921–940.</p></li><li><p>Iziquel Y (1985). Étude de quelques aspects de la biologie d’<em>Epidinocarsis lopezi</em> (De Santis), parasitoïde de la cochenille du manioc <em>Phenacoccus manihoti</em> Mat.-Ferr. Mémoire de D.E.A., Université Paris-Sud, Orsay.</p></li><li><p>Le Rü B, Fabres G (1987). Influence de la température et de l’hygrométrie sur le taux de croissance de <em>Phenacoccus manihoti</em> (Homoptera: Pseudococcidae). <em>Acta Oecologica, Oecologia Applicata</em> 8:165–176.</p></li><li><p>Neuenschwander P, Hammond WNO, Gutierrez AP, Cudjoe AR, Adjakloe R, Baumgärtner JU, Regev U (1989). Impact assessment of the biological control of the cassava mealybug, <em>Phenacoccus manihoti</em> Matile-Ferrero (Hemiptera: Pseudococcidae), by the introduced parasitoid <em>Epidinocarsis lopezi</em> (De Santis) (Hymenoptera: Encyrtidae). <em>Bulletin of Entomological Research</em> 79:579–594.</p></li><li><p>Schulthess F (1987). The interactions between cassava mealybug (<em>Phenacoccus manihoti</em> Mat.-Ferr.) populations and cassava (<em>Manihot esculenta</em> Crantz) as influenced by weather. PhD thesis, ETH Zürich.</p></li><li><p>Sullivan DJ, Neuenschwander P (1988). Interaction between the parasitoid <em>Epidinocarsis lopezi</em> and its host <em>Phenacoccus manihoti</em>: host-feeding and food-web dynamics. <em>Entomologia Experimentalis et Applicata</em> 47:297–306.</p></li><li><p>Gutierrez AP, Neuenschwander P, van Alphen JJM (2007). A regional analysis of weather-mediated competition between a parasitoid and a coccinellid predator of cassava mealybug. <em>Environmental Entomology</em> 36:765–777.</p></li><li><p>Herren HR, Neuenschwander P (1991). Biological control of cassava pests in Africa. <em>Annual Review of Entomology</em> 36:257–283.</p></li></ul><h2 id="Parameter-Sources"><a class="docs-heading-anchor" href="#Parameter-Sources">Parameter Sources</a><a id="Parameter-Sources-1"></a><a class="docs-heading-anchor-permalink" href="#Parameter-Sources" title="Permalink"></a></h2><p>The following table summarizes all model parameters, their values, and sources. Parameters marked <strong>[assumed]</strong> are tutorial approximations not directly from the cited papers — they provide reasonable qualitative behavior but should not be treated as published values.</p><table><tr><th style="text-align: right">Parameter</th><th style="text-align: right">Symbol</th><th style="text-align: right">Value</th><th style="text-align: right">Source</th></tr><tr><td style="text-align: right">Cassava base temperature</td><td style="text-align: right"><code>CASSAVA_T_BASE</code></td><td style="text-align: right">10.0 °C</td><td style="text-align: right">Gutierrez et al. (1988a), plant submodel</td></tr><tr><td style="text-align: right">Cassava upper temperature</td><td style="text-align: right"><code>CASSAVA_T_UPPER</code></td><td style="text-align: right">38.0 °C</td><td style="text-align: right">Gutierrez et al. (1988a), plant submodel</td></tr><tr><td style="text-align: right">Canopy development time</td><td style="text-align: right"><code>canopy τ</code></td><td style="text-align: right">2500 DD</td><td style="text-align: right">Gutierrez et al. (1988a), plant submodel</td></tr><tr><td style="text-align: right">Canopy substages</td><td style="text-align: right"><code>canopy k</code></td><td style="text-align: right">25</td><td style="text-align: right">Gutierrez et al. (1988a)</td></tr><tr><td style="text-align: right">Tuber development time</td><td style="text-align: right"><code>tuber τ</code></td><td style="text-align: right">3000 DD</td><td style="text-align: right">Gutierrez et al. (1988a), plant submodel</td></tr><tr><td style="text-align: right">Tuber substages</td><td style="text-align: right"><code>tuber k</code></td><td style="text-align: right">20</td><td style="text-align: right">Gutierrez et al. (1988a)</td></tr><tr><td style="text-align: right">Mealybug lower threshold</td><td style="text-align: right"><code>CM_T_BASE</code></td><td style="text-align: right">15.6 °C</td><td style="text-align: right">Le Rü &amp; Fabres (1987); cf. 13.5 °C in Gutierrez et al. (1988b) Appendix</td></tr><tr><td style="text-align: right">Mealybug upper threshold</td><td style="text-align: right"><code>CM_T_UPPER</code></td><td style="text-align: right">35.0 °C</td><td style="text-align: right">Le Rü &amp; Fabres (1987)</td></tr><tr><td style="text-align: right">Mealybug egg duration</td><td style="text-align: right"><code>egg τ</code></td><td style="text-align: right">108 DD</td><td style="text-align: right">Le Rü &amp; Fabres (1987)</td></tr><tr><td style="text-align: right">Mealybug egg substages</td><td style="text-align: right"><code>egg k</code></td><td style="text-align: right">10</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Mealybug nymph duration</td><td style="text-align: right"><code>nymph τ</code></td><td style="text-align: right">235 DD</td><td style="text-align: right">Le Rü &amp; Fabres (1987)</td></tr><tr><td style="text-align: right">Mealybug nymph substages</td><td style="text-align: right"><code>nymph k</code></td><td style="text-align: right">20</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Mealybug adult duration</td><td style="text-align: right"><code>adult τ</code></td><td style="text-align: right">300 DD</td><td style="text-align: right">Fabres (1981); Schulthess (1987)</td></tr><tr><td style="text-align: right">Mealybug adult substages</td><td style="text-align: right"><code>adult k</code></td><td style="text-align: right">15</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Mealybug total fecundity</td><td style="text-align: right">—</td><td style="text-align: right">~300 eggs</td><td style="text-align: right">Fabres (1981); Schulthess (1987)</td></tr><tr><td style="text-align: right">Mealybug fecundity scaling</td><td style="text-align: right"><code>CM_FECUNDITY</code></td><td style="text-align: right">7.0</td><td style="text-align: right"><strong>[assumed]</strong> — tutorial scaling parameter</td></tr><tr><td style="text-align: right">Mealybug female fraction</td><td style="text-align: right"><code>CM_FEMALE_FRAC</code></td><td style="text-align: right">0.7</td><td style="text-align: right"><strong>[assumed]</strong> — P. manihoti is parthenogenetic (Fabres 1981)</td></tr><tr><td style="text-align: right">Parasitoid lower threshold</td><td style="text-align: right"><code>EL_T_BASE</code></td><td style="text-align: right">15.4 °C</td><td style="text-align: right"><strong>[assumed]</strong> — estimated from Löhr et al. (cited in Gutierrez et al. 1988b)</td></tr><tr><td style="text-align: right">Parasitoid upper threshold</td><td style="text-align: right"><code>EL_T_UPPER</code></td><td style="text-align: right">34.0 °C</td><td style="text-align: right"><strong>[assumed]</strong> — estimated from Löhr et al.</td></tr><tr><td style="text-align: right">Parasitoid egg+larva duration</td><td style="text-align: right"><code>egg_larva τ</code></td><td style="text-align: right">180 DD</td><td style="text-align: right"><strong>[assumed]</strong> — estimated from Löhr et al.</td></tr><tr><td style="text-align: right">Parasitoid pupa duration</td><td style="text-align: right"><code>pupa τ</code></td><td style="text-align: right">40 DD</td><td style="text-align: right"><strong>[assumed]</strong> — estimated from Löhr et al.</td></tr><tr><td style="text-align: right">Parasitoid adult duration</td><td style="text-align: right"><code>adult τ</code></td><td style="text-align: right">90 DD</td><td style="text-align: right"><strong>[assumed]</strong> — estimated from Sullivan &amp; Neuenschwander (1988)</td></tr><tr><td style="text-align: right">Parasitoid max fecundity</td><td style="text-align: right">—</td><td style="text-align: right">~85 eggs</td><td style="text-align: right">Iziquel (1985), cited in Gutierrez et al. (1988b, p. 928)</td></tr><tr><td style="text-align: right">Parasitoid host-feeding fraction</td><td style="text-align: right">—</td><td style="text-align: right">0.3</td><td style="text-align: right">Gutierrez et al. (1988b, p. 928)</td></tr><tr><td style="text-align: right">Parasitoid survival to mummy</td><td style="text-align: right">—</td><td style="text-align: right">0.6</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Parasitoid search rate</td><td style="text-align: right"><code>a</code></td><td style="text-align: right">0.04 d⁻¹</td><td style="text-align: right"><strong>[assumed]</strong> — Holling Type II simplification of Frazer-Gilbert s_E</td></tr><tr><td style="text-align: right">Parasitoid handling time</td><td style="text-align: right"><code>h</code></td><td style="text-align: right">0.5 d</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Mealybug Frazer-Gilbert θ</td><td style="text-align: right"><code>θ</code></td><td style="text-align: right">0.5</td><td style="text-align: right"><strong>[assumed]</strong> — tutorial value</td></tr><tr><td style="text-align: right">Conversion efficiency (CM→cassava)</td><td style="text-align: right"><code>ε</code></td><td style="text-align: right">0.15</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Conversion efficiency (EL→CM)</td><td style="text-align: right"><code>ε</code></td><td style="text-align: right">0.30</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Mealybug per-stage mortality</td><td style="text-align: right"><code>μ</code></td><td style="text-align: right">0.003–0.005 DD⁻¹</td><td style="text-align: right"><strong>[assumed]</strong> — age-structured rates</td></tr></table><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Gutierrez1988CassavaMealybug&quot; class=&quot;csl-entry&quot;&gt;</p><p>Gutierrez, A. P., P. Neuenschwander, F. Schulthess, et al. 1988. “Analysis of Biological Control of Cassava Pests in Africa. II. Cassava Mealybug &lt;span class=&quot;nocase&quot;&gt;Phenacoccus manihoti&lt;/span&gt;.” <em>Journal of Applied Ecology</em>, ahead of print. <a href="https://doi.org/10.2307/2403755">https://doi.org/10.2307/2403755</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../11_olive_climate/">« Mediterranean Olive Climate Economics</a><a class="docs-footer-nextpage" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

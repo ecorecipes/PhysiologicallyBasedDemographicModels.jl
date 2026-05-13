@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Fusarium Wilt and Root-Knot Nematode in Cotton · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Fusarium Wilt and Root-Knot Nematode in Cotton · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Fusarium Wilt and Root-Knot Nematode in Cotton · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Fusarium Wilt and Root-Knot Nematode in Cotton · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/36_fusarium_nematode/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/36_fusarium_nematode/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/36_fusarium_nematode/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li class="is-active"><a class="tocitem" href>Fusarium Wilt and Root-Knot Nematode in Cotton</a><ul class="internal"><li><a class="tocitem" href="#Introduction"><span>Introduction</span></a></li><li><a class="tocitem" href="#Field-Scenarios-and-Inoculum-Gradients"><span>Field Scenarios and Inoculum Gradients</span></a></li><li><a class="tocitem" href="#Physiological-Time-and-Symptom-Timing"><span>Physiological Time and Symptom Timing</span></a></li><li><a class="tocitem" href="#Weather-Data:-Shafter,-California"><span>Weather Data: Shafter, California</span></a></li><li><a class="tocitem" href="#Temperature-Gated-Infection-Pressure"><span>Temperature-Gated Infection Pressure</span></a></li><li><a class="tocitem" href="#Disease-State-Approximation"><span>Disease-State Approximation</span></a></li><li><a class="tocitem" href="#Cotton-Growth-Skeleton"><span>Cotton Growth Skeleton</span></a></li><li><a class="tocitem" href="#Coupling-Disease-to-Height,-Boll-Set,-and-Yield"><span>Coupling Disease to Height, Boll Set, and Yield</span></a></li><li><a class="tocitem" href="#Comparing-the-Three-Management-Histories"><span>Comparing the Three Management Histories</span></a></li><li><a class="tocitem" href="#Management-Interpretation"><span>Management Interpretation</span></a></li><li><a class="tocitem" href="#Sensitivity-to-Symptom-Timing"><span>Sensitivity to Symptom Timing</span></a></li><li><a class="tocitem" href="#Discussion"><span>Discussion</span></a></li></ul></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Fusarium Wilt and Root-Knot Nematode in Cotton</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Fusarium Wilt and Root-Knot Nematode in Cotton</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Fusarium-Wilt-and-Root-Knot-Nematode-in-Cotton"><a class="docs-heading-anchor" href="#Fusarium-Wilt-and-Root-Knot-Nematode-in-Cotton">Fusarium Wilt and Root-Knot Nematode in Cotton</a><a id="Fusarium-Wilt-and-Root-Knot-Nematode-in-Cotton-1"></a><a class="docs-heading-anchor-permalink" href="#Fusarium-Wilt-and-Root-Knot-Nematode-in-Cotton" title="Permalink"></a></h1><p>PhysiologicallyBasedDemographicModels.jl</p><ul><li><a href="#introduction">Introduction</a></li><li><a href="#field-scenarios-and-inoculum-gradients">Field Scenarios and Inoculum Gradients</a></li><li><a href="#physiological-time-and-symptom-timing">Physiological Time and Symptom Timing</a></li><li><a href="#weather-data-shafter-california">Weather Data: Shafter, California</a></li><li><a href="#temperature-gated-infection-pressure">Temperature-Gated Infection Pressure</a></li><li><a href="#disease-state-approximation">Disease-State Approximation</a></li><li><a href="#cotton-growth-skeleton">Cotton Growth Skeleton</a></li><li><a href="#coupling-disease-to-height-boll-set-and-yield">Coupling Disease to Height, Boll Set, and Yield</a></li><li><a href="#comparing-the-three-management-histories">Comparing the Three Management Histories</a></li><li><a href="#management-interpretation">Management Interpretation</a></li><li><a href="#sensitivity-to-symptom-timing">Sensitivity to Symptom Timing</a></li><li><a href="#discussion">Discussion</a></li></ul><h2 id="Introduction"><a class="docs-heading-anchor" href="#Introduction">Introduction</a><a id="Introduction-1"></a><a class="docs-heading-anchor-permalink" href="#Introduction" title="Permalink"></a></h2><p>Fusarium wilt of upland cotton (<em>Gossypium hirsutum</em>) in California is a classic <strong>soil-borne disease complex</strong>: severe disease usually requires both the pathogen <em>Fusarium oxysporum</em> f. sp. <em>vasinfectum</em> (FOV) and the root-knot nematode <em>Meloidogyne incognita</em> (MI). DeVay et al. (1997) measured FOV and MI inoculum densities at three fields near Shafter, California (1982-1984), then related those densities to wilt incidence, cotton phenology, plant height, boll set, and seed cotton yield.</p><p>The paper highlights three interacting processes:</p><ol><li><strong>Low soil temperatures</strong> near 15 C favour early root infection by  FOV.</li><li><strong>Nematode injury</strong> increases cotton susceptibility to vascular  invasion.</li><li><strong>High air temperatures</strong> later in the season accelerate foliar wilt  expression, stunting plants and reducing boll set.</li></ol><p>This vignette implements a compact PBDM-style reconstruction of that system using the <code>PhysiologicallyBasedDemographicModels.jl</code> API. The goal is not to reproduce every regression in the paper, but to encode the main causal chain:</p><p>soil inoculum -\&gt; temperature-gated infection pressure -\&gt; foliar wilt progress -\&gt; reduced cotton growth and yield.</p><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+using CairoMakie
+using Statistics</code></pre><h2 id="Field-Scenarios-and-Inoculum-Gradients"><a class="docs-heading-anchor" href="#Field-Scenarios-and-Inoculum-Gradients">Field Scenarios and Inoculum Gradients</a><a id="Field-Scenarios-and-Inoculum-Gradients-1"></a><a class="docs-heading-anchor-permalink" href="#Field-Scenarios-and-Inoculum-Gradients" title="Permalink"></a></h2><p>The paper reports three contrasting field histories:</p><ul><li><strong>Field A:</strong> untreated, naturally infested, high disease pressure.</li><li><strong>Field B:</strong> fallowed, intermediate inoculum and intermediate disease.</li><li><strong>Field C:</strong> solarized, near-zero FOV and MI after summer heating.</li></ul><p>The reported 1982 FOV densities were 2608, 1122, and 0.2 CFU/g soil for Fields A, B, and C, respectively (1997, Table 2). The text also notes that MI reached an explicitly reported high of 163 J2 per 250 cm^3 soil in one 1984 field-year, and that MI and FOV were strongly correlated on a log scale. The paper does not give a full MI table in the text version, so the MI values below are <strong>representative scenario values</strong> chosen to preserve the paper’s ranking (A \&gt; B \&gt; C) and the observed disease ordering.</p><pre><code class="language-julia hljs">const FIELD_DATA = (
+    A = (label = &quot;Field A (untreated)&quot;,
+         FOV = 2608.0,      # CFU / g soil, reported
+         MI = 80.0,         # representative J2 / 250 cm^3, assumed
+         target_incidence = 0.90,
+         extra_cost = 0.0),
+    B = (label = &quot;Field B (fallowed)&quot;,
+         FOV = 1122.0,      # CFU / g soil, reported
+         MI = 25.0,         # representative J2 / 250 cm^3, assumed
+         target_incidence = 0.35,
+         extra_cost = 85.0),
+    C = (label = &quot;Field C (solarized)&quot;,
+         FOV = 0.2,         # CFU / g soil, reported
+         MI = 1.0,          # near-zero nematode pressure, assumed
+         target_incidence = 0.03,
+         extra_cost = 300.0)
+)
+
+for (k, field) in pairs(FIELD_DATA)
+    println(rpad(field.label, 22),
+            &quot;  FOV = &quot;, round(field.FOV, digits = 1),
+            &quot; CFU/g, MI = &quot;, round(field.MI, digits = 1),
+            &quot;, target incidence = &quot;, round(100 * field.target_incidence, digits = 0), &quot;%&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Field A (untreated)     FOV = 2608.0 CFU/g, MI = 80.0, target incidence = 90.0%
+Field B (fallowed)      FOV = 1122.0 CFU/g, MI = 25.0, target incidence = 35.0%
+Field C (solarized)     FOV = 0.2 CFU/g, MI = 1.0, target incidence = 3.0%</code></pre><p>For reference, the interaction term reported by DeVay et al. was:</p><p class="math-container">\[\mathrm{Wilt\ incidence} = 12.12 + 0.00052(\mathrm{FOV} \times \mathrm{MI}),\]</p><p>with the caveat that the fit was sensitive to one large MI observation and that FOV and MI were themselves strongly correlated.</p><pre><code class="language-julia hljs">paper_interaction_percent(FOV, MI) = clamp(12.12 + 0.00052 * FOV * MI, 0.0, 100.0)
+
+for field in values(FIELD_DATA)
+    pred = paper_interaction_percent(field.FOV, field.MI)
+    println(rpad(field.label, 22), &quot;  interaction regression = &quot;, round(pred, digits = 1), &quot;%&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Field A (untreated)     interaction regression = 100.0%
+Field B (fallowed)      interaction regression = 26.7%
+Field C (solarized)     interaction regression = 12.1%</code></pre><h2 id="Physiological-Time-and-Symptom-Timing"><a class="docs-heading-anchor" href="#Physiological-Time-and-Symptom-Timing">Physiological Time and Symptom Timing</a><a id="Physiological-Time-and-Symptom-Timing-1"></a><a class="docs-heading-anchor-permalink" href="#Physiological-Time-and-Symptom-Timing" title="Permalink"></a></h2><p>Disease progress in Field A was plotted against physiological time above a threshold of <strong>53.5 F = 11.9 C</strong> (1997). The paper also reports:</p><ul><li>Root infection is favoured at about <strong>15 C</strong> soil temperature.</li><li>Foliar wilt expression becomes strongest when air temperatures exceed about <strong>28 C</strong>.</li><li>Vascular browning can precede foliar symptoms by about <strong>300 F degree-days</strong> (<strong>167 C degree-days</strong>).</li><li>Early foliar symptoms before <strong>1110 C degree-days</strong> are associated with stronger stunting and lower boll set than symptoms after <strong>1332 C degree-days</strong>.</li></ul><pre><code class="language-julia hljs">const T_BASE = 11.9
+const T_UPPER = 38.0
+const T_ROOT_OPT = 15.0
+const T_FOLIAR = 28.0
+
+const DD_VASCULAR_LEAD = 167.0
+const DD_EARLY = 1110.0
+const DD_LATE = 1332.0
+
+cotton_dev = LinearDevelopmentRate(T_BASE, T_UPPER)
+
+println(&quot;Base threshold for physiological time: &quot;, T_BASE, &quot; C&quot;)
+println(&quot;Vascular browning lead time: &quot;, DD_VASCULAR_LEAD, &quot; C degree-days&quot;)
+println(&quot;Early / late symptom cutoffs: &quot;, DD_EARLY, &quot; and &quot;, DD_LATE, &quot; C degree-days&quot;)</code></pre><pre><code class="nohighlight hljs">Base threshold for physiological time: 11.9 C
+Vascular browning lead time: 167.0 C degree-days
+Early / late symptom cutoffs: 1110.0 and 1332.0 C degree-days</code></pre><h2 id="Weather-Data:-Shafter,-California"><a class="docs-heading-anchor" href="#Weather-Data:-Shafter,-California">Weather Data: Shafter, California</a><a id="Weather-Data:-Shafter,-California-1"></a><a class="docs-heading-anchor-permalink" href="#Weather-Data:-Shafter,-California" title="Permalink"></a></h2><p>We approximate the Shafter growing season with a warm San Joaquin Valley temperature trajectory: cool spring conditions that favour root infection, then hot summer conditions that accelerate foliar wilt expression. Cotton is planted in mid-April and followed for 180 days.</p><pre><code class="language-julia hljs">n_days = 180
+start_doy = 105
+
+temps_mean = Float64[]
+temps_min = Float64[]
+temps_max = Float64[]
+rads = Float64[]
+
+for d in 1:n_days
+    doy = start_doy + d - 1
+    T_mean = 21.5 + 9.0 * sin(2π * (doy - 172) / 365)
+    T_min = T_mean - 8.0
+    T_max = T_mean + 9.0
+    rad = 19.0 + 5.0 * sin(2π * (doy - 160) / 365)
+
+    push!(temps_mean, T_mean)
+    push!(temps_min, T_min)
+    push!(temps_max, T_max)
+    push!(rads, rad)
+end
+
+weather_days = [DailyWeather(temps_mean[d], temps_min[d], temps_max[d];
+                             radiation = rads[d], photoperiod = 12.0 + 1.8 * sin(2π * (start_doy + d - 80) / 365))
+                for d in 1:n_days]
+weather = WeatherSeries(weather_days; day_offset = 1)
+
+cdd = cumsum([degree_days(cotton_dev, w.T_mean) for w in weather_days])
+println(&quot;End-of-season cumulative degree-days: &quot;, round(cdd[end], digits = 0))</code></pre><pre><code class="nohighlight hljs">End-of-season cumulative degree-days: 2123.0</code></pre><h2 id="Temperature-Gated-Infection-Pressure"><a class="docs-heading-anchor" href="#Temperature-Gated-Infection-Pressure">Temperature-Gated Infection Pressure</a><a id="Temperature-Gated-Infection-Pressure-1"></a><a class="docs-heading-anchor-permalink" href="#Temperature-Gated-Infection-Pressure" title="Permalink"></a></h2><p>The paper suggests a two-stage environmental filter:</p><ol><li>A <strong>root infection gate</strong> peaked near 15 C when the pathogen first  invades roots.</li><li>A <strong>foliar expression gate</strong> that strengthens under hot summer  conditions.</li></ol><p>We represent those gates with a Gaussian soil-temperature response and a sigmoidal air-temperature response. Infection pressure is then scaled by FOV and MI densities.</p><pre><code class="language-julia hljs">root_gate(T_soil) = exp(-((T_soil - T_ROOT_OPT) / 4.0)^2)
+foliar_gate(T_air) = inv(1 + exp(-(T_air - T_FOLIAR) / 1.8))
+
+function infection_pressure(FOV, MI, T_soil, T_air)
+    inoculum = log1p(FOV / 50.0) * (1.0 + 0.30 * log1p(MI))
+    return inoculum * (0.70 * root_gate(T_soil) + 0.30 * foliar_gate(T_air))
+end
+
+soil_temps = [0.75 * w.T_mean + 0.25 * w.T_max for w in weather_days]
+press_A = [infection_pressure(FIELD_DATA.A.FOV, FIELD_DATA.A.MI, soil_temps[d], temps_mean[d]) for d in 1:n_days]
+press_B = [infection_pressure(FIELD_DATA.B.FOV, FIELD_DATA.B.MI, soil_temps[d], temps_mean[d]) for d in 1:n_days]
+press_C = [infection_pressure(FIELD_DATA.C.FOV, FIELD_DATA.C.MI, soil_temps[d], temps_mean[d]) for d in 1:n_days]</code></pre><pre><code class="nohighlight hljs">180-element Vector{Float64}:
+ 0.003318719042083686
+ 0.003304030360333792
+ 0.00328707486042804
+ 0.0032676971639015308
+ 0.0032457468981593436
+ 0.0032210804439483836
+ 0.003193562764392829
+ 0.0031630692979574817
+ 0.0031294878940998404
+ 0.003092720766793642
+ ⋮
+ 0.0011291928032703673
+ 0.0011243440825731358
+ 0.0011190779442415758
+ 0.001113383550462671
+ 0.0011072494792253521
+ 0.0011006637786679485
+ 0.0010936140311453022
+ 0.001086087428172505
+ 0.001078070857433576</code></pre><h2 id="Disease-State-Approximation"><a class="docs-heading-anchor" href="#Disease-State-Approximation">Disease-State Approximation</a><a id="Disease-State-Approximation-1"></a><a class="docs-heading-anchor-permalink" href="#Disease-State-Approximation" title="Permalink"></a></h2><p>To connect soil infection pressure to field-level symptom prevalence we use the package epidemiology types as a convenient bookkeeping layer. Here, <code>DiseaseState(S, I, R, D)</code> is interpreted as:</p><ul><li><code>S</code>: asymptomatic plants</li><li><code>I</code>: plants with visible foliar symptoms</li><li><code>R</code>: symptomatically damaged but still alive</li><li><code>D</code>: plants effectively lost from production</li></ul><p>Recovery is set to zero, and disease mortality is low; the main effect is yield reduction rather than outright plant death.</p><pre><code class="language-julia hljs">function simulate_wilt(field, weather_days)
+    beta = 0.0015 + 0.030 * field.target_incidence
+    wilt = SIRDisease(beta, 0.0, 0.00025)
+    state = DiseaseState(999.0, 1.0)
+
+    # Track field inoculum + virulence via a SoilState. Virulence here
+    # encodes the field&#39;s target incidence (used by β), and inoculum carries
+    # FOV×MI so the CustomRule can read it from the coupled system. This
+    # exercises the coupled SoilState API end-to-end.
+    soil = SoilState(:soil_inoc;
+        inoculum = log1p(field.FOV / 50.0) * (1.0 + 0.30 * log1p(field.MI)),
+        virulence = field.target_incidence)
+
+    bp = BulkPopulation(:crop, state.S + state.I)
+
+    disease_rule = CustomRule(:wilt, (sys, w, day, p) -&gt; begin
+        T_soil = 0.75 * w.T_mean + 0.25 * w.T_max
+        soil = sys.state[:soil_inoc]
+        inoc = get_inoculum(soil)
+        contact = inoc *
+                  (0.70 * root_gate(T_soil) + 0.30 * foliar_gate(w.T_mean))
+        step_disease!(p.disease_state, p.model, contact)
+        (S = p.disease_state.S, I = p.disease_state.I, D = p.disease_state.D,
+         prevalence = prevalence(p.disease_state))
+    end)
+
+    sys = PopulationSystem(:crop =&gt; bp; state = [soil])
+    prob = PBDMProblem(sys, WeatherSeries(weather_days), (1, length(weather_days));
+        rules = [disease_rule], p = (disease_state = state, model = wilt))
+    sol = solve(prob, DirectIteration())
+
+    prev   = [r.prevalence for r in sol.rule_log[:wilt]]
+    S_hist = [r.S for r in sol.rule_log[:wilt]]
+    I_hist = [r.I for r in sol.rule_log[:wilt]]
+    D_hist = [r.D for r in sol.rule_log[:wilt]]
+
+    return (; prevalence = prev, S = S_hist, I = I_hist, D = D_hist)
+end
+
+field_disease = Dict(name =&gt; simulate_wilt(field, weather_days) for (name, field) in pairs(FIELD_DATA))
+
+for (name, field) in pairs(FIELD_DATA)
+    final_prev = 100 * field_disease[name].prevalence[end]
+    println(rpad(field.label, 22),
+            &quot;  simulated end-season incidence = &quot;, round(final_prev, digits = 1), &quot;%&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Field A (untreated)     simulated end-season incidence = 94.7%
+Field B (fallowed)      simulated end-season incidence = 1.6%
+Field C (solarized)     simulated end-season incidence = 0.1%</code></pre><h2 id="Cotton-Growth-Skeleton"><a class="docs-heading-anchor" href="#Cotton-Growth-Skeleton">Cotton Growth Skeleton</a><a id="Cotton-Growth-Skeleton-1"></a><a class="docs-heading-anchor-permalink" href="#Cotton-Growth-Skeleton" title="Permalink"></a></h2><p>The crop side of the system is simplified from the dedicated cotton vignette. We track four organ pools with distributed delays:</p><ul><li>leaves and stems for canopy growth,</li><li>roots as the infection interface,</li><li>bolls as the reproductive sink most visibly damaged by wilt.</li></ul><pre><code class="language-julia hljs">const K = 20
+
+leaf_stage = LifeStage(:leaf,
+    DistributedDelay(K, 520.0; W0 = 0.35),
+    cotton_dev,
+    0.003)
+
+stem_stage = LifeStage(:stem,
+    DistributedDelay(K, 760.0; W0 = 0.20),
+    cotton_dev,
+    0.002)
+
+root_stage = LifeStage(:root,
+    DistributedDelay(K, 420.0; W0 = 0.18),
+    cotton_dev,
+    0.003)
+
+boll_stage = LifeStage(:boll,
+    DistributedDelay(K, 800.0; W0 = 0.0),
+    cotton_dev,
+    0.001)
+
+cotton = Population(:acala_sj2, [leaf_stage, stem_stage, root_stage, boll_stage])
+prob = PBDMProblem(cotton, weather, (1, n_days))
+sol = solve(prob, DirectIteration())
+
+leaf_base = stage_trajectory(sol, 1)
+stem_base = stage_trajectory(sol, 2)
+root_base = stage_trajectory(sol, 3)
+boll_base = stage_trajectory(sol, 4)</code></pre><pre><code class="nohighlight hljs">180-element Vector{Float64}:
+ 0.011767269482845686
+ 0.024015714367343618
+ 0.036756843315542416
+ 0.050001166274495676
+ 0.06375815452670004
+ 0.07803620161014056
+ 0.0928425853283573
+ 0.10818343107316634
+ 0.12406367668388892
+ 0.14048703906710333
+ ⋮
+ 0.09383702395102532
+ 0.08774792267654882
+ 0.08187232358284549
+ 0.07621720724911735
+ 0.07078861300427054
+ 0.06559155921907803
+ 0.060629977816057265
+ 0.05590666476506011
+ 0.051423247513069134</code></pre><h2 id="Coupling-Disease-to-Height,-Boll-Set,-and-Yield"><a class="docs-heading-anchor" href="#Coupling-Disease-to-Height,-Boll-Set,-and-Yield">Coupling Disease to Height, Boll Set, and Yield</a><a id="Coupling-Disease-to-Height,-Boll-Set,-and-Yield-1"></a><a class="docs-heading-anchor-permalink" href="#Coupling-Disease-to-Height,-Boll-Set,-and-Yield" title="Permalink"></a></h2><p>DeVay et al. showed that once foliar symptoms appear, plant height slows rapidly and boll set is reduced most strongly when symptoms appear early. We represent this by scaling organ trajectories with the simulated symptom prevalence and by assigning an additional timing penalty based on the first day that prevalence exceeds 5%.</p><pre><code class="language-julia hljs">function first_symptom_metrics(prev, cdd; threshold = 0.05)
+    idx = findfirst(&gt;=(threshold), prev)
+    if isnothing(idx)
+        return (day = length(prev), dd = cdd[end], vascular_dd = cdd[end] - DD_VASCULAR_LEAD)
+    end
+    return (day = idx, dd = cdd[idx], vascular_dd = cdd[idx] - DD_VASCULAR_LEAD)
+end
+
+function timing_factor(dd_symptom)
+    dd_symptom &lt;= DD_EARLY &amp;&amp; return 0.72
+    dd_symptom &gt;= DD_LATE &amp;&amp; return 0.95
+    frac = (dd_symptom - DD_EARLY) / (DD_LATE - DD_EARLY)
+    return 0.72 + 0.23 * frac
+end
+
+function diseased_growth(sol, prev)
+    leaf = stage_trajectory(sol, 1)
+    stem = stage_trajectory(sol, 2)
+    root = stage_trajectory(sol, 3)
+    boll = stage_trajectory(sol, 4)
+
+    height = (leaf .+ stem) .* (1 .- 0.45 .* prev)
+    roots = root .* (1 .- 0.35 .* prev)
+    bolls = boll .* (1 .- 0.75 .* prev)
+
+    return (; height = height, roots = roots, bolls = bolls)
+end
+
+const POTENTIAL_YIELD = 3.2  # bales / acre
+wilt_damage = LinearDamageFunction(0.012)
+cotton_revenue = CropRevenue(300.0, :bale)
+
+function scenario_metrics(field, prev, cdd)
+    sym = first_symptom_metrics(prev, cdd)
+    pot = POTENTIAL_YIELD * timing_factor(sym.dd)
+    act = actual_yield(wilt_damage, 100 * prev[end], pot)
+    costs = InputCostBundle(production = 450.0, treatment = field.extra_cost)
+    profit = net_profit(cotton_revenue, act, costs)
+    return (; symptom = sym, potential_yield = pot, actual_yield = act, profit = profit)
+end
+
+growth_results = Dict(name =&gt; diseased_growth(sol, field_disease[name].prevalence) for name in keys(FIELD_DATA))
+metric_results = Dict(name =&gt; scenario_metrics(field, field_disease[name].prevalence, cdd)
+                      for (name, field) in pairs(FIELD_DATA))
+
+for (name, field) in pairs(FIELD_DATA)
+    metrics = metric_results[name]
+    println(rpad(field.label, 22),
+            &quot;  symptom day = &quot;, metrics.symptom.day,
+            &quot;, symptom DD = &quot;, round(metrics.symptom.dd, digits = 0),
+            &quot;, yield = &quot;, round(metrics.actual_yield, digits = 2),
+            &quot; bales/ac, profit = \$&quot;, round(metrics.profit, digits = 0), &quot;/ac&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Field A (untreated)     symptom day = 29, symptom DD = 74.0, yield = 1.17 bales/ac, profit = $-100.0/ac
+Field B (fallowed)      symptom day = 180, symptom DD = 2123.0, yield = 3.02 bales/ac, profit = $371.0/ac
+Field C (solarized)     symptom day = 180, symptom DD = 2123.0, yield = 3.04 bales/ac, profit = $162.0/ac</code></pre><h2 id="Comparing-the-Three-Management-Histories"><a class="docs-heading-anchor" href="#Comparing-the-Three-Management-Histories">Comparing the Three Management Histories</a><a id="Comparing-the-Three-Management-Histories-1"></a><a class="docs-heading-anchor-permalink" href="#Comparing-the-Three-Management-Histories" title="Permalink"></a></h2><p>Field C was solarized before planting; the paper reports mean maximum soil temperatures of <strong>47-48 C at 15 cm depth</strong> during solarization, versus about <strong>36 C</strong> in the fallowed field (1997). In the model that large thermal contrast is represented indirectly through the near-zero inoculum densities assigned to the solarized field.</p><pre><code class="language-julia hljs">scenario_order = [:A, :B, :C]
+scenario_colors = Dict(:A =&gt; :firebrick, :B =&gt; :darkorange, :C =&gt; :steelblue)
+
+fig = Figure(size = (980, 760))
+
+ax1 = Axis(fig[1, 1],
+    xlabel = &quot;Day after planting&quot;,
+    ylabel = &quot;Temperature (C)&quot;,
+    title = &quot;(a) Shafter temperature forcing&quot;)
+lines!(ax1, 1:n_days, temps_mean, color = :black, linewidth = 2, label = &quot;T_mean&quot;)
+lines!(ax1, 1:n_days, soil_temps, color = :gray50, linewidth = 2, linestyle = :dash, label = &quot;T_soil&quot;)
+hlines!(ax1, [T_ROOT_OPT], color = :steelblue, linestyle = :dot,
+        label = &quot;Root infection optimum&quot;)
+hlines!(ax1, [T_FOLIAR], color = :firebrick, linestyle = :dot,
+        label = &quot;Foliar expression threshold&quot;)
+axislegend(ax1, position = :lt, framevisible = false)
+
+ax2 = Axis(fig[1, 2],
+    xlabel = &quot;Day after planting&quot;,
+    ylabel = &quot;Wilt prevalence&quot;,
+    title = &quot;(b) Simulated wilt progress&quot;)
+for key in scenario_order
+    prev = field_disease[key].prevalence
+    lines!(ax2, 1:n_days, prev, color = scenario_colors[key], linewidth = 3,
+           label = FIELD_DATA[key].label)
+end
+axislegend(ax2, position = :rb, framevisible = false)
+
+ax3 = Axis(fig[2, 1],
+    xlabel = &quot;Day after planting&quot;,
+    ylabel = &quot;Relative boll set&quot;,
+    title = &quot;(c) Boll-set trajectories&quot;)
+for key in scenario_order
+    rel_bolls = growth_results[key].bolls ./ maximum(boll_base)
+    lines!(ax3, 1:n_days, rel_bolls, color = scenario_colors[key], linewidth = 3,
+           label = FIELD_DATA[key].label)
+end
+axislegend(ax3, position = :rb, framevisible = false)
+
+ax4 = Axis(fig[2, 2],
+    xlabel = &quot;Scenario&quot;,
+    ylabel = &quot;Yield / profit&quot;,
+    title = &quot;(d) Yield and profit summary&quot;,
+    xticks = (1:3, [&quot;Untreated&quot;, &quot;Fallowed&quot;, &quot;Solarized&quot;]))
+barplot!(ax4, 1:3, [metric_results[k].actual_yield for k in scenario_order],
+         color = [:firebrick, :darkorange, :steelblue], label = &quot;Yield (bales/ac)&quot;)
+scatter!(ax4, 1:3, [metric_results[k].profit / 300 for k in scenario_order],
+         color = :black, markersize = 13, label = &quot;Profit / 300&quot;)
+axislegend(ax4, position = :rt, framevisible = false)
+
+fig</code></pre><p><img src="../36_fusarium_nematode_files/figure-commonmark/cell-11-output-1.png" alt/></p><h2 id="Management-Interpretation"><a class="docs-heading-anchor" href="#Management-Interpretation">Management Interpretation</a><a id="Management-Interpretation-1"></a><a class="docs-heading-anchor-permalink" href="#Management-Interpretation" title="Permalink"></a></h2><p>The three scenarios summarize the paper’s main agronomic message:</p><pre><code class="language-julia hljs">println(&quot;Scenario comparison:&quot;)
+println(&quot;  Scenario            Incidence  Symptom DD  Yield  Profit&quot;)
+for key in scenario_order
+    field = FIELD_DATA[key]
+    prev = field_disease[key].prevalence[end]
+    met = metric_results[key]
+    println(rpad(field.label, 22), &quot;  &quot;,
+            lpad(round(100 * prev, digits = 0), 3), &quot;%      &quot;,
+            lpad(round(met.symptom.dd, digits = 0), 4), &quot;     &quot;,
+            lpad(round(met.actual_yield, digits = 2), 4), &quot;   &quot;,
+            lpad(round(met.profit, digits = 0), 4))
+end</code></pre><pre><code class="nohighlight hljs">Scenario comparison:
+  Scenario            Incidence  Symptom DD  Yield  Profit
+Field A (untreated)     95.0%      74.0     1.17   -100.0
+Field B (fallowed)      2.0%      2123.0     3.02   371.0
+Field C (solarized)     0.0%      2123.0     3.04   162.0</code></pre><ol><li><strong>Untreated field:</strong> high FOV and MI produce early symptoms, strong  boll-set reduction, and the lowest yield.</li><li><strong>Fallowed field:</strong> inoculum is lower, symptoms are delayed, and  both height and boll trajectories improve.</li><li><strong>Solarized field:</strong> near-zero inoculum and delayed symptom  expression keep yield near the healthy baseline despite higher  treatment costs.</li></ol><h2 id="Sensitivity-to-Symptom-Timing"><a class="docs-heading-anchor" href="#Sensitivity-to-Symptom-Timing">Sensitivity to Symptom Timing</a><a id="Sensitivity-to-Symptom-Timing-1"></a><a class="docs-heading-anchor-permalink" href="#Sensitivity-to-Symptom-Timing" title="Permalink"></a></h2><p>The paper emphasizes that <strong>when</strong> foliar symptoms appear matters as much as the final end-of-season incidence. The snippet below shifts the first symptom date and computes the corresponding yield factor used above.</p><pre><code class="language-julia hljs">symptom_dds = 900.0:50.0:1500.0
+y_factors = [timing_factor(dd) for dd in symptom_dds]
+
+fig_timing = Figure(size = (760, 360))
+ax = Axis(fig_timing[1, 1],
+    xlabel = &quot;Degree-days at first foliar symptom&quot;,
+    ylabel = &quot;Relative yield potential&quot;,
+    title = &quot;Yield sensitivity to symptom timing&quot;)
+lines!(ax, symptom_dds, y_factors, color = :purple, linewidth = 3)
+vlines!(ax, [DD_EARLY, DD_LATE], color = [:firebrick, :steelblue], linestyle = :dash)
+text!(ax, DD_EARLY + 10, 0.73, text = &quot;early cutoff&quot;, color = :firebrick)
+text!(ax, DD_LATE + 10, 0.92, text = &quot;late cutoff&quot;, color = :steelblue)
+fig_timing</code></pre><p><img src="../36_fusarium_nematode_files/figure-commonmark/cell-13-output-1.png" alt/></p><h2 id="Discussion"><a class="docs-heading-anchor" href="#Discussion">Discussion</a><a id="Discussion-1"></a><a class="docs-heading-anchor-permalink" href="#Discussion" title="Permalink"></a></h2><p>This simplified vignette preserves the qualitative structure of the DeVay et al. study:</p><ul><li>Wilt pressure is highest when <strong>high inoculum</strong> meets <strong>cool early-season root temperatures</strong>.</li><li>Foliar symptoms expressed early in physiological time strongly reduce height and boll set.</li><li>Solarization works because it lowers both FOV and MI so strongly that the hot-summer symptom phase never gains momentum.</li></ul><p>The main assumptions made here are explicit:</p><ol><li>MI scenario values for the three fields are reconstructed from the  paper’s relative rankings rather than copied from a full table.</li><li>The disease-state approximation uses <code>SIRDisease</code> as a bookkeeping  device for plant cohorts, not as a mechanistic within-plant  pathology model.</li><li>Yield penalties are tied to both final incidence and <strong>timing of  first symptoms</strong>, reflecting Figures 2-4 rather than a single  published equation.</li></ol><p>Even with those simplifications, the vignette captures the core PBDM insight of the paper: disease severity emerges from the interaction between <strong>soil ecology</strong>, <strong>host phenology</strong>, and <strong>weather-driven physiological time</strong>, not from inoculum density alone.</p><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-DeVay1997Fusarium&quot; class=&quot;csl-entry&quot;&gt;</p><p>DeVay, J. E., A. P. Gutierrez, G. S. Pullman, et al. 1997. “Inoculum Densities of &lt;span class=&quot;nocase&quot;&gt;Fusarium oxysporum&lt;/span&gt; f. Sp. &lt;span class=&quot;nocase&quot;&gt;vasinfectum&lt;/span&gt; and &lt;span class=&quot;nocase&quot;&gt;Meloidogyne incognita&lt;/span&gt; in Relation to the Development of Fusarium Wilt and the Phenology of Cotton Plants (&lt;span class=&quot;nocase&quot;&gt;Gossypium hirsutum&lt;/span&gt;).” <em>Phytopathology</em> 87 (3): 341–46. <a href="https://doi.org/10.1094/PHYTO.1997.87.3.341">https://doi.org/10.1094/PHYTO.1997.87.3.341</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../35_apple_tree/">« Golden Delicious Apple Tree Growth Model</a><a class="docs-footer-nextpage" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

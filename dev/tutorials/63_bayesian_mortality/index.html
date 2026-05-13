@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Bayesian Inference of Stage-Specific Mortality · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Bayesian Inference of Stage-Specific Mortality · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Bayesian Inference of Stage-Specific Mortality · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Bayesian Inference of Stage-Specific Mortality · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/63_bayesian_mortality/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/63_bayesian_mortality/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/63_bayesian_mortality/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li class="is-active"><a class="tocitem" href>Bayesian Inference of Stage-Specific Mortality</a><ul class="internal"><li><a class="tocitem" href="#Overview"><span>Overview</span></a></li><li><a class="tocitem" href="#1-·-Forward-model"><span>1 · Forward model</span></a></li><li><a class="tocitem" href="#2-·-Synthetic-field-data"><span>2 · Synthetic field data</span></a></li><li><a class="tocitem" href="#3-·-Bayesian-model"><span>3 · Bayesian model</span></a></li><li><a class="tocitem" href="#4-·-Posterior-diagnostics"><span>4 · Posterior diagnostics</span></a></li><li><a class="tocitem" href="#5-·-Constant-across-years-vs-independent-per-year"><span>5 · Constant-across-years vs independent-per-year</span></a></li><li><a class="tocitem" href="#6-·-Discussion"><span>6 · Discussion</span></a></li></ul></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Bayesian Inference of Stage-Specific Mortality</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Bayesian Inference of Stage-Specific Mortality</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Bayesian-Inference-of-Stage-Specific-Mortality"><a class="docs-heading-anchor" href="#Bayesian-Inference-of-Stage-Specific-Mortality">Bayesian Inference of Stage-Specific Mortality</a><a id="Bayesian-Inference-of-Stage-Specific-Mortality-1"></a><a class="docs-heading-anchor-permalink" href="#Bayesian-Inference-of-Stage-Specific-Mortality" title="Permalink"></a></h1><p>Simon Frost</p><ul><li><a href="#overview">Overview</a></li><li><a href="#1--forward-model">1 · Forward model</a></li><li><a href="#2--synthetic-field-data">2 · Synthetic field data</a></li><li><a href="#3--bayesian-model">3 · Bayesian model</a><ul><li><a href="#31-likelihood">3.1 Likelihood</a></li><li><a href="#32-prior">3.2 Prior</a></li><li><a href="#33-random-walk-metropolis-hastings-sampler">3.3 Random-walk Metropolis-Hastings sampler</a></li></ul></li><li><a href="#4--posterior-diagnostics">4 · Posterior diagnostics</a></li><li><a href="#5--constant-across-years-vs-independent-per-year">5 · Constant-across-years vs independent-per-year</a></li><li><a href="#6--discussion">6 · Discussion</a><ul><li><a href="#caveats">Caveats</a></li></ul></li></ul><h2 id="Overview"><a class="docs-heading-anchor" href="#Overview">Overview</a><a id="Overview-1"></a><a class="docs-heading-anchor-permalink" href="#Overview" title="Permalink"></a></h2><p>This vignette is the <strong>seventh</strong> end-to-end corpus-paper case study, after Verticillium DP (<code>57</code>), the CBB regression surrogate (<code>58</code>), olive closed-form damage (<code>59</code>), <em>Tuta absoluta</em> favourability (<code>60</code>), <em>Lobesia botrana</em> voltinism (<code>61</code>), and the screwworm SIT overflooding ratio (<code>62</code>). It exercises the <strong>seventh analytical idiom</strong>:</p><ul><li>a <strong>Bayesian inverse problem</strong>: the forward PBDM is known, but one or more parameters of biological interest (here the per-stage <em>extrinsic</em> mortality <span>$J_i$</span>) are <em>not</em> directly measured;</li><li>given <strong>noisy field-count time series</strong> for each stage, infer the joint posterior <span>$\pi(J_1,\dots,J_s \mid \text{data})$</span> using <strong>Markov-chain Monte Carlo</strong> (Lanzarone et al. 2017);</li><li>contrast the <strong>constant-across-years</strong> parametrisation against an <strong>independent-per-year</strong> one — the central modelling question of the paper.</li></ul><p>This is qualitatively different from the previous six idioms because the optimisation surface is the <strong>posterior density</strong> of unknown parameters, not a control or a phenology summary. The analytical artefact of interest is the <strong>Bayesian credible interval</strong>, which a frequentist fit (least-squares as in (Gilioli et al. 2016)) cannot produce.</p><pre><code class="language-julia hljs">using Printf
+using Statistics
+using Random
+using LinearAlgebra
+using CairoMakie
+using PhysiologicallyBasedDemographicModels
+const PBDM = PhysiologicallyBasedDemographicModels
+Random.seed!(20251215)
+nothing</code></pre><h2 id="1-·-Forward-model"><a class="docs-heading-anchor" href="#1-·-Forward-model">1 · Forward model</a><a id="1-·-Forward-model-1"></a><a class="docs-heading-anchor-permalink" href="#1-·-Forward-model" title="Permalink"></a></h2><p>We use a stage-structured ODE skeleton of the Lanzarone / Gilioli framework simplified to four stages (egg → larva → pupa → adult):</p><p class="math-container">\[\begin{aligned}
+\dot N_E &amp;= b(t)\,N_A - (\delta_E + \mu_E + J_E)\,N_E,\\
+\dot N_L &amp;= \delta_E\,N_E    - (\delta_L + \mu_L + J_L)\,N_L,\\
+\dot N_P &amp;= \delta_L\,N_L    - (\delta_P + \mu_P + J_P)\,N_P,\\
+\dot N_A &amp;= \delta_P\,N_P    - (\mu_A + J_A)\,N_A,
+\end{aligned}\]</p><p>where:</p><ul><li><p class="math-container">\[\delta_i\]</p>is the per-day stage-progression rate (<span>$1/\bar D_i$</span>, the inverse mean stage duration in degree-days divided by daily dd accumulation);</li><li><p class="math-container">\[\mu_i(T)\]</p>is the <em>intrinsic</em> temperature-driven mortality (assumed known from laboratory experiments);</li><li><p class="math-container">\[J_i\]</p>is the <em>extrinsic</em> mortality (predation, parasitism, weather extremes) — the <strong>unknown parameters of interest</strong>;</li><li><p class="math-container">\[b(t)\]</p>is a temperature- and phenology-driven oviposition rate per adult.</li></ul><p>For tractability we take a constant temperature scenario (<span>$T = 22$</span> °C, the <em>Lobesia</em> spring season optimum) over a <span>$T_\text{end} = 120$</span> d field season, with intrinsic rates calibrated to give the published mean stage durations (Gilioli et al. 2016):</p><pre><code class="language-julia hljs">const Tval = 22.0
+const ddE  = max(Tval - 8.9, 0.0)
+const ddP  = max(Tval - 11.5, 0.0)
+
+const δE = ddE / 80.1   # egg duration ~ 80 dd &gt; 8.9
+const δL = ddE / 317.2  # larva ~ 317 dd &gt; 8.9
+const δP = ddP / 128.5  # pupa ~ 128 dd &gt; 11.5
+const δA = ddP / 166.8  # adult longevity ~ 167 dd &gt; 11.5
+const μE = 0.005
+const μL = 0.010
+const μP = 0.005
+const μA = 0.010
+const b_per_adult = 0.6  # eggs per adult per day at T=22
+
+&quot;Forward integrator (RK4) for the four-stage ODE.&quot;
+function forward(J; T_end = 120.0, dt = 0.5, N0 = (50.0, 0.0, 0.0, 0.0))
+    JE, JL, JP, JA = J
+    n = round(Int, T_end/dt)
+    NE = zeros(n+1); NL = zeros(n+1); NP = zeros(n+1); NA = zeros(n+1)
+    NE[1], NL[1], NP[1], NA[1] = N0
+    function rhs(NE, NL, NP, NA)
+        dE = b_per_adult * NA - (δE + μE + JE) * NE
+        dL = δE * NE          - (δL + μL + JL) * NL
+        dP = δL * NL          - (δP + μP + JP) * NP
+        dA = δP * NP          - (μA + JA) * NA
+        return dE, dL, dP, dA
+    end
+    for k in 1:n
+        E, L, P, A = NE[k], NL[k], NP[k], NA[k]
+        k1 = rhs(E, L, P, A)
+        k2 = rhs(E + dt/2*k1[1], L + dt/2*k1[2], P + dt/2*k1[3], A + dt/2*k1[4])
+        k3 = rhs(E + dt/2*k2[1], L + dt/2*k2[2], P + dt/2*k2[3], A + dt/2*k2[4])
+        k4 = rhs(E + dt*k3[1],   L + dt*k3[2],   P + dt*k3[3],   A + dt*k3[4])
+        NE[k+1] = max(0.0, E + dt/6*(k1[1] + 2*k2[1] + 2*k3[1] + k4[1]))
+        NL[k+1] = max(0.0, L + dt/6*(k1[2] + 2*k2[2] + 2*k3[2] + k4[2]))
+        NP[k+1] = max(0.0, P + dt/6*(k1[3] + 2*k2[3] + 2*k3[3] + k4[3]))
+        NA[k+1] = max(0.0, A + dt/6*(k1[4] + 2*k2[4] + 2*k3[4] + k4[4]))
+    end
+    ts = 0:dt:T_end
+    return ts, NE, NL, NP, NA
+end
+nothing</code></pre><h2 id="2-·-Synthetic-field-data"><a class="docs-heading-anchor" href="#2-·-Synthetic-field-data">2 · Synthetic field data</a><a id="2-·-Synthetic-field-data-1"></a><a class="docs-heading-anchor-permalink" href="#2-·-Synthetic-field-data" title="Permalink"></a></h2><p>Following (Lanzarone et al. 2017, sec. 4), we generate <strong>simulated</strong> field-count data with known “true” extrinsic mortalities <span>$J^\text{true}$</span> and Gaussian observation noise on log-counts. This lets us validate the inference machinery on a problem where the answer is known. We sample the four stages every <span>$\Delta t_\text{obs} = 7$</span> days (typical pheromone-trap and larva-shoot survey cadence in Italian vineyards).</p><pre><code class="language-julia hljs">const J_true = (0.020, 0.035, 0.015, 0.025)   # JE, JL, JP, JA
+const σ_obs  = 0.20                            # noise on log-counts (CV≈22%)
+const T_end  = 120.0
+const Δt_obs = 7.0
+
+function generate_data(J_true; T_end = T_end, Δt_obs = Δt_obs, σ = σ_obs)
+    ts, NE, NL, NP, NA = forward(J_true; T_end = T_end)
+    obs_idx = [findfirst(&gt;=(τ), ts) for τ in 0:Δt_obs:T_end]
+    obs_idx = filter(!isnothing, obs_idx)
+    t_obs = ts[obs_idx]
+    function noisy(N)
+        out = similar(N, length(obs_idx))
+        for (i, k) in enumerate(obs_idx)
+            μ = N[k]
+            out[i] = max(0.001, exp(log(max(μ, 0.001)) + σ * randn()))
+        end
+        return out
+    end
+    return (t = t_obs, E = noisy(NE), L = noisy(NL),
+            P = noisy(NP), A = noisy(NA))
+end
+
+data = generate_data(J_true)
+nothing</code></pre><pre><code class="language-julia hljs">let
+    ts, NE, NL, NP, NA = forward(J_true; T_end = T_end)
+    fig = Figure(size = (820, 420))
+    ax = Axis(fig[1, 1]; xlabel = &quot;Day&quot;, ylabel = &quot;Density (m⁻²)&quot;,
+              title = &quot;Forward model (lines) and synthetic observations (points)&quot;)
+    lines!(ax, ts, NE; color = :steelblue, linewidth = 2, label = &quot;egg&quot;)
+    lines!(ax, ts, NL; color = :seagreen,  linewidth = 2, label = &quot;larva&quot;)
+    lines!(ax, ts, NP; color = :darkorange,linewidth = 2, label = &quot;pupa&quot;)
+    lines!(ax, ts, NA; color = :firebrick, linewidth = 2, label = &quot;adult&quot;)
+    scatter!(ax, data.t, data.E; color = :steelblue,  markersize = 8)
+    scatter!(ax, data.t, data.L; color = :seagreen,   markersize = 8)
+    scatter!(ax, data.t, data.P; color = :darkorange, markersize = 8)
+    scatter!(ax, data.t, data.A; color = :firebrick,  markersize = 8)
+    axislegend(ax; position = :rt)
+    fig
+end</code></pre><p>&lt;div id=&quot;fig-data&quot;&gt;</p><p><img src="../63_bayesian_mortality_files/figure-commonmark/fig-data-output-1.png" alt/></p><p>Figure 1: Synthetic field data (points) vs the true forward model (curves) at T=22 °C with extrinsic mortality J<em>true = (0.02, 0.035, 0.015, 0.025) per day. The data are sampled every 7 d with σ</em>obs = 0.20 on log-counts (CV ≈ 22%). The Bayesian inversion will attempt to recover J_true from these noisy observations.</p><p>&lt;/div&gt;</p><h2 id="3-·-Bayesian-model"><a class="docs-heading-anchor" href="#3-·-Bayesian-model">3 · Bayesian model</a><a id="3-·-Bayesian-model-1"></a><a class="docs-heading-anchor-permalink" href="#3-·-Bayesian-model" title="Permalink"></a></h2><h3 id="3.1-Likelihood"><a class="docs-heading-anchor" href="#3.1-Likelihood">3.1 Likelihood</a><a id="3.1-Likelihood-1"></a><a class="docs-heading-anchor-permalink" href="#3.1-Likelihood" title="Permalink"></a></h3><p>Following (Lanzarone et al. 2017, Eqs. 13–15), the paper’s likelihood is a <strong>Gamma observation model</strong> for each stage at each observation time. Here we use a <strong>log-Gaussian (lognormal) approximation</strong> as a pedagogical simplification — it yields the same point estimates to leading order when the CV is moderate (~20 %) and avoids the need to introduce a Gamma-shape hyperparameter:</p><p class="math-container">\[p(y_{i,k} \mid J) \;\propto\; \frac{1}{\sigma}
+\exp\!\Big(-\tfrac{1}{2\sigma^2}\,
+\big(\log y_{i,k} - \log \hat N_i(t_k; J)\big)^2\Big),\]</p><p>with the four stages and observation times treated as independent:</p><pre><code class="language-julia hljs">&quot;Negative log-likelihood for parameter vector J = (JE, JL, JP, JA).&quot;
+function neg_loglik(J, data; σ = σ_obs)
+    any(J .&lt; 0) &amp;&amp; return Inf
+    ts, NE, NL, NP, NA = forward(J; T_end = T_end)
+    nll = 0.0
+    for (i, τ) in enumerate(data.t)
+        k = findfirst(&gt;=(τ), ts)
+        for (yobs, ymod) in zip((data.E[i], data.L[i], data.P[i], data.A[i]),
+                                (NE[k],     NL[k],     NP[k],     NA[k]))
+            μ = log(max(ymod, 1e-3))
+            r = log(max(yobs, 1e-3)) - μ
+            nll += 0.5 * (r/σ)^2 + log(σ)
+        end
+    end
+    return nll
+end
+nothing</code></pre><h3 id="3.2-Prior"><a class="docs-heading-anchor" href="#3.2-Prior">3.2 Prior</a><a id="3.2-Prior-1"></a><a class="docs-heading-anchor-permalink" href="#3.2-Prior" title="Permalink"></a></h3><p>We adopt <strong>broad uniform priors</strong> <span>$J_i \sim U(0, 0.15)$</span> d<span>$^{-1}$</span> following (Lanzarone et al. 2017, sec. 3.2) (the paper notes the priors encode “no preference within biologically plausible bounds”).</p><pre><code class="language-julia hljs">&quot;Flat prior on [0, 0.15] for each J_i. Returns log-prior.&quot;
+function log_prior(J; lo = 0.0, hi = 0.15)
+    all(lo .≤ J .≤ hi) || return -Inf
+    return -length(J) * log(hi - lo)
+end
+nothing</code></pre><h3 id="3.3-Random-walk-Metropolis-Hastings-sampler"><a class="docs-heading-anchor" href="#3.3-Random-walk-Metropolis-Hastings-sampler">3.3 Random-walk Metropolis-Hastings sampler</a><a id="3.3-Random-walk-Metropolis-Hastings-sampler-1"></a><a class="docs-heading-anchor-permalink" href="#3.3-Random-walk-Metropolis-Hastings-sampler" title="Permalink"></a></h3><pre><code class="language-julia hljs">function rwmh(data;
+              n_iter = 30_000, n_burn = 10_000, σ_prop = 0.005,
+              J_init = (0.05, 0.05, 0.05, 0.05))
+    Jcur = collect(J_init)
+    nll_cur = neg_loglik(Jcur, data)
+    lp_cur  = log_prior(Jcur)
+    chain = Matrix{Float64}(undef, n_iter, 4)
+    n_accept = 0
+    for it in 1:n_iter
+        Jprop  = Jcur .+ σ_prop .* randn(4)
+        lp_p   = log_prior(Jprop)
+        if lp_p == -Inf
+            chain[it, :] = Jcur
+            continue
+        end
+        nll_p = neg_loglik(Jprop, data)
+        log_α = (-nll_p + lp_p) - (-nll_cur + lp_cur)
+        if log(rand()) &lt; log_α
+            Jcur = Jprop; nll_cur = nll_p; lp_cur = lp_p
+            n_accept += 1
+        end
+        chain[it, :] = Jcur
+    end
+    accept_rate = n_accept / n_iter
+    return chain[n_burn+1:end, :], accept_rate
+end
+
+post, acc = rwmh(data)
+@printf(&quot;MH acceptance rate: %.2f\n&quot;, acc)
+@printf(&quot;Posterior chain length: %d samples\n&quot;, size(post, 1))
+nothing</code></pre><pre><code class="nohighlight hljs">MH acceptance rate: 0.11
+Posterior chain length: 20000 samples</code></pre><h2 id="4-·-Posterior-diagnostics"><a class="docs-heading-anchor" href="#4-·-Posterior-diagnostics">4 · Posterior diagnostics</a><a id="4-·-Posterior-diagnostics-1"></a><a class="docs-heading-anchor-permalink" href="#4-·-Posterior-diagnostics" title="Permalink"></a></h2><pre><code class="language-julia hljs">let
+    println(rpad(&quot;param&quot;, 8), rpad(&quot;true&quot;, 10),
+            rpad(&quot;post mean&quot;, 12), rpad(&quot;95% CI low&quot;, 14), &quot;95% CI high&quot;)
+    println(&quot;-&quot;^60)
+    names = (&quot;J_egg&quot;, &quot;J_larva&quot;, &quot;J_pupa&quot;, &quot;J_adult&quot;)
+    for j in 1:4
+        s = post[:, j]
+        lo, md, hi = quantile(s, (0.025, 0.5, 0.975))
+        @printf(&quot;%-8s%-10.3f%-12.4f%-14.4f%-.4f\n&quot;,
+                names[j], J_true[j], md, lo, hi)
+    end
+end</code></pre><pre><code class="nohighlight hljs">param   true      post mean   95% CI low    95% CI high
+------------------------------------------------------------
+J_egg   0.020     0.0271      0.0057        0.0509
+J_larva 0.035     0.0337      0.0194        0.0484
+J_pupa  0.015     0.0075      0.0004        0.0250
+J_adult 0.025     0.0256      0.0172        0.0347</code></pre><pre><code class="language-julia hljs">let
+    fig = Figure(size = (920, 580))
+    names = (&quot;J_egg&quot;, &quot;J_larva&quot;, &quot;J_pupa&quot;, &quot;J_adult&quot;)
+    cols  = (:steelblue, :seagreen, :darkorange, :firebrick)
+    for j in 1:4
+        ax = Axis(fig[(j-1) ÷ 2 + 1, (j-1) % 2 + 1];
+                  xlabel = names[j], ylabel = &quot;Posterior density&quot;,
+                  title = &quot;Posterior of $(names[j])&quot;)
+        s = post[:, j]
+        edges = range(maximum((minimum(s), 0.0)),
+                      maximum(s); length = 41)
+        h = Float64[]
+        midpts = Float64[]
+        for k in 1:length(edges)-1
+            push!(h, count(x -&gt; edges[k] ≤ x &lt; edges[k+1], s) /
+                     (length(s) * step(edges)))
+            push!(midpts, (edges[k] + edges[k+1])/2)
+        end
+        lines!(ax, midpts, h; color = cols[j], linewidth = 2)
+        lo, hi = quantile(s, (0.025, 0.975))
+        in_ci = (lo .≤ midpts) .&amp; (midpts .≤ hi)
+        band!(ax, midpts, zeros(length(midpts)),
+              h .* in_ci; color = (cols[j], 0.25))
+        vlines!(ax, [J_true[j]]; color = :black, linestyle = :dash,
+                linewidth = 2)
+    end
+    fig
+end</code></pre><p>&lt;div id=&quot;fig-posterior&quot;&gt;</p><p><img src="../63_bayesian_mortality_files/figure-commonmark/fig-posterior-output-1.png" alt/></p><p>Figure 2: Posterior densities (kernel-smoothed histograms) for the four extrinsic mortality parameters J<em>E, J</em>L, J<em>P, J</em>A. Vertical dashed lines mark the true generating values, used for synthetic data. The credible intervals (shaded 95%) bracket the truth in each case, validating the MCMC machinery on the synthetic problem.</p><p>&lt;/div&gt;</p><h2 id="5-·-Constant-across-years-vs-independent-per-year"><a class="docs-heading-anchor" href="#5-·-Constant-across-years-vs-independent-per-year">5 · Constant-across-years vs independent-per-year</a><a id="5-·-Constant-across-years-vs-independent-per-year-1"></a><a class="docs-heading-anchor-permalink" href="#5-·-Constant-across-years-vs-independent-per-year" title="Permalink"></a></h2><p>The central modelling question in (Lanzarone et al. 2017) is whether the extrinsic mortality <span>$J_i$</span> should be treated as <strong>constant</strong> across multiple field seasons (the paper’s “reduced” parametrisation) or <strong>independent</strong> per year (the “full” parametrisation). The answer matters because it changes the effective sample size: pooling years sharpens the posterior but biases it toward an average that may be biologically unrealistic.</p><p>We run a small synthetic experiment with three years, each with a different <em>true</em> <span>$J_L$</span> (extrinsic larval mortality drives most of the year-to-year variation in pupal/adult counts), and compare the two posteriors.</p><pre><code class="language-julia hljs">const YEARS = 3
+const JL_true_y = (0.025, 0.060, 0.040)
+
+function generate_multi_year(JL_y)
+    return [generate_data((J_true[1], JL, J_true[3], J_true[4])) for JL in JL_y]
+end
+
+datasets = generate_multi_year(JL_true_y)
+
+&quot;Constant-across-years model: single shared JL inferred from all years.&quot;
+function rwmh_constant(datasets; n_iter = 20_000, n_burn = 5000, σ_prop = 0.003,
+                       JL_init = 0.05)
+    JL = JL_init
+    nll = sum(neg_loglik((J_true[1], JL, J_true[3], J_true[4]), d) for d in datasets)
+    chain = Float64[]
+    for _ in 1:n_iter
+        JL_p = JL + σ_prop * randn()
+        (JL_p &lt; 0 || JL_p &gt; 0.15) &amp;&amp; (push!(chain, JL); continue)
+        nll_p = sum(neg_loglik((J_true[1], JL_p, J_true[3], J_true[4]), d)
+                    for d in datasets)
+        if log(rand()) &lt; -nll_p + nll
+            JL = JL_p; nll = nll_p
+        end
+        push!(chain, JL)
+    end
+    return chain[n_burn+1:end]
+end
+
+&quot;Independent-per-year model: one JL per year inferred from that year only.&quot;
+function rwmh_independent(datasets; n_iter = 20_000, n_burn = 5000, σ_prop = 0.003,
+                          JL_init = 0.05)
+    chains = [Float64[] for _ in datasets]
+    for (yi, d) in enumerate(datasets)
+        JL = JL_init
+        nll = neg_loglik((J_true[1], JL, J_true[3], J_true[4]), d)
+        for _ in 1:n_iter
+            JL_p = JL + σ_prop * randn()
+            (JL_p &lt; 0 || JL_p &gt; 0.15) &amp;&amp; (push!(chains[yi], JL); continue)
+            nll_p = neg_loglik((J_true[1], JL_p, J_true[3], J_true[4]), d)
+            if log(rand()) &lt; -nll_p + nll
+                JL = JL_p; nll = nll_p
+            end
+            push!(chains[yi], JL)
+        end
+        chains[yi] = chains[yi][n_burn+1:end]
+    end
+    return chains
+end
+
+post_const = rwmh_constant(datasets)
+post_indep = rwmh_independent(datasets)
+nothing</code></pre><pre><code class="language-julia hljs">let
+    fig = Figure(size = (940, 380))
+    cols = (:steelblue, :darkorange, :firebrick)
+    ax1 = Axis(fig[1, 1]; xlabel = &quot;J_L&quot;, ylabel = &quot;Posterior density&quot;,
+               title = &quot;Constant across years (pooled)&quot;)
+    edges = range(0.0, 0.10, length = 51)
+    midpts = [(edges[k] + edges[k+1])/2 for k in 1:length(edges)-1]
+    h = [count(x -&gt; edges[k] ≤ x &lt; edges[k+1], post_const) /
+         (length(post_const) * step(edges)) for k in 1:length(edges)-1]
+    lines!(ax1, midpts, h; color = :black, linewidth = 2)
+    for (yi, jt) in enumerate(JL_true_y)
+        vlines!(ax1, [jt]; color = cols[yi], linestyle = :dash, linewidth = 2,
+                label = &quot;year $yi true=$(jt)&quot;)
+    end
+    axislegend(ax1; position = :rt)
+    ax2 = Axis(fig[1, 2]; xlabel = &quot;J_L&quot;, ylabel = &quot;Posterior density&quot;,
+               title = &quot;Independent per year&quot;)
+    for (yi, ch) in enumerate(post_indep)
+        h = [count(x -&gt; edges[k] ≤ x &lt; edges[k+1], ch) /
+             (length(ch) * step(edges)) for k in 1:length(edges)-1]
+        lines!(ax2, midpts, h; color = cols[yi], linewidth = 2,
+               label = &quot;year $yi (true=$(JL_true_y[yi]))&quot;)
+        vlines!(ax2, [JL_true_y[yi]]; color = cols[yi], linestyle = :dash)
+    end
+    axislegend(ax2; position = :rt)
+    fig
+end</code></pre><p>&lt;div id=&quot;fig-pooling&quot;&gt;</p><p><img src="../63_bayesian_mortality_files/figure-commonmark/fig-pooling-output-1.png" alt/></p><p>Figure 3: Constant-across-years (left) vs independent-per-year (right) posteriors for the larval extrinsic mortality J_L. The pooled posterior is sharp but biased to the mean of the three true values (vertical dashed lines), missing the year-to-year variation. The per-year posteriors are wider but each brackets its own true value — the central message of Lanzarone et al. (2017) is that the constant-across-years assumption is too restrictive when ecological conditions vary.</p><p>&lt;/div&gt;</p><pre><code class="language-julia hljs">@printf(&quot;Pooled posterior J_L:        median=%.3f, 95%% CI=[%.3f, %.3f]\n&quot;,
+        median(post_const), quantile(post_const, 0.025),
+        quantile(post_const, 0.975))
+println(&quot;Mean of true year-specific J_L: &quot;, round(mean(JL_true_y); digits=3),
+        &quot;  (compare to pooled median above)&quot;)
+for (yi, ch) in enumerate(post_indep)
+    @printf(&quot;Per-year %d posterior J_L:  median=%.3f, 95%% CI=[%.3f, %.3f]  (true=%.3f)\n&quot;,
+            yi, median(ch), quantile(ch, 0.025), quantile(ch, 0.975),
+            JL_true_y[yi])
+end</code></pre><pre><code class="nohighlight hljs">Pooled posterior J_L:        median=0.042, 95% CI=[0.040, 0.043]
+Mean of true year-specific J_L: 0.042  (compare to pooled median above)
+Per-year 1 posterior J_L:  median=0.027, 95% CI=[0.024, 0.029]  (true=0.025)
+Per-year 2 posterior J_L:  median=0.059, 95% CI=[0.056, 0.062]  (true=0.060)
+Per-year 3 posterior J_L:  median=0.041, 95% CI=[0.039, 0.044]  (true=0.040)</code></pre><h2 id="6-·-Discussion"><a class="docs-heading-anchor" href="#6-·-Discussion">6 · Discussion</a><a id="6-·-Discussion-1"></a><a class="docs-heading-anchor-permalink" href="#6-·-Discussion" title="Permalink"></a></h2><p>The corpus-paper analytical-PBDM template now spans <strong>seven</strong> distinct idioms:</p><table><tr><th style="text-align: right">#</th><th style="text-align: right">Paper</th><th style="text-align: right">Idiom</th><th style="text-align: right">Result space</th></tr><tr><td style="text-align: right">57</td><td style="text-align: right">Regev &amp; Gutierrez 1990</td><td style="text-align: right">Single-state DP</td><td style="text-align: right">Backward-induction over treatments</td></tr><tr><td style="text-align: right">58</td><td style="text-align: right">Cure <em>et al.</em> 2020</td><td style="text-align: right">Regression surrogate</td><td style="text-align: right"><span>$2^n$</span> binary control combinations</td></tr><tr><td style="text-align: right">59</td><td style="text-align: right">Ponti <em>et al.</em> 2014</td><td style="text-align: right">Closed-form damage function</td><td style="text-align: right">Geographic gradient</td></tr><tr><td style="text-align: right">60</td><td style="text-align: right">Ponti <em>et al.</em> 2021</td><td style="text-align: right">Mechanistic favourability index</td><td style="text-align: right">Pre-invasion geographic risk map</td></tr><tr><td style="text-align: right">61</td><td style="text-align: right">Gutierrez <em>et al.</em> 2018</td><td style="text-align: right">Multi-generation voltinism counter</td><td style="text-align: right">Adult-flight count under climate scenario</td></tr><tr><td style="text-align: right">62</td><td style="text-align: right">Gutierrez <em>et al.</em> 2019</td><td style="text-align: right">Knipling overflooding ratio</td><td style="text-align: right">Critical sterile-release rate W<em>s★(T,W</em>m)</td></tr><tr><td style="text-align: right">63</td><td style="text-align: right">Lanzarone <em>et al.</em> 2017</td><td style="text-align: right"><strong>Bayesian inverse problem (MCMC)</strong></td><td style="text-align: right">Joint posterior over unobserved parameters</td></tr></table><p>Vignette 63’s contribution is the <strong>Bayesian inverse problem</strong>: the forward PBDM is fully specified, but biologically important parameters (here per-stage extrinsic mortality <span>$J_i$</span>) are unmeasured. The MCMC posterior gives credible intervals, quantifies identifiability (a sharp posterior means the data are informative; a flat posterior means <span>$J_i$</span> trades off with other parameters), and supports formal model comparison between constant-across-years and per-year parametrisations.</p><h3 id="Caveats"><a class="docs-heading-anchor" href="#Caveats">Caveats</a><a id="Caveats-1"></a><a class="docs-heading-anchor-permalink" href="#Caveats" title="Permalink"></a></h3><ul><li>The <strong>forward model</strong> is a four-compartment ODE skeleton, not the Fokker-Planck PDE of (Lanzarone et al. 2017). The qualitative behaviour of the inverse problem (identifiability, pooling vs per-year posteriors) carries over.</li><li>The <strong>MCMC sampler</strong> is a vanilla random-walk Metropolis with diagonal Gaussian proposals; the paper uses a more sophisticated adaptive-Metropolis algorithm. For more than <span>$\sim 8$</span> parameters or strongly correlated posteriors a Hamiltonian sampler (NUTS) is recommended.</li><li>The synthetic-data experiment is a recovery test on a problem with a known truth — the value of MCMC is that the same machinery applies to <em>real</em> field data with no truth available, and gives uncertainty quantification automatically.</li><li>The <strong>constant-vs-per-year</strong> comparison shown here is the binary version of the paper’s hierarchical-Bayes formulation; a partial-pooling hierarchical prior <span>$J_i^{(y)} \sim \mathcal{N}(\bar J_i, \tau^2)$</span> is the recommended next step when more than two or three years are available.</li></ul><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Gilioli2016&quot; class=&quot;csl-entry&quot;&gt;</p><p>Gilioli, G., S. Pasquali, and E. Marchesini. 2016. “A Modelling Framework for Pests Subject to Non-Markovian Stage Transitions.” <em>Mathematical Biosciences and Engineering</em> 13: 709–36. <a href="https://doi.org/10.3934/mbe.2016016">https://doi.org/10.3934/mbe.2016016</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-Lanzarone2017&quot; class=&quot;csl-entry&quot;&gt;</p><p>Lanzarone, E., S. Pasquali, G. Gilioli, and E. Marchesini. 2017. “A Bayesian Estimation Approach for the Mortality in a Stage-Structured Demographic Model.” <em>Journal of Mathematical Biology</em> 75: 759–79. <a href="https://doi.org/10.1007/s00285-017-1099-4">https://doi.org/10.1007/s00285-017-1099-4</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../62_screwworm_sit/">« SIT Overflooding Ratio for Screwworm Eradication</a><a class="docs-footer-nextpage" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

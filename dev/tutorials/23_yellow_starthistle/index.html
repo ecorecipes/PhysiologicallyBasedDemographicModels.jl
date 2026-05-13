@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Yellow Starthistle Biological Control · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Yellow Starthistle Biological Control · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Yellow Starthistle Biological Control · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Yellow Starthistle Biological Control · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/23_yellow_starthistle/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/23_yellow_starthistle/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/23_yellow_starthistle/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li class="is-active"><a class="tocitem" href>Yellow Starthistle Biological Control</a><ul class="internal"><li><a class="tocitem" href="#Background"><span>Background</span></a></li><li><a class="tocitem" href="#Model-Parameters"><span>Model Parameters</span></a></li><li><a class="tocitem" href="#Parameter-Sources"><span>Parameter Sources</span></a></li><li><a class="tocitem" href="#Yellow-Starthistle-Life-Stages"><span>Yellow Starthistle Life Stages</span></a></li><li><a class="tocitem" href="#Biocontrol-Agent-Life-Stages"><span>Biocontrol Agent Life Stages</span></a></li><li><a class="tocitem" href="#Weather:-Central-California-(Davis)"><span>Weather: Central California (Davis)</span></a></li><li><a class="tocitem" href="#Seed-Bank-Dynamics"><span>Seed Bank Dynamics</span></a></li><li><a class="tocitem" href="#Supply–Demand-Model-for-Seed-Head-Attack"><span>Supply–Demand Model for Seed Head Attack</span></a></li><li><a class="tocitem" href="#Competition-Within-Capitula"><span>Competition Within Capitula</span></a></li><li><a class="tocitem" href="#Single-Season-Simulation:-YST-Without-Biocontrol"><span>Single-Season Simulation: YST Without Biocontrol</span></a></li><li><a class="tocitem" href="#Plotting-YST-Phenology"><span>Plotting YST Phenology</span></a></li><li><a class="tocitem" href="#Multi-Year-Simulation-With-Seed-Bank"><span>Multi-Year Simulation With Seed Bank</span></a></li><li><a class="tocitem" href="#Biocontrol-Scenario-Comparison"><span>Biocontrol Scenario Comparison</span></a></li><li><a class="tocitem" href="#Plotting-Biocontrol-Impact-on-Seed-Bank"><span>Plotting Biocontrol Impact on Seed Bank</span></a></li><li><a class="tocitem" href="#Plotting-Mature-Plant-Density"><span>Plotting Mature Plant Density</span></a></li><li><a class="tocitem" href="#Temperature-Sensitivity-Analysis"><span>Temperature Sensitivity Analysis</span></a></li><li><a class="tocitem" href="#Insect-Population-Dynamics"><span>Insect Population Dynamics</span></a></li><li><a class="tocitem" href="#Supply–Demand-Visualization"><span>Supply–Demand Visualization</span></a></li><li><a class="tocitem" href="#Metabolic-Pool:-Weed-Resource-Allocation"><span>Metabolic Pool: Weed Resource Allocation</span></a></li><li><a class="tocitem" href="#Compensation:-Why-Biocontrol-Alone-May-Not-Suffice"><span>Compensation: Why Biocontrol Alone May Not Suffice</span></a></li><li><a class="tocitem" href="#Summary-and-Management-Implications"><span>Summary and Management Implications</span></a></li><li><a class="tocitem" href="#Key-Insights"><span>Key Insights</span></a></li></ul></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Yellow Starthistle Biological Control</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Yellow Starthistle Biological Control</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Yellow-Starthistle-Biological-Control"><a class="docs-heading-anchor" href="#Yellow-Starthistle-Biological-Control">Yellow Starthistle Biological Control</a><a id="Yellow-Starthistle-Biological-Control-1"></a><a class="docs-heading-anchor-permalink" href="#Yellow-Starthistle-Biological-Control" title="Permalink"></a></h1><ul><li><a href="#background">Background</a></li><li><a href="#model-parameters">Model Parameters</a></li><li><a href="#parameter-sources">Parameter Sources</a></li><li><a href="#yellow-starthistle-life-stages">Yellow Starthistle Life Stages</a></li><li><a href="#biocontrol-agent-life-stages">Biocontrol Agent Life Stages</a></li><li><a href="#weather-central-california-davis">Weather: Central California (Davis)</a></li><li><a href="#seed-bank-dynamics">Seed Bank Dynamics</a></li><li><a href="#supplydemand-model-for-seed-head-attack">Supply–Demand Model for Seed Head Attack</a></li><li><a href="#competition-within-capitula">Competition Within Capitula</a></li><li><a href="#single-season-simulation-yst-without-biocontrol">Single-Season Simulation: YST Without Biocontrol</a></li><li><a href="#plotting-yst-phenology">Plotting YST Phenology</a></li><li><a href="#multi-year-simulation-with-seed-bank">Multi-Year Simulation With Seed Bank</a></li><li><a href="#biocontrol-scenario-comparison">Biocontrol Scenario Comparison</a></li><li><a href="#plotting-biocontrol-impact-on-seed-bank">Plotting Biocontrol Impact on Seed Bank</a></li><li><a href="#plotting-mature-plant-density">Plotting Mature Plant Density</a></li><li><a href="#temperature-sensitivity-analysis">Temperature Sensitivity Analysis</a></li><li><a href="#insect-population-dynamics">Insect Population Dynamics</a></li><li><a href="#supplydemand-visualization">Supply–Demand Visualization</a></li><li><a href="#metabolic-pool-weed-resource-allocation">Metabolic Pool: Weed Resource Allocation</a></li><li><a href="#compensation-why-biocontrol-alone-may-not-suffice">Compensation: Why Biocontrol Alone May Not Suffice</a></li><li><a href="#summary-and-management-implications">Summary and Management Implications</a></li><li><a href="#key-insights">Key Insights</a></li></ul><p>Primary reference: (Gutierrez et al. 2005).</p><h2 id="Background"><a class="docs-heading-anchor" href="#Background">Background</a><a id="Background-1"></a><a class="docs-heading-anchor-permalink" href="#Background" title="Permalink"></a></h2><p>Yellow starthistle (<em>Centaurea solstitialis</em> L., Asteraceae) is one of the most damaging invasive weeds in western North America. Native to the Mediterranean region, it was first recorded near San Francisco Bay in 1859 and now infests over 3 million hectares of California rangelands, depleting soil moisture, displacing native grasses, and causing toxicity in horses. Dense stands produce up to 3000 capitula (seed heads) per m² and sustain a persistent soil seed bank that makes eradication extremely difficult.</p><p>A classical biological control program beginning in the 1980s released six capitulum-feeding insects. Of these, four became widely established in California:</p><table><tr><th style="text-align: right">Agent</th><th style="text-align: right">Type</th><th style="text-align: right">Voltinism</th><th style="text-align: right">Dominance</th></tr><tr><td style="text-align: right"><em>Eustenopus villosus</em> (EV)</td><td style="text-align: right">Seed weevil</td><td style="text-align: right">Univoltine</td><td style="text-align: right">Dominant</td></tr><tr><td style="text-align: right"><em>Bangasternus orientalis</em> (BO)</td><td style="text-align: right">Seed weevil</td><td style="text-align: right">Univoltine</td><td style="text-align: right">Subordinate to EV</td></tr><tr><td style="text-align: right"><em>Chaetorellia succinea</em> (CS)</td><td style="text-align: right">Seed fly</td><td style="text-align: right">Multivoltine</td><td style="text-align: right">Partially dominant to US</td></tr><tr><td style="text-align: right"><em>Urophora sirunaseva</em> (US)</td><td style="text-align: right">Gall fly</td><td style="text-align: right">Multivoltine</td><td style="text-align: right">Subordinate</td></tr></table><p>The combined impact of these agents reduces seed production by 50–75% at many sites, with <em>E. villosus</em> and <em>C. succinea</em> contributing the most. However, yellow starthistle compensates for seed loss at low plant densities by increasing per-plant capitulum production, and the soil seed bank buffers against year-to-year fluctuations.</p><p>This vignette implements a supply–demand physiologically based demographic model (PBDM) of the yellow starthistle–biocontrol agent system following Gutierrez et al. (2005) and the rosette weevil extension in Gutierrez et al. (2017). The model uses temperature-driven development for all species, a seed bank with annual carryover, rainfall-dependent germination, and competitive interactions among the biocontrol agents within seed heads.</p><p><strong>References:</strong></p><ul><li>Gutierrez, A.P., Pitcairn, M.J., Ellis, C.K., Carruthers, N. and Ghezelbash, R. (2005). <em>Evaluating biological control of yellow starthistle (Centaurea solstitialis) in California: A GIS based supply–demand demographic model.</em> Biological Control 34:115–131.</li><li>Gutierrez, A.P., Ponti, L., Cristofaro, M., Smith, L. and Pitcairn, M.J. (2017). <em>Assessing the biological control of yellow starthistle (Centaurea solstitialis L): prospective analysis of the impact of the rosette weevil (Ceratapion basicorne).</em> Journal of Applied Entomology.</li></ul><h2 id="Model-Parameters"><a class="docs-heading-anchor" href="#Model-Parameters">Model Parameters</a><a id="Model-Parameters-1"></a><a class="docs-heading-anchor-permalink" href="#Model-Parameters" title="Permalink"></a></h2><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+using CairoMakie
+
+# --- Yellow starthistle thermal biology ---
+# Lower developmental threshold: 8°C (Gutierrez et al. 2005)
+# Upper threshold assumed 40°C (not limiting in California)
+const YST_T_LOWER = 8.0
+const YST_T_UPPER = 40.0            # assumed; not specified in paper
+
+# --- Biocontrol agent thermal biology (Table 1, Gutierrez et al. 2005) ---
+# Lower threshold: 9°C for all capitulum-feeding insects
+# (lab-confirmed for C. succinea; assumed same for others — Section 2.2.2)
+const INSECT_T_LOWER = 9.0
+const INSECT_T_UPPER = 40.0         # assumed; not specified in paper
+
+# --- Insect stage durations in DD &gt; 9°C (Table 1, Gutierrez et al. 2005) ---
+# E. villosus (EV, univoltine weevil)
+const EV_EGG_DD   = 43.0            # 0–43 DD
+const EV_LARVA_DD = 105.0           # 44–148 DD
+const EV_PUPA_DD  = 75.0            # 149–223 DD
+const EV_ADULT_DD = 257.0           # 224–480 DD (preoviposition 224–285 + adult 286–480)
+
+# B. orientalis (BO, univoltine weevil)
+const BO_EGG_DD   = 43.0            # 0–43 DD
+const BO_LARVA_DD = 105.0           # 44–148 DD
+const BO_PUPA_DD  = 75.0            # 149–223 DD
+const BO_ADULT_DD = 888.0           # 224–1111 DD (preoviposition 224–285 + adult 286–1111)
+
+# C. succinea (CS, multivoltine fly)
+const CS_EGG_DD   = 61.0            # 0–61 DD
+const CS_LARVA_DD = 148.0           # 61–209 DD
+const CS_PUPA_DD  = 106.0           # 209–315 DD
+const CS_ADULT_DD = 525.0           # 315–840 DD (preoviposition 315–402 + adult 402–840)
+
+# U. sirunaseva (US, multivoltine fly) — same durations as CS
+const US_EGG_DD   = 61.0            # 0–61 DD
+const US_LARVA_DD = 148.0           # 61–209 DD
+const US_PUPA_DD  = 106.0           # 209–315 DD
+const US_ADULT_DD = 525.0           # 315–840 DD (preoviposition 315–402 + adult 402–840)
+
+# --- Fecundity (Table 1, Gutierrez et al. 2005) ---
+const EV_EGGS_PER_DD = 0.89         # eggs/female/DD; 174 lifetime total
+const BO_EGGS_PER_DD = 0.41         # eggs/female/DD; 340 lifetime total
+const CS_EGGS_PER_DD = 0.34         # eggs/female/DD; 136–167 lifetime total
+const US_EGGS_PER_DD = 0.34         # eggs/female/DD; 136–167 lifetime total
+
+# --- Search rate (Table 1: α = 0.75 for all species) ---
+const INSECT_SEARCH_RATE = 0.75
+
+# --- Egg predation rate (Table 1) ---
+const BO_EGG_PREDATION = 0.30       # 30%/day; eggs laid externally
+# EV, CS, US: 0% (eggs laid inside capitulum)
+
+# --- Seed destruction per attacked capitulum (Table 1) ---
+const EV_SEED_DESTRUCTION = 0.90    # &gt;90%
+const BO_SEED_DESTRUCTION = 0.50    # 50%
+const CS_SEED_DESTRUCTION = 0.85    # 70–100% (midpoint)
+const US_SEED_DESTRUCTION = 0.10    # 10% per gall
+
+# --- Fruit age preference in DD &gt; 9°C (Table 1) ---
+const BO_FRUIT_PREF = (105.0, 525.0)
+const EV_FRUIT_PREF = (315.0, 425.0)
+const CS_FRUIT_PREF = (210.0, 425.0)
+const US_FRUIT_PREF = (105.0, 315.0)
+
+# --- Host feeding (Table 1) ---
+const EV_HOST_FEEDING = 2           # seeds consumed per egg laid
+# BO, CS, US: 0
+
+# --- Sex ratio (Table 1: 1:1 for all species) ---
+const INSECT_SEX_RATIO = 0.5        # fraction female
+
+# --- Intrinsic mortality (Table 1, Gutierrez et al. 2005) ---
+# Paper formula (supply-dependent):
+#   x = 0.5 * buds_available / R + 1.5
+#   μ_egg_larv  = 0.001332 * x
+#   μ_adult     = 0.00972 * x
+# Simplified here as fixed rates; see paper for full formulation
+const MORTALITY_COEFF_LARV  = 0.001332
+const MORTALITY_COEFF_ADULT = 0.00972
+
+# Development rate models
+yst_dev = LinearDevelopmentRate(YST_T_LOWER, YST_T_UPPER)
+insect_dev = LinearDevelopmentRate(INSECT_T_LOWER, INSECT_T_UPPER)
+
+# Verify development rates at key temperatures
+println(&quot;Development rates (DD/day):&quot;)
+println(&quot;=&quot;^50)
+for T in [5.0, 8.0, 10.0, 15.0, 20.0, 25.0, 30.0]
+    dd_yst = degree_days(yst_dev, T)
+    dd_ins = degree_days(insect_dev, T)
+    println(&quot;  T=$(lpad(T, 5))°C → YST: $(round(dd_yst, digits=1)), &quot; *
+            &quot;Insects: $(round(dd_ins, digits=1))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Development rates (DD/day):
+==================================================
+  T=  5.0°C → YST: 0.0, Insects: 0.0
+  T=  8.0°C → YST: 0.0, Insects: 0.0
+  T= 10.0°C → YST: 2.0, Insects: 1.0
+  T= 15.0°C → YST: 7.0, Insects: 6.0
+  T= 20.0°C → YST: 12.0, Insects: 11.0
+  T= 25.0°C → YST: 17.0, Insects: 16.0
+  T= 30.0°C → YST: 22.0, Insects: 21.0</code></pre><h2 id="Parameter-Sources"><a class="docs-heading-anchor" href="#Parameter-Sources">Parameter Sources</a><a id="Parameter-Sources-1"></a><a class="docs-heading-anchor-permalink" href="#Parameter-Sources" title="Permalink"></a></h2><p>The following table summarizes all model parameters, their values, and provenance. Parameters marked <strong>assumed</strong> are not directly given in the cited paper.</p><table><tr><th style="text-align: right">Parameter</th><th style="text-align: right">Value</th><th style="text-align: right">Source</th><th style="text-align: right">Notes</th></tr><tr><td style="text-align: right">YST lower thermal threshold</td><td style="text-align: right">8 °C</td><td style="text-align: right">Gutierrez et al. 2005, §2.2.2</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">YST upper thermal threshold</td><td style="text-align: right">40 °C</td><td style="text-align: right"><strong>assumed</strong></td><td style="text-align: right">Not limiting in California</td></tr><tr><td style="text-align: right">Insect lower thermal threshold</td><td style="text-align: right">9 °C</td><td style="text-align: right">Table 1</td><td style="text-align: right">Lab-confirmed for CS; assumed same for others</td></tr><tr><td style="text-align: right">Insect upper thermal threshold</td><td style="text-align: right">40 °C</td><td style="text-align: right"><strong>assumed</strong></td><td style="text-align: right">Not specified in paper</td></tr><tr><td style="text-align: right">EV egg duration</td><td style="text-align: right">0–43 DD</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">EV larval duration</td><td style="text-align: right">44–148 DD</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">EV pupal duration</td><td style="text-align: right">149–223 DD</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">EV preoviposition</td><td style="text-align: right">224–285 DD</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">EV adult duration</td><td style="text-align: right">286–480 DD (20 days)</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">BO egg duration</td><td style="text-align: right">0–43 DD</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">BO larval duration</td><td style="text-align: right">44–148 DD</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">BO pupal duration</td><td style="text-align: right">149–223 DD</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">BO preoviposition</td><td style="text-align: right">224–285 DD</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">BO adult duration</td><td style="text-align: right">286–1111 DD (85 days)</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">CS/US egg duration</td><td style="text-align: right">0–61 DD</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">CS/US larval duration</td><td style="text-align: right">61–209 DD</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">CS/US pupal duration</td><td style="text-align: right">209–315 DD</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">CS/US preoviposition</td><td style="text-align: right">315–402 DD</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">CS/US adult duration</td><td style="text-align: right">402–840 DD (27.8 days)</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Search rate (α)</td><td style="text-align: right">0.75</td><td style="text-align: right">Table 1</td><td style="text-align: right">Same for all four species</td></tr><tr><td style="text-align: right">EV fecundity</td><td style="text-align: right">0.89 eggs/♀/DD; 174 total</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">BO fecundity</td><td style="text-align: right">0.41 eggs/♀/DD; 340 total</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">CS/US fecundity</td><td style="text-align: right">0.34 eggs/♀/DD; 136–167 total</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">BO egg predation</td><td style="text-align: right">30 %/day</td><td style="text-align: right">Table 1</td><td style="text-align: right">Eggs laid externally</td></tr><tr><td style="text-align: right">EV/CS/US egg predation</td><td style="text-align: right">0 %</td><td style="text-align: right">Table 1</td><td style="text-align: right">Eggs laid inside capitulum</td></tr><tr><td style="text-align: right">EV host feeding</td><td style="text-align: right">2 seeds/egg</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">BO/CS/US host feeding</td><td style="text-align: right">0</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Sex ratio</td><td style="text-align: right">1∶1</td><td style="text-align: right">Table 1</td><td style="text-align: right">All species</td></tr><tr><td style="text-align: right">EV seed destruction</td><td style="text-align: right">\&gt;90 % per capitulum</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">BO seed destruction</td><td style="text-align: right">50 % per capitulum</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">CS seed destruction</td><td style="text-align: right">70–100 % per capitulum</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">US seed destruction</td><td style="text-align: right">10 % per gall</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">EV fruit age preference</td><td style="text-align: right">315–425 DD</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">BO fruit age preference</td><td style="text-align: right">105–525 DD</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">CS fruit age preference</td><td style="text-align: right">210–425 DD</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">US fruit age preference</td><td style="text-align: right">105–315 DD</td><td style="text-align: right">Table 1</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Mortality (egg/larva)</td><td style="text-align: right">μ = 0.001332 × x</td><td style="text-align: right">Table 1</td><td style="text-align: right">x = 0.5·buds_avail/R + 1.5</td></tr><tr><td style="text-align: right">Mortality (adult)</td><td style="text-align: right">μ = 0.00972 × x</td><td style="text-align: right">Table 1</td><td style="text-align: right">Simplified to fixed rates in code</td></tr><tr><td style="text-align: right">Diapause survival</td><td style="text-align: right">~5 % overwinter</td><td style="text-align: right">§1.2</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Seed bank annual loss</td><td style="text-align: right">~70–80 %/year</td><td style="text-align: right">§1.1; Joley et al. 1992, Benefield et al. 2001</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Initial seed bank</td><td style="text-align: right">4500 seeds/m²</td><td style="text-align: right"><strong>assumed</strong></td><td style="text-align: right">Based on field range in text</td></tr><tr><td style="text-align: right">Seed germination fraction</td><td style="text-align: right">8 %</td><td style="text-align: right"><strong>assumed</strong></td><td style="text-align: right">Chosen to match ~72 % mortality + 20 % carryover</td></tr><tr><td style="text-align: right">Seed rain coefficient</td><td style="text-align: right">0.04</td><td style="text-align: right"><strong>assumed</strong></td><td style="text-align: right">Fitted to germination response</td></tr><tr><td style="text-align: right">YST stage durations (DD \&gt; 8 °C)</td><td style="text-align: right">See code</td><td style="text-align: right"><strong>estimated</strong></td><td style="text-align: right">From Fig. 1D and text descriptions</td></tr><tr><td style="text-align: right">Competitive exclusion coefficients</td><td style="text-align: right">See code</td><td style="text-align: right"><strong>assumed</strong></td><td style="text-align: right">Qualitatively described in §2.2.3</td></tr><tr><td style="text-align: right">Biocontrol seed reduction scenarios</td><td style="text-align: right">0–76 %</td><td style="text-align: right">Derived</td><td style="text-align: right">From marginal analysis (§2.4)</td></tr></table><p>All “Table 1” references are to Gutierrez et al. (2005), Table 1.</p><h2 id="Yellow-Starthistle-Life-Stages"><a class="docs-heading-anchor" href="#Yellow-Starthistle-Life-Stages">Yellow Starthistle Life Stages</a><a id="Yellow-Starthistle-Life-Stages-1"></a><a class="docs-heading-anchor-permalink" href="#Yellow-Starthistle-Life-Stages" title="Permalink"></a></h2><p>Yellow starthistle is a winter annual. Seeds germinate with autumn rains and grow through rosette, bolting, and flowering stages. Development is tracked in degree-days above 8°C. Capitulum buds initiate at ~0.01 per DD and mature over ~575 DD, reaching an average dry mass of 0.24 g (Gutierrez et al. 2005, Fig. 1D).</p><pre><code class="language-julia hljs"># YST life stages with distributed delay
+# Durations in degree-days &gt; 8°C, estimated from Gutierrez et al. (2005)
+#   Cotyledon/seedling:   0–100 DD
+#   Rosette:              100–350 DD
+#   Bolting:              350–600 DD
+#   Flowering/capitula:   600–1200 DD (capitula mature over ~575 DD)
+#   Seed maturation:      1200–1800 DD
+
+yst_stages = [
+    LifeStage(:cotyledon,     DistributedDelay(20, 100.0;  W0=500.0),  yst_dev, 0.005),
+    LifeStage(:rosette,       DistributedDelay(25, 250.0;  W0=0.0),    yst_dev, 0.002),
+    LifeStage(:bolting,       DistributedDelay(20, 250.0;  W0=0.0),    yst_dev, 0.001),
+    LifeStage(:flowering,     DistributedDelay(30, 600.0;  W0=0.0),    yst_dev, 0.0005),
+    LifeStage(:seed_mature,   DistributedDelay(15, 600.0;  W0=0.0),    yst_dev, 0.0003),
+]
+
+yst_pop = Population(:yellow_starthistle, yst_stages)
+
+println(&quot;YST life stages:&quot;)
+println(&quot;  Total stages:    &quot;, n_stages(yst_pop))
+println(&quot;  Total substages: &quot;, n_substages(yst_pop))
+println(&quot;  Initial density: &quot;, total_population(yst_pop), &quot; plants/m²&quot;)</code></pre><pre><code class="nohighlight hljs">YST life stages:
+  Total stages:    5
+  Total substages: 110
+  Initial density: 10000.0 plants/m²</code></pre><h2 id="Biocontrol-Agent-Life-Stages"><a class="docs-heading-anchor" href="#Biocontrol-Agent-Life-Stages">Biocontrol Agent Life Stages</a><a id="Biocontrol-Agent-Life-Stages-1"></a><a class="docs-heading-anchor-permalink" href="#Biocontrol-Agent-Life-Stages" title="Permalink"></a></h2><p>The four capitulum-feeding insects have overlapping but distinct life histories. We model each with egg, larval, pupal, and adult stages. Parameters are from Table 1 of Gutierrez et al. (2005):</p><pre><code class="language-julia hljs"># --- Eustenopus villosus (seed weevil, univoltine) ---
+# Most effective biocontrol agent; dominant competitor within capitula
+# Egg: 0–43 DD, Larva: 44–148 DD, Pupa: 149–223 DD
+# Preoviposition: 224–285 DD, Adult: 286–480 DD (Table 1, Gutierrez et al. 2005)
+ev_stages = [
+    LifeStage(:ev_egg,    DistributedDelay(10, EV_EGG_DD;    W0=0.0),  insect_dev, MORTALITY_COEFF_LARV),
+    LifeStage(:ev_larva,  DistributedDelay(15, EV_LARVA_DD;  W0=0.0),  insect_dev, MORTALITY_COEFF_LARV),
+    LifeStage(:ev_pupa,   DistributedDelay(10, EV_PUPA_DD;   W0=0.0),  insect_dev, MORTALITY_COEFF_LARV),
+    LifeStage(:ev_adult,  DistributedDelay(10, EV_ADULT_DD;  W0=5.0),  insect_dev, MORTALITY_COEFF_ADULT),
+]
+ev_pop = Population(:eustenopus_villosus, ev_stages)
+
+# --- Chaetorellia succinea (seed fly, multivoltine) ---
+# Second most effective; 2–3 generations per year
+# Egg: 0–61 DD, Larva: 61–209 DD, Pupa: 209–315 DD
+# Preoviposition: 315–402 DD, Adult: 402–840 DD (Table 1, Gutierrez et al. 2005)
+cs_stages = [
+    LifeStage(:cs_egg,    DistributedDelay(10, CS_EGG_DD;    W0=0.0),  insect_dev, MORTALITY_COEFF_LARV),
+    LifeStage(:cs_larva,  DistributedDelay(15, CS_LARVA_DD;  W0=0.0),  insect_dev, MORTALITY_COEFF_LARV),
+    LifeStage(:cs_pupa,   DistributedDelay(10, CS_PUPA_DD;   W0=0.0),  insect_dev, MORTALITY_COEFF_LARV),
+    LifeStage(:cs_adult,  DistributedDelay(10, CS_ADULT_DD;  W0=5.0),  insect_dev, MORTALITY_COEFF_ADULT),
+]
+cs_pop = Population(:chaetorellia_succinea, cs_stages)
+
+# --- Bangasternus orientalis (seed weevil, univoltine) ---
+# Less effective; eggs laid externally subject to 30%/day predation (Table 1)
+# Egg: 0–43 DD, Larva: 44–148 DD, Pupa: 149–223 DD
+# Preoviposition: 224–285 DD, Adult: 286–1111 DD (Table 1, Gutierrez et al. 2005)
+bo_stages = [
+    LifeStage(:bo_egg,    DistributedDelay(10, BO_EGG_DD;    W0=0.0),  insect_dev, BO_EGG_PREDATION),
+    LifeStage(:bo_larva,  DistributedDelay(15, BO_LARVA_DD;  W0=0.0),  insect_dev, MORTALITY_COEFF_LARV),
+    LifeStage(:bo_pupa,   DistributedDelay(10, BO_PUPA_DD;   W0=0.0),  insect_dev, MORTALITY_COEFF_LARV),
+    LifeStage(:bo_adult,  DistributedDelay(10, BO_ADULT_DD;  W0=5.0),  insect_dev, MORTALITY_COEFF_ADULT),
+]
+bo_pop = Population(:bangasternus_orientalis, bo_stages)
+
+# --- Urophora sirunaseva (gall fly, multivoltine) ---
+# Least effective; subordinate to all other agents in capitula
+# Egg: 0–61 DD, Larva: 61–209 DD, Pupa: 209–315 DD
+# Preoviposition: 315–402 DD, Adult: 402–840 DD (Table 1, Gutierrez et al. 2005)
+us_stages = [
+    LifeStage(:us_egg,    DistributedDelay(10, US_EGG_DD;    W0=0.0),  insect_dev, MORTALITY_COEFF_LARV),
+    LifeStage(:us_larva,  DistributedDelay(15, US_LARVA_DD;  W0=0.0),  insect_dev, MORTALITY_COEFF_LARV),
+    LifeStage(:us_pupa,   DistributedDelay(10, US_PUPA_DD;   W0=0.0),  insect_dev, MORTALITY_COEFF_LARV),
+    LifeStage(:us_adult,  DistributedDelay(10, US_ADULT_DD;  W0=5.0),  insect_dev, MORTALITY_COEFF_ADULT),
+]
+us_pop = Population(:urophora_sirunaseva, us_stages)
+
+println(&quot;Biocontrol agents:&quot;)
+for (name, pop) in [(&quot;E. villosus&quot;, ev_pop), (&quot;C. succinea&quot;, cs_pop),
+                     (&quot;B. orientalis&quot;, bo_pop), (&quot;U. sirunaseva&quot;, us_pop)]
+    println(&quot;  $name: $(n_stages(pop)) stages, $(n_substages(pop)) substages, &quot; *
+            &quot;init=$(total_population(pop))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Biocontrol agents:
+  E. villosus: 4 stages, 45 substages, init=50.0
+  C. succinea: 4 stages, 45 substages, init=50.0
+  B. orientalis: 4 stages, 45 substages, init=50.0
+  U. sirunaseva: 4 stages, 45 substages, init=50.0</code></pre><h2 id="Weather:-Central-California-(Davis)"><a class="docs-heading-anchor" href="#Weather:-Central-California-(Davis)">Weather: Central California (Davis)</a><a id="Weather:-Central-California-(Davis)-1"></a><a class="docs-heading-anchor-permalink" href="#Weather:-Central-California-(Davis)" title="Permalink"></a></h2><p>We use a synthetic seasonal temperature curve representative of Davis, Yolo County, California — the primary study site in Gutierrez et al. (2005). Davis has a Mediterranean climate with warm, dry summers and cool, wet winters. The growing season for yellow starthistle extends from autumn germination through late summer seed maturation.</p><pre><code class="language-julia hljs"># Davis, CA (38.5°N): Mediterranean climate
+# Mean annual T ≈ 16°C, amplitude ≈ 9°C, peak in late July (day ~200)
+# Rainy season: November–April; dry season: May–October
+
+n_years = 20
+n_days = 365 * n_years
+
+# Sinusoidal temperature model
+davis_weather = SinusoidalWeather(16.0, 9.0; phase=200.0, radiation=22.0)
+
+# Show seasonal temperature pattern for one year
+println(&quot;Davis, CA — Monthly mean temperatures:&quot;)
+println(&quot;=&quot;^45)
+for m in 1:12
+    d = 30 * m - 15  # mid-month
+    w = get_weather(davis_weather, d)
+    bar = repeat(&quot;█&quot;, max(1, round(Int, w.T_mean)))
+    println(&quot;  Month $(lpad(m, 2)): $(round(w.T_mean, digits=1))°C  $bar&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Davis, CA — Monthly mean temperatures:
+=============================================
+  Month  1: 16.4°C  ████████████████
+  Month  2: 11.9°C  ████████████
+  Month  3: 8.5°C  ████████
+  Month  4: 7.0°C  ███████
+  Month  5: 7.9°C  ████████
+  Month  6: 10.9°C  ███████████
+  Month  7: 15.2°C  ███████████████
+  Month  8: 19.8°C  ████████████████████
+  Month  9: 23.3°C  ███████████████████████
+  Month 10: 24.9°C  █████████████████████████
+  Month 11: 24.3°C  ████████████████████████
+  Month 12: 21.4°C  █████████████████████</code></pre><h2 id="Seed-Bank-Dynamics"><a class="docs-heading-anchor" href="#Seed-Bank-Dynamics">Seed Bank Dynamics</a><a id="Seed-Bank-Dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Seed-Bank-Dynamics" title="Permalink"></a></h2><p>The soil seed bank provides between-season persistence for yellow starthistle. Following Gutierrez et al. (2005, Eq. 9–10), approximately 72% of seeds die annually from various causes, 8% germinate in autumn, and 20% persist to the following year. After 4 years, only ~1% of a seed cohort remains viable (Joley et al. 1992, 2003; Benfield et al. 2001).</p><p>Seed germination depends on autumn rainfall intensity:</p><p class="math-container">\[\varphi(t) = B(t) \cdot [1 - \exp(-0.04 \cdot \text{mm}(t))]\]</p><p>where <span>$B(t)$</span> is the available seed bank and <span>$\text{mm}(t)$</span> is daily rainfall.</p><pre><code class="language-julia hljs"># Seed bank parameters (Gutierrez et al. 2005)
+const SEED_ANNUAL_MORTALITY = 0.72   # fraction dying per year
+const SEED_GERMINATION_FRAC = 0.08   # fraction germinating
+const SEED_CARRYOVER_FRAC   = 0.20   # fraction persisting to next year
+const SEED_RAIN_COEFF       = 0.04   # germination response to rainfall
+const INITIAL_SEED_BANK     = 4500.0 # seeds/m² (Gutierrez et al. 2005)
+const YST_SELF_THINNING_CAPACITY = 650.0   # seedlings supported to maturity per m²
+const YST_GRASS_COMPETITION = 0.22         # 20–25% reduction from annual grasses
+const YST_CAPITULA_PER_PLANT_MIN = 1.0
+const YST_CAPITULA_PER_PLANT_MAX = 3.5
+const YST_CAPITULA_COMP_HALF_SAT = 200.0
+const YST_SEEDS_PER_CAPITULUM = 6.0
+
+yst_density_response = FraserGilbertResponse(0.75)
+
+function mature_density_from_seedlings(seedlings; grass_competition=YST_GRASS_COMPETITION)
+    supply = YST_SELF_THINNING_CAPACITY * (1.0 - grass_competition)
+    return acquire(yst_density_response, supply, max(seedlings, 1e-6))
+end
+
+function capitula_per_plant(mature_density)
+    compensation = YST_CAPITULA_COMP_HALF_SAT /
+                   (YST_CAPITULA_COMP_HALF_SAT + max(mature_density, 1.0))
+    return YST_CAPITULA_PER_PLANT_MIN +
+           (YST_CAPITULA_PER_PLANT_MAX - YST_CAPITULA_PER_PLANT_MIN) * compensation
+end
+
+# Seed survival curve
+println(&quot;Seed bank depletion over time:&quot;)
+println(&quot;=&quot;^45)
+seed_remaining = INITIAL_SEED_BANK
+for yr in 0:5
+    pct = 100 * seed_remaining / INITIAL_SEED_BANK
+    bar = repeat(&quot;█&quot;, max(1, round(Int, pct / 2)))
+    println(&quot;  Year $yr: $(round(seed_remaining, digits=0)) seeds/m² &quot; *
+            &quot;($(round(pct, digits=1))%) $bar&quot;)
+    seed_remaining *= SEED_CARRYOVER_FRAC
+end
+
+# Germination response to rainfall
+println(&quot;\nGermination fraction vs daily rainfall:&quot;)
+for mm in [0.0, 2.0, 5.0, 10.0, 25.0, 50.0]
+    germ = 1.0 - exp(-SEED_RAIN_COEFF * mm)
+    println(&quot;  $(lpad(mm, 5)) mm → $(round(100 * germ, digits=1))% of available seed&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Seed bank depletion over time:
+=============================================
+  Year 0: 4500.0 seeds/m² (100.0%) ██████████████████████████████████████████████████
+  Year 1: 900.0 seeds/m² (20.0%) ██████████
+  Year 2: 180.0 seeds/m² (4.0%) ██
+  Year 3: 36.0 seeds/m² (0.8%) █
+  Year 4: 7.0 seeds/m² (0.2%) █
+  Year 5: 1.0 seeds/m² (0.0%) █
+
+Germination fraction vs daily rainfall:
+    0.0 mm → 0.0% of available seed
+    2.0 mm → 7.7% of available seed
+    5.0 mm → 18.1% of available seed
+   10.0 mm → 33.0% of available seed
+   25.0 mm → 63.2% of available seed
+   50.0 mm → 86.5% of available seed</code></pre><h2 id="Supply–Demand-Model-for-Seed-Head-Attack"><a class="docs-heading-anchor" href="#Supply–Demand-Model-for-Seed-Head-Attack">Supply–Demand Model for Seed Head Attack</a><a id="Supply–Demand-Model-for-Seed-Head-Attack-1"></a><a class="docs-heading-anchor-permalink" href="#Supply–Demand-Model-for-Seed-Head-Attack" title="Permalink"></a></h2><p>The core of the PBDM approach is the Gutierrez–Baumgärtner functional response (Gutierrez 1992). The rate at which biocontrol agents find and attack capitula is modeled as a ratio-dependent process where the supply (available capitula) and demand (insect oviposition requirements) interact:</p><p class="math-container">\[S(t) = D_n C_n \left[1 - \exp\left(\frac{-\alpha_n R(t)}{D_n C_n}\right)\right]\]</p><p>where <span>$R(t)$</span> is the resource (capitula) density, <span>$D_n$</span> is per-capita demand, <span>$C_n$</span> is consumer density, and <span>$\alpha_n$</span> is the search rate. This is exactly the <code>FraserGilbertResponse</code> in the package.</p><pre><code class="language-julia hljs"># Supply-demand functional response for capitulum attack
+# Search rate α = 0.75 for all species (Table 1, Gutierrez et al. 2005)
+ev_response = FraserGilbertResponse(INSECT_SEARCH_RATE)  # E. villosus
+cs_response = FraserGilbertResponse(INSECT_SEARCH_RATE)  # C. succinea
+bo_response = FraserGilbertResponse(INSECT_SEARCH_RATE)  # B. orientalis
+us_response = FraserGilbertResponse(INSECT_SEARCH_RATE)  # U. sirunaseva
+
+# Demonstrate supply-demand dynamics
+println(&quot;Capitulum attack rate (fraction of demand met):&quot;)
+println(&quot;=&quot;^55)
+println(&quot;  Supply/Demand   EV      CS      BO      US&quot;)
+for ratio in [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+    demand = 10.0
+    supply = ratio * demand
+    ev_sd = supply_demand_ratio(ev_response, supply, demand)
+    cs_sd = supply_demand_ratio(cs_response, supply, demand)
+    bo_sd = supply_demand_ratio(bo_response, supply, demand)
+    us_sd = supply_demand_ratio(us_response, supply, demand)
+    println(&quot;  $(lpad(ratio, 6))      &quot; *
+            &quot;$(round(ev_sd, digits=3))   $(round(cs_sd, digits=3))   &quot; *
+            &quot;$(round(bo_sd, digits=3))   $(round(us_sd, digits=3))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Capitulum attack rate (fraction of demand met):
+=======================================================
+  Supply/Demand   EV      CS      BO      US
+     0.1      0.072   0.072   0.072   0.072
+     0.5      0.313   0.313   0.313   0.313
+     1.0      0.528   0.528   0.528   0.528
+     2.0      0.777   0.777   0.777   0.777
+     5.0      0.976   0.976   0.976   0.976
+    10.0      0.999   0.999   0.999   0.999</code></pre><h2 id="Competition-Within-Capitula"><a class="docs-heading-anchor" href="#Competition-Within-Capitula">Competition Within Capitula</a><a id="Competition-Within-Capitula-1"></a><a class="docs-heading-anchor-permalink" href="#Competition-Within-Capitula" title="Permalink"></a></h2><p>When multiple herbivore species co-occur within a capitulum, dominance determines which species survive. <em>E. villosus</em> larvae are dominant and kill all other species present. <em>C. succinea</em> is partially dominant over <em>U. sirunaseva</em>. These interactions are captured by adjusting survival based on co-occurrence probabilities (Gutierrez et al. 2005, Section 2.2.3).</p><pre><code class="language-julia hljs"># Dominance hierarchy: EV &gt; BO &gt; CS &gt; US (within capitula)
+# Per-capitulum seed destruction (Table 1, Gutierrez et al. 2005)
+const SEED_DAMAGE_PER_LARVA = Dict(
+    :eustenopus_villosus   =&gt; EV_SEED_DESTRUCTION,  # &gt;90%
+    :bangasternus_orientalis =&gt; BO_SEED_DESTRUCTION, # 50%
+    :chaetorellia_succinea  =&gt; CS_SEED_DESTRUCTION,  # 70–100% (midpoint)
+    :urophora_sirunaseva    =&gt; US_SEED_DESTRUCTION,  # 10% per gall
+)
+
+# Interspecific competitive effects (proportion of subordinate killed)
+const COMPETITIVE_EXCLUSION = Dict(
+    (:eustenopus_villosus, :bangasternus_orientalis) =&gt; 0.95,
+    (:eustenopus_villosus, :chaetorellia_succinea)   =&gt; 0.80,
+    (:eustenopus_villosus, :urophora_sirunaseva)     =&gt; 0.90,
+    (:chaetorellia_succinea, :urophora_sirunaseva)   =&gt; 0.60,
+)
+
+println(&quot;Seed damage per larva by species:&quot;)
+for (sp, dmg) in sort(collect(SEED_DAMAGE_PER_LARVA), by=x-&gt;-x[2])
+    bar = repeat(&quot;█&quot;, round(Int, dmg * 40))
+    println(&quot;  $(rpad(sp, 28)) $(round(dmg, digits=2))  $bar&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Seed damage per larva by species:
+  eustenopus_villosus          0.9  ████████████████████████████████████
+  chaetorellia_succinea        0.85  ██████████████████████████████████
+  bangasternus_orientalis      0.5  ████████████████████
+  urophora_sirunaseva          0.1  ████</code></pre><h2 id="Single-Season-Simulation:-YST-Without-Biocontrol"><a class="docs-heading-anchor" href="#Single-Season-Simulation:-YST-Without-Biocontrol">Single-Season Simulation: YST Without Biocontrol</a><a id="Single-Season-Simulation:-YST-Without-Biocontrol-1"></a><a class="docs-heading-anchor-permalink" href="#Single-Season-Simulation:-YST-Without-Biocontrol" title="Permalink"></a></h2><p>First, we simulate one season of yellow starthistle growth alone to establish baseline phenology and seed production. The simulation begins on October 1 (day 274) with autumn germination and runs through the following September.</p><pre><code class="language-julia hljs"># One-year simulation: October 1 to September 30
+prob_yst = PBDMProblem(yst_pop, davis_weather, (274, 274 + 364))
+sol_yst = solve(prob_yst, DirectIteration())
+
+println(sol_yst)
+
+# Track phenological stages
+stage_names = [:cotyledon, :rosette, :bolting, :flowering, :seed_mature]
+println(&quot;\nYST phenology (one season at Davis, CA):&quot;)
+println(&quot;=&quot;^60)
+for (i, name) in enumerate(stage_names)
+    traj = stage_trajectory(sol_yst, i)
+    peak_val = maximum(traj)
+    peak_idx = argmax(traj)
+    peak_day = sol_yst.t[peak_idx]
+    println(&quot;  $(rpad(name, 15)) peak=$(round(peak_val, digits=1)) &quot; *
+            &quot;plants/m² (day $peak_day)&quot;)
+end
+
+# Degree-day accumulation
+cdd = cumulative_degree_days(sol_yst)
+println(&quot;\nTotal degree-days (&gt;8°C): $(round(cdd[end], digits=0))&quot;)
+println(&quot;Season length: $(length(sol_yst.t)) days&quot;)</code></pre><pre><code class="nohighlight hljs">PBDMSolution(365 days, 5 stages, retcode=Success)
+
+YST phenology (one season at Davis, CA):
+============================================================
+  cotyledon       peak=7635.9 plants/m² (day 274)
+  rosette         peak=6850.1 plants/m² (day 279)
+  bolting         peak=4335.3 plants/m² (day 295)
+  flowering       peak=3476.1 plants/m² (day 311)
+  seed_mature     peak=2582.6 plants/m² (day 357)
+
+Total degree-days (&gt;8°C): 2957.0
+Season length: 365 days</code></pre><h2 id="Plotting-YST-Phenology"><a class="docs-heading-anchor" href="#Plotting-YST-Phenology">Plotting YST Phenology</a><a id="Plotting-YST-Phenology-1"></a><a class="docs-heading-anchor-permalink" href="#Plotting-YST-Phenology" title="Permalink"></a></h2><pre><code class="language-julia hljs">fig1 = Figure(size=(900, 500))
+ax1 = Axis(fig1[1, 1],
+    xlabel=&quot;Day of Year&quot;,
+    ylabel=&quot;Plant Density (per m²)&quot;,
+    title=&quot;Yellow Starthistle Phenology — Davis, CA (One Season)&quot;)
+
+colors = [:forestgreen, :seagreen, :goldenrod, :darkorange, :brown]
+
+for (i, (name, col)) in enumerate(zip(stage_names, colors))
+    traj = stage_trajectory(sol_yst, i)
+    lines!(ax1, sol_yst.t, traj, label=String(name), color=col, linewidth=2)
+end
+
+# Total population
+total_pop = total_population(sol_yst)
+lines!(ax1, sol_yst.t, total_pop,
+       label=&quot;total&quot;, color=:black, linewidth=2.5, linestyle=:dash)
+
+axislegend(ax1, position=:rt)
+fig1</code></pre><p><img src="../23_yellow_starthistle_files/figure-commonmark/cell-10-output-1.png" alt/></p><h2 id="Multi-Year-Simulation-With-Seed-Bank"><a class="docs-heading-anchor" href="#Multi-Year-Simulation-With-Seed-Bank">Multi-Year Simulation With Seed Bank</a><a id="Multi-Year-Simulation-With-Seed-Bank-1"></a><a class="docs-heading-anchor-permalink" href="#Multi-Year-Simulation-With-Seed-Bank" title="Permalink"></a></h2><p>To capture the population dynamics realistically, we simulate multiple years with seed bank carryover. Each year, the seed bank balance is updated:</p><p class="math-container">\[B_{\text{soil}}(y+1) = 0.20 \cdot B_{\text{soil}}(y) + \Delta v(y)\]</p><p>where <span>$\Delta v(y)$</span> is the current year’s seed production.</p><p>Within a season, we keep the paper’s 8% germination and 20% carryover bookkeeping, but we also enforce the manuscript’s self-thinning and bounded compensation logic. Seedlings are thinned via a supply-demand step to a few hundred mature plants per m², and low-density plants can increase capitula production only within the observed range rather than without bound.</p><pre><code class="language-julia hljs"># Multi-year simulation with explicit seed bank tracking
+function simulate_multiyear_yst(weather, n_years;
+        initial_seed_bank=INITIAL_SEED_BANK,
+        biocontrol_seed_reduction=0.0)
+    seed_bank = initial_seed_bank
+    annual_seeds = Float64[]
+    annual_plants = Float64[]
+    annual_seed_bank = Float64[]
+
+    for yr in 1:n_years
+        # Germination: 8% of seed bank determines initial seedling density
+        seedlings = seed_bank * SEED_GERMINATION_FRAC
+        seedlings = max(seedlings, 1.0)
+
+        # Set up population for this season
+        yr_stages = [
+            LifeStage(:cotyledon,   DistributedDelay(20, 100.0; W0=seedlings), yst_dev, 0.005),
+            LifeStage(:rosette,     DistributedDelay(25, 250.0; W0=0.0),       yst_dev, 0.002),
+            LifeStage(:bolting,     DistributedDelay(20, 250.0; W0=0.0),       yst_dev, 0.001),
+            LifeStage(:flowering,   DistributedDelay(30, 600.0; W0=0.0),       yst_dev, 0.0005),
+            LifeStage(:seed_mature, DistributedDelay(15, 600.0; W0=0.0),       yst_dev, 0.0003),
+        ]
+        yr_pop = Population(:yst, yr_stages)
+
+        # Simulate one season (Oct–Sep)
+        start_day = 274 + (yr - 1) * 365
+        end_day = start_day + 364
+        prob = PBDMProblem(yr_pop, weather, (start_day, end_day))
+        sol = solve(prob, DirectIteration())
+
+        # End-of-season seed production is limited by development success,
+        # self-thinning, and bounded compensatory capitulum production.
+        mature_traj = stage_trajectory(sol, 5)
+        development_success = clamp(maximum(mature_traj) / max(seedlings, 1.0), 0.15, 1.0)
+        mature_plants = mature_density_from_seedlings(seedlings) * development_success
+
+        capitula_density = mature_plants * capitula_per_plant(mature_plants)
+        new_seeds = capitula_density * YST_SEEDS_PER_CAPITULUM
+
+        # Apply biocontrol seed reduction
+        new_seeds *= (1.0 - biocontrol_seed_reduction)
+
+        # Update seed bank
+        seed_bank = SEED_CARRYOVER_FRAC * seed_bank + new_seeds
+
+        push!(annual_seeds, new_seeds)
+        push!(annual_plants, mature_plants)
+        push!(annual_seed_bank, seed_bank)
+    end
+
+    return (seeds=annual_seeds, plants=annual_plants, seed_bank=annual_seed_bank)
+end
+
+# Baseline: no biocontrol
+baseline = simulate_multiyear_yst(davis_weather, 20)
+
+println(&quot;Multi-year YST dynamics (no biocontrol):&quot;)
+println(&quot;=&quot;^55)
+for yr in [1, 5, 10, 15, 20]
+    println(&quot;  Year $(lpad(yr, 2)): seed bank=$(round(baseline.seed_bank[yr], digits=0)), &quot; *
+            &quot;plants=$(round(baseline.plants[yr], digits=1)), &quot; *
+            &quot;seeds=$(round(baseline.seeds[yr], digits=0))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Multi-year YST dynamics (no biocontrol):
+=======================================================
+  Year  1: seed bank=3929.0, plants=234.8, seeds=3029.0
+  Year  5: seed bank=3483.0, plants=208.3, seeds=2781.0
+  Year 10: seed bank=3455.0, plants=206.6, seeds=2764.0
+  Year 15: seed bank=3454.0, plants=206.5, seeds=2763.0
+  Year 20: seed bank=3454.0, plants=206.5, seeds=2763.0</code></pre><h2 id="Biocontrol-Scenario-Comparison"><a class="docs-heading-anchor" href="#Biocontrol-Scenario-Comparison">Biocontrol Scenario Comparison</a><a id="Biocontrol-Scenario-Comparison-1"></a><a class="docs-heading-anchor-permalink" href="#Biocontrol-Scenario-Comparison" title="Permalink"></a></h2><p>We compare five scenarios representing different stages of the biological control program, following the marginal analysis approach of Gutierrez et al. (2005, Section 2.4):</p><ol><li><strong>No biocontrol</strong> — baseline weed dynamics</li><li><strong>EV only</strong> — <em>E. villosus</em> alone (most effective single agent)</li><li><strong>CS only</strong> — <em>C. succinea</em> alone (second most effective)</li><li><strong>EV + CS</strong> — the dominant agent combination</li><li><strong>All four agents</strong> — complete biocontrol guild</li></ol><p>The seed reduction fractions are derived from the regression analyses in Gutierrez et al. (2005, Eqs. 15–20).</p><pre><code class="language-julia hljs"># Biocontrol scenarios: estimated seed reduction fractions
+# From marginal analysis (Gutierrez et al. 2005)
+scenarios = [
+    (&quot;No biocontrol&quot;,   0.00),
+    (&quot;EV only&quot;,         0.58),   # E. villosus alone: 58% seed reduction
+    (&quot;CS only&quot;,         0.36),   # C. succinea alone: 36% reduction
+    (&quot;EV + CS&quot;,         0.74),   # Combined: 74% (with antagonistic interaction)
+    (&quot;All four agents&quot;, 0.76),   # All four: marginal improvement from BO, US
+]
+
+results = Dict{String, NamedTuple}()
+for (name, reduction) in scenarios
+    results[name] = simulate_multiyear_yst(davis_weather, 20;
+                                            biocontrol_seed_reduction=reduction)
+end
+
+println(&quot;Seed bank density after 20 years by scenario:&quot;)
+println(&quot;=&quot;^55)
+for (name, _) in scenarios
+    sb = results[name].seed_bank[end]
+    bar = repeat(&quot;█&quot;, max(1, round(Int, log10(max(sb, 1)) * 5)))
+    println(&quot;  $(rpad(name, 20)) $(round(sb, digits=0)) seeds/m²  $bar&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Seed bank density after 20 years by scenario:
+=======================================================
+  No biocontrol        3454.0 seeds/m²  ██████████████████
+  EV only              66.0 seeds/m²  █████████
+  CS only              1282.0 seeds/m²  ████████████████
+  EV + CS              7.0 seeds/m²  ████
+  All four agents      6.0 seeds/m²  ████</code></pre><h2 id="Plotting-Biocontrol-Impact-on-Seed-Bank"><a class="docs-heading-anchor" href="#Plotting-Biocontrol-Impact-on-Seed-Bank">Plotting Biocontrol Impact on Seed Bank</a><a id="Plotting-Biocontrol-Impact-on-Seed-Bank-1"></a><a class="docs-heading-anchor-permalink" href="#Plotting-Biocontrol-Impact-on-Seed-Bank" title="Permalink"></a></h2><pre><code class="language-julia hljs">fig2 = Figure(size=(900, 500))
+ax2 = Axis(fig2[1, 1],
+    xlabel=&quot;Year&quot;,
+    ylabel=&quot;Seed Bank (seeds/m²)&quot;,
+    title=&quot;Yellow Starthistle Seed Bank Under Biocontrol Scenarios&quot;,
+    yscale=log10)
+
+scenario_colors = [:red, :orange, :gold, :dodgerblue, :forestgreen]
+
+for (i, (name, _)) in enumerate(scenarios)
+    sb = results[name].seed_bank
+    lines!(ax2, 1:20, sb, label=name,
+           color=scenario_colors[i], linewidth=2.5)
+end
+
+# Persistence threshold
+hlines!(ax2, [100.0], color=:gray50, linestyle=:dash, linewidth=1.5,
+        label=&quot;Persistence threshold&quot;)
+
+axislegend(ax2, position=:rt)
+fig2</code></pre><p><img src="../23_yellow_starthistle_files/figure-commonmark/cell-13-output-1.png" alt/></p><h2 id="Plotting-Mature-Plant-Density"><a class="docs-heading-anchor" href="#Plotting-Mature-Plant-Density">Plotting Mature Plant Density</a><a id="Plotting-Mature-Plant-Density-1"></a><a class="docs-heading-anchor-permalink" href="#Plotting-Mature-Plant-Density" title="Permalink"></a></h2><pre><code class="language-julia hljs">fig3 = Figure(size=(900, 500))
+ax3 = Axis(fig3[1, 1],
+    xlabel=&quot;Year&quot;,
+    ylabel=&quot;Mature Plants (per m²)&quot;,
+    title=&quot;Mature Plant Density Under Biocontrol Scenarios&quot;)
+
+for (i, (name, _)) in enumerate(scenarios)
+    pl = results[name].plants
+    lines!(ax3, 1:20, pl, label=name,
+           color=scenario_colors[i], linewidth=2.5)
+end
+
+axislegend(ax3, position=:rt)
+fig3</code></pre><p><img src="../23_yellow_starthistle_files/figure-commonmark/cell-14-output-1.png" alt/></p><h2 id="Temperature-Sensitivity-Analysis"><a class="docs-heading-anchor" href="#Temperature-Sensitivity-Analysis">Temperature Sensitivity Analysis</a><a id="Temperature-Sensitivity-Analysis-1"></a><a class="docs-heading-anchor-permalink" href="#Temperature-Sensitivity-Analysis" title="Permalink"></a></h2><p>Yellow starthistle’s distribution in California is shaped by climate. Hotter, drier inland valleys have shorter growing seasons, while coastal and foothill areas support more persistent populations. We compare three temperature regimes.</p><pre><code class="language-julia hljs"># Temperature scenarios
+temp_scenarios = [
+    (&quot;Cool foothill (14°C)&quot;,    SinusoidalWeather(14.0, 8.0; phase=200.0)),
+    (&quot;Davis baseline (16°C)&quot;,   SinusoidalWeather(16.0, 9.0; phase=200.0)),
+    (&quot;Hot valley (20°C)&quot;,       SinusoidalWeather(20.0, 10.0; phase=200.0)),
+]
+
+fig4 = Figure(size=(900, 700))
+
+# Panel A: Temperature patterns
+ax4a = Axis(fig4[1, 1],
+    xlabel=&quot;Day of Year&quot;, ylabel=&quot;Temperature (°C)&quot;,
+    title=&quot;A) Seasonal Temperature Patterns&quot;)
+
+temp_colors = [:dodgerblue, :forestgreen, :firebrick]
+for (i, (name, w)) in enumerate(temp_scenarios)
+    temps = [get_weather(w, d).T_mean for d in 1:365]
+    lines!(ax4a, 1:365, temps, label=name, color=temp_colors[i], linewidth=2)
+end
+hlines!(ax4a, [YST_T_LOWER], color=:gray, linestyle=:dash, label=&quot;YST threshold (8°C)&quot;)
+axislegend(ax4a, position=:lt)
+
+# Panel B: Seed bank trajectory under each temperature regime with EV+CS biocontrol
+ax4b = Axis(fig4[2, 1],
+    xlabel=&quot;Year&quot;, ylabel=&quot;Seed Bank (seeds/m²)&quot;,
+    title=&quot;B) Seed Bank With EV+CS Biocontrol Across Climates&quot;,
+    yscale=log10)
+
+for (i, (name, w)) in enumerate(temp_scenarios)
+    result = simulate_multiyear_yst(w, 20; biocontrol_seed_reduction=0.74)
+    lines!(ax4b, 1:20, result.seed_bank, label=name,
+           color=temp_colors[i], linewidth=2.5)
+end
+hlines!(ax4b, [100.0], color=:gray50, linestyle=:dash)
+axislegend(ax4b, position=:rt)
+
+fig4</code></pre><p><img src="../23_yellow_starthistle_files/figure-commonmark/cell-15-output-1.png" alt/></p><h2 id="Insect-Population-Dynamics"><a class="docs-heading-anchor" href="#Insect-Population-Dynamics">Insect Population Dynamics</a><a id="Insect-Population-Dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Insect-Population-Dynamics" title="Permalink"></a></h2><p>We illustrate the within-season dynamics of the biocontrol agents using the distributed delay model. Each agent’s development is tracked in degree-days above 9°C, with maturation from diapause timed to coincide with capitulum availability in spring.</p><pre><code class="language-julia hljs"># Simulate individual insect populations for one season
+# Starting from 5 overwintering adults per m² in spring (day 90)
+
+function simulate_insect_season(insect_pop, weather; start_day=90, end_day=274)
+    prob = PBDMProblem(insect_pop, weather, (start_day, end_day))
+    sol = solve(prob, DirectIteration())
+    return sol
+end
+
+# Simulate EV and CS for one season
+sol_ev = simulate_insect_season(ev_pop, davis_weather)
+sol_cs = simulate_insect_season(cs_pop, davis_weather)
+
+fig5 = Figure(size=(900, 600))
+
+# EV dynamics
+ax5a = Axis(fig5[1, 1],
+    ylabel=&quot;Density (per m²)&quot;,
+    title=&quot;E. villosus — Univoltine Life Cycle&quot;)
+
+ev_stage_names = [:ev_egg, :ev_larva, :ev_pupa, :ev_adult]
+ev_colors = [:lightyellow, :orange, :brown, :red]
+for (i, (name, col)) in enumerate(zip(ev_stage_names, ev_colors))
+    traj = stage_trajectory(sol_ev, i)
+    lines!(ax5a, sol_ev.t, traj, label=String(name), color=col, linewidth=2)
+end
+axislegend(ax5a, position=:rt)
+
+# CS dynamics
+ax5b = Axis(fig5[2, 1],
+    xlabel=&quot;Day of Year&quot;,
+    ylabel=&quot;Density (per m²)&quot;,
+    title=&quot;C. succinea — Multivoltine Life Cycle&quot;)
+
+cs_stage_names = [:cs_egg, :cs_larva, :cs_pupa, :cs_adult]
+cs_colors = [:lightyellow, :gold, :sienna, :darkred]
+for (i, (name, col)) in enumerate(zip(cs_stage_names, cs_colors))
+    traj = stage_trajectory(sol_cs, i)
+    lines!(ax5b, sol_cs.t, traj, label=String(name), color=col, linewidth=2)
+end
+axislegend(ax5b, position=:rt)
+
+fig5</code></pre><p><img src="../23_yellow_starthistle_files/figure-commonmark/cell-16-output-1.png" alt/></p><h2 id="Supply–Demand-Visualization"><a class="docs-heading-anchor" href="#Supply–Demand-Visualization">Supply–Demand Visualization</a><a id="Supply–Demand-Visualization-1"></a><a class="docs-heading-anchor-permalink" href="#Supply–Demand-Visualization" title="Permalink"></a></h2><p>The supply/demand ratio is the central diagnostic of PBDM models. When supply (capitula) exceeds demand (insect oviposition needs), the agents are food-limited and attack rates decline. When demand exceeds supply, nearly all capitula are attacked but emigration and mortality increase among the agents.</p><pre><code class="language-julia hljs"># Demonstrate supply-demand ratio across a range of capitula densities
+fig6 = Figure(size=(800, 500))
+ax6 = Axis(fig6[1, 1],
+    xlabel=&quot;Capitula Density (per m²)&quot;,
+    ylabel=&quot;Supply/Demand Ratio (φ)&quot;,
+    title=&quot;Supply-Demand Balance for Biocontrol Agents&quot;)
+
+capitula_range = 10.0:10.0:800.0
+insect_demand = 50.0  # baseline insect demand
+
+for (name, resp, col) in [
+    (&quot;E. villosus&quot;, ev_response, :red),
+    (&quot;C. succinea&quot;, cs_response, :orange),
+    (&quot;B. orientalis&quot;, bo_response, :blue),
+    (&quot;U. sirunaseva&quot;, us_response, :purple)]
+
+    sd = [supply_demand_ratio(resp, cap, insect_demand) for cap in capitula_range]
+    lines!(ax6, collect(capitula_range), sd, label=name, color=col, linewidth=2.5)
+end
+
+hlines!(ax6, [1.0], color=:gray, linestyle=:dash)
+vlines!(ax6, [200.0], color=:green, linestyle=:dot, label=&quot;Avg. capitula density&quot;)
+
+axislegend(ax6, position=:rb)
+fig6</code></pre><p><img src="../23_yellow_starthistle_files/figure-commonmark/cell-17-output-1.png" alt/></p><h2 id="Metabolic-Pool:-Weed-Resource-Allocation"><a class="docs-heading-anchor" href="#Metabolic-Pool:-Weed-Resource-Allocation">Metabolic Pool: Weed Resource Allocation</a><a id="Metabolic-Pool:-Weed-Resource-Allocation-1"></a><a class="docs-heading-anchor-permalink" href="#Metabolic-Pool:-Weed-Resource-Allocation" title="Permalink"></a></h2><p>Yellow starthistle allocates photosynthate in priority order following the PBDM paradigm: respiration → reproduction (capitula) → vegetative growth. When the supply/demand ratio drops (e.g., due to drought or competition from grasses), reproduction is sacrificed first, then growth.</p><pre><code class="language-julia hljs"># Demonstrate resource allocation under different stress levels
+println(&quot;Resource Allocation Under Varying S/D Ratios:&quot;)
+println(&quot;=&quot;^65)
+println(&quot;  S/D    Respiration  Reproduction  Veg. Growth  Surplus&quot;)
+
+for sd in [0.2, 0.4, 0.6, 0.8, 1.0, 1.5]
+    supply = sd * 100.0
+    demands = [30.0, 40.0, 20.0]  # respiration, reproduction, growth
+    labels = [:respiration, :reproduction, :veg_growth]
+    pool = MetabolicPool(supply, demands, labels)
+    alloc = allocate(pool)
+    surplus = max(0.0, supply - sum(demands))
+    println(&quot;  $(rpad(sd, 5)) &quot; *
+            &quot;$(lpad(round(alloc[1], digits=1), 10))  &quot; *
+            &quot;$(lpad(round(alloc[2], digits=1), 12))  &quot; *
+            &quot;$(lpad(round(alloc[3], digits=1), 10))  &quot; *
+            &quot;$(lpad(round(surplus, digits=1), 7))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Resource Allocation Under Varying S/D Ratios:
+=================================================================
+  S/D    Respiration  Reproduction  Veg. Growth  Surplus
+  0.2         20.0           0.0         0.0      0.0
+  0.4         30.0          10.0         0.0      0.0
+  0.6         30.0          30.0         0.0      0.0
+  0.8         30.0          40.0        10.0      0.0
+  1.0         30.0          40.0        20.0     10.0
+  1.5         30.0          40.0        20.0     60.0</code></pre><h2 id="Compensation:-Why-Biocontrol-Alone-May-Not-Suffice"><a class="docs-heading-anchor" href="#Compensation:-Why-Biocontrol-Alone-May-Not-Suffice">Compensation: Why Biocontrol Alone May Not Suffice</a><a id="Compensation:-Why-Biocontrol-Alone-May-Not-Suffice-1"></a><a class="docs-heading-anchor-permalink" href="#Compensation:-Why-Biocontrol-Alone-May-Not-Suffice" title="Permalink"></a></h2><p>A key finding of Gutierrez et al. (2005) is that yellow starthistle compensates for seed loss at low plant densities by producing more capitula per plant. This density-dependent compensation means that even 75% seed reduction may not drive the weed to extinction — the seed bank acts as a buffer across years with variable rainfall and biocontrol pressure.</p><pre><code class="language-julia hljs"># Compensation curve: seeds per plant vs. plant density
+plant_densities = 10.0:10.0:500.0
+seeds_per_plant = [100.0 * (1.0 + 500.0 / max(d, 1.0)) for d in plant_densities]
+total_seeds = [d * s for (d, s) in zip(plant_densities, seeds_per_plant)]
+
+fig7 = Figure(size=(900, 400))
+
+ax7a = Axis(fig7[1, 1],
+    xlabel=&quot;Plant Density (per m²)&quot;,
+    ylabel=&quot;Seeds per Plant&quot;,
+    title=&quot;A) Per-Plant Compensation&quot;)
+lines!(ax7a, collect(plant_densities), seeds_per_plant, color=:forestgreen, linewidth=2.5)
+
+ax7b = Axis(fig7[1, 2],
+    xlabel=&quot;Plant Density (per m²)&quot;,
+    ylabel=&quot;Total Seed Rain (per m²)&quot;,
+    title=&quot;B) Total Seed Production&quot;)
+lines!(ax7b, collect(plant_densities), total_seeds, color=:darkorange, linewidth=2.5)
+
+fig7</code></pre><p><img src="../23_yellow_starthistle_files/figure-commonmark/cell-19-output-1.png" alt/></p><h2 id="Summary-and-Management-Implications"><a class="docs-heading-anchor" href="#Summary-and-Management-Implications">Summary and Management Implications</a><a id="Summary-and-Management-Implications-1"></a><a class="docs-heading-anchor-permalink" href="#Summary-and-Management-Implications" title="Permalink"></a></h2><pre><code class="language-julia hljs">println(&quot;=&quot;^65)
+println(&quot;YELLOW STARTHISTLE BIOLOGICAL CONTROL — KEY FINDINGS&quot;)
+println(&quot;=&quot;^65)
+
+println(&quot;&quot;&quot;
+1. AGENT EFFECTIVENESS (after Gutierrez et al. 2005):
+   • E. villosus alone reduces seeds ~58%
+   • C. succinea alone reduces seeds ~36%
+   • Combined (EV + CS) reduces seeds ~74%
+   • Adding BO and US provides only marginal benefit (~76%)
+
+2. COMPETITIVE INTERACTIONS:
+   • EV larvae are dominant — kill all co-occurring species
+   • This reduces the net biocontrol impact: the EV×CS interaction
+     increases seed survival by ~13%, partially offsetting CS impact
+   • BO is nearly excluded wherever EV is abundant
+
+3. COMPENSATION:
+   • At low plant densities, per-plant seed production increases
+   • This density-dependent response limits biocontrol efficacy
+   • The persistent seed bank (20%/year carryover) buffers populations
+     against years of high biocontrol pressure
+
+4. CLIMATE EFFECTS:
+   • Longer, warmer seasons favor both weed and insect development
+   • Very hot, dry areas limit YST (insufficient rainfall for germination)
+   • Coastal and foothill regions have highest YST persistence risk
+
+5. MANAGEMENT IMPLICATIONS:
+   • Seed-head biocontrol alone unlikely to eradicate YST
+   • Integrated approaches needed: biocontrol + competitive grasses
+   • Rosette-stage herbivory (e.g., Ceratapion basicorne) may provide
+     the additional stress needed by reducing plant vigor before seed set
+   • Competition from annual grasses reduces YST ~20–25% additionally
+&quot;&quot;&quot;)</code></pre><pre><code class="nohighlight hljs">=================================================================
+YELLOW STARTHISTLE BIOLOGICAL CONTROL — KEY FINDINGS
+=================================================================
+1. AGENT EFFECTIVENESS (after Gutierrez et al. 2005):
+   • E. villosus alone reduces seeds ~58%
+   • C. succinea alone reduces seeds ~36%
+   • Combined (EV + CS) reduces seeds ~74%
+   • Adding BO and US provides only marginal benefit (~76%)
+
+2. COMPETITIVE INTERACTIONS:
+   • EV larvae are dominant — kill all co-occurring species
+   • This reduces the net biocontrol impact: the EV×CS interaction
+     increases seed survival by ~13%, partially offsetting CS impact
+   • BO is nearly excluded wherever EV is abundant
+
+3. COMPENSATION:
+   • At low plant densities, per-plant seed production increases
+   • This density-dependent response limits biocontrol efficacy
+   • The persistent seed bank (20%/year carryover) buffers populations
+     against years of high biocontrol pressure
+
+4. CLIMATE EFFECTS:
+   • Longer, warmer seasons favor both weed and insect development
+   • Very hot, dry areas limit YST (insufficient rainfall for germination)
+   • Coastal and foothill regions have highest YST persistence risk
+
+5. MANAGEMENT IMPLICATIONS:
+   • Seed-head biocontrol alone unlikely to eradicate YST
+   • Integrated approaches needed: biocontrol + competitive grasses
+   • Rosette-stage herbivory (e.g., Ceratapion basicorne) may provide
+     the additional stress needed by reducing plant vigor before seed set
+   • Competition from annual grasses reduces YST ~20–25% additionally</code></pre><h2 id="Key-Insights"><a class="docs-heading-anchor" href="#Key-Insights">Key Insights</a><a id="Key-Insights-1"></a><a class="docs-heading-anchor-permalink" href="#Key-Insights" title="Permalink"></a></h2><ol><li><p><strong>Supply–demand unifies ecology and economics</strong>: The same functional  response model (Frazer-Gilbert / Gutierrez-Baumgärtner) describes  photosynthesis, insect foraging, and seed-head attack — with  parameters specific to each process.</p></li><li><p><strong>Biocontrol is necessary but not sufficient</strong>: Even the best  two-agent combination reduces seed production ~74%, but compensation  and the seed bank prevent extinction.</p></li><li><p><strong>Competitive interactions within seed heads are complex</strong>: The  dominant weevil (<em>E. villosus</em>) kills fly larvae in shared capitula,  partially negating the additive effects of multiple agents.</p></li><li><p><strong>Annual plant dynamics require multi-year simulation</strong>:  Single-season models miss the seed bank buffering that sustains  populations across drought years and seasons of heavy biocontrol  pressure.</p></li><li><p><strong>Climate shapes the arena</strong>: Temperature and rainfall determine  season length, germination intensity, and the baseline for both weed  productivity and biocontrol agent development.</p></li></ol><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Gutierrez2005YellowStarthistle&quot; class=&quot;csl-entry&quot;&gt;</p><p>Gutierrez, Andrew Paul, Michael J. Pitcairn, C. K. Ellis, Neil Carruthers, and R. Ghezelbash. 2005. “Evaluating Biological Control of Yellow Starthistle (&lt;span class=&quot;nocase&quot;&gt;Centaurea solstitialis&lt;/span&gt;) in California: A GIS-Based Supply–Demand Demographic Model.” <em>Biological Control</em> 34: 115–31. <a href="https://doi.org/10.1016/j.biocontrol.2005.04.015">https://doi.org/10.1016/j.biocontrol.2005.04.015</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../22_tuta_absoluta/">« Tuta absoluta Invasion Risk Assessment</a><a class="docs-footer-nextpage" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

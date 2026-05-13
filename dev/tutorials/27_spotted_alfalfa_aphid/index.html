@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Spotted Alfalfa Aphid Biological Control · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Spotted Alfalfa Aphid Biological Control · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Spotted Alfalfa Aphid Biological Control · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Spotted Alfalfa Aphid Biological Control · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/27_spotted_alfalfa_aphid/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/27_spotted_alfalfa_aphid/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/27_spotted_alfalfa_aphid/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li class="is-active"><a class="tocitem" href>Spotted Alfalfa Aphid Biological Control</a><ul class="internal"><li><a class="tocitem" href="#Introduction"><span>Introduction</span></a></li><li><a class="tocitem" href="#Model-Description"><span>Model Description</span></a></li><li><a class="tocitem" href="#Implementation"><span>Implementation</span></a></li><li><a class="tocitem" href="#Development-Rate-Curves"><span>Development Rate Curves</span></a></li><li><a class="tocitem" href="#Trophic-Web-Definition"><span>Trophic Web Definition</span></a></li><li><a class="tocitem" href="#Weather:-Mediterranean-California-(Central-Valley)"><span>Weather: Mediterranean California (Central Valley)</span></a></li><li><a class="tocitem" href="#Component-Analysis:-Factorial-Simulations"><span>Component Analysis: Factorial Simulations</span></a></li><li><a class="tocitem" href="#Marginal-Contribution-Analysis"><span>Marginal Contribution Analysis</span></a></li><li><a class="tocitem" href="#Seasonal-Dynamics-with-Fungal-Epizootics"><span>Seasonal Dynamics with Fungal Epizootics</span></a></li><li><a class="tocitem" href="#Parameter-Sources"><span>Parameter Sources</span></a></li><li><a class="tocitem" href="#Invasion-History-and-Biocontrol-Timeline"><span>Invasion History and Biocontrol Timeline</span></a></li><li><a class="tocitem" href="#Key-Insights"><span>Key Insights</span></a></li><li><a class="tocitem" href="#References"><span>References</span></a></li></ul></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Spotted Alfalfa Aphid Biological Control</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Spotted Alfalfa Aphid Biological Control</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Spotted-Alfalfa-Aphid-Biological-Control"><a class="docs-heading-anchor" href="#Spotted-Alfalfa-Aphid-Biological-Control">Spotted Alfalfa Aphid Biological Control</a><a id="Spotted-Alfalfa-Aphid-Biological-Control-1"></a><a class="docs-heading-anchor-permalink" href="#Spotted-Alfalfa-Aphid-Biological-Control" title="Permalink"></a></h1><p>PhysiologicallyBasedDemographicModels.jl</p><ul><li><a href="#introduction">Introduction</a></li><li><a href="#model-description">Model Description</a></li><li><a href="#implementation">Implementation</a><ul><li><a href="#saa-development-rate">SAA Development Rate</a></li><li><a href="#saa-life-stages">SAA Life Stages</a></li><li><a href="#saa-reproduction">SAA Reproduction</a></li><li><a href="#parasitoid-development-rates">Parasitoid Development Rates</a></li><li><a href="#parasitoid-host-preferences">Parasitoid Host Preferences</a></li><li><a href="#coccinellid-predator-h-convergens">Coccinellid Predator (<em>H. convergens</em>)</a></li><li><a href="#fungal-pathogen-e-neoaphidis">Fungal Pathogen (<em>E. neoaphidis</em>)</a></li></ul></li><li><a href="#development-rate-curves">Development Rate Curves</a></li><li><a href="#trophic-web-definition">Trophic Web Definition</a></li><li><a href="#weather-mediterranean-california-central-valley">Weather: Mediterranean California (Central Valley)</a></li><li><a href="#component-analysis-factorial-simulations">Component Analysis: Factorial Simulations</a><ul><li><a href="#scenario-setup-coupled-api">Scenario Setup (Coupled API)</a></li><li><a href="#running-factor-combinations">Running Factor Combinations</a></li><li><a href="#factorial-population-dynamics">Factorial Population Dynamics</a></li></ul></li><li><a href="#marginal-contribution-analysis">Marginal Contribution Analysis</a></li><li><a href="#seasonal-dynamics-with-fungal-epizootics">Seasonal Dynamics with Fungal Epizootics</a></li><li><a href="#parameter-sources">Parameter Sources</a></li><li><a href="#invasion-history-and-biocontrol-timeline">Invasion History and Biocontrol Timeline</a></li><li><a href="#key-insights">Key Insights</a></li><li><a href="#references">References</a></li></ul><h2 id="Introduction"><a class="docs-heading-anchor" href="#Introduction">Introduction</a><a id="Introduction-1"></a><a class="docs-heading-anchor-permalink" href="#Introduction" title="Permalink"></a></h2><p>The spotted alfalfa aphid (<em>Therioaphis maculata</em> Monell, SAA) was first detected in California in 1954 and rapidly became a devastating pest of alfalfa (<em>Medicago sativa</em>) throughout the southwestern United States. Its successful control represents one of the most celebrated examples of multi-factor biological control in agricultural entomology, yet the relative contribution of each suppression factor remained largely unquantified for decades.</p><p>Control was ultimately achieved through the combined action of six factors:</p><ol><li><strong>Three imported parasitoids</strong> — <em>Trioxys complanatus</em> (Quilis)  (Tc), <em>Praon palitans</em> Muesebeck (Pp), and <em>Aphelinus semiflavus</em>  Howard (As), introduced in the late 1950s</li><li><strong>Native coccinellid predators</strong> — primarily <em>Hippodamia convergens</em>  (Guérin-Menéville) (C)</li><li><strong>A fungal pathogen</strong> — <em>Erynia neoaphidis</em> Remaudière &amp; Hennebert  (Zygomycetes: Entomophthorales) (F)</li><li><strong>Host plant resistance (HPR)</strong> — resistant alfalfa varieties that  reduce SAA fecundity by approximately 85%</li></ol><p>The trophic structure of the system is:</p><pre><code class="nohighlight hljs">Alfalfa → SAA → Parasitoids (Tc, Pp, As) + Coccinellids (C) + Pathogen (F)
+                 ↑
+                HPR (reduces aphid fecundity on resistant varieties)</code></pre><p>Gutierrez and Ponti (2013) used a weather-driven physiologically-based demographic model (PBDM) to simulate all 18 selected factor combinations across 142 locations in Arizona and California (1995–2006), and then applied marginal analysis to a multiple regression of <span>$\log_{10}$</span> SAA-days m<span>$^{-2}$</span> year<span>$^{-1}$</span> on presence–absence dummy variables for each factor. The key finding was that <strong>no single factor sufficed for control</strong>; only when all mortality factors acted together was SAA suppressed across all ecological zones. The marginal analysis ranked the factors in order of importance as:</p><p class="math-container">\[\text{HPR} &gt; \text{Coccinellids} &gt; T.\;\text{complanatus} &gt; P.\;\text{palitans} &gt; A.\;\text{semiflavus} &gt; \text{Pathogen}\]</p><p>This vignette reconstructs the multi-factor SAA system as a PBDM using <code>PhysiologicallyBasedDemographicModels.jl</code>, following the model structure and parameters in Table 1 and Eqs. 1–6 of Gutierrez and Ponti (2013).</p><h2 id="Model-Description"><a class="docs-heading-anchor" href="#Model-Description">Model Description</a><a id="Model-Description-1"></a><a class="docs-heading-anchor-permalink" href="#Model-Description" title="Permalink"></a></h2><p>The PBDM comprises six interacting components, each driven by daily weather (temperature and rainfall):</p><ul><li><strong>Alfalfa</strong> — a canopy model providing the bottom-up resource base; cuttings occur at ~1000 DD \&gt;4.1 °C intervals during the growing season</li><li><strong>SAA</strong> — age-structured with 4 nymphal instars and a reproductive adult stage; parthenogenetic (sex ratio = 1.0)</li><li><strong>Three parasitoids</strong> — each with egg–larval, pupal, and adult stages; arrhenotokous with temperature-dependent sex ratios</li><li><strong>Coccinellid predator</strong> — <em>H. convergens</em> with egg, larval, pupal, and adult stages; a generalist predator with mass-dependent functional response</li><li><strong>Fungal pathogen</strong> — <em>E. neoaphidis</em>; rainfall-triggered mortality that decays over 55 DD \&gt;6 °C</li></ul><p>All species use the same developmental rate function proposed by Brière et al. (1999):</p><p class="math-container">\[R_s(T) = \frac{a_s (T - T_L)}{1 + b_s^{T - T_U}}\]</p><p>where <span>$a_s$</span>, <span>$b_s$</span> are species-specific constants, and <span>$T_L$</span>, <span>$T_U$</span> are the lower and upper thermal thresholds. Reproduction follows the age-specific fecundity model of Bieri et al. (1983), scaled by a concave thermal function <span>$\phi_s(T)$</span>.</p><p>The functional response for parasitoids and coccinellids follows the demand-driven Gilbert–Fraser (Frazer–Gilbert) model, which computes the number of hosts attacked as:</p><p class="math-container">\[N_a = \hat{H} \left[1 - \exp\left\{-\frac{D}{\hat{H}} \left(1 - \exp\left(-\frac{\alpha \hat{H}}{D}\right)\right)\right\}\right]\]</p><p>where <span>$\alpha$</span> is the search parameter and <span>$D$</span> is demand.</p><h2 id="Implementation"><a class="docs-heading-anchor" href="#Implementation">Implementation</a><a id="Implementation-1"></a><a class="docs-heading-anchor-permalink" href="#Implementation" title="Permalink"></a></h2><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+using CairoMakie</code></pre><h3 id="SAA-Development-Rate"><a class="docs-heading-anchor" href="#SAA-Development-Rate">SAA Development Rate</a><a id="SAA-Development-Rate-1"></a><a class="docs-heading-anchor-permalink" href="#SAA-Development-Rate" title="Permalink"></a></h3><p>SAA is hemimetabolous with four nymphal instars and a reproductive adult stage. The temperature-dependent development rate has a lower threshold of 6 °C and an upper threshold of 32.5 °C (Table 1, Gutierrez and Ponti (2013)):</p><p class="math-container">\[R_{SAA}(T) = \frac{0.008 \, (T - 6)}{1 + 3.8^{(T - 32.5)}}\]</p><pre><code class="language-julia hljs"># Table 1 parameters (Gutierrez &amp; Ponti, 2013)
+const SAA_A  = 0.008    # development rate coefficient
+const SAA_B  = 3.8      # exponent base
+const SAA_TL = 6.0      # lower developmental threshold (°C)
+const SAA_TU = 32.5     # upper developmental threshold (°C)
+
+# Brière-type development rate (Eq. 1)
+saa_dev = BriereDevelopmentRate(0.000042, SAA_TL, SAA_TU)
+
+# Linear approximation for degree-day accumulation
+saa_linear = LinearDevelopmentRate(SAA_TL, SAA_TU)
+
+println(&quot;SAA development rates (1/days):&quot;)
+for T in [10.0, 15.0, 20.0, 25.0, 30.0, 32.0]
+    r = development_rate(saa_dev, T)
+    println(&quot;  T=$(T)°C: r=$(round(r, digits=4))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">SAA development rates (1/days):
+  T=10.0°C: r=0.008
+  T=15.0°C: r=0.0237
+  T=20.0°C: r=0.0416
+  T=25.0°C: r=0.0546
+  T=30.0°C: r=0.0478
+  T=32.0°C: r=0.0247</code></pre><h3 id="SAA-Life-Stages"><a class="docs-heading-anchor" href="#SAA-Life-Stages">SAA Life Stages</a><a id="SAA-Life-Stages-1"></a><a class="docs-heading-anchor-permalink" href="#SAA-Life-Stages" title="Permalink"></a></h3><p>Developmental times from Table 1, in degree-days above 6 °C:</p><table><tr><th style="text-align: right">Stage</th><th style="text-align: right">Duration (DD \&gt;6°C)</th><th style="text-align: right">k substages</th><th style="text-align: right">Source</th></tr><tr><td style="text-align: right">Instar I</td><td style="text-align: right">0–33</td><td style="text-align: right">8</td><td style="text-align: right">Table 1</td></tr><tr><td style="text-align: right">Instar II</td><td style="text-align: right">33–62 (29 DD)</td><td style="text-align: right">8</td><td style="text-align: right">Table 1</td></tr><tr><td style="text-align: right">Instar III</td><td style="text-align: right">62–94 (32 DD)</td><td style="text-align: right">8</td><td style="text-align: right">Table 1</td></tr><tr><td style="text-align: right">Instar IV</td><td style="text-align: right">94–129 (35 DD)</td><td style="text-align: right">8</td><td style="text-align: right">Table 1</td></tr><tr><td style="text-align: right">Adult</td><td style="text-align: right">190–356 (166 DD)</td><td style="text-align: right">15</td><td style="text-align: right">Table 1</td></tr></table><p>The pre-adult period is 129 DD above 6 °C (~8–10 days at optimum ~25 °C). SAA is parthenogenetic with sex ratio = 1.0.</p><pre><code class="language-julia hljs"># Stage durations in DD &gt;6°C from Table 1
+const SAA_DD_INSTAR1 = 33.0     # instar I
+const SAA_DD_INSTAR2 = 29.0     # instar II (62 - 33)
+const SAA_DD_INSTAR3 = 32.0     # instar III (94 - 62)
+const SAA_DD_INSTAR4 = 35.0     # instar IV (129 - 94)
+const SAA_DD_ADULT   = 166.0    # reproductive adult (356 - 190)
+
+# Combine nymphal instars into a single immature stage for simplicity
+const SAA_DD_NYMPH = 129.0  # total nymphal period
+
+saa_stages = [
+    LifeStage(:nymph, DistributedDelay(25, SAA_DD_NYMPH; W0=12.5), saa_linear, 0.002),
+    LifeStage(:adult, DistributedDelay(15, SAA_DD_ADULT; W0=1.0),  saa_linear, 0.001),
+]
+
+saa = Population(:saa, saa_stages)
+
+println(&quot;SAA population:&quot;)
+println(&quot;  Life stages: &quot;, n_stages(saa))
+println(&quot;  Total substages: &quot;, n_substages(saa))
+println(&quot;  Pre-adult period: $(SAA_DD_NYMPH) DD &gt;$(SAA_TL)°C&quot;)
+println(&quot;  Adult lifespan: $(SAA_DD_ADULT) DD &gt;$(SAA_TL)°C&quot;)</code></pre><pre><code class="nohighlight hljs">SAA population:
+  Life stages: 2
+  Total substages: 40
+  Pre-adult period: 129.0 DD &gt;6.0°C
+  Adult lifespan: 166.0 DD &gt;6.0°C</code></pre><h3 id="SAA-Reproduction"><a class="docs-heading-anchor" href="#SAA-Reproduction">SAA Reproduction</a><a id="SAA-Reproduction-1"></a><a class="docs-heading-anchor-permalink" href="#SAA-Reproduction" title="Permalink"></a></h3><p>The age-specific fecundity at 21.1 °C follows the Bieri et al. (1983) model (Eq. 2 in Gutierrez and Ponti (2013)):</p><p class="math-container">\[f_{SAA}(x) = \frac{0.46^x}{1.035^x}\]</p><p>Temperature affects fecundity via a concave scalar <span>$\phi_{SAA}(T)$</span> active over 6–34 °C (Eq. 3):</p><p class="math-container">\[\phi_{SAA}(T) = 1 - \left(\frac{T - T_L - T_{mid}}{T_{mid}}\right)^2, \quad T_{mid} = 15.25\text{ °C}\]</p><p>Maximum fecundity is ~5 nymphs per day per adult at optimum (~21 °C). HPR reduces fecundity by 85% (Ruggle and Gutierrez (1995)).</p><pre><code class="language-julia hljs"># Fecundity profile constants from Table 1
+const SAA_FECUND_A = 0.46
+const SAA_FECUND_B = 1.035
+const SAA_SEX_RATIO = 1.0   # parthenogenetic
+
+# Oviposition thermal scalar
+const SAA_OVIP_TL  = 6.0    # lower limit (°C)
+const SAA_OVIP_MID = 15.25  # Tmid (°C) → optimum at TL + Tmid = 21.25°C
+const SAA_OVIP_TU  = SAA_OVIP_TL + 2.0 * SAA_OVIP_MID  # 36.5°C
+
+function saa_fecundity(x_days, T; hpr=false)
+    f = SAA_FECUND_A^x_days / SAA_FECUND_B^x_days
+    # Thermal scalar
+    T_centered = T - SAA_OVIP_TL - SAA_OVIP_MID
+    φ = max(0.0, 1.0 - (T_centered / SAA_OVIP_MID)^2)
+    result = f * φ
+    return hpr ? result * 0.15 : result  # 85% reduction under HPR
+end
+
+# Proportion alate (winged) morphs (Table 1 footnote)
+saa_alate_fraction(total_saa) = min(1.0, exp(-6.9 + 1.2 * log10(max(1.0, total_saa))))
+
+println(&quot;SAA fecundity at 21°C (nymphs/♀/day):&quot;)
+for age in [5, 10, 15, 20]
+    f = saa_fecundity(age, 21.0)
+    println(&quot;  Age $age days: $(round(f, digits=3))&quot;)
+end
+println(&quot;\nWith HPR (85% reduction):&quot;)
+for age in [5, 10, 15, 20]
+    f = saa_fecundity(age, 21.0; hpr=true)
+    println(&quot;  Age $age days: $(round(f, digits=3))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">SAA fecundity at 21°C (nymphs/♀/day):
+  Age 5 days: 0.017
+  Age 10 days: 0.0
+  Age 15 days: 0.0
+  Age 20 days: 0.0
+
+With HPR (85% reduction):
+  Age 5 days: 0.003
+  Age 10 days: 0.0
+  Age 15 days: 0.0
+  Age 20 days: 0.0</code></pre><h3 id="Parasitoid-Development-Rates"><a class="docs-heading-anchor" href="#Parasitoid-Development-Rates">Parasitoid Development Rates</a><a id="Parasitoid-Development-Rates-1"></a><a class="docs-heading-anchor-permalink" href="#Parasitoid-Development-Rates" title="Permalink"></a></h3><p>The three parasitoids share the same developmental rate form (Eq. 1) but differ in their parameters (Table 1):</p><table><tr><th style="text-align: right">Parameter</th><th style="text-align: right"><em>T. complanatus</em> (Tc)</th><th style="text-align: right"><em>P. palitans</em> (Pp)</th><th style="text-align: right"><em>A. semiflavus</em> (As)</th></tr><tr><td style="text-align: right"><span>$a_s$</span></td><td style="text-align: right">0.0052</td><td style="text-align: right">0.0041</td><td style="text-align: right">0.00435</td></tr><tr><td style="text-align: right"><span>$b_s$</span></td><td style="text-align: right">4.5</td><td style="text-align: right">3.9</td><td style="text-align: right">4.4</td></tr><tr><td style="text-align: right"><span>$T_L$</span> (°C)</td><td style="text-align: right">7.0</td><td style="text-align: right">7.0</td><td style="text-align: right">6.5</td></tr><tr><td style="text-align: right"><span>$T_U$</span> (°C)</td><td style="text-align: right">33.0</td><td style="text-align: right">30.5</td><td style="text-align: right">31.0</td></tr><tr><td style="text-align: right">Immature DD</td><td style="text-align: right">207</td><td style="text-align: right">231</td><td style="text-align: right">275</td></tr><tr><td style="text-align: right">Adult DD</td><td style="text-align: right">208 (207–415)</td><td style="text-align: right">264 (231–495)</td><td style="text-align: right">625 (275–900)</td></tr><tr><td style="text-align: right">Search rate α</td><td style="text-align: right">0.65</td><td style="text-align: right">0.60</td><td style="text-align: right">0.50</td></tr><tr><td style="text-align: right">Sex ratio (♀)</td><td style="text-align: right">0.53</td><td style="text-align: right">0.67</td><td style="text-align: right">0.70</td></tr></table><pre><code class="language-julia hljs"># --- Trioxys complanatus (Tc) ---
+const TC_A  = 0.0052
+const TC_B  = 4.5
+const TC_TL = 7.0
+const TC_TU = 33.0
+const TC_DD_IMMATURE = 207.0   # egg-larval + pupal (0–207 DD)
+const TC_DD_ADULT    = 208.0   # adult lifespan (207–415 DD)
+const TC_SEARCH      = 0.65    # search rate α
+const TC_SEX_RATIO   = 0.53    # proportion female
+
+tc_dev = BriereDevelopmentRate(0.0000225, TC_TL, TC_TU)
+tc_linear = LinearDevelopmentRate(TC_TL, TC_TU)
+
+tc_stages = [
+    LifeStage(:egg_larva, DistributedDelay(15, 103.0; W0=0.0),  tc_linear, 0.002),
+    LifeStage(:pupa,      DistributedDelay(10, 104.0; W0=0.0),  tc_linear, 0.001),
+    LifeStage(:adult,     DistributedDelay(12, TC_DD_ADULT; W0=0.25), tc_linear, 0.002),
+]
+
+tc = Population(:t_complanatus, tc_stages)
+
+# --- Praon palitans (Pp) ---
+const PP_A  = 0.0041
+const PP_B  = 3.9
+const PP_TL = 7.0
+const PP_TU = 30.5
+const PP_DD_IMMATURE = 231.0   # egg-larval + pupal (0–231 DD)
+const PP_DD_ADULT    = 264.0   # adult lifespan (231–495 DD)
+const PP_SEARCH      = 0.60
+const PP_SEX_RATIO   = 0.67
+
+pp_dev = BriereDevelopmentRate(0.0000175, PP_TL, PP_TU)
+pp_linear = LinearDevelopmentRate(PP_TL, PP_TU)
+
+pp_stages = [
+    LifeStage(:egg_larva, DistributedDelay(15, 115.0; W0=0.0),  pp_linear, 0.002),
+    LifeStage(:pupa,      DistributedDelay(10, 116.0; W0=0.0),  pp_linear, 0.001),
+    LifeStage(:adult,     DistributedDelay(12, PP_DD_ADULT; W0=0.25), pp_linear, 0.002),
+]
+
+pp = Population(:p_palitans, pp_stages)
+
+# --- Aphelinus semiflavus (As) ---
+const AS_A  = 0.00435
+const AS_B  = 4.4
+const AS_TL = 6.5
+const AS_TU = 31.0
+const AS_DD_IMMATURE = 275.0   # egg-larval + pupal (0–275 DD)
+const AS_DD_ADULT    = 625.0   # adult lifespan (275–900 DD)
+const AS_SEARCH      = 0.50
+const AS_SEX_RATIO   = 0.70
+
+as_dev = BriereDevelopmentRate(0.0000185, AS_TL, AS_TU)
+as_linear = LinearDevelopmentRate(AS_TL, AS_TU)
+
+as_stages = [
+    LifeStage(:egg_larva, DistributedDelay(15, 137.0; W0=0.0),  as_linear, 0.002),
+    LifeStage(:pupa,      DistributedDelay(10, 138.0; W0=0.0),  as_linear, 0.001),
+    LifeStage(:adult,     DistributedDelay(12, AS_DD_ADULT; W0=0.25), as_linear, 0.002),
+]
+
+as_pop = Population(:a_semiflavus, as_stages)
+
+println(&quot;Parasitoid populations:&quot;)
+for (name, pop) in [(&quot;T. complanatus&quot;, tc), (&quot;P. palitans&quot;, pp), (&quot;A. semiflavus&quot;, as_pop)]
+    println(&quot;  $name: $(n_stages(pop)) stages, $(n_substages(pop)) substages&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Parasitoid populations:
+  T. complanatus: 3 stages, 37 substages
+  P. palitans: 3 stages, 37 substages
+  A. semiflavus: 3 stages, 37 substages</code></pre><h3 id="Parasitoid-Host-Preferences"><a class="docs-heading-anchor" href="#Parasitoid-Host-Preferences">Parasitoid Host Preferences</a><a id="Parasitoid-Host-Preferences-1"></a><a class="docs-heading-anchor-permalink" href="#Parasitoid-Host-Preferences" title="Permalink"></a></h3><p>Each parasitoid has instar-specific preferences for attacking SAA (Table 1):</p><pre><code class="language-julia hljs"># Parasitoid preferences by SAA instar (Table 1)
+# Rows: instars I, II, III, IV, Adult
+const TC_PREF = [1.0, 1.0, 0.65, 0.325, 0.165]   # prefers young instars
+const PP_PREF = [0.375, 0.625, 0.375, 0.1875, 0.0625]  # prefers instar II
+const AS_PREF = [0.375, 0.625, 0.375, 0.1875, 0.0625]  # similar to Pp
+
+println(&quot;Parasitoid host preferences by SAA instar:&quot;)
+println(&quot;  Instar    Tc     Pp     As&quot;)
+for (i, name) in enumerate([&quot;I&quot;, &quot;II&quot;, &quot;III&quot;, &quot;IV&quot;, &quot;Adult&quot;])
+    println(&quot;  $name      $(TC_PREF[i])   $(PP_PREF[i])   $(AS_PREF[i])&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Parasitoid host preferences by SAA instar:
+  Instar    Tc     Pp     As
+  I      1.0   0.375   0.375
+  II      1.0   0.625   0.625
+  III      0.65   0.375   0.375
+  IV      0.325   0.1875   0.1875
+  Adult      0.165   0.0625   0.0625</code></pre><h3 id="Coccinellid-Predator-(*H.-convergens*)"><a class="docs-heading-anchor" href="#Coccinellid-Predator-(*H.-convergens*)">Coccinellid Predator (<em>H. convergens</em>)</a><a id="Coccinellid-Predator-(*H.-convergens*)-1"></a><a class="docs-heading-anchor-permalink" href="#Coccinellid-Predator-(*H.-convergens*)" title="Permalink"></a></h3><p>The ladybeetle model uses data from Nielson and Curie (1960) and Gutierrez et al. (1981). Parameters from Table 1:</p><pre><code class="language-julia hljs"># H. convergens development (Table 1)
+const HC_A  = 0.0023
+const HC_B  = 4.5
+const HC_TL = 5.5     # lower threshold (°C)
+const HC_TU = 38.0    # upper threshold (°C)
+const HC_DD_EGG   = 52.0     # egg (0–52 DD)
+const HC_DD_LARVA = 349.3    # larva (52–401.3 DD)
+const HC_DD_PUPA  = 73.7     # pupa (401.3–475 DD)
+const HC_DD_ADULT = 1470.0   # adult (475–1945 DD)
+const HC_SEARCH   = 0.40     # search rate α
+const HC_SEX_RATIO = 0.50    # 1:1 sex ratio
+
+hc_dev = BriereDevelopmentRate(0.0000098, HC_TL, HC_TU)
+hc_linear = LinearDevelopmentRate(HC_TL, HC_TU)
+
+hc_stages = [
+    LifeStage(:egg,   DistributedDelay(10, HC_DD_EGG;   W0=0.5), hc_linear, 0.002),
+    LifeStage(:larva, DistributedDelay(20, HC_DD_LARVA; W0=0.0), hc_linear, 0.001),
+    LifeStage(:pupa,  DistributedDelay(8,  HC_DD_PUPA;  W0=0.0), hc_linear, 0.001),
+    LifeStage(:adult, DistributedDelay(15, HC_DD_ADULT; W0=0.05), hc_linear, 0.001),
+]
+
+hc = Population(:h_convergens, hc_stages)
+
+# Coccinellid fecundity is mass-dependent (Eq. 6):
+# eggs/♀/day = φ_cocc(T) × (−7.6 + 20 × mg_prey/mg_female)
+# Immigration rate: 0.002 adults/day/m²
+const HC_IMMIGRATION = 0.002
+
+println(&quot;H. convergens:&quot;)
+println(&quot;  Lower threshold: $(HC_TL)°C&quot;)
+println(&quot;  Pre-adult period: $(HC_DD_EGG + HC_DD_LARVA + HC_DD_PUPA) DD&quot;)
+println(&quot;  Adult lifespan: $(HC_DD_ADULT) DD&quot;)
+println(&quot;  Immigration: $(HC_IMMIGRATION) adults/day/m²&quot;)</code></pre><pre><code class="nohighlight hljs">H. convergens:
+  Lower threshold: 5.5°C
+  Pre-adult period: 475.0 DD
+  Adult lifespan: 1470.0 DD
+  Immigration: 0.002 adults/day/m²</code></pre><h3 id="Fungal-Pathogen-(*E.-neoaphidis*)"><a class="docs-heading-anchor" href="#Fungal-Pathogen-(*E.-neoaphidis*)">Fungal Pathogen (<em>E. neoaphidis</em>)</a><a id="Fungal-Pathogen-(*E.-neoaphidis*)-1"></a><a class="docs-heading-anchor-permalink" href="#Fungal-Pathogen-(*E.-neoaphidis*)" title="Permalink"></a></h3><p>The fungal pathogen requires rainfall to initiate epizootics. Mortality is highest immediately after rainfall and decays over <span>$\Delta t = 55$</span> DD \&gt;6 °C (Eqs. 5a–5b in Gutierrez and Ponti (2013)):</p><p class="math-container">\[\mu_F(t_r) = 1 - e^{-0.5 \cdot \text{mm}(t_r)}\]</p><p>After rainfall at <span>$t_r$</span>, the mortality decays linearly:</p><p class="math-container">\[\mu_F(t) = \mu_F(t_r) \cdot \frac{\Delta t - (t - t_r)}{\Delta t}\]</p><p>If additional rainfall occurs during the decay period, the two mortality contributions are additive (capped at 1).</p><pre><code class="language-julia hljs"># Fungal pathogen parameters (Eqs. 5a–5b)
+const FUNGUS_DECAY_DD = 55.0   # decay period in DD &gt;6°C
+const FUNGUS_COEFF    = 0.5    # mortality coefficient per mm rainfall
+
+# Optimum temperature for germination: 18–21°C (Morgan et al. 1995)
+const FUNGUS_T_OPT_LOW  = 18.0
+const FUNGUS_T_OPT_HIGH = 21.0
+
+function fungal_mortality(rainfall_mm, dd_since_rain, T)
+    T &lt; 10.0 &amp;&amp; return 0.0
+    T &gt; 30.0 &amp;&amp; return 0.0
+    μ_rain = 1.0 - exp(-FUNGUS_COEFF * rainfall_mm)
+    decay = max(0.0, (FUNGUS_DECAY_DD - dd_since_rain) / FUNGUS_DECAY_DD)
+    return μ_rain * decay
+end
+
+println(&quot;Fungal mortality after rainfall events:&quot;)
+for mm in [1.0, 5.0, 10.0, 20.0]
+    μ = fungal_mortality(mm, 0.0, 20.0)
+    println(&quot;  $(mm) mm rainfall: μ=$(round(μ, digits=3)) (at onset, T=20°C)&quot;)
+end
+println(&quot;\nDecay over time (after 10mm rainfall, T=20°C):&quot;)
+for dd in [0, 10, 20, 30, 40, 55]
+    μ = fungal_mortality(10.0, Float64(dd), 20.0)
+    println(&quot;  $(dd) DD since rain: μ=$(round(μ, digits=3))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Fungal mortality after rainfall events:
+  1.0 mm rainfall: μ=0.393 (at onset, T=20°C)
+  5.0 mm rainfall: μ=0.918 (at onset, T=20°C)
+  10.0 mm rainfall: μ=0.993 (at onset, T=20°C)
+  20.0 mm rainfall: μ=1.0 (at onset, T=20°C)
+
+Decay over time (after 10mm rainfall, T=20°C):
+  0 DD since rain: μ=0.993
+  10 DD since rain: μ=0.813
+  20 DD since rain: μ=0.632
+  30 DD since rain: μ=0.451
+  40 DD since rain: μ=0.271
+  55 DD since rain: μ=0.0</code></pre><h2 id="Development-Rate-Curves"><a class="docs-heading-anchor" href="#Development-Rate-Curves">Development Rate Curves</a><a id="Development-Rate-Curves-1"></a><a class="docs-heading-anchor-permalink" href="#Development-Rate-Curves" title="Permalink"></a></h2><p>The following figure compares the temperature-dependent development rates for SAA and its natural enemies, corresponding to Fig. 2(a,c,e) of Gutierrez and Ponti (2013):</p><pre><code class="language-julia hljs">fig1 = Figure(size=(900, 450))
+ax1 = Axis(fig1[1, 1],
+    title=&quot;Temperature-Dependent Development Rates\n(Eq. 1: Rₛ(T) = aₛ(T−Tₗ) / (1 + bₛᵀ⁻ᵀᵘ))&quot;,
+    xlabel=&quot;Temperature (°C)&quot;,
+    ylabel=&quot;Development rate (1/days)&quot;,
+)
+
+T_range = 0.0:0.5:40.0
+
+# SAA
+dd_saa = [max(0.0, development_rate(saa_dev, T)) for T in T_range]
+
+# Parasitoids
+dd_tc = [max(0.0, development_rate(tc_dev, T)) for T in T_range]
+dd_pp = [max(0.0, development_rate(pp_dev, T)) for T in T_range]
+dd_as = [max(0.0, development_rate(as_dev, T)) for T in T_range]
+
+# Coccinellid
+dd_hc = [max(0.0, development_rate(hc_dev, T)) for T in T_range]
+
+lines!(ax1, collect(T_range), dd_saa, linewidth=3.0, color=:red,
+       label=&quot;SAA (Tₗ=6°C, Tᵤ=32.5°C)&quot;)
+lines!(ax1, collect(T_range), dd_tc, linewidth=2.0, color=:blue,
+       label=&quot;T. complanatus (Tₗ=7°C, Tᵤ=33°C)&quot;)
+lines!(ax1, collect(T_range), dd_pp, linewidth=2.0, color=:green,
+       label=&quot;P. palitans (Tₗ=7°C, Tᵤ=30.5°C)&quot;)
+lines!(ax1, collect(T_range), dd_as, linewidth=2.0, color=:purple,
+       label=&quot;A. semiflavus (Tₗ=6.5°C, Tᵤ=31°C)&quot;)
+lines!(ax1, collect(T_range), dd_hc, linewidth=2.0, color=:orange,
+       linestyle=:dash, label=&quot;H. convergens (Tₗ=5.5°C, Tᵤ=38°C)&quot;)
+
+axislegend(ax1, position=:lt, framevisible=true, labelsize=10)
+
+# Shade optimum range
+vspan!(ax1, 18.0, 25.0, color=(:green, 0.08))
+text!(ax1, 21.5, maximum(dd_saa) * 0.95,
+    text=&quot;Optimum\nrange&quot;, align=(:center, :top), fontsize=10, color=:green)
+
+fig1</code></pre><p><img src="../27_spotted_alfalfa_aphid_files/figure-commonmark/cell-10-output-1.png" alt/></p><h2 id="Trophic-Web-Definition"><a class="docs-heading-anchor" href="#Trophic-Web-Definition">Trophic Web Definition</a><a id="Trophic-Web-Definition-1"></a><a class="docs-heading-anchor-permalink" href="#Trophic-Web-Definition" title="Permalink"></a></h2><p>The six-component system is assembled using <code>TrophicWeb</code> with <code>FraserGilbertResponse</code> for parasitoids and predator. The search rates α from Table 1 are used directly.</p><pre><code class="language-julia hljs"># Build the multi-factor trophic web
+web = TrophicWeb()
+
+# Parasitoid → SAA links
+add_link!(web, TrophicLink(:t_complanatus, :saa,
+    FraserGilbertResponse(TC_SEARCH), 1.0))
+add_link!(web, TrophicLink(:p_palitans, :saa,
+    FraserGilbertResponse(PP_SEARCH), 1.0))
+add_link!(web, TrophicLink(:a_semiflavus, :saa,
+    FraserGilbertResponse(AS_SEARCH), 1.0))
+
+# Coccinellid → SAA (predation)
+add_link!(web, TrophicLink(:h_convergens, :saa,
+    FraserGilbertResponse(HC_SEARCH), 1.0))
+
+println(&quot;Trophic web: $(length(web.links)) links&quot;)
+for link in web.links
+    println(&quot;  $(link.predator_name) → $(link.prey_name)  (α=$(link.response.a))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Trophic web: 4 links
+  t_complanatus → saa  (α=0.65)
+  p_palitans → saa  (α=0.6)
+  a_semiflavus → saa  (α=0.5)
+  h_convergens → saa  (α=0.4)</code></pre><h2 id="Weather:-Mediterranean-California-(Central-Valley)"><a class="docs-heading-anchor" href="#Weather:-Mediterranean-California-(Central-Valley)">Weather: Mediterranean California (Central Valley)</a><a id="Weather:-Mediterranean-California-(Central-Valley)-1"></a><a class="docs-heading-anchor-permalink" href="#Weather:-Mediterranean-California-(Central-Valley)" title="Permalink"></a></h2><p>The model is driven by daily weather representative of the Central Valley of California, the heart of the state’s alfalfa production region. We generate synthetic weather for a Mediterranean climate with hot dry summers and mild wet winters:</p><pre><code class="language-julia hljs"># Synthetic daily weather for Central Valley, California
+n_years = 6
+n_days = 365 * n_years
+
+function california_temperature(day)
+    doy = mod(day - 1, 365) + 1
+    # Mean annual T ≈ 17°C, amplitude ≈ 10°C
+    T_mean = 17.0 + 10.0 * sin(2π * (doy - 100) / 365)
+    T_max = T_mean + 6.0
+    T_min = T_mean - 6.0
+    return (T_mean=T_mean, T_max=T_max, T_min=T_min)
+end
+
+function california_rainfall(day)
+    doy = mod(day - 1, 365) + 1
+    # Mediterranean pattern: wet Nov–Mar, dry May–Sep
+    # Winter months (Nov–Mar): ~2.5 mm/day average
+    # Summer months (May–Sep): ~0.1 mm/day
+    wet_factor = max(0.0, cos(2π * (doy - 15) / 365))
+    base = 0.1 + 2.5 * wet_factor^2
+    return base
+end
+
+weather_days = [begin
+    t = california_temperature(d)
+    r = california_rainfall(d)
+    DailyWeather(t.T_mean, t.T_min, t.T_max; rainfall=r)
+end for d in 1:n_days]
+weather = WeatherSeries(weather_days)
+
+# Verify seasonal range
+yr1_T = [california_temperature(d).T_mean for d in 1:365]
+yr1_R = [california_rainfall(d) for d in 1:365]
+println(&quot;Central Valley synthetic weather (year 1):&quot;)
+println(&quot;  Temperature range: $(round(minimum(yr1_T), digits=1))–$(round(maximum(yr1_T), digits=1))°C&quot;)
+println(&quot;  Annual rainfall: $(round(sum(yr1_R), digits=0)) mm&quot;)</code></pre><pre><code class="nohighlight hljs">Central Valley synthetic weather (year 1):
+  Temperature range: 7.0–27.0°C
+  Annual rainfall: 265.0 mm</code></pre><h2 id="Component-Analysis:-Factorial-Simulations"><a class="docs-heading-anchor" href="#Component-Analysis:-Factorial-Simulations">Component Analysis: Factorial Simulations</a><a id="Component-Analysis:-Factorial-Simulations-1"></a><a class="docs-heading-anchor-permalink" href="#Component-Analysis:-Factorial-Simulations" title="Permalink"></a></h2><p>Following Gutierrez and Ponti (2013), we assess each factor singly and in combination. The metric is cumulative SAA-days m<span>$^{-2}$</span> year<span>$^{-1}$</span>.</p><h3 id="Scenario-Setup-(Coupled-API)"><a class="docs-heading-anchor" href="#Scenario-Setup-(Coupled-API)">Scenario Setup (Coupled API)</a><a id="Scenario-Setup-(Coupled-API)-1"></a><a class="docs-heading-anchor-permalink" href="#Scenario-Setup-(Coupled-API)" title="Permalink"></a></h3><p>The factorial simulation uses <code>PopulationSystem</code> with <code>BulkPopulation</code> for SAA, <code>MortalityRule</code> for each control factor, and <code>ScalarState</code> for fungal epizootic tracking. Each day the SAA potential is reset from degree-days; mortality rules then apply independent survival reductions.</p><pre><code class="language-julia hljs">function run_saa_scenario(;
+    include_tc=false,
+    include_pp=false,
+    include_as=false,
+    include_coccinellids=false,
+    include_fungus=false,
+    include_hpr=false,
+    n_years=6
+)
+    n_sim = 365 * n_years
+
+    # Build weather with rainfall
+    wx_days = [begin
+        t = california_temperature(d)
+        r = california_rainfall(d)
+        DailyWeather(t.T_mean, t.T_min, t.T_max; rainfall=r)
+    end for d in 1:n_sim]
+    wx = WeatherSeries(wx_days)
+
+    # SAA: daily potential from degree-days (reset each day, no memory)
+    saa = BulkPopulation(:saa, 0.0; K=Inf,
+        growth_fn=(N, w, day, p) -&gt; begin
+            T = w.T_mean
+            dd = max(0.0, T - SAA_TL)
+            dd &gt; 0 ? 100.0 * dd / 15.0 : 0.0
+        end)
+
+    # Fungal DD since last rain (ScalarState with auto-update)
+    state_vars = AbstractStateVariable[]
+    if include_fungus
+        push!(state_vars, ScalarState(:fungus_dd, 100.0;
+            update=(val, sys, w, day, p) -&gt; begin
+                dd = max(0.0, w.T_mean - 6.0)
+                new_val = val + dd
+                w.rainfall &gt; 1.0 ? 0.0 : new_val
+            end))
+    end
+
+    # Mortality rules — each targets :saa, applied sequentially (multiplicative survival)
+    rules = AbstractInteractionRule[]
+    if include_hpr
+        push!(rules, MortalityRule(:saa, (sys, w, day, p) -&gt; 0.85))
+    end
+    if include_tc
+        push!(rules, MortalityRule(:saa,
+            (sys, w, day, p) -&gt; w.T_mean &gt; TC_TL ?
+                min(0.95, 1.0 - exp(-TC_SEARCH * 1.2)) : 0.0))
+    end
+    if include_pp
+        push!(rules, MortalityRule(:saa,
+            (sys, w, day, p) -&gt; w.T_mean &gt; PP_TL ?
+                min(0.95, 1.0 - exp(-PP_SEARCH * 0.9)) : 0.0))
+    end
+    if include_as
+        push!(rules, MortalityRule(:saa,
+            (sys, w, day, p) -&gt; w.T_mean &gt; AS_TL ?
+                min(0.95, 1.0 - exp(-AS_SEARCH * 0.6)) : 0.0))
+    end
+    if include_coccinellids
+        push!(rules, MortalityRule(:saa,
+            (sys, w, day, p) -&gt; w.T_mean &gt; HC_TL ?
+                1.0 - exp(-HC_SEARCH * 0.8) : 0.0))
+    end
+    if include_fungus
+        push!(rules, MortalityRule(:saa,
+            (sys, w, day, p) -&gt; begin
+                dd_rain = get_state(sys, :fungus_dd)
+                fungal_mortality(w.rainfall, dd_rain, w.T_mean)
+            end))
+    end
+
+    system = PopulationSystem(:saa =&gt; saa; state=state_vars)
+    prob = PBDMProblem(MultiSpeciesPBDMNew(), system, wx, (1, n_sim);
+        rules=rules)
+    sol = solve(prob, DirectIteration())
+
+    # Aggregate to annual SAA-days
+    daily_saa = sol[:saa]
+    saa_days_annual = [sum(daily_saa[(yr-1)*365+1:yr*365]) for yr in 1:n_years]
+    return saa_days_annual
+end
+
+using Statistics</code></pre><h3 id="Running-Factor-Combinations"><a class="docs-heading-anchor" href="#Running-Factor-Combinations">Running Factor Combinations</a><a id="Running-Factor-Combinations-1"></a><a class="docs-heading-anchor-permalink" href="#Running-Factor-Combinations" title="Permalink"></a></h3><pre><code class="language-julia hljs"># 1. No control
+s_none = run_saa_scenario()
+
+# 2. Single factors
+s_tc = run_saa_scenario(include_tc=true)
+s_pp = run_saa_scenario(include_pp=true)
+s_as = run_saa_scenario(include_as=true)
+s_cocc = run_saa_scenario(include_coccinellids=true)
+s_fung = run_saa_scenario(include_fungus=true)
+s_hpr = run_saa_scenario(include_hpr=true)
+
+# 3. All three parasitoids
+s_3para = run_saa_scenario(include_tc=true, include_pp=true, include_as=true)
+
+# 4. Parasitoids + coccinellids
+s_3para_cocc = run_saa_scenario(include_tc=true, include_pp=true,
+                                 include_as=true, include_coccinellids=true)
+
+# 5. All factors
+s_all = run_saa_scenario(include_tc=true, include_pp=true, include_as=true,
+                          include_coccinellids=true, include_fungus=true,
+                          include_hpr=true)
+
+println(&quot;Mean annual SAA-days m⁻² year⁻¹ (years 2–6):&quot;)
+baseline = mean(s_none[2:end])
+for (name, s) in [
+    (&quot;No control&quot;, s_none),
+    (&quot;Tc alone&quot;, s_tc),
+    (&quot;Pp alone&quot;, s_pp),
+    (&quot;As alone&quot;, s_as),
+    (&quot;Coccinellids alone&quot;, s_cocc),
+    (&quot;Fungus alone&quot;, s_fung),
+    (&quot;HPR alone&quot;, s_hpr),
+    (&quot;Tc + Pp + As&quot;, s_3para),
+    (&quot;Tc + Pp + As + C&quot;, s_3para_cocc),
+    (&quot;All factors&quot;, s_all)
+]
+    m = mean(s[2:end])
+    pct = round(100.0 * (1.0 - m / baseline), digits=1)
+    println(&quot;  $(rpad(name, 20)): $(round(m, sigdigits=3))  ($(pct)% reduction)&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Mean annual SAA-days m⁻² year⁻¹ (years 2–6):
+  No control          : 26800.0  (0.0% reduction)
+  Tc alone            : 12300.0  (54.2% reduction)
+  Pp alone            : 15600.0  (41.7% reduction)
+  As alone            : 19800.0  (25.9% reduction)
+  Coccinellids alone  : 19400.0  (27.4% reduction)
+  Fungus alone        : 26500.0  (1.1% reduction)
+  HPR alone           : 4020.0  (85.0% reduction)
+  Tc + Pp + As        : 5300.0  (80.2% reduction)
+  Tc + Pp + As + C    : 3850.0  (85.6% reduction)
+  All factors         : 571.0  (97.9% reduction)</code></pre><h3 id="Factorial-Population-Dynamics"><a class="docs-heading-anchor" href="#Factorial-Population-Dynamics">Factorial Population Dynamics</a><a id="Factorial-Population-Dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Factorial-Population-Dynamics" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig2 = Figure(size=(1000, 600))
+
+ax2 = Axis(fig2[1, 1],
+    title=&quot;Factorial SAA Suppression\n(cf. Fig. 4, Gutierrez &amp; Ponti 2013)&quot;,
+    xlabel=&quot;Year&quot;,
+    ylabel=&quot;SAA-days m⁻² year⁻¹ (log₁₀ scale)&quot;,
+    yscale=log10,
+    xticks=1:6
+)
+
+years = 1:6
+lines!(ax2, years, s_none,      linewidth=3,   color=:red,    label=&quot;No control&quot;)
+lines!(ax2, years, s_tc,        linewidth=2,   color=:blue,   label=&quot;Tc alone&quot;)
+lines!(ax2, years, s_pp,        linewidth=2,   color=:cyan,   label=&quot;Pp alone&quot;)
+lines!(ax2, years, s_as,        linewidth=2,   color=:purple, label=&quot;As alone&quot;)
+lines!(ax2, years, s_3para,     linewidth=2.5, color=:navy,   linestyle=:dash,
+       label=&quot;Tc + Pp + As&quot;)
+lines!(ax2, years, s_cocc,      linewidth=2,   color=:orange, label=&quot;Coccinellids (C)&quot;)
+lines!(ax2, years, s_fung,      linewidth=2,   color=:brown,  label=&quot;Fungus (F)&quot;)
+lines!(ax2, years, s_hpr,       linewidth=2.5, color=:green,  label=&quot;HPR&quot;)
+lines!(ax2, years, s_3para_cocc, linewidth=2.5, color=:teal,  linestyle=:dashdot,
+       label=&quot;Tc + Pp + As + C&quot;)
+lines!(ax2, years, s_all,       linewidth=3,   color=:black,  linestyle=:dot,
+       label=&quot;All factors&quot;)
+
+axislegend(ax2, position=:rt, framevisible=true, labelsize=9, nbanks=2)
+
+fig2</code></pre><p><img src="../27_spotted_alfalfa_aphid_files/figure-commonmark/cell-15-output-1.png" alt/></p><h2 id="Marginal-Contribution-Analysis"><a class="docs-heading-anchor" href="#Marginal-Contribution-Analysis">Marginal Contribution Analysis</a><a id="Marginal-Contribution-Analysis-1"></a><a class="docs-heading-anchor-permalink" href="#Marginal-Contribution-Analysis" title="Permalink"></a></h2><p>The marginal analysis estimates the average effect of each factor <span>$x_i$</span> given the average effects of all other factors, following Eq. 7 and Table 2 of Gutierrez and Ponti (2013). The marginal <span>$\log_{10}$</span> contributions are:</p><table><tr><th style="text-align: right">Factor</th><th style="text-align: right">Marginal <span>$\log_{10}$</span> effect</th><th style="text-align: right">Survivorship</th></tr><tr><td style="text-align: right">HPR (H)</td><td style="text-align: right">−1.294</td><td style="text-align: right">0.051</td></tr><tr><td style="text-align: right">Coccinellids (C)</td><td style="text-align: right">−1.059</td><td style="text-align: right">0.087</td></tr><tr><td style="text-align: right"><em>T. complanatus</em> (Tc)</td><td style="text-align: right">−0.972</td><td style="text-align: right">0.107</td></tr><tr><td style="text-align: right"><em>P. palitans</em> (Pp)</td><td style="text-align: right">−0.613</td><td style="text-align: right">0.244</td></tr><tr><td style="text-align: right"><em>A. semiflavus</em> (As)</td><td style="text-align: right">−0.516</td><td style="text-align: right">0.305</td></tr><tr><td style="text-align: right">Fungal pathogen (F)</td><td style="text-align: right">−0.462</td><td style="text-align: right">0.345</td></tr></table><pre><code class="language-julia hljs"># Marginal contributions from Table 2 (Gutierrez &amp; Ponti, 2013)
+factors = [&quot;HPR&quot;, &quot;Coccinellids&quot;, &quot;T. complanatus&quot;, &quot;P. palitans&quot;,
+           &quot;A. semiflavus&quot;, &quot;Fungus&quot;]
+marginal_log10 = [-1.294, -1.059, -0.972, -0.613, -0.516, -0.462]
+survivorship = 10.0 .^ marginal_log10
+
+fig3 = Figure(size=(800, 500))
+
+# Panel A: Marginal log10 contributions
+ax3a = Axis(fig3[1, 1],
+    title=&quot;Marginal Contributions to SAA Suppression\n(Table 2, Gutierrez &amp; Ponti 2013)&quot;,
+    ylabel=&quot;Marginal log₁₀(SAA-days) effect&quot;,
+    xticks=(1:6, factors),
+    xticklabelrotation=π/6,
+)
+
+colors = [:green, :orange, :blue, :cyan, :purple, :brown]
+barplot!(ax3a, 1:6, marginal_log10,
+    color=colors,
+    bar_labels=:y,
+    label_formatter=x -&gt; &quot;$(round(x, digits=3))&quot;,
+)
+
+hlines!(ax3a, [0.0], color=:black, linewidth=0.5)
+
+# Panel B: Survivorship fractions
+ax3b = Axis(fig3[2, 1],
+    ylabel=&quot;SAA survivorship fraction&quot;,
+    xlabel=&quot;Suppression factor&quot;,
+    xticks=(1:6, factors),
+    xticklabelrotation=π/6,
+)
+
+barplot!(ax3b, 1:6, survivorship,
+    color=colors,
+    bar_labels=:y,
+    label_formatter=x -&gt; &quot;$(round(x, digits=3))&quot;,
+)
+
+fig3</code></pre><p><img src="../27_spotted_alfalfa_aphid_files/figure-commonmark/cell-16-output-1.png" alt/></p><h2 id="Seasonal-Dynamics-with-Fungal-Epizootics"><a class="docs-heading-anchor" href="#Seasonal-Dynamics-with-Fungal-Epizootics">Seasonal Dynamics with Fungal Epizootics</a><a id="Seasonal-Dynamics-with-Fungal-Epizootics-1"></a><a class="docs-heading-anchor-permalink" href="#Seasonal-Dynamics-with-Fungal-Epizootics" title="Permalink"></a></h2><p>The following simulation shows the within-season dynamics of SAA and its natural enemies under Mediterranean California climate, highlighting how winter rainfall triggers fungal epizootics that supplement the action of parasitoids and predators.</p><pre><code class="language-julia hljs"># Daily SAA population trajectory for a single year (Coupled API)
+function daily_saa_dynamics(; include_all=true, year_offset=0)
+    n_sim = 365
+
+    # Build weather with rainfall for this year
+    wx_days = [begin
+        day = year_offset * 365 + doy
+        t = california_temperature(day)
+        r = california_rainfall(day)
+        DailyWeather(t.T_mean, t.T_min, t.T_max; rainfall=r)
+    end for doy in 1:365]
+    wx = WeatherSeries(wx_days)
+
+    saa = BulkPopulation(:saa, 10.0)
+    para = BulkPopulation(:parasitoids, include_all ? 0.5 : 0.0)
+    cocc = BulkPopulation(:coccinellids, include_all ? 0.05 : 0.0)
+
+    state_vars = AbstractStateVariable[]
+    if include_all
+        push!(state_vars, ScalarState(:fungus_dd, 100.0;
+            update=(val, sys, w, day, p) -&gt; begin
+                dd = max(0.0, w.T_mean - 6.0)
+                new_val = val + dd
+                w.rainfall &gt; 1.0 ? 0.0 : new_val
+            end))
+    end
+
+    dynamics = CustomRule(:dynamics, (sys, w, day, p) -&gt; begin
+        T = w.T_mean
+        dd = max(0.0, T - SAA_TL)
+        saa_N = total_population(sys[:saa].population)
+
+        growth_rate = dd &gt; 0 ? 0.08 * dd / 15.0 : 0.0
+        if p.include_all; growth_rate *= 0.15; end
+        nat_mort = 0.005
+
+        para_mort = 0.0; cocc_mort = 0.0; μ_fungus = 0.0
+        if p.include_all
+            para_N = total_population(sys[:parasitoids].population)
+            cocc_N = total_population(sys[:coccinellids].population)
+
+            if T &gt; TC_TL
+                para_mort = para_N * 0.02 * min(1.0, saa_N / (saa_N + 50.0))
+            end
+            if T &gt; HC_TL
+                cocc_mort = cocc_N * 0.015 * min(1.0, saa_N / (saa_N + 30.0))
+            end
+
+            dd_rain = has_state(sys, :fungus_dd) ? get_state(sys, :fungus_dd) : 100.0
+            μ_fungus = fungal_mortality(w.rainfall, dd_rain, T)
+        end
+
+        total_mort = nat_mort + para_mort + cocc_mort + μ_fungus
+        sys[:saa].population.value[] = max(0.01,
+            saa_N * (1.0 + growth_rate - min(0.99, total_mort)))
+
+        if p.include_all
+            para_N = total_population(sys[:parasitoids].population)
+            cocc_N = total_population(sys[:coccinellids].population)
+            sys[:parasitoids].population.value[] = max(0.01,
+                para_N + 0.001 * saa_N * dd / 200.0 - 0.02 * para_N)
+            sys[:coccinellids].population.value[] = max(0.005,
+                cocc_N + HC_IMMIGRATION + 0.0005 * saa_N * dd / 300.0 - 0.01 * cocc_N)
+        end
+
+        return (μ_fungus=μ_fungus,)
+    end)
+
+    system = PopulationSystem(:saa =&gt; saa, :parasitoids =&gt; para,
+                              :coccinellids =&gt; cocc; state=state_vars)
+    prob = PBDMProblem(MultiSpeciesPBDMNew(), system, wx, (1, n_sim);
+        p=(include_all=include_all,),
+        rules=AbstractInteractionRule[dynamics])
+    sol = solve(prob, DirectIteration())
+
+    saa_daily = sol[:saa]
+    para_daily = sol[:parasitoids]
+    cocc_daily = sol[:coccinellids]
+    fungus_mort = [r.μ_fungus for r in sol.rule_log[:dynamics]]
+
+    return saa_daily, para_daily, cocc_daily, fungus_mort
+end
+
+# Run with and without control
+saa_uncontrolled, _, _, _ = daily_saa_dynamics(include_all=false)
+saa_controlled, para_ctrl, cocc_ctrl, fungus_ctrl = daily_saa_dynamics(include_all=true)
+
+fig4 = Figure(size=(1000, 700))
+
+# Panel A: Population dynamics
+ax4a = Axis(fig4[1, 1],
+    title=&quot;Seasonal SAA Dynamics Under Multi-Factor Control\n(Central Valley, California — Mediterranean Climate)&quot;,
+    ylabel=&quot;Population density (m⁻²)&quot;,
+    xticklabelsvisible=false,
+)
+
+doy = 1:365
+lines!(ax4a, doy, saa_uncontrolled, linewidth=2.5, color=(:red, 0.4),
+       linestyle=:dash, label=&quot;SAA (no control)&quot;)
+lines!(ax4a, doy, saa_controlled, linewidth=2.5, color=:red,
+       label=&quot;SAA (all factors)&quot;)
+lines!(ax4a, doy, para_ctrl, linewidth=2, color=:blue,
+       label=&quot;Parasitoids (combined)&quot;)
+lines!(ax4a, doy, cocc_ctrl, linewidth=2, color=:orange,
+       label=&quot;H. convergens&quot;)
+
+axislegend(ax4a, position=:rt, framevisible=true, labelsize=10)
+
+# Panel B: Fungal mortality and rainfall
+ax4b = Axis(fig4[2, 1],
+    xlabel=&quot;Day of year&quot;,
+    ylabel=&quot;Fungal mortality rate&quot;,
+)
+
+rainfall = [california_rainfall(d) for d in 1:365]
+ax4b_right = Axis(fig4[2, 1],
+    ylabel=&quot;Rainfall (mm/day)&quot;,
+    yaxisposition=:right,
+    yticklabelcolor=:steelblue,
+    ylabelcolor=:steelblue,
+)
+hidespines!(ax4b_right)
+hidexdecorations!(ax4b_right)
+
+barplot!(ax4b_right, doy, rainfall, color=(:steelblue, 0.3), gap=0)
+lines!(ax4b, doy, fungus_ctrl, linewidth=2.5, color=:brown,
+       label=&quot;Fungal mortality (E. neoaphidis)&quot;)
+
+# Mark months
+ax4b.xticks = ([15, 46, 74, 105, 135, 166, 196, 227, 258, 288, 319, 349],
+               [&quot;Jan&quot;, &quot;Feb&quot;, &quot;Mar&quot;, &quot;Apr&quot;, &quot;May&quot;, &quot;Jun&quot;,
+                &quot;Jul&quot;, &quot;Aug&quot;, &quot;Sep&quot;, &quot;Oct&quot;, &quot;Nov&quot;, &quot;Dec&quot;])
+
+axislegend(ax4b, position=:rt, framevisible=true, labelsize=10)
+
+# Mark epizootic events
+vspan!(ax4b, 1, 90, color=(:brown, 0.05))
+text!(ax4b, 45, maximum(fungus_ctrl) * 0.9,
+    text=&quot;Winter\nepizootics&quot;, align=(:center, :top), fontsize=10, color=:brown)
+
+fig4</code></pre><p><img src="../27_spotted_alfalfa_aphid_files/figure-commonmark/cell-17-output-1.png" alt/></p><h2 id="Parameter-Sources"><a class="docs-heading-anchor" href="#Parameter-Sources">Parameter Sources</a><a id="Parameter-Sources-1"></a><a class="docs-heading-anchor-permalink" href="#Parameter-Sources" title="Permalink"></a></h2><p>All primary parameters are from Table 1 of Gutierrez and Ponti (2013) unless otherwise noted. Developmental rate data originate from the extensive laboratory studies of Messenger (1964) and Force and Messenger (1965).</p><table><tr><th style="text-align: right">Parameter</th><th style="text-align: right">Value</th><th style="text-align: right">Species</th><th style="text-align: right">Source</th><th style="text-align: right">Literature Range</th><th style="text-align: right">Status</th></tr><tr><td style="text-align: right"><span>$T_L$</span> (lower threshold)</td><td style="text-align: right">6 °C</td><td style="text-align: right">SAA</td><td style="text-align: right">Table 1</td><td style="text-align: right">5–7 °C (Messenger 1964)</td><td style="text-align: right">✓</td></tr><tr><td style="text-align: right"><span>$T_U$</span> (upper threshold)</td><td style="text-align: right">32.5 °C</td><td style="text-align: right">SAA</td><td style="text-align: right">Table 1</td><td style="text-align: right">31–34 °C (Messenger 1964)</td><td style="text-align: right">✓</td></tr><tr><td style="text-align: right"><span>$a_{SAA}$</span></td><td style="text-align: right">0.008</td><td style="text-align: right">SAA</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right"><span>$b_{SAA}$</span></td><td style="text-align: right">3.8</td><td style="text-align: right">SAA</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Pre-adult DD</td><td style="text-align: right">129</td><td style="text-align: right">SAA</td><td style="text-align: right">Table 1</td><td style="text-align: right">120–140 DD (Messenger 1964)</td><td style="text-align: right">✓</td></tr><tr><td style="text-align: right">Adult DD</td><td style="text-align: right">166</td><td style="text-align: right">SAA</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Sex ratio</td><td style="text-align: right">1.0</td><td style="text-align: right">SAA</td><td style="text-align: right">Table 1</td><td style="text-align: right">parthenogenetic</td><td style="text-align: right">✓</td></tr><tr><td style="text-align: right">HPR fecundity reduction</td><td style="text-align: right">85%</td><td style="text-align: right">SAA</td><td style="text-align: right">Ruggle &amp; Gutierrez (1995)</td><td style="text-align: right">—</td><td style="text-align: right">✓</td></tr><tr><td style="text-align: right">Alate proportion</td><td style="text-align: right"><span>$e^{-6.9+1.2\log_{10}N}$</span></td><td style="text-align: right">SAA</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right"><span>$T_L$</span></td><td style="text-align: right">7 °C</td><td style="text-align: right">Tc</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right"><span>$T_U$</span></td><td style="text-align: right">33 °C</td><td style="text-align: right">Tc</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Immature DD</td><td style="text-align: right">207</td><td style="text-align: right">Tc</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Search rate α</td><td style="text-align: right">0.65</td><td style="text-align: right">Tc</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Sex ratio</td><td style="text-align: right">0.53</td><td style="text-align: right">Tc</td><td style="text-align: right">field data</td><td style="text-align: right">—</td><td style="text-align: right">✓</td></tr><tr><td style="text-align: right"><span>$T_L$</span></td><td style="text-align: right">7 °C</td><td style="text-align: right">Pp</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right"><span>$T_U$</span></td><td style="text-align: right">30.5 °C</td><td style="text-align: right">Pp</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Immature DD</td><td style="text-align: right">231</td><td style="text-align: right">Pp</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Search rate α</td><td style="text-align: right">0.60</td><td style="text-align: right">Pp</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Sex ratio</td><td style="text-align: right">0.67</td><td style="text-align: right">Pp</td><td style="text-align: right">field data</td><td style="text-align: right">—</td><td style="text-align: right">✓</td></tr><tr><td style="text-align: right"><span>$T_L$</span></td><td style="text-align: right">6.5 °C</td><td style="text-align: right">As</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right"><span>$T_U$</span></td><td style="text-align: right">31 °C</td><td style="text-align: right">As</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Immature DD</td><td style="text-align: right">275</td><td style="text-align: right">As</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Search rate α</td><td style="text-align: right">0.50</td><td style="text-align: right">As</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Sex ratio</td><td style="text-align: right">0.70</td><td style="text-align: right">As</td><td style="text-align: right">field data</td><td style="text-align: right">—</td><td style="text-align: right">✓</td></tr><tr><td style="text-align: right"><span>$T_L$</span></td><td style="text-align: right">5.5 °C</td><td style="text-align: right">Hc</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right"><span>$T_U$</span></td><td style="text-align: right">38 °C</td><td style="text-align: right">Hc</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Egg DD</td><td style="text-align: right">52</td><td style="text-align: right">Hc</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Pre-adult DD</td><td style="text-align: right">475</td><td style="text-align: right">Hc</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Adult DD</td><td style="text-align: right">1470</td><td style="text-align: right">Hc</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Immigration</td><td style="text-align: right">0.002 m<span>$^{-2}$</span> d<span>$^{-1}$</span></td><td style="text-align: right">Hc</td><td style="text-align: right">Table 1</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Fungal decay period</td><td style="text-align: right">55 DD \&gt;6°C</td><td style="text-align: right"><em>E. neoaphidis</em></td><td style="text-align: right">Eq. 5</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Fungal mortality coeff</td><td style="text-align: right">0.5 per mm</td><td style="text-align: right"><em>E. neoaphidis</em></td><td style="text-align: right">Eq. 5</td><td style="text-align: right">—</td><td style="text-align: right"></td></tr><tr><td style="text-align: right">Fungal <span>$T$</span> optimum</td><td style="text-align: right">18–21 °C</td><td style="text-align: right"><em>E. neoaphidis</em></td><td style="text-align: right">Morgan et al. (1995)</td><td style="text-align: right">10–30 °C range</td><td style="text-align: right">✓</td></tr><tr><td style="text-align: right">k (substage counts)</td><td style="text-align: right">varied</td><td style="text-align: right">all</td><td style="text-align: right"><strong>assumed</strong></td><td style="text-align: right">—</td><td style="text-align: right">partitioned</td></tr></table><h2 id="Invasion-History-and-Biocontrol-Timeline"><a class="docs-heading-anchor" href="#Invasion-History-and-Biocontrol-Timeline">Invasion History and Biocontrol Timeline</a><a id="Invasion-History-and-Biocontrol-Timeline-1"></a><a class="docs-heading-anchor-permalink" href="#Invasion-History-and-Biocontrol-Timeline" title="Permalink"></a></h2><table><tr><th style="text-align: right">Year</th><th style="text-align: right">Event</th></tr><tr><td style="text-align: right">1954</td><td style="text-align: right">SAA first detected in New Mexico, rapidly spreads to California</td></tr><tr><td style="text-align: right">1955</td><td style="text-align: right">Severe damage to alfalfa in Central Valley; emergency response initiated</td></tr><tr><td style="text-align: right">1955–57</td><td style="text-align: right">Import and release of <em>T. complanatus</em>, <em>P. palitans</em>, <em>A. semiflavus</em></td></tr><tr><td style="text-align: right">1957</td><td style="text-align: right">First resistant alfalfa varieties (Lahontan, Moapa) released</td></tr><tr><td style="text-align: right">1958</td><td style="text-align: right"><em>T. complanatus</em> established across California</td></tr><tr><td style="text-align: right">1960s</td><td style="text-align: right">Multi-factor control largely achieved; SAA populations suppressed</td></tr><tr><td style="text-align: right">1964</td><td style="text-align: right">van den Bosch et al. publish comprehensive account of biological control</td></tr><tr><td style="text-align: right">1995</td><td style="text-align: right">Ruggle &amp; Gutierrez quantify HPR effects on SAA life-table parameters</td></tr><tr><td style="text-align: right">2013</td><td style="text-align: right">Gutierrez &amp; Ponti deconstruct relative contributions via PBDM</td></tr></table><h2 id="Key-Insights"><a class="docs-heading-anchor" href="#Key-Insights">Key Insights</a><a id="Key-Insights-1"></a><a class="docs-heading-anchor-permalink" href="#Key-Insights" title="Permalink"></a></h2><ol><li><p><strong>No single factor suffices</strong>: Each factor alone fails to control  SAA across all ecological zones of California and Arizona. Only the  combined action of all six factors achieves consistent suppression,  as observed in the field.</p></li><li><p><strong>HPR is the most important single factor</strong>: Host plant resistance  reduces SAA fecundity by ~85%, yielding the largest marginal effect  (<span>$\log_{10}$</span> = −1.294, survivorship = 0.051). This is consistent  with the field observation that resistant varieties were essential  for control.</p></li><li><p><strong>Coccinellid predation is surprisingly effective but unreliable</strong>:  Native coccinellid beetles rank second in marginal importance  (<span>$\log_{10}$</span> = −1.059) but their effect is highly variable across  locations and years.</p></li><li><p>***T. complanatus* is the key parasitoid**: Among the three imported  parasitoids, <em>T. complanatus</em> has the highest search rate (α =  0.65), prefers young instars, and contributes the largest marginal  parasitoid effect (<span>$\log_{10}$</span> = −0.972). It displaced <em>A.  semiflavus</em> over time.</p></li><li><p><strong>The fungal pathogen is weather-dependent and unreliable</strong>: <em>E.  neoaphidis</em> requires rainfall to initiate epizootics, making it  effective only in wetter coastal areas and during wet winters. In  the arid desert regions, it contributes negligibly.</p></li><li><p><strong>Synergistic interactions dominate</strong>: The regression model (Eq. 7)  shows large positive interaction terms (e.g., TP, TA, PA = +0.851,  +0.670, +0.530) indicating interference among factors, but these are  overwhelmed by the strong negative multi-factor interaction terms  (TPAC = −1.64, TPAH = −2.288).</p></li></ol><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-bieri1983modelling&quot; class=&quot;csl-entry&quot;&gt;</p><p>Bieri, M., J. Baumgärtner, G. Bianchi, V. Delucchi, and R. von Arx.</p><ol><li>“Development and Fecundity of Pea Aphid</li></ol><p>(&lt;span class=&quot;nocase&quot;&gt;Acyrthosiphon pisum&lt;/span&gt; Harris) as Affected by Constant Temperatures and by Pea Varieties.” <em>Mitteilungen Der Schweizerischen Entomologischen Gesellschaft</em> 56: 163–71. <a href="https://doi.org/10.5169/seals-402070">https://doi.org/10.5169/seals-402070</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-briere1999novel&quot; class=&quot;csl-entry&quot;&gt;</p><p>Brière, Jean-François, Pascale Pracros, Anne-Yvonne Le Roux, and Jean-Sébastien Pierre. 1999. “A Novel Rate Model of Temperature-Dependent Development for Arthropods.” <em>Environmental Entomology</em> 28 (1). <a href="https://doi.org/10.1093/ee/28.1.22">https://doi.org/10.1093/ee/28.1.22</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-force1964laboratory&quot; class=&quot;csl-entry&quot;&gt;</p><p>Force, D. C., and P. S. Messenger. 1965. “Laboratory Studies on Competition Among Three Parasites of the Spotted Alfalfa Aphid &lt;span class=&quot;nocase&quot;&gt;Therioaphis maculata&lt;/span&gt; (Buckton).” <em>Ecology</em> 46: 853–59. <a href="https://doi.org/10.2307/1934018">https://doi.org/10.2307/1934018</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-baumgartner1981population&quot; class=&quot;csl-entry&quot;&gt;</p><p>Gutierrez, A. P., J. U. Baumgärtner, and K. S. Hagen. 1981. “A Conceptual Model for Growth, Development, and Reproduction in the Ladybird Beetle, &lt;span class=&quot;nocase&quot;&gt;Hippodamia convergens&lt;/span&gt; (Coleoptera: Coccinellidae).” <em>The Canadian Entomologist</em> 113: 21–33. <a href="https://doi.org/10.4039/Ent11321-1">https://doi.org/10.4039/Ent11321-1</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-gutierrez2013deconstructing&quot; class=&quot;csl-entry&quot;&gt;</p><p>Gutierrez, Andrew Paul, and Luigi Ponti. 2013. “Deconstructing the Control of the Spotted Alfalfa Aphid &lt;span class=&quot;nocase&quot;&gt;Therioaphis maculata&lt;/span&gt;.” <em>Agricultural and Forest Entomology</em> 15: 272–84. <a href="https://doi.org/10.1111/afe.12015">https://doi.org/10.1111/afe.12015</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-messenger1964spotted&quot; class=&quot;csl-entry&quot;&gt;</p><p>Messenger, P. S. 1964. “The Influence of Rhythmically Fluctuating Temperatures on the Development and Reproduction of the Spotted Alfalfa Aphid, &lt;span class=&quot;nocase&quot;&gt;Therioaphis maculata&lt;/span&gt;.” <em>Journal of Economic Entomology</em> 57 (1): 71–76. <a href="https://doi.org/10.1093/jee/57.1.71">https://doi.org/10.1093/jee/57.1.71</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-nielson1960biology&quot; class=&quot;csl-entry&quot;&gt;</p><p>Nielson, M. W., and W. E. Curie. 1960. “Biology of the Convergent Lady Beetle When Fed a Spotted Alfalfa Aphid Diet.” <em>Journal of Economic Entomology</em> 53 (2): 257–59. <a href="https://doi.org/10.1093/jee/53.2.257">https://doi.org/10.1093/jee/53.2.257</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-ruggle1995life&quot; class=&quot;csl-entry&quot;&gt;</p><p>Ruggle, P., and A. P. Gutierrez. 1995. “Use of Life Tables to Assess Host Plant Resistance in Alfalfa to &lt;span class=&quot;nocase&quot;&gt;Therioaphis trifolii&lt;/span&gt; f. &lt;span class=&quot;nocase&quot;&gt;maculata&lt;/span&gt; (Homoptera: Aphididae): Hypothesis for Maintenance of Resistance.” <em>Environmental Entomology</em> 24 (2): 313–25. <a href="https://doi.org/10.1093/ee/24.2.313">https://doi.org/10.1093/ee/24.2.313</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../26_light_brown_apple_moth/">« Light Brown Apple Moth Invasion Potential</a><a class="docs-footer-nextpage" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

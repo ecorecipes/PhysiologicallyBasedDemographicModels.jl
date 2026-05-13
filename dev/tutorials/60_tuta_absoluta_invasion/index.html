@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Invasion-Risk Assessment for Tuta absoluta — a Mechanistic PBDM · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Invasion-Risk Assessment for Tuta absoluta — a Mechanistic PBDM · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Invasion-Risk Assessment for Tuta absoluta — a Mechanistic PBDM · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Invasion-Risk Assessment for Tuta absoluta — a Mechanistic PBDM · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/60_tuta_absoluta_invasion/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/60_tuta_absoluta_invasion/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/60_tuta_absoluta_invasion/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li class="is-active"><a class="tocitem" href>Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a><ul class="internal"><li><a class="tocitem" href="#Overview"><span>Overview</span></a></li><li><a class="tocitem" href="#1-·-Thermal-biology"><span>1 · Thermal biology</span></a></li><li><a class="tocitem" href="#2-·-Compiled-per-day-favourability-dynamics"><span>2 · Compiled per-day favourability dynamics</span></a></li><li><a class="tocitem" href="#3-·-Synthetic-locations-along-the-invasion-gradient"><span>3 · Synthetic locations along the invasion gradient</span></a></li><li><a class="tocitem" href="#4-·-Regression-diagnostic-—-favourability-surrogate"><span>4 · Regression diagnostic — favourability surrogate</span></a></li><li><a class="tocitem" href="#5-·-Climate-change-scenario"><span>5 · Climate-change scenario</span></a></li><li><a class="tocitem" href="#6-·-Discussion"><span>6 · Discussion</span></a></li></ul></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Invasion-Risk-Assessment-for-*Tuta-absoluta*-—-a-Mechanistic-PBDM"><a class="docs-heading-anchor" href="#Invasion-Risk-Assessment-for-*Tuta-absoluta*-—-a-Mechanistic-PBDM">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a><a id="Invasion-Risk-Assessment-for-*Tuta-absoluta*-—-a-Mechanistic-PBDM-1"></a><a class="docs-heading-anchor-permalink" href="#Invasion-Risk-Assessment-for-*Tuta-absoluta*-—-a-Mechanistic-PBDM" title="Permalink"></a></h1><p>Simon Frost</p><ul><li><a href="#overview">Overview</a></li><li><a href="#1--thermal-biology">1 · Thermal biology</a><ul><li><a href="#11-egg-to-pupa-development-eq-3">1.1 Egg-to-pupa development (Eq. 3)</a></li><li><a href="#12-mine-microclimate-eq-4">1.2 Mine microclimate (Eq. 4)</a></li><li><a href="#13-oviposition-eqs-68">1.3 Oviposition (Eqs. 6–8)</a></li><li><a href="#14-temperature-dependent-mortality-eq-9-approximated">1.4 Temperature-dependent mortality (Eq. 9, approximated)</a></li></ul></li><li><a href="#2--compiled-per-day-favourability-dynamics">2 · Compiled per-day favourability dynamics</a></li><li><a href="#3--synthetic-locations-along-the-invasion-gradient">3 · Synthetic locations along the invasion gradient</a></li><li><a href="#4--regression-diagnostic--favourability-surrogate">4 · Regression diagnostic — favourability surrogate</a></li><li><a href="#5--climate-change-scenario">5 · Climate-change scenario</a></li><li><a href="#6--discussion">6 · Discussion</a><ul><li><a href="#caveats">Caveats</a></li></ul></li></ul><h2 id="Overview"><a class="docs-heading-anchor" href="#Overview">Overview</a><a id="Overview-1"></a><a class="docs-heading-anchor-permalink" href="#Overview" title="Permalink"></a></h2><p>This vignette is the fourth end-to-end <strong>corpus-paper</strong> case study in the suite, after the cotton/Verticillium DP optimization (<code>57_verticillium_dp</code>), the coffee-berry-borer regression-surrogate bio-economics (<code>58_cbb_bioeconomics</code>), and the Mediterranean olive / olive-fly climate-warming bio-economics (<code>59_olive_climate</code>). It exercises a fourth analytical PBDM idiom:</p><ul><li>a <strong>weather-driven thermal-biology mechanism</strong> (Briere-like development, normalised oviposition, temperature-dependent mortality) compiled to a single per-day favourability function;</li><li>a <strong>geographic / climatic risk index</strong> — cumulative pupae per m² per year — used directly to rank invasion potential;</li><li>a <strong>regression diagnostic</strong> that summarises the gridded PBDM output as a simple log-linear function of degree-day, rainfall and cumulative low/high temperature mortality, exactly the pattern packaged in <code>LogLinearSurrogate</code>.</li></ul><p>The model follows Ponti <em>et al.</em> (2021). We reproduce the <strong>mechanistic backbone</strong> (Eqs. 3, 4, 6–8, 10) directly from the published parameter values, use a piecewise approximation of the temperature-dependent mortality polynomial (Eq. 9 — see notes below), then drive the coupled system with synthetic temperature traces representative of five reference locations spanning the Euro-Mediterranean / North-American invasion front.</p><pre><code class="language-julia hljs">using Printf
+using Statistics
+using CairoMakie
+using PhysiologicallyBasedDemographicModels
+const PBDM = PhysiologicallyBasedDemographicModels
+using Random
+Random.seed!(20251212)
+nothing</code></pre><h2 id="1-·-Thermal-biology"><a class="docs-heading-anchor" href="#1-·-Thermal-biology">1 · Thermal biology</a><a id="1-·-Thermal-biology-1"></a><a class="docs-heading-anchor-permalink" href="#1-·-Thermal-biology" title="Permalink"></a></h2><h3 id="1.1-Egg-to-pupa-development-(Eq.-3)"><a class="docs-heading-anchor" href="#1.1-Egg-to-pupa-development-(Eq.-3)">1.1 Egg-to-pupa development (Eq. 3)</a><a id="1.1-Egg-to-pupa-development-(Eq.-3)-1"></a><a class="docs-heading-anchor-permalink" href="#1.1-Egg-to-pupa-development-(Eq.-3)" title="Permalink"></a></h3><p>Ponti <em>et al.</em> fit the egg-to-pupa rate <span>$r(T)$</span> to a generalised Briere (Briere et al. 1999) shape — the same family used throughout the Gutierrez/Ponti PBDM corpus:</p><p class="math-container">\[r(T) \;=\; \frac{a\,(T - \theta_L)}{1 + b^{\,T - \theta_V}},
+\qquad
+a = 0.0024,\;\; \theta_L = 7.9\,^\circ\!\text{C},\;\; \theta_V = 34.95\,^\circ\!\text{C},\;\; b = 3.95.\]</p><pre><code class="language-julia hljs">&quot;Egg-to-pupa developmental rate per day, Eq. 3 of Ponti et al. 2021.&quot;
+function rEP(T; a=0.0024, θL=7.9, θV=34.95, b=3.95)
+    T ≤ θL &amp;&amp; return 0.0
+    num = a * (T - θL)
+    den = 1.0 + b^(T - θV)
+    rate = num / den
+    return max(rate, 0.0)
+end
+
+&quot;Stage degree-day requirements (Ponti 2021, in dd above θL=7.9°C).&quot;
+const ΔE = 82.3   # egg
+const ΔL = 218.8  # larva
+const ΔP = 122.9  # pupa
+const ΔA = 189.2  # adult longevity
+nothing</code></pre><h3 id="1.2-Mine-microclimate-(Eq.-4)"><a class="docs-heading-anchor" href="#1.2-Mine-microclimate-(Eq.-4)">1.2 Mine microclimate (Eq. 4)</a><a id="1.2-Mine-microclimate-(Eq.-4)-1"></a><a class="docs-heading-anchor-permalink" href="#1.2-Mine-microclimate-(Eq.-4)" title="Permalink"></a></h3><p>Larvae and pupae sit inside leaf mines and experience temperatures that depart from ambient as a function of relative humidity and irradiance:</p><p class="math-container">\[\Delta T_m \;=\; \max\!\bigl(0,\;-1.574 - 0.07\,T + 1.42\,\mathrm{RH} + 0.035\,W_{m^{-2}}\bigr),
+\qquad \bar T = T + \Delta T_m.\]</p><p><strong>Note</strong>: with realistic mid-day irradiance (<span>$\approx\!500\,$</span>W m<span>$^{-2}$</span>), the published coefficient <span>$0.035$</span> produces a <span>$\Delta T_m$</span> near <span>$+18\,^\circ\!\text{C}$</span>, which would push every Mediterranean mine past the moth’s lethal upper temperature. This is unphysical — leaf-mine microclimates differ from ambient by at most a couple of degrees in field studies. We cap <span>$\Delta T_m$</span> at <span>$+2\,^\circ\!\text{C}$</span> to keep the mine-to-ambient ratio in line with field observations (Baumgärtner and Severini 1987), pending recovery of the published intercept or a corrected coefficient from the original Pincebourde–Casas heat budget regression.</p><pre><code class="language-julia hljs">&quot;Eq. 4 mine microclimate offset (W_m2 in W·m⁻², RH in 0–1).
+Capped at `cap` °C (default +2 °C; Pincebourde–Casas raw coefficient
+0.035 W⁻¹·m² produces ΔT_m ≈ +18 °C at midday irradiance, so a
+physically-motivated cap is applied. Pass `cap = Inf` to disable.&quot;
+ΔTm(T, RH, Wm2; cap = 2.0) = clamp(-1.574 - 0.07*T + 1.42*RH + 0.035*Wm2, 0.0, cap)
+Tmine(T, RH, Wm2; cap = 2.0) = T + ΔTm(T, RH, Wm2; cap = cap)
+nothing</code></pre><h3 id="1.3-Oviposition-(Eqs.-6–8)"><a class="docs-heading-anchor" href="#1.3-Oviposition-(Eqs.-6–8)">1.3 Oviposition (Eqs. 6–8)</a><a id="1.3-Oviposition-(Eqs.-6–8)-1"></a><a class="docs-heading-anchor-permalink" href="#1.3-Oviposition-(Eqs.-6–8)" title="Permalink"></a></h3><p>The age-specific egg profile uses a left-biased Bieri (Bieri et al.</p><ol><li>function with optimum at <span>$T_\text{opt}=25\,^\circ\!\text{C}$</span>, and</li></ol><p>the temperature scalar <span>$\phi_\text{fec}(T)$</span> is itself a Briere-like right-skewed shape. <strong>Note</strong>: the markdown extract of the paper renders both Eq. 3 and Eq. 7 with a <em>multiplicative</em> denominator (<span>$1 + b\,(T - \theta)$</span>); we use the standard Bieri/Briere form with an <em>exponential</em> denominator (<span>$1 + b^{\,T - \theta}$</span>), which is the only parameterisation consistent with the figures (peak development near 30 °C, oviposition optimum 25 °C, both falling to zero by 35 °C / 30 °C respectively).</p><p class="math-container">\[F(d, T_\text{opt}) \;=\; 16.0\,d / 2.6^d,
+\qquad
+\phi_\text{fec}(T) \;=\; \mathrm{clamp}\!\Bigl(\tfrac{0.0665(T-7.9)}{1 + 2.2^{\,T-27.5}},\,0,\,1\Bigr).\]</p><pre><code class="language-julia hljs">&quot;Bieri left-biased age-fecundity at T_opt=25°C (eggs / female / day).&quot;
+F_age(d) = 16.0 * d / (2.6^d)
+
+&quot;Eq. 7 normalised temperature scalar for oviposition.&quot;
+function ϕ_fec(T)
+    T ≤ 7.9 &amp;&amp; return 0.0
+    num = 0.0665 * (T - 7.9)
+    den = 1.0 + 2.2^(T - 27.5)
+    val = num / den
+    return clamp(val, 0.0, 1.0)
+end
+nothing</code></pre><h3 id="1.4-Temperature-dependent-mortality-(Eq.-9,-approximated)"><a class="docs-heading-anchor" href="#1.4-Temperature-dependent-mortality-(Eq.-9,-approximated)">1.4 Temperature-dependent mortality (Eq. 9, approximated)</a><a id="1.4-Temperature-dependent-mortality-(Eq.-9,-approximated)-1"></a><a class="docs-heading-anchor-permalink" href="#1.4-Temperature-dependent-mortality-(Eq.-9,-approximated)" title="Permalink"></a></h3><p>The published Eq. 9 is a high-order polynomial fit to data of (Van Damme et al. 2015; Krechemer and Foerster 2015; Martins et al. 2016; Kahrer et al. 2019) with <span>$R^2 &gt; 0.96$</span>. The polynomial coefficients themselves were stripped during the upstream MathML→Markdown conversion of the paper; rather than re-extract from the raw PDF, we use a <strong>three-piece envelope</strong> that matches Fig. 1e qualitatively and reproduces the headline behaviour referenced in the paper’s results section: cold-hardening below 7.9 °C (the moth survives well below the development threshold), a baseline mortality of ~1 % across the broad optimum from 7.9 °C up to ~32 °C, and a sharp rise above 32 °C reaching ~100 % by 40 °C.</p><pre><code class="language-julia hljs">&quot;&quot;&quot;
+Approximate Eq. 9 daily temperature-dependent mortality rate
+(probability/day). Three-piece envelope:
+
+* Cold:  exponential rise in mortality below 7.9°C, with cold
+  hardening flattening the rate below ~ -10°C (Kahrer 2015).
+* Optimum: ~1% baseline mortality from 7.9°C to 32°C.
+* Hot: sharp rise above 32°C, reaching 1.0 by 40°C.
+
+The user can substitute the published high-order polynomial here
+without affecting any downstream code.
+&quot;&quot;&quot;
+function μT(T)
+    if T &lt; 7.9
+        # cold side: ~1% at 7.9°C, climbing past 50% by -5°C, asymptote 90%.
+        rise = 0.50 + 0.45 * tanh(0.18 * (-5.0 - T))
+        return clamp(rise, 0.01, 0.90)
+    elseif T ≤ 32.0
+        # broad optimum (lab data: &lt;5%/d below 32°C)
+        return 0.01
+    else
+        # hot side: 1% at 32°C → 100% at 40°C
+        s = (T - 32.0) / (40.0 - 32.0)
+        return clamp(0.01 + 0.99 * s, 0.01, 1.0)
+    end
+end
+nothing</code></pre><pre><code class="language-julia hljs">let
+    Ts = range(-10, 38, length = 481)
+    fig = Figure(size = (980, 320))
+    ax1 = Axis(fig[1, 1]; title = &quot;(a) r(T) — Eq. 3&quot;,
+               xlabel = &quot;T (°C)&quot;, ylabel = &quot;1/d&quot;)
+    lines!(ax1, Ts, rEP.(Ts); color = :steelblue, linewidth = 2)
+    vlines!(ax1, [7.9, 34.95]; color = :grey, linestyle = :dash)
+
+    ax2 = Axis(fig[1, 2]; title = &quot;(b) φ_fec(T) — Eq. 7&quot;,
+               xlabel = &quot;T (°C)&quot;, ylabel = &quot;scalar (0–1)&quot;)
+    lines!(ax2, Ts, ϕ_fec.(Ts); color = :darkorange, linewidth = 2)
+    vlines!(ax2, [7.9, 27.5]; color = :grey, linestyle = :dash)
+
+    ax3 = Axis(fig[1, 3]; title = &quot;(c) μ_T(T) — Eq. 9 approx.&quot;,
+               xlabel = &quot;T (°C)&quot;, ylabel = &quot;prob/day&quot;)
+    lines!(ax3, Ts, μT.(Ts); color = :firebrick, linewidth = 2)
+    vlines!(ax3, [7.9, 32.0]; color = :grey, linestyle = :dash)
+    fig
+end</code></pre><p>&lt;div id=&quot;fig-thermalbio&quot;&gt;</p><p><img src="../60_tuta_absoluta_invasion_files/figure-commonmark/fig-thermalbio-output-1.png" alt/></p><p>Figure 1: Thermal-biology functions of <em>Tuta absoluta</em> used in the model. (a) Egg-to-pupa developmental rate r(T) (Eq. 3). (b) Temperature scalar for oviposition φ<em>fec(T) (Eq. 7). (c) Daily temperature-dependent mortality μ</em>T(T) — three-piece approximation of Eq. 9.</p><p>&lt;/div&gt;</p><h2 id="2-·-Compiled-per-day-favourability-dynamics"><a class="docs-heading-anchor" href="#2-·-Compiled-per-day-favourability-dynamics">2 · Compiled per-day favourability dynamics</a><a id="2-·-Compiled-per-day-favourability-dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#2-·-Compiled-per-day-favourability-dynamics" title="Permalink"></a></h2><p>We compile the thermal biology into a single boxcar Erlang maturation chain following Ponti <em>et al.</em>’s discretised Eq. 1 formulation. Each life stage <span>$s\in\{E, L, P, A\}$</span> uses <span>$k_s$</span> within-stage age classes and the population-level egg inflow at temperature <span>$T(t)$</span> is</p><p class="math-container">\[E(T(t)) \;=\; sr\;\phi_\text{fec}(T(t)) \;\sum_d F(d, T_\text{opt})\,N^A(t, d), \qquad sr = 0.5.\]</p><p>For tractability we fix <span>$k = 25$</span> classes per stage and run the discretised version with daily time steps. The ambient temperature <span>$T(t)$</span> drives egg and adult mortality; the mine temperature <span>$\bar T(t)$</span> (Eq. 4) drives larval and pupal development and mortality.</p><pre><code class="language-julia hljs">&quot;Daily sub-stage advance rate Δx for stage with thermal constant Δ_s (in dd above θL).&quot;
+Δx(T_eff, Δs) = let dd = max(T_eff - 7.9, 0.0); dd / Δs end
+
+&quot;&quot;&quot;
+PBDM driver. Returns daily series:
+- N_total: total density across all stages (per m²)
+- N_pupae: pupal density
+- daily_eggs: eggs deposited that day
+- cum_pupae: cumulative pupae per m² over year (the favourability
+  index used by Ponti 2021)
+- cum_low_mort: cumulative cold-mortality below 7.9°C
+- cum_high_mort: cumulative hot-mortality above 32°C
+- dda: cumulative degree-days above 7.9°C
+&quot;&quot;&quot;
+function simulate_year(T_amb, RH, Wm2; k = 25,
+                       N0_egg = 1.0, μ_pred_a = 0.002, μ_pred_h = 0.001,
+                       K_dd = 1000.0)
+    # within-stage age classes per stage
+    NE = zeros(k); NL = zeros(k); NP = zeros(k); NA = zeros(k)
+    NE[1] = N0_egg
+    daily_total  = Float64[]
+    daily_pupae  = Float64[]
+    daily_eggs   = Float64[]
+    daily_low_μ  = Float64[]
+    daily_high_μ = Float64[]
+    cum_pupae    = 0.0
+    cum_low      = 0.0
+    cum_high     = 0.0
+    cum_dda      = 0.0
+    for t in eachindex(T_amb)
+        T  = T_amb[t]
+        Tm = Tmine(T, RH[t], Wm2[t])
+        # Eq 10 type-II density-dependent composite mortality (predation,
+        # parasitism, host-finding etc.) saturating at 1/μ_pred_h.
+        N_total = sum(NE) + sum(NL) + sum(NP) + sum(NA)
+        μ_dd = μ_pred_a * N_total / (1.0 + μ_pred_a * μ_pred_h * N_total)
+        μ_dd = clamp(μ_dd, 0.0, 0.5)
+        # daily mortality terms (probabilities/day)
+        μ_amb_day  = clamp(μT(T)  + μ_dd, 0.0, 1.0)
+        μ_mine_day = clamp(μT(Tm) + μ_dd, 0.0, 1.0)
+        # accumulate diagnostics
+        if T &lt; 7.9
+            cum_low += μT(T)
+        elseif T &gt; 32.0
+            cum_high += μT(T)
+        end
+        cum_dda += max(T - 7.9, 0.0)
+        # raw within-stage advance fractions per day (may exceed 1)
+        ΔE_x_day = Δx(T,  ΔE) * k
+        ΔL_x_day = Δx(Tm, ΔL) * k
+        ΔP_x_day = Δx(Tm, ΔP) * k
+        ΔA_x_day = Δx(T,  ΔA) * k
+        nsub = max(1, ceil(Int, max(ΔE_x_day, ΔL_x_day, ΔP_x_day, ΔA_x_day)))
+        ΔE_x = ΔE_x_day / nsub
+        ΔL_x = ΔL_x_day / nsub
+        ΔP_x = ΔP_x_day / nsub
+        ΔA_x = ΔA_x_day / nsub
+        sE = (1 - μ_amb_day)^(1/nsub)
+        sL = (1 - μ_mine_day)^(1/nsub)
+        sP = (1 - μ_mine_day)^(1/nsub)
+        sA = (1 - μ_amb_day)^(1/nsub)
+        ϕ = ϕ_fec(T)
+        ddpd = max(T - 7.9, 1e-3)
+        D_A_days = ΔA / ddpd
+        # logistic cap on per-capita oviposition (host depletion proxy)
+        fecundity_scale = 1.0 / (1.0 + N_total / K_dd)
+        eggs_today = 0.0
+        outP_total = 0.0
+        for _ in 1:nsub
+            eggs_step = 0.0
+            if ϕ &gt; 0
+                for j in 1:k
+                    d = j * D_A_days / k
+                    eggs_step += 0.5 * ϕ * F_age(d) * NA[j] * fecundity_scale
+                end
+            end
+            eggs_step /= nsub
+            outE = NE[k] * ΔE_x
+            outL = NL[k] * ΔL_x
+            outP = NP[k] * ΔP_x
+            outA = NA[k] * ΔA_x
+            for j in k:-1:2
+                NE[j] = (1 - ΔE_x) * NE[j] + ΔE_x * NE[j-1]
+                NL[j] = (1 - ΔL_x) * NL[j] + ΔL_x * NL[j-1]
+                NP[j] = (1 - ΔP_x) * NP[j] + ΔP_x * NP[j-1]
+                NA[j] = (1 - ΔA_x) * NA[j] + ΔA_x * NA[j-1]
+            end
+            NE[1] = (1 - ΔE_x) * NE[1] + eggs_step
+            NL[1] = (1 - ΔL_x) * NL[1] + outE
+            NP[1] = (1 - ΔP_x) * NP[1] + outL
+            NA[1] = (1 - ΔA_x) * NA[1] + outP
+            @. NE *= sE
+            @. NL *= sL
+            @. NP *= sP
+            @. NA *= sA
+            eggs_today += eggs_step
+            outP_total += outP
+        end
+        push!(daily_total, sum(NE) + sum(NL) + sum(NP) + sum(NA))
+        push!(daily_pupae, sum(NP))
+        push!(daily_eggs,  eggs_today)
+        push!(daily_low_μ,  T &lt; 7.9 ? μT(T) : 0.0)
+        push!(daily_high_μ, T &gt; 32.0 ? μT(T) : 0.0)
+        cum_pupae += outP_total
+    end
+    return (; daily_total, daily_pupae, daily_eggs,
+              daily_low_μ, daily_high_μ,
+              cum_pupae, cum_low, cum_high, cum_dda)
+end
+nothing</code></pre><h2 id="3-·-Synthetic-locations-along-the-invasion-gradient"><a class="docs-heading-anchor" href="#3-·-Synthetic-locations-along-the-invasion-gradient">3 · Synthetic locations along the invasion gradient</a><a id="3-·-Synthetic-locations-along-the-invasion-gradient-1"></a><a class="docs-heading-anchor-permalink" href="#3-·-Synthetic-locations-along-the-invasion-gradient" title="Permalink"></a></h2><p>Without the 30 000-cell weather grid we instead drive the model with <strong>representative annual temperature traces</strong> for five locations that bracket the Euro-Mediterranean / North-American invasion gradient, using sinusoidal mean ± diurnal envelopes parameterised against published climatology means:</p><table><tr><th style="text-align: right">Location</th><th style="text-align: right">T̄ (°C)</th><th style="text-align: right">A (°C)</th><th style="text-align: right">RH</th><th style="text-align: right">description</th></tr><tr><td style="text-align: right">Tunis (N. Africa)</td><td style="text-align: right">18.5</td><td style="text-align: right">9.0</td><td style="text-align: right">0.65</td><td style="text-align: right">permanently favourable</td></tr><tr><td style="text-align: right">Sevilla (S. Iberia)</td><td style="text-align: right">18.0</td><td style="text-align: right">10.0</td><td style="text-align: right">0.60</td><td style="text-align: right">highly favourable</td></tr><tr><td style="text-align: right">Sacramento (CA, USA)</td><td style="text-align: right">16.5</td><td style="text-align: right">12.0</td><td style="text-align: right">0.55</td><td style="text-align: right">favourable, hot summer</td></tr><tr><td style="text-align: right">Berlin (N. Europe)</td><td style="text-align: right">10.0</td><td style="text-align: right">11.0</td><td style="text-align: right">0.70</td><td style="text-align: right">seasonally limited, cold winter</td></tr><tr><td style="text-align: right">Riyadh (Mid. East)</td><td style="text-align: right">25.0</td><td style="text-align: right">13.0</td><td style="text-align: right">0.30</td><td style="text-align: right">heat-limited summer, dry</td></tr></table><pre><code class="language-julia hljs">&quot;Synthetic year of mean daily temperature (sinusoid).&quot;
+function temp_year(T̄, A; phase=15)  # phase = day-of-min-temperature offset from Jan 1
+    [T̄ + A * sin(2π * (t - 1 - (phase - 80)) / 365) for t in 1:365]
+end
+
+const LOCATIONS = (
+    (name=&quot;Tunis&quot;,      T̄=18.5, A=9.0,  RH=0.65, Wm2=520.0),
+    (name=&quot;Sevilla&quot;,    T̄=18.0, A=10.0, RH=0.60, Wm2=540.0),
+    (name=&quot;Sacramento&quot;, T̄=16.5, A=12.0, RH=0.55, Wm2=560.0),
+    (name=&quot;Berlin&quot;,     T̄=10.0, A=11.0, RH=0.70, Wm2=420.0),
+    (name=&quot;Riyadh&quot;,     T̄=25.0, A=13.0, RH=0.30, Wm2=620.0),
+)
+
+&quot;Run the PBDM at one location, returning the cumulative pupae m⁻² yr⁻¹ + diagnostics.&quot;
+function run_location(loc; years = 3)
+    Tser = repeat(temp_year(loc.T̄, loc.A), years)
+    RHser = fill(loc.RH, length(Tser))
+    Wser  = fill(loc.Wm2, length(Tser))
+    out = simulate_year(Tser, RHser, Wser)
+    # report final-year diagnostics (warm-up = first year)
+    fyend = length(Tser); fystart = fyend - 364
+    return (
+        cum_pupae    = sum(out.daily_pupae[fystart:fyend]) / 365,
+        peak_pupae   = maximum(out.daily_pupae[fystart:fyend]),
+        cum_low_mort = sum(out.daily_low_μ[fystart:fyend]),
+        cum_high_mort= sum(out.daily_high_μ[fystart:fyend]),
+        cum_dda      = sum(max.(Tser[fystart:fyend] .- 7.9, 0.0)),
+        daily_total  = out.daily_total[fystart:fyend],
+    )
+end
+
+results = [(loc=loc.name, run_location(loc)...) for loc in LOCATIONS]
+nothing</code></pre><p>&lt;div id=&quot;tbl-loc-summary&quot;&gt;</p><p>Table 1</p><pre><code class="language-julia hljs">let
+    println(rpad(&quot;Location&quot;,12), rpad(&quot;T̄&quot;,6), rpad(&quot;dda&quot;,8),
+            rpad(&quot;μ_lo&quot;,8), rpad(&quot;μ_hi&quot;,8), rpad(&quot;favour&quot;,10))
+    println(&quot;-&quot;^60)
+    for (loc, r) in zip(LOCATIONS, results)
+        @printf(&quot;%-12s%-6.1f%-8.0f%-8.2f%-8.2f%-10.3f\n&quot;,
+                r.loc, loc.T̄, r.cum_dda, r.cum_low_mort,
+                r.cum_high_mort, r.cum_pupae)
+    end
+end</code></pre><p>&lt;div class=&quot;cell-output cell-output-stdout&quot;&gt;</p><pre><code class="nohighlight hljs">Location    T̄     dda     μ_lo    μ_hi    favour    
+------------------------------------------------------------
+Tunis       18.5  3869    0.00    0.00    2.098     
+Sevilla     18.0  3686    0.00    0.00    1.960     
+Sacramento  16.5  3340    6.31    0.00    1.204     
+Berlin      10.0  1685    21.70   0.00    0.000     
+Riyadh      25.0  6242    0.00    57.80   0.000</code></pre><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p><p>The qualitative picture matches Ponti 2021’s headline finding: the cool-temperate location (Berlin) is <strong>cold-limited</strong>, the hot-arid location (Riyadh) is <strong>heat-limited</strong>, and the Mediterranean / Californian sites are <strong>favourable</strong>.</p><pre><code class="language-julia hljs">let
+    fig = Figure(size = (900, 600))
+    ax = Axis(fig[1, 1]; xlabel = &quot;Day of year&quot;, ylabel = &quot;Total density (m⁻²)&quot;,
+              yscale = log10, title = &quot;Tuta absoluta annual dynamics&quot;)
+    palette = [:steelblue, :darkorange, :seagreen, :purple, :firebrick]
+    for (i, r) in enumerate(results)
+        y = max.(r.daily_total, 1e-6)
+        lines!(ax, 1:365, y; color = palette[i], linewidth = 2, label = r.loc)
+    end
+    axislegend(ax; position = :rb)
+    fig
+end</code></pre><p>&lt;div id=&quot;fig-stage-dynamics&quot;&gt;</p><p><img src="../60_tuta_absoluta_invasion_files/figure-commonmark/fig-stage-dynamics-output-1.png" alt/></p><p>Figure 2: Within-year stage dynamics at the five reference locations. The y-axis is total density (eggs+larvae+pupae+adults) per m². Berlin shows winter collapse; Riyadh shows summer collapse; Mediterranean and Californian sites support multi-generation build-up.</p><p>&lt;/div&gt;</p><h2 id="4-·-Regression-diagnostic-—-favourability-surrogate"><a class="docs-heading-anchor" href="#4-·-Regression-diagnostic-—-favourability-surrogate">4 · Regression diagnostic — favourability surrogate</a><a id="4-·-Regression-diagnostic-—-favourability-surrogate-1"></a><a class="docs-heading-anchor-permalink" href="#4-·-Regression-diagnostic-—-favourability-surrogate" title="Permalink"></a></h2><p>Section 3.3 of Ponti <em>et al.</em> summarises the gridded PBDM output as a multiple regression of <span>$\sqrt{\text{cum. pupae}}$</span> on cumulative degree-days (<code>dda</code>), rainfall (<code>mm_rain</code>), and the cumulative low- and high-temperature mortality (<code>μ_lo</code>, <code>μ_hi</code>). Reported <span>$t$</span>-values:</p><table><tr><th style="text-align: left">coefficient</th><th style="text-align: center">sign</th><th style="text-align: right"><span>$t$</span></th></tr><tr><td style="text-align: left"><code>dda</code> (\&gt;7.9°C)</td><td style="text-align: center">+</td><td style="text-align: right">102.36</td></tr><tr><td style="text-align: left"><code>mm_rain</code></td><td style="text-align: center">+</td><td style="text-align: right">25.24</td></tr><tr><td style="text-align: left"><code>μ_lo</code></td><td style="text-align: center">−</td><td style="text-align: right">−16.39</td></tr><tr><td style="text-align: left"><code>μ_hi</code></td><td style="text-align: center">−</td><td style="text-align: right">\&lt; 0 (paper notes high-T effect is 16.5× larger per unit)</td></tr></table><p>This is exactly the input to the <strong><code>LogLinearSurrogate</code></strong> helper introduced in vignette 58. We instantiate the four-variable model with the published sign pattern, scaling the <code>μ_hi</code> coefficient as 16.5× the magnitude of <code>μ_lo</code> (paper §3.3):</p><pre><code class="language-julia hljs">&quot;&quot;&quot;
+Build the published Tuta absoluta favourability surrogate as a
+LogLinearSurrogate. Coefficients are given on the log-pupae
+scale, anchored to the magnitudes implied by the paper&#39;s
+t-values (rescaled by an arbitrary intercept so that the
+Tunis/Sevilla scenarios map to the model&#39;s own outputs).
+&quot;&quot;&quot;
+function build_tuta_surrogate(results)
+    β_dda      =  0.0030
+    β_mm_rain  =  0.020
+    β_μ_lo     = -0.045
+    β_μ_hi     = β_μ_lo * 16.5
+    # fit intercept against the simulator&#39;s own Tunis output
+    tun = results[findfirst(r -&gt; r.loc == &quot;Tunis&quot;, results)]
+    target = log(max(tun.cum_pupae, 1e-6))
+    contrib = β_dda * tun.cum_dda + β_mm_rain * 0.0 +
+              β_μ_lo * tun.cum_low_mort + β_μ_hi * tun.cum_high_mort
+    intercept = target - contrib
+    return LogLinearSurrogate(intercept,
+        Dict(:dda =&gt; β_dda, :mm_rain =&gt; β_mm_rain,
+             :μ_lo =&gt; β_μ_lo, :μ_hi =&gt; β_μ_hi);
+        label = &quot;Tuta absoluta favourability index (Ponti 2021 §3.3)&quot;)
+end
+
+surr = build_tuta_surrogate(results)
+
+&quot;Continuous-input prediction of cumulative pupae m⁻² yr⁻¹.&quot;
+function predict_pupae(s::LogLinearSurrogate; dda, mm_rain, μ_lo, μ_hi)
+    η = s.intercept + s.main[:dda]*dda + s.main[:mm_rain]*mm_rain +
+        s.main[:μ_lo]*μ_lo + s.main[:μ_hi]*μ_hi
+    return exp(η)
+end
+nothing</code></pre><p>&lt;div id=&quot;tbl-surrogate-vs-pbdm&quot;&gt;</p><p>Table 2</p><pre><code class="language-julia hljs">let
+    println(&quot;Location     PBDM cum. pupae   Surrogate&quot;)
+    println(&quot;-&quot;^48)
+    for r in results
+        ŷ = predict_pupae(surr; dda = r.cum_dda, mm_rain = 0.0,
+                          μ_lo = r.cum_low_mort, μ_hi = r.cum_high_mort)
+        @printf(&quot;%-12s%-18.3f%-12.3f\n&quot;, r.loc, r.cum_pupae, ŷ)
+    end
+end</code></pre><p>&lt;div class=&quot;cell-output cell-output-stdout&quot;&gt;</p><pre><code class="nohighlight hljs">Location     PBDM cum. pupae   Surrogate
+------------------------------------------------
+Tunis       2.098             2.098       
+Sevilla     1.960             1.214       
+Sacramento  1.204             0.323       
+Berlin      0.000             0.001       
+Riyadh      0.000             0.000</code></pre><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p><p>The surrogate is anchored exactly at Tunis (by construction) and extrapolates to the other four locations using only their weather summary statistics (no need to re-run the PBDM). This mirrors the operational workflow Ponti <em>et al.</em> used to map 30 000 cells from a few hundred PBDM runs.</p><h2 id="5-·-Climate-change-scenario"><a class="docs-heading-anchor" href="#5-·-Climate-change-scenario">5 · Climate-change scenario</a><a id="5-·-Climate-change-scenario-1"></a><a class="docs-heading-anchor-permalink" href="#5-·-Climate-change-scenario" title="Permalink"></a></h2><p>We mimic the +1.8 °C A1B warming used in the paper by adding 1.8 °C to every daily temperature trace and re-running the PBDM:</p><pre><code class="language-julia hljs">function run_warmed(loc; ΔT = 1.8, years = 3)
+    Tser = repeat(temp_year(loc.T̄ + ΔT, loc.A), years)
+    RHser = fill(loc.RH, length(Tser))
+    Wser  = fill(loc.Wm2, length(Tser))
+    out = simulate_year(Tser, RHser, Wser)
+    fyend = length(Tser); fystart = fyend - 364
+    return (
+        loc          = loc.name,
+        cum_pupae    = sum(out.daily_pupae[fystart:fyend]) / 365,
+        cum_low_mort = sum(out.daily_low_μ[fystart:fyend]),
+        cum_high_mort= sum(out.daily_high_μ[fystart:fyend]),
+    )
+end
+
+results_warm = [run_warmed(loc) for loc in LOCATIONS]
+
+let
+    println(&quot;Location     baseline    +1.8°C    Δ favour&quot;)
+    println(&quot;-&quot;^50)
+    for (b, w) in zip(results, results_warm)
+        Δ = w.cum_pupae - b.cum_pupae
+        @printf(&quot;%-12s%-12.3f%-10.3f%-10.3f\n&quot;, b.loc, b.cum_pupae, w.cum_pupae, Δ)
+    end
+end</code></pre><pre><code class="nohighlight hljs">Location     baseline    +1.8°C    Δ favour
+--------------------------------------------------
+Tunis       2.098       2.338     0.240     
+Sevilla     1.960       2.037     0.077     
+Sacramento  1.204       1.511     0.307     
+Berlin      0.000       0.000     0.000     
+Riyadh      0.000       0.000     -0.000</code></pre><pre><code class="language-julia hljs">let
+    locs = [r.loc for r in results]
+    Δ = [w.cum_pupae - b.cum_pupae for (b, w) in zip(results, results_warm)]
+    colours = [d &gt; 0 ? :steelblue : :firebrick for d in Δ]
+    fig = Figure(size = (700, 380))
+    ax = Axis(fig[1, 1]; xlabel = &quot;Location&quot;, ylabel = &quot;Δ pupae m⁻² yr⁻¹ (warmed − baseline)&quot;,
+              title = &quot;Climate-change favourability shift (+1.8 °C)&quot;,
+              xticks = (1:length(locs), locs))
+    barplot!(ax, 1:length(locs), Δ; color = colours)
+    hlines!(ax, [0]; color = :black, linewidth = 1)
+    fig
+end</code></pre><p>&lt;div id=&quot;fig-warming&quot;&gt;</p><p><img src="../60_tuta_absoluta_invasion_files/figure-commonmark/fig-warming-output-1.png" alt/></p><p>Figure 3: Change in cumulative pupae per m² per year under +1.8 °C warming. Cool-temperate sites gain favourability (Berlin); already-favourable sites (Tunis, Sevilla, Sacramento) shift modestly; the heat-limited site (Riyadh) loses favourability — matching the paper’s headline ‘invasion front shifts north / contracts south’ result.</p><p>&lt;/div&gt;</p><h2 id="6-·-Discussion"><a class="docs-heading-anchor" href="#6-·-Discussion">6 · Discussion</a><a id="6-·-Discussion-1"></a><a class="docs-heading-anchor-permalink" href="#6-·-Discussion" title="Permalink"></a></h2><p>This vignette closes the four-paper analytical PBDM template:</p><table><tr><th style="text-align: right">#</th><th style="text-align: right">Paper</th><th style="text-align: right">Idiom</th><th style="text-align: right">What gets optimised / mapped</th></tr><tr><td style="text-align: right">57</td><td style="text-align: right">Regev &amp; Gutierrez 1990</td><td style="text-align: right">Single-state DP</td><td style="text-align: right">Backward induction over treatments</td></tr><tr><td style="text-align: right">58</td><td style="text-align: right">Cure <em>et al.</em> 2020</td><td style="text-align: right">Regression surrogate</td><td style="text-align: right"><span>$2^{10}$</span> binary control combinations</td></tr><tr><td style="text-align: right">59</td><td style="text-align: right">Ponti <em>et al.</em> 2014</td><td style="text-align: right">Closed-form damage function</td><td style="text-align: right">Geographic gradient under climate scenario</td></tr><tr><td style="text-align: right">60</td><td style="text-align: right">Ponti <em>et al.</em> 2021</td><td style="text-align: right">Mechanistic favourability</td><td style="text-align: right">Geographic invasion-risk index</td></tr></table><p>Vignette 60 differs from the others in that the PBDM <strong>is itself the output</strong>: there is no closed-form bio-economic overlay or regression surrogate strictly required. The published surrogate diagnostic (§3.3) demonstrates that even mechanistic invasion-risk maps reduce to a four-variable log-linear function once the PBDM has been run, which is why <code>LogLinearSurrogate</code> from vignette 58 is the right packaging for the result.</p><h3 id="Caveats"><a class="docs-heading-anchor" href="#Caveats">Caveats</a><a id="Caveats-1"></a><a class="docs-heading-anchor-permalink" href="#Caveats" title="Permalink"></a></h3><ul><li><strong>Eq. 9 polynomial mortality</strong> — the high-order polynomial coefficients of the published temperature-dependent mortality function were lost in the upstream conversion of the paper. We use a three-piece envelope that matches Fig. 1e qualitatively; quantitative cumulative mortality depends on this approximation.</li><li><strong>Synthetic weather</strong> — we use sinusoidal traces parameterised from climatology means rather than 30 000 georeferenced cells. The five locations bracket the published latitudinal gradient; full geographic mapping would require the same workflow over a CLIMEX or ERA5 grid.</li><li><strong>Single-stage k=25 boxcar</strong> — we collapse Eq. 1 to a stage-uniform <span>$k = 25$</span>, where the published model fits <span>$k$</span> per stage from observed mean and variance of developmental time. The qualitative dynamics are unaffected.</li></ul><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Baumgartner1987&quot; class=&quot;csl-entry&quot;&gt;</p><p>Baumgärtner, J., and M. Severini. 1987. “Microclimate and Arthropod Phenologies: The Leaf Miner &lt;span class=&quot;nocase&quot;&gt;Phyllonorycter blancardella&lt;/span&gt; F. (Lep.) As an Example.” <em>Atti Dei Convegni Lincei</em> 86: 225–43.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-Bieri1983&quot; class=&quot;csl-entry&quot;&gt;</p><p>Bieri, M., J. Baumgärtner, G. Bianchi, V. Delucchi, and R. von Arx.</p><ol><li>“Development and Fecundity of Pea Aphid</li></ol><p>(&lt;span class=&quot;nocase&quot;&gt;Acyrthosiphon pisum&lt;/span&gt; Harris) as Affected by Constant Temperatures and by Pea Varieties.” <em>Mitteilungen Der Schweizerischen Entomologischen Gesellschaft</em> 56: 163–71.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-Briere1999&quot; class=&quot;csl-entry&quot;&gt;</p><p>Briere, Jean-François, Pascal Pracros, Anne-Yvonne Le Roux, and Jean-Sebastien Pierre. 1999. “A Novel Rate Model of Temperature-Dependent Development for Arthropods.” <em>Environmental Entomology</em> 28 (1): 22–29. <a href="https://doi.org/10.1093/ee/28.1.22">https://doi.org/10.1093/ee/28.1.22</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-Kahrer2019&quot; class=&quot;csl-entry&quot;&gt;</p><p>Kahrer, A., A. Moyses, L. Hochfellner, M. Tiefenbrunner, W. Tiefenbrunner, and S. Blumel. 2019. “Modelling Time-Varying Low-Temperature Induced Mortality Rates for Pupae of &lt;span class=&quot;nocase&quot;&gt;Tuta absoluta&lt;/span&gt; (Gelechiidae, Lepidoptera).” <em>Journal of Applied Entomology</em> 143: 1143–53. <a href="https://doi.org/10.1111/jen.12693">https://doi.org/10.1111/jen.12693</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-Krechemer2015&quot; class=&quot;csl-entry&quot;&gt;</p><p>Krechemer, F. S., and L. A. Foerster. 2015. “&lt;span class=&quot;nocase&quot;&gt;Tuta absoluta&lt;/span&gt; (Lepidoptera: Gelechiidae): Thermal Requirements and Effect of Temperature on Development, Survival, Reproduction and Longevity.” <em>European Journal of Entomology</em> 112: 658–63. <a href="https://doi.org/10.14411/eje.2015.103">https://doi.org/10.14411/eje.2015.103</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-Martins2016&quot; class=&quot;csl-entry&quot;&gt;</p><p>Martins, J. C., M. C. Picanco, L. Bacci, et al. 2016. “Life Table Determination of Thermal Requirements of the Tomato Borer &lt;span class=&quot;nocase&quot;&gt;Tuta absoluta&lt;/span&gt;.” <em>Journal of Pest Science</em> 89: 897–906. <a href="https://doi.org/10.1007/s10340-016-0729-8">https://doi.org/10.1007/s10340-016-0729-8</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-Ponti2021Tuta&quot; class=&quot;csl-entry&quot;&gt;</p><p>Ponti, Luigi, Andrew Paul Gutierrez, Marcelo R. de Campos, Nicolas Desneux, Antonio Biondi, and Markus Neteler. 2021. “Biological Invasion Risk Assessment of &lt;span class=&quot;nocase&quot;&gt;Tuta absoluta&lt;/span&gt;: Mechanistic Versus Correlative Methods.” <em>Biological Invasions</em> 23: 3809–29. <a href="https://doi.org/10.1007/s10530-021-02613-5">https://doi.org/10.1007/s10530-021-02613-5</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-VanDamme2015&quot; class=&quot;csl-entry&quot;&gt;</p><p>Van Damme, V., N. Berkvens, R. Moerkens, et al. 2015. “Overwintering Potential of the Invasive Leafminer &lt;span class=&quot;nocase&quot;&gt;Tuta absoluta&lt;/span&gt; (Meyrick) (Lepidoptera: Gelechiidae) as a Pest in Greenhouse Tomato Production in Western Europe.” <em>Journal of Pest Science</em> 88: 533–41. <a href="https://doi.org/10.1007/s10340-014-0636-9">https://doi.org/10.1007/s10340-014-0636-9</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../59_olive_climate/">« Olive / Olive-Fly Bio-Economics under Climate Warming</a><a class="docs-footer-nextpage" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

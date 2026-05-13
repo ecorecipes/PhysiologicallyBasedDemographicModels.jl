@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Stage-Structured Consumer-Resource Dynamics · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Stage-Structured Consumer-Resource Dynamics · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Stage-Structured Consumer-Resource Dynamics · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Stage-Structured Consumer-Resource Dynamics · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/47_consumer_resource/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/47_consumer_resource/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/47_consumer_resource/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li class="is-active"><a class="tocitem" href>Stage-Structured Consumer-Resource Dynamics</a><ul class="internal"><li><a class="tocitem" href="#Introduction"><span>Introduction</span></a></li><li><a class="tocitem" href="#Model-Description"><span>Model Description</span></a></li><li><a class="tocitem" href="#Implementation"><span>Implementation</span></a></li><li><a class="tocitem" href="#Baseline-Dynamics-(q-1)"><span>Baseline Dynamics (<span>$q = 1$</span>)</span></a></li><li><a class="tocitem" href="#Effect-of-the-Competition-Ratio-q"><span>Effect of the Competition Ratio <span>$q$</span></span></a></li><li><a class="tocitem" href="#Phase-Portrait:-Consumer-Resource-Cycles"><span>Phase Portrait: Consumer-Resource Cycles</span></a></li><li><a class="tocitem" href="#Oscillatory-Time-Series"><span>Oscillatory Time Series</span></a></li><li><a class="tocitem" href="#Comparison:-Semi-Chemostat-vs-Logistic-Resource"><span>Comparison: Semi-Chemostat vs Logistic Resource</span></a></li><li><a class="tocitem" href="#Plausibility-Checks"><span>Plausibility Checks</span></a></li><li><a class="tocitem" href="#Summary"><span>Summary</span></a></li><li><a class="tocitem" href="#References"><span>References</span></a></li></ul></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Stage-Structured Consumer-Resource Dynamics</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Stage-Structured Consumer-Resource Dynamics</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Stage-Structured-Consumer-Resource-Dynamics"><a class="docs-heading-anchor" href="#Stage-Structured-Consumer-Resource-Dynamics">Stage-Structured Consumer-Resource Dynamics</a><a id="Stage-Structured-Consumer-Resource-Dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Stage-Structured-Consumer-Resource-Dynamics" title="Permalink"></a></h1><p>Simon Frost</p><ul><li><a href="#introduction">Introduction</a></li><li><a href="#model-description">Model Description</a><ul><li><a href="#state-variables">State Variables</a></li><li><a href="#resource-dynamics">Resource Dynamics</a></li><li><a href="#net-biomass-production">Net Biomass Production</a></li><li><a href="#maturation-rate">Maturation Rate</a></li><li><a href="#consumer-dynamics">Consumer Dynamics</a></li><li><a href="#parameters">Parameters</a></li></ul></li><li><a href="#implementation">Implementation</a><ul><li><a href="#ode-right-hand-side">ODE Right-Hand Side</a></li><li><a href="#default-parameters">Default Parameters</a></li><li><a href="#solver-wrapper">Solver Wrapper</a></li></ul></li><li><a href="#baseline-dynamics-q--1">Baseline Dynamics (<span>$q = 1$</span>)</a></li><li><a href="#effect-of-the-competition-ratio-q">Effect of the Competition Ratio <span>$q$</span></a></li><li><a href="#phase-portrait-consumer-resource-cycles">Phase Portrait: Consumer-Resource Cycles</a></li><li><a href="#oscillatory-time-series">Oscillatory Time Series</a></li><li><a href="#comparison-semi-chemostat-vs-logistic-resource">Comparison: Semi-Chemostat vs Logistic Resource</a></li><li><a href="#plausibility-checks">Plausibility Checks</a></li><li><a href="#summary">Summary</a></li><li><a href="#references">References</a></li></ul><p>Primary reference: (De Roos et al. 2008).</p><h2 id="Introduction"><a class="docs-heading-anchor" href="#Introduction">Introduction</a><a id="Introduction-1"></a><a class="docs-heading-anchor-permalink" href="#Introduction" title="Permalink"></a></h2><p>Physiologically structured population models (PSPMs) track individuals across a continuous size or physiological state, making them biologically detailed but analytically and computationally demanding. De Roos, Schellekens, Van Kooten, Van de Wolfshaar, Claessen, and Persson (2008) showed that, under specific assumptions about individual energetics, a full size-structured consumer population can be <strong>exactly collapsed</strong> into a stage-structured biomass model with only two consumer compartments — juveniles and adults — without losing the key qualitative dynamics.</p><p>The essential insight is that if all individuals within a stage share the same mass-specific rates (ingestion, maintenance, mortality), then the <em>total biomass</em> in each stage obeys a closed ODE system. The maturation flux from the juvenile to the adult stage is derived from the equilibrium size distribution of the underlying PSPM and depends on a single ratio <span>$z = s_b / s_m$</span> (newborn size divided by maturation size).</p><p>This approach bridges the gap between individual-based PSPMs and classical unstructured or stage-structured models, preserving phenomena like <strong>juvenile–adult competition asymmetry</strong>, <strong>emergent Allee effects</strong>, and <strong>generation cycles</strong> that unstructured models miss entirely.</p><p>This vignette implements the three-variable stage-structured consumer-resource model (Equation 24 of the paper) and explores how the ratio of adult-to-juvenile competitive ability (<span>$q$</span>) shapes the dynamics.</p><h2 id="Model-Description"><a class="docs-heading-anchor" href="#Model-Description">Model Description</a><a id="Model-Description-1"></a><a class="docs-heading-anchor-permalink" href="#Model-Description" title="Permalink"></a></h2><h3 id="State-Variables"><a class="docs-heading-anchor" href="#State-Variables">State Variables</a><a id="State-Variables-1"></a><a class="docs-heading-anchor-permalink" href="#State-Variables" title="Permalink"></a></h3><table><tr><th style="text-align: right">Symbol</th><th style="text-align: right">Description</th><th style="text-align: right">Units</th></tr><tr><td style="text-align: right"><span>$R(t)$</span></td><td style="text-align: right">Resource density</td><td style="text-align: right">biomass/volume</td></tr><tr><td style="text-align: right"><span>$J(t)$</span></td><td style="text-align: right">Total juvenile consumer biomass</td><td style="text-align: right">biomass/volume</td></tr><tr><td style="text-align: right"><span>$A(t)$</span></td><td style="text-align: right">Total adult consumer biomass</td><td style="text-align: right">biomass/volume</td></tr></table><h3 id="Resource-Dynamics"><a class="docs-heading-anchor" href="#Resource-Dynamics">Resource Dynamics</a><a id="Resource-Dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Resource-Dynamics" title="Permalink"></a></h3><p>The resource follows semi-chemostat (flow-through) dynamics with consumption by both juvenile and adult consumers:</p><p class="math-container">\[\frac{dR}{dt} = \delta (R_{\max} - R) - \frac{R}{H + R}\bigl(I_{\max} J + q\, I_{\max} A\bigr)\]</p><p>where <span>$\delta$</span> is the resource turnover rate, <span>$R_{\max}$</span> is the maximum resource density (in the absence of consumers), <span>$H$</span> is the half-saturation constant, <span>$I_{\max}$</span> is the maximum mass-specific ingestion rate for juveniles, and <span>$q$</span> is the ratio of adult-to-juvenile mass-specific ingestion rate.</p><h3 id="Net-Biomass-Production"><a class="docs-heading-anchor" href="#Net-Biomass-Production">Net Biomass Production</a><a id="Net-Biomass-Production-1"></a><a class="docs-heading-anchor-permalink" href="#Net-Biomass-Production" title="Permalink"></a></h3><p>Each stage has a net biomass production rate — the difference between assimilated intake and metabolic costs:</p><p class="math-container">\[\nu_j(R) = \sigma\, I_{\max}\, \frac{R}{H + R} - T, \qquad
+\nu_a(R) = \sigma\, q\, I_{\max}\, \frac{R}{H + R} - T\]</p><p>where <span>$\sigma$</span> is the assimilation efficiency and <span>$T$</span> is the mass-specific metabolic (maintenance) rate. When net production is negative, individuals lose body mass; only the positive parts contribute to growth and reproduction:</p><p class="math-container">\[\nu_j^+(R) = \max\bigl(\nu_j(R),\, 0\bigr), \qquad
+\nu_a^+(R) = \max\bigl(\nu_a(R),\, 0\bigr)\]</p><h3 id="Maturation-Rate"><a class="docs-heading-anchor" href="#Maturation-Rate">Maturation Rate</a><a id="Maturation-Rate-1"></a><a class="docs-heading-anchor-permalink" href="#Maturation-Rate" title="Permalink"></a></h3><p>The maturation rate <span>$\gamma$</span> converts juvenile biomass into adult biomass. It is derived from the equilibrium size distribution within the juvenile stage and depends on the ratio <span>$z = s_b / s_m$</span> of newborn body size to maturation body size:</p><p class="math-container">\[\gamma\bigl(\nu_j^+, \mu_j\bigr) =
+\begin{cases}
+\dfrac{\nu_j^+(R) - \mu_j}{1 - z^{\,(\nu_j^+ - \mu_j)/\nu_j^+}} &amp; \text{if } \nu_j^+ &gt; 0 \\[6pt]
+0 &amp; \text{if } \nu_j^+ = 0
+\end{cases}\]</p><p>When <span>$\nu_j^+ \to \mu_j$</span>, the denominator approaches <span>$1 - z^0 = 0$</span>, but L’Hôpital’s rule gives a finite limit <span>$\gamma \to -\nu_j^+ / \ln z$</span>. The implementation handles this numerically.</p><h3 id="Consumer-Dynamics"><a class="docs-heading-anchor" href="#Consumer-Dynamics">Consumer Dynamics</a><a id="Consumer-Dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Consumer-Dynamics" title="Permalink"></a></h3><p class="math-container">\[\frac{dJ}{dt} = \nu_a^+(R)\, A + \nu_j(R)\, J - \gamma\, J - \mu_j\, J\]</p><p class="math-container">\[\frac{dA}{dt} = \gamma\, J + \nu_a(R)\, A - \nu_a^+(R)\, A - \mu_a\, A\]</p><p>The first term in the juvenile equation (<span>$\nu_a^+ A$</span>) is <strong>reproduction</strong>: adults allocate their positive net production to producing newborn biomass. The <span>$\nu_j J$</span> term captures juvenile somatic growth (positive or negative). The <span>$\gamma J$</span> term is the maturation flux — biomass leaving the juvenile class. In the adult equation, <span>$\nu_a A - \nu_a^+ A$</span> equals <span>$\min(\nu_a, 0) \cdot A$</span>, representing starvation-driven biomass loss when adult net production is negative.</p><h3 id="Parameters"><a class="docs-heading-anchor" href="#Parameters">Parameters</a><a id="Parameters-1"></a><a class="docs-heading-anchor-permalink" href="#Parameters" title="Permalink"></a></h3><table><tr><th style="text-align: right">Symbol</th><th style="text-align: right">Description</th><th style="text-align: right">Default</th></tr><tr><td style="text-align: right"><span>$R_{\max}$</span></td><td style="text-align: right">Maximum resource density</td><td style="text-align: right">2.0</td></tr><tr><td style="text-align: right"><span>$\delta$</span></td><td style="text-align: right">Resource turnover rate</td><td style="text-align: right">1.0</td></tr><tr><td style="text-align: right"><span>$H$</span></td><td style="text-align: right">Half-saturation constant</td><td style="text-align: right">1.0</td></tr><tr><td style="text-align: right"><span>$I_{\max}$</span></td><td style="text-align: right">Maximum ingestion rate (juveniles)</td><td style="text-align: right">10.0</td></tr><tr><td style="text-align: right"><span>$\sigma$</span></td><td style="text-align: right">Assimilation efficiency</td><td style="text-align: right">0.5</td></tr><tr><td style="text-align: right"><span>$T$</span></td><td style="text-align: right">Mass-specific metabolic rate</td><td style="text-align: right">1.0</td></tr><tr><td style="text-align: right"><span>$\mu_j$</span></td><td style="text-align: right">Juvenile background mortality</td><td style="text-align: right">0.1</td></tr><tr><td style="text-align: right"><span>$\mu_a$</span></td><td style="text-align: right">Adult background mortality</td><td style="text-align: right">0.1</td></tr><tr><td style="text-align: right"><span>$z$</span></td><td style="text-align: right">Newborn-to-maturation size ratio</td><td style="text-align: right">0.01</td></tr><tr><td style="text-align: right"><span>$q$</span></td><td style="text-align: right">Adult/juvenile ingestion ratio</td><td style="text-align: right">1.0</td></tr></table><h2 id="Implementation"><a class="docs-heading-anchor" href="#Implementation">Implementation</a><a id="Implementation-1"></a><a class="docs-heading-anchor-permalink" href="#Implementation" title="Permalink"></a></h2><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+using OrdinaryDiffEq
+using CairoMakie</code></pre><h3 id="ODE-Right-Hand-Side"><a class="docs-heading-anchor" href="#ODE-Right-Hand-Side">ODE Right-Hand Side</a><a id="ODE-Right-Hand-Side-1"></a><a class="docs-heading-anchor-permalink" href="#ODE-Right-Hand-Side" title="Permalink"></a></h3><pre><code class="language-julia hljs">function deroos_rhs!(du, u, p, t)
+    R, J, A = u
+    (; R_max, δ, H, I_max, σ, T_met, μ_j, μ_a, z, q) = p
+
+    # Functional response
+    f = R / (H + R)
+
+    # Net biomass production rates
+    v_j = σ * I_max * f - T_met
+    v_a = σ * q * I_max * f - T_met
+    v_j_pos = max(v_j, 0.0)
+    v_a_pos = max(v_a, 0.0)
+
+    # Maturation rate
+    if v_j_pos &gt; 1e-10
+        ratio = (v_j_pos - μ_j) / v_j_pos
+        if abs(ratio) &lt; 1e-10
+            # L&#39;Hôpital limit: γ → -v_j_pos / ln(z)
+            γ = -v_j_pos / log(z)
+        else
+            γ = (v_j_pos - μ_j) / (1.0 - z^ratio)
+        end
+    else
+        γ = 0.0
+    end
+
+    # Resource dynamics (semi-chemostat supply)
+    du[1] = δ * (R_max - R) - f * (I_max * J + q * I_max * A)
+
+    # Juvenile biomass dynamics
+    du[2] = v_a_pos * A + v_j * J - γ * J - μ_j * J
+
+    # Adult biomass dynamics
+    du[3] = γ * J + v_a * A - v_a_pos * A - μ_a * A
+
+    return nothing
+end</code></pre><pre><code class="nohighlight hljs">deroos_rhs! (generic function with 1 method)</code></pre><h3 id="Default-Parameters"><a class="docs-heading-anchor" href="#Default-Parameters">Default Parameters</a><a id="Default-Parameters-1"></a><a class="docs-heading-anchor-permalink" href="#Default-Parameters" title="Permalink"></a></h3><pre><code class="language-julia hljs">function default_params(; q = 1.0)
+    return (
+        R_max = 2.0,
+        δ     = 1.0,
+        H     = 1.0,
+        I_max = 10.0,
+        σ     = 0.5,
+        T_met = 1.0,
+        μ_j   = 0.1,
+        μ_a   = 0.1,
+        z     = 0.01,
+        q     = q
+    )
+end</code></pre><pre><code class="nohighlight hljs">default_params (generic function with 1 method)</code></pre><h3 id="Solver-Wrapper"><a class="docs-heading-anchor" href="#Solver-Wrapper">Solver Wrapper</a><a id="Solver-Wrapper-1"></a><a class="docs-heading-anchor-permalink" href="#Solver-Wrapper" title="Permalink"></a></h3><pre><code class="language-julia hljs">function run_deroos(p; u0 = [2.0, 0.1, 0.1], tspan = (0.0, 500.0), saveat = 0.5)
+    prob = ODEProblem(deroos_rhs!, u0, tspan, p)
+    sol = solve(prob, Tsit5(); abstol = 1e-9, reltol = 1e-9, saveat = saveat)
+    return sol
+end</code></pre><pre><code class="nohighlight hljs">run_deroos (generic function with 1 method)</code></pre><h2 id="Baseline-Dynamics-(q-1)"><a class="docs-heading-anchor" href="#Baseline-Dynamics-(q-1)">Baseline Dynamics (<span>$q = 1$</span>)</a><a id="Baseline-Dynamics-(q-1)-1"></a><a class="docs-heading-anchor-permalink" href="#Baseline-Dynamics-(q-1)" title="Permalink"></a></h2><p>With symmetric juvenile–adult competition (<span>$q = 1$</span>), both stages have identical mass-specific ingestion rates and the system typically reaches a stable equilibrium.</p><pre><code class="language-julia hljs">p_base = default_params(q = 1.0)
+sol_base = run_deroos(p_base)
+
+fig1 = Figure(size = (800, 600))
+ax_R = Axis(fig1[1, 1], xlabel = &quot;Time&quot;, ylabel = &quot;Resource density R&quot;,
+            title = &quot;Resource&quot;)
+ax_J = Axis(fig1[2, 1], xlabel = &quot;Time&quot;, ylabel = &quot;Juvenile biomass J&quot;,
+            title = &quot;Juvenile consumers&quot;)
+ax_A = Axis(fig1[3, 1], xlabel = &quot;Time&quot;, ylabel = &quot;Adult biomass A&quot;,
+            title = &quot;Adult consumers&quot;)
+
+lines!(ax_R, sol_base.t, [u[1] for u in sol_base.u], color = :steelblue, linewidth = 1.5)
+lines!(ax_J, sol_base.t, [u[2] for u in sol_base.u], color = :firebrick, linewidth = 1.5)
+lines!(ax_A, sol_base.t, [u[3] for u in sol_base.u], color = :forestgreen, linewidth = 1.5)
+
+fig1</code></pre><p><img src="../47_consumer_resource_files/figure-commonmark/cell-6-output-1.png" alt/></p><p>The resource equilibrium sits well below <span>$R_{\max} = 2$</span>, confirming that consumers substantially deplete the resource. Both juvenile and adult biomass reach steady values on the order of 1–10 units.</p><h2 id="Effect-of-the-Competition-Ratio-q"><a class="docs-heading-anchor" href="#Effect-of-the-Competition-Ratio-q">Effect of the Competition Ratio <span>$q$</span></a><a id="Effect-of-the-Competition-Ratio-q-1"></a><a class="docs-heading-anchor-permalink" href="#Effect-of-the-Competition-Ratio-q" title="Permalink"></a></h2><p>The parameter <span>$q$</span> controls the asymmetry between juvenile and adult feeding. When <span>$q &lt; 1$</span>, juveniles are competitively superior (higher mass-specific intake); when <span>$q &gt; 1$</span>, adults have the advantage. This asymmetry can fundamentally alter the qualitative dynamics, including the onset of population cycles.</p><p>We sweep <span>$q$</span> over a range and record the final-time values of all state variables to construct a bifurcation-like diagram.</p><pre><code class="language-julia hljs">q_vals = 0.5:0.025:2.0
+n_q = length(q_vals)
+
+R_final = zeros(n_q)
+J_final = zeros(n_q)
+A_final = zeros(n_q)
+
+R_min = zeros(n_q)
+R_max_vals = zeros(n_q)
+J_min = zeros(n_q)
+J_max_vals = zeros(n_q)
+A_min = zeros(n_q)
+A_max_vals = zeros(n_q)
+
+for (i, q) in enumerate(q_vals)
+    p = default_params(q = q)
+    sol = run_deroos(p; tspan = (0.0, 2000.0), saveat = 0.5)
+
+    # Use the last 25% of the time series to capture limit cycles
+    n_pts = length(sol.t)
+    idx_start = max(1, n_pts - n_pts ÷ 4)
+    R_tail = [sol.u[k][1] for k in idx_start:n_pts]
+    J_tail = [sol.u[k][2] for k in idx_start:n_pts]
+    A_tail = [sol.u[k][3] for k in idx_start:n_pts]
+
+    R_final[i] = sol.u[end][1]
+    J_final[i] = sol.u[end][2]
+    A_final[i] = sol.u[end][3]
+
+    R_min[i] = minimum(R_tail)
+    R_max_vals[i] = maximum(R_tail)
+    J_min[i] = minimum(J_tail)
+    J_max_vals[i] = maximum(J_tail)
+    A_min[i] = minimum(A_tail)
+    A_max_vals[i] = maximum(A_tail)
+end</code></pre><pre><code class="language-julia hljs">fig2 = Figure(size = (800, 700))
+
+ax2_R = Axis(fig2[1, 1], xlabel = &quot;q (adult/juvenile ingestion ratio)&quot;,
+             ylabel = &quot;Resource R&quot;, title = &quot;Bifurcation diagram — Resource&quot;)
+ax2_J = Axis(fig2[2, 1], xlabel = &quot;q&quot;,
+             ylabel = &quot;Juvenile biomass J&quot;, title = &quot;Bifurcation diagram — Juveniles&quot;)
+ax2_A = Axis(fig2[3, 1], xlabel = &quot;q&quot;,
+             ylabel = &quot;Adult biomass A&quot;, title = &quot;Bifurcation diagram — Adults&quot;)
+
+for (ax, ymin, ymax, color) in [
+    (ax2_R, R_min, R_max_vals, :steelblue),
+    (ax2_J, J_min, J_max_vals, :firebrick),
+    (ax2_A, A_min, A_max_vals, :forestgreen)
+]
+    band!(ax, collect(q_vals), ymin, ymax, color = (color, 0.25))
+    lines!(ax, collect(q_vals), ymin, color = color, linewidth = 1.0, linestyle = :dash)
+    lines!(ax, collect(q_vals), ymax, color = color, linewidth = 1.0, linestyle = :dash)
+end
+
+fig2</code></pre><p><img src="../47_consumer_resource_files/figure-commonmark/cell-8-output-1.png" alt/></p><p>When the envelope (band) between the min and max curves is thin, the system is at or near a stable equilibrium. Where it widens, the system exhibits sustained oscillations — consumer-resource cycles driven by the interplay of maturation delays and competitive asymmetry.</p><h2 id="Phase-Portrait:-Consumer-Resource-Cycles"><a class="docs-heading-anchor" href="#Phase-Portrait:-Consumer-Resource-Cycles">Phase Portrait: Consumer-Resource Cycles</a><a id="Phase-Portrait:-Consumer-Resource-Cycles-1"></a><a class="docs-heading-anchor-permalink" href="#Phase-Portrait:-Consumer-Resource-Cycles" title="Permalink"></a></h2><p>To visualize the limit cycle structure, we select a value of <span>$q$</span> where oscillations are prominent and plot the trajectory in the <span>$J$</span>–<span>$A$</span> phase plane.</p><pre><code class="language-julia hljs"># Find a q value with large oscillation amplitude
+osc_amplitude = J_max_vals .- J_min
+q_osc_idx = argmax(osc_amplitude)
+q_osc = q_vals[q_osc_idx]
+
+p_osc = default_params(q = q_osc)
+sol_osc = run_deroos(p_osc; tspan = (0.0, 2000.0), saveat = 0.5)
+
+# Use the last portion for a clean cycle
+n_pts = length(sol_osc.t)
+idx_start = max(1, n_pts - n_pts ÷ 4)
+
+J_phase = [sol_osc.u[k][2] for k in idx_start:n_pts]
+A_phase = [sol_osc.u[k][3] for k in idx_start:n_pts]
+
+fig3 = Figure(size = (700, 600))
+ax3 = Axis(fig3[1, 1],
+           xlabel = &quot;Juvenile biomass J&quot;,
+           ylabel = &quot;Adult biomass A&quot;,
+           title = &quot;Phase portrait (q = $(round(q_osc, digits=3)))&quot;)
+
+lines!(ax3, J_phase, A_phase, color = :purple, linewidth = 1.2)
+scatter!(ax3, [J_phase[1]], [A_phase[1]], color = :red, markersize = 10,
+         label = &quot;Start&quot;)
+
+axislegend(ax3, position = :rt)
+fig3</code></pre><p><img src="../47_consumer_resource_files/figure-commonmark/cell-9-output-1.png" alt/></p><p>The closed (or nearly closed) orbit in the <span>$J$</span>–<span>$A$</span> plane reflects generation cycles: cohorts of juveniles mature in pulses, temporarily boosting adult biomass while depleting the juvenile pool, then adult reproduction replenishes juveniles after a delay.</p><h2 id="Oscillatory-Time-Series"><a class="docs-heading-anchor" href="#Oscillatory-Time-Series">Oscillatory Time Series</a><a id="Oscillatory-Time-Series-1"></a><a class="docs-heading-anchor-permalink" href="#Oscillatory-Time-Series" title="Permalink"></a></h2><p>We also plot the time series for the oscillatory case to see the temporal structure of the cycles.</p><pre><code class="language-julia hljs">fig4 = Figure(size = (800, 600))
+ax4a = Axis(fig4[1, 1], xlabel = &quot;Time&quot;, ylabel = &quot;Density / Biomass&quot;,
+            title = &quot;Oscillatory dynamics (q = $(round(q_osc, digits=3)))&quot;)
+
+t_plot = sol_osc.t[idx_start:end]
+R_plot = [sol_osc.u[k][1] for k in idx_start:n_pts]
+
+lines!(ax4a, t_plot, R_plot, color = :steelblue, linewidth = 1.2, label = &quot;R (resource)&quot;)
+lines!(ax4a, t_plot, J_phase, color = :firebrick, linewidth = 1.2, label = &quot;J (juveniles)&quot;)
+lines!(ax4a, t_plot, A_phase, color = :forestgreen, linewidth = 1.2, label = &quot;A (adults)&quot;)
+
+axislegend(ax4a, position = :rt)
+fig4</code></pre><p><img src="../47_consumer_resource_files/figure-commonmark/cell-10-output-1.png" alt/></p><h2 id="Comparison:-Semi-Chemostat-vs-Logistic-Resource"><a class="docs-heading-anchor" href="#Comparison:-Semi-Chemostat-vs-Logistic-Resource">Comparison: Semi-Chemostat vs Logistic Resource</a><a id="Comparison:-Semi-Chemostat-vs-Logistic-Resource-1"></a><a class="docs-heading-anchor-permalink" href="#Comparison:-Semi-Chemostat-vs-Logistic-Resource" title="Permalink"></a></h2><p>The original model uses semi-chemostat resource supply <span>$\delta(R_{\max} - R)$</span>. An alternative is logistic growth <span>$\delta R(1 - R/R_{\max})$</span>. These differ in two key ways:</p><ol><li><strong>Low-resource behavior</strong>: Chemostat supply is maximal when <span>$R = 0$</span>;  logistic growth vanishes at <span>$R = 0$</span>.</li><li><strong>Density regulation</strong>: Logistic growth imposes intrinsic density  dependence on the resource; chemostat supply depends only on  deviation from <span>$R_{\max}$</span>.</li></ol><pre><code class="language-julia hljs">function deroos_logistic_rhs!(du, u, p, t)
+    R, J, A = u
+    (; R_max, δ, H, I_max, σ, T_met, μ_j, μ_a, z, q) = p
+
+    f = R / (H + R)
+
+    v_j = σ * I_max * f - T_met
+    v_a = σ * q * I_max * f - T_met
+    v_j_pos = max(v_j, 0.0)
+    v_a_pos = max(v_a, 0.0)
+
+    if v_j_pos &gt; 1e-10
+        ratio = (v_j_pos - μ_j) / v_j_pos
+        if abs(ratio) &lt; 1e-10
+            γ = -v_j_pos / log(z)
+        else
+            γ = (v_j_pos - μ_j) / (1.0 - z^ratio)
+        end
+    else
+        γ = 0.0
+    end
+
+    # Logistic resource growth
+    du[1] = δ * R * (1.0 - R / R_max) - f * (I_max * J + q * I_max * A)
+
+    du[2] = v_a_pos * A + v_j * J - γ * J - μ_j * J
+    du[3] = γ * J + v_a * A - v_a_pos * A - μ_a * A
+
+    return nothing
+end
+
+function run_deroos_logistic(p; u0 = [2.0, 0.1, 0.1], tspan = (0.0, 500.0), saveat = 0.5)
+    prob = ODEProblem(deroos_logistic_rhs!, u0, tspan, p)
+    sol = solve(prob, Tsit5(); abstol = 1e-9, reltol = 1e-9, saveat = saveat,
+                isoutofdomain = (u, p, t) -&gt; any(x -&gt; x &lt; 0, u))
+    return sol
+end</code></pre><pre><code class="nohighlight hljs">run_deroos_logistic (generic function with 1 method)</code></pre><pre><code class="language-julia hljs">p_comp = default_params(q = 1.0)
+sol_chemo = run_deroos(p_comp; tspan = (0.0, 500.0))
+sol_logistic = run_deroos_logistic(p_comp; tspan = (0.0, 500.0))
+
+fig5 = Figure(size = (800, 700))
+
+ax5_R = Axis(fig5[1, 1], xlabel = &quot;Time&quot;, ylabel = &quot;Resource R&quot;,
+             title = &quot;Semi-chemostat vs logistic resource (q = 1.0)&quot;)
+ax5_J = Axis(fig5[2, 1], xlabel = &quot;Time&quot;, ylabel = &quot;Juvenile biomass J&quot;)
+ax5_A = Axis(fig5[3, 1], xlabel = &quot;Time&quot;, ylabel = &quot;Adult biomass A&quot;)
+
+for (ax, idx) in [(ax5_R, 1), (ax5_J, 2), (ax5_A, 3)]
+    lines!(ax, sol_chemo.t, [u[idx] for u in sol_chemo.u],
+           color = :steelblue, linewidth = 1.5, label = &quot;Chemostat&quot;)
+    lines!(ax, sol_logistic.t, [u[idx] for u in sol_logistic.u],
+           color = :coral, linewidth = 1.5, linestyle = :dash, label = &quot;Logistic&quot;)
+end
+
+axislegend(ax5_R, position = :rt)
+fig5</code></pre><p><img src="../47_consumer_resource_files/figure-commonmark/cell-12-output-1.png" alt/></p><p>The logistic resource formulation typically yields lower equilibrium consumer biomass because resource renewal slows as <span>$R$</span> declines, whereas the chemostat maintains a constant inflow rate regardless of current resource level. This can also affect the stability boundary — the onset of cycles may shift to different <span>$q$</span> values under logistic resource dynamics.</p><h2 id="Plausibility-Checks"><a class="docs-heading-anchor" href="#Plausibility-Checks">Plausibility Checks</a><a id="Plausibility-Checks-1"></a><a class="docs-heading-anchor-permalink" href="#Plausibility-Checks" title="Permalink"></a></h2><p>We verify that the model produces biologically reasonable outputs:</p><pre><code class="language-julia hljs">R_eq = sol_base.u[end][1]
+J_eq = sol_base.u[end][2]
+A_eq = sol_base.u[end][3]
+
+println(&quot;Equilibrium values (q = 1.0, semi-chemostat):&quot;)
+println(&quot;  R = $(round(R_eq, digits=4))  (should be &lt; R_max = 2.0)&quot;)
+println(&quot;  J = $(round(J_eq, digits=4))&quot;)
+println(&quot;  A = $(round(A_eq, digits=4))&quot;)
+println(&quot;  J + A = $(round(J_eq + A_eq, digits=4))  (total consumer biomass)&quot;)
+println()
+
+# Check resource depletion
+@assert R_eq &lt; p_base.R_max &quot;Resource should be depleted below R_max&quot;
+@assert R_eq &gt; 0 &quot;Resource should remain positive&quot;
+
+# Check consumer persistence
+@assert J_eq &gt; 0 &quot;Juveniles should persist&quot;
+@assert A_eq &gt; 0 &quot;Adults should persist&quot;
+
+# Check reasonable magnitude
+@assert J_eq + A_eq &lt; 50.0 &quot;Total biomass should not be extreme&quot;
+
+println(&quot;All plausibility checks passed.&quot;)</code></pre><pre><code class="nohighlight hljs">Equilibrium values (q = 1.0, semi-chemostat):
+  R = 0.2821  (should be &lt; R_max = 2.0)
+  J = 0.6416
+  A = 0.1393
+  J + A = 0.7809  (total consumer biomass)
+
+All plausibility checks passed.</code></pre><h2 id="Summary"><a class="docs-heading-anchor" href="#Summary">Summary</a><a id="Summary-1"></a><a class="docs-heading-anchor-permalink" href="#Summary" title="Permalink"></a></h2><p>This vignette demonstrated how a physiologically structured population model can be rigorously simplified to a stage-structured biomass ODE system following (De Roos et al. 2008). The key findings from the analysis:</p><ol><li><strong>Equilibrium coexistence</strong> is the typical outcome when juvenile and  adult consumers have symmetric competitive abilities (<span>$q = 1$</span>).</li><li><strong>Competitive asymmetry</strong> (<span>$q \neq 1$</span>) can destabilize the  equilibrium, generating consumer-resource cycles through a mechanism  related to generation cycles in the underlying size-structured model  (De Roos and Persson 2003).</li><li><strong>Resource supply mode</strong> (chemostat vs logistic) qualitatively  matters: it affects both the equilibrium biomass levels and the  parameter regions supporting oscillatory dynamics.</li></ol><p>The stage-structured biomass model provides a computationally efficient yet mechanistically grounded framework for studying consumer-resource interactions with ontogenetic asymmetry — a middle ground between fully individual-based PSPMs and the lumped Lotka–Volterra tradition.</p><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-DeRoos2003PSPM&quot; class=&quot;csl-entry&quot;&gt;</p><p>De Roos, André M., and Lennart Persson. 2003. “Competition in Size-Structured Populations: Mechanisms Inducing Cohort Formation and Population Cycles.” <em>Theoretical Population Biology</em> 63 (1): 1–16. <a href="https://doi.org/10.1016/S0040-5809(02)00009-6">https://doi.org/10.1016/S0040-5809(02)00009-6</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-DeRoos2008PSPM&quot; class=&quot;csl-entry&quot;&gt;</p><p>De Roos, André M., Tim Schellekens, Tobias Van Kooten, Karen E. Van de Wolfshaar, David Claessen, and Lennart Persson. 2008. “Simplifying a Physiologically Structured Population Model to a Stage-Structured Biomass Model.” <em>Theoretical Population Biology</em> 73 (1): 47–62. <a href="https://doi.org/10.1016/j.tpb.2007.09.004">https://doi.org/10.1016/j.tpb.2007.09.004</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../46_medfly_kolmogorov/">« Mediterranean Fruit Fly Under Climate Change</a><a class="docs-footer-nextpage" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

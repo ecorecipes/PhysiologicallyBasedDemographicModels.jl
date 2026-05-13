@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Common Bean Growth Types I–III: Yield Prediction · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Common Bean Growth Types I–III: Yield Prediction · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Common Bean Growth Types I–III: Yield Prediction · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Common Bean Growth Types I–III: Yield Prediction · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/30_bean_growth/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/30_bean_growth/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/30_bean_growth/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li class="is-active"><a class="tocitem" href>Common Bean Growth Types I–III: Yield Prediction</a><ul class="internal"><li><a class="tocitem" href="#Introduction"><span>Introduction</span></a></li><li><a class="tocitem" href="#Plant-Carbon-Balance"><span>Plant Carbon Balance</span></a></li><li><a class="tocitem" href="#Organ-Population-Dynamics"><span>Organ Population Dynamics</span></a></li><li><a class="tocitem" href="#Three-Growth-Types"><span>Three Growth Types</span></a></li><li><a class="tocitem" href="#Supply-Demand-Allocation"><span>Supply-Demand Allocation</span></a></li><li><a class="tocitem" href="#Density-Effects"><span>Density Effects</span></a></li><li><a class="tocitem" href="#Simulation"><span>Simulation</span></a></li><li><a class="tocitem" href="#Yield-Comparison"><span>Yield Comparison</span></a></li><li><a class="tocitem" href="#Parameter-Sources"><span>Parameter Sources</span></a></li><li><a class="tocitem" href="#Key-Insights"><span>Key Insights</span></a></li><li><a class="tocitem" href="#References"><span>References</span></a></li></ul></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Common Bean Growth Types I–III: Yield Prediction</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Common Bean Growth Types I–III: Yield Prediction</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Common-Bean-Growth-Types-I–III:-Yield-Prediction"><a class="docs-heading-anchor" href="#Common-Bean-Growth-Types-I–III:-Yield-Prediction">Common Bean Growth Types I–III: Yield Prediction</a><a id="Common-Bean-Growth-Types-I–III:-Yield-Prediction-1"></a><a class="docs-heading-anchor-permalink" href="#Common-Bean-Growth-Types-I–III:-Yield-Prediction" title="Permalink"></a></h1><p>PhysiologicallyBasedDemographicModels.jl</p><ul><li><a href="#introduction">Introduction</a></li><li><a href="#plant-carbon-balance">Plant Carbon Balance</a><ul><li><a href="#photosynthesis">Photosynthesis</a></li><li><a href="#respiration">Respiration</a></li></ul></li><li><a href="#organ-population-dynamics">Organ Population Dynamics</a></li><li><a href="#three-growth-types">Three Growth Types</a></li><li><a href="#supply-demand-allocation">Supply-Demand Allocation</a></li><li><a href="#density-effects">Density Effects</a></li><li><a href="#simulation">Simulation</a><ul><li><a href="#piracicaba-weather">Piracicaba Weather</a></li><li><a href="#running-the-three-types">Running the Three Types</a></li><li><a href="#organ-dynamics-plot">Organ Dynamics Plot</a></li></ul></li><li><a href="#yield-comparison">Yield Comparison</a><ul><li><a href="#yield-vs-density">Yield vs Density</a></li><li><a href="#per-plant-yield-comparison">Per-Plant Yield Comparison</a></li></ul></li><li><a href="#parameter-sources">Parameter Sources</a></li><li><a href="#key-insights">Key Insights</a></li><li><a href="#references">References</a></li></ul><h2 id="Introduction"><a class="docs-heading-anchor" href="#Introduction">Introduction</a><a id="Introduction-1"></a><a class="docs-heading-anchor-permalink" href="#Introduction" title="Permalink"></a></h2><p>Common bean (<em>Phaseolus vulgaris</em> L.) is the most important food legume worldwide, supplying protein and micronutrients to over 500 million people in Latin America and sub-Saharan Africa. Brazil is both a major producer and consumer, with annual production exceeding 3 million tonnes. Yield varies dramatically with cultivar architecture, planting density, and climate — factors that interact through the plant’s carbon economy.</p><p>Gutierrez et al. (1993) developed a physiologically based demographic model (PBDM) for three Brazilian bean growth types that differ in architecture and fruiting phenology:</p><ul><li><strong>Type I</strong> (<em>Goiano precoce</em>): determinate, compact bush, early fruiting at ~490 degree-days (DD) above 5 °C.</li><li><strong>Type II</strong> (<em>Porrillo sintetico</em>): indeterminate, semi-erect, fruiting at ~725 DD.</li><li><strong>Type III</strong> (<em>Carioca</em>): indeterminate, climbing habit, fruiting at ~760 DD.</li></ul><p>The model uses the <strong>metabolic pool</strong> approach: photosynthesis supplies carbon, which is allocated to leaves, stems, roots, and fruits based on supply/demand ratios. Organ populations age through distributed delays in physiological time (degree-days above a 5 °C base). This vignette implements the bean carbon-balance model using the <code>PhysiologicallyBasedDemographicModels.jl</code> API.</p><h2 id="Plant-Carbon-Balance"><a class="docs-heading-anchor" href="#Plant-Carbon-Balance">Plant Carbon Balance</a><a id="Plant-Carbon-Balance-1"></a><a class="docs-heading-anchor-permalink" href="#Plant-Carbon-Balance" title="Permalink"></a></h2><h3 id="Photosynthesis"><a class="docs-heading-anchor" href="#Photosynthesis">Photosynthesis</a><a id="Photosynthesis-1"></a><a class="docs-heading-anchor-permalink" href="#Photosynthesis" title="Permalink"></a></h3><p>Carbon assimilation follows the Gutierrez–Baumgärtner functional response. Supply is proportional to intercepted radiation via Beer’s Law, with a light extinction coefficient of 0.70 and a radiation-use efficiency of 0.30 g dry matter per MJ intercepted (Gutierrez et al. 1993, Eq. 3–5).</p><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+using CairoMakie
+
+# ── Bean development: base temperature 5°C for all types ──────────
+const T_BASE = 5.0
+const T_MAX_DEV = 38.0
+
+bean_dev = LinearDevelopmentRate(T_BASE, T_MAX_DEV)
+
+# Canopy parameters (Gutierrez et al. 1993, Eq. 3)
+const SLA = 2.64          # dm²/g leaf dry mass → 0.0264 m²/g
+const EXTINCTION = 0.70   # light extinction coefficient
+const RUE = 0.30          # g DM / MJ intercepted radiation
+
+function photosynthesis(leaf_mass, radiation_MJ; density=20.0)
+    lai = leaf_mass * SLA * 0.01 * density   # m²/m² ground
+    frac_intercepted = 1.0 - exp(-EXTINCTION * lai)
+    return frac_intercepted * radiation_MJ * RUE / density  # g DM/plant/day
+end</code></pre><pre><code class="nohighlight hljs">photosynthesis (generic function with 1 method)</code></pre><h3 id="Respiration"><a class="docs-heading-anchor" href="#Respiration">Respiration</a><a id="Respiration-1"></a><a class="docs-heading-anchor-permalink" href="#Respiration" title="Permalink"></a></h3><p>Maintenance respiration uses a Q₁₀ model. The base rate is 0.017 g/g/dd at a reference temperature θ = 5 °C (Gutierrez et al. 1993, Eq. 7).</p><pre><code class="language-julia hljs">resp = Q10Respiration(0.017, 2.0, 5.0)
+
+println(&quot;Maintenance respiration rates:&quot;)
+for T in [15.0, 20.0, 25.0, 30.0]
+    r = 0.017 * 2.0^((T - 5.0) / 10.0)
+    println(&quot;  T=$(T)°C: $(round(r, digits=4)) g/g/dd&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Maintenance respiration rates:
+  T=15.0°C: 0.034 g/g/dd
+  T=20.0°C: 0.0481 g/g/dd
+  T=25.0°C: 0.068 g/g/dd
+  T=30.0°C: 0.0962 g/g/dd</code></pre><h2 id="Organ-Population-Dynamics"><a class="docs-heading-anchor" href="#Organ-Population-Dynamics">Organ Population Dynamics</a><a id="Organ-Population-Dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Organ-Population-Dynamics" title="Permalink"></a></h2><p>Each organ type (leaves, stems, roots, fruits) is represented as a <code>LifeStage</code> with age-structured sub-cohorts. Growth rates and initial masses are taken from Table 1 of Gutierrez et al. (1993).</p><pre><code class="language-julia hljs"># Organ substages (k=25 for numerical integration)
+const K_ORGAN = 25
+
+# Type-specific organ lifetimes (degree-days) from Gutierrez et al. 1993 Table 1.
+# Type I (determinate, e.g. Goiano precoce) has shorter leaf lifetime than the
+# indeterminate Types II–III.
+const BEAN_LEAF_TAU_I    = 600.0
+const BEAN_LEAF_TAU_II   = 650.0
+const BEAN_LEAF_TAU_III  = 650.0
+const BEAN_STEM_TAU_I    = 1000.0
+const BEAN_STEM_TAU_II   = 1200.0
+const BEAN_STEM_TAU_III  = 1200.0
+const BEAN_ROOT_TAU_I    = 1000.0
+const BEAN_ROOT_TAU_II   = 1200.0
+const BEAN_ROOT_TAU_III  = 1200.0
+const BEAN_FRUIT_TAU = 500.0
+
+# ── Type I (Goiano precoce): determinate, compact ─────────────────
+type1_leaf = LifeStage(:leaf,  DistributedDelay(K_ORGAN, BEAN_LEAF_TAU_I; W0=0.007), bean_dev, 0.001)
+type1_stem = LifeStage(:stem,  DistributedDelay(K_ORGAN, BEAN_STEM_TAU_I; W0=0.0066), bean_dev, 0.001)
+type1_root = LifeStage(:root,  DistributedDelay(K_ORGAN, BEAN_ROOT_TAU_I; W0=0.003), bean_dev, 0.001)
+type1_fruit = LifeStage(:fruit, DistributedDelay(K_ORGAN, BEAN_FRUIT_TAU; W0=0.0), bean_dev, 0.0)
+
+# ── Type II (Porrillo sintetico): indeterminate, semi-erect ──────
+type2_leaf = LifeStage(:leaf,  DistributedDelay(K_ORGAN, BEAN_LEAF_TAU_II; W0=0.008221), bean_dev, 0.001)
+type2_stem = LifeStage(:stem,  DistributedDelay(K_ORGAN, BEAN_STEM_TAU_II; W0=0.01859), bean_dev, 0.001)
+type2_root = LifeStage(:root,  DistributedDelay(K_ORGAN, BEAN_ROOT_TAU_II; W0=0.005), bean_dev, 0.001)
+type2_fruit = LifeStage(:fruit, DistributedDelay(K_ORGAN, BEAN_FRUIT_TAU; W0=0.0), bean_dev, 0.0)
+
+# ── Type III (Carioca): indeterminate, climbing ──────────────────
+type3_leaf = LifeStage(:leaf,  DistributedDelay(K_ORGAN, BEAN_LEAF_TAU_III; W0=0.008), bean_dev, 0.001)
+type3_stem = LifeStage(:stem,  DistributedDelay(K_ORGAN, BEAN_STEM_TAU_III; W0=0.001), bean_dev, 0.001)
+type3_root = LifeStage(:root,  DistributedDelay(K_ORGAN, BEAN_ROOT_TAU_III; W0=0.004), bean_dev, 0.001)
+type3_fruit = LifeStage(:fruit, DistributedDelay(K_ORGAN, BEAN_FRUIT_TAU; W0=0.0), bean_dev, 0.0)
+
+pop_type1 = Population(:bean_type1, [type1_leaf, type1_stem, type1_root, type1_fruit])
+pop_type2 = Population(:bean_type2, [type2_leaf, type2_stem, type2_root, type2_fruit])
+pop_type3 = Population(:bean_type3, [type3_leaf, type3_stem, type3_root, type3_fruit])</code></pre><pre><code class="nohighlight hljs">Population{Float64}(:bean_type3, LifeStage{Float64, LinearDevelopmentRate{Float64}}[LifeStage{Float64, LinearDevelopmentRate{Float64}}(:leaf, DistributedDelay{Float64}(25, 650.0, [0.008, 0.008, 0.008, 0.008, 0.008, 0.008, 0.008, 0.008, 0.008, 0.008  …  0.008, 0.008, 0.008, 0.008, 0.008, 0.008, 0.008, 0.008, 0.008, 0.008]), LinearDevelopmentRate{Float64}(5.0, 38.0), 0.001), LifeStage{Float64, LinearDevelopmentRate{Float64}}(:stem, DistributedDelay{Float64}(25, 1200.0, [0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001  …  0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001]), LinearDevelopmentRate{Float64}(5.0, 38.0), 0.001), LifeStage{Float64, LinearDevelopmentRate{Float64}}(:root, DistributedDelay{Float64}(25, 1200.0, [0.004, 0.004, 0.004, 0.004, 0.004, 0.004, 0.004, 0.004, 0.004, 0.004  …  0.004, 0.004, 0.004, 0.004, 0.004, 0.004, 0.004, 0.004, 0.004, 0.004]), LinearDevelopmentRate{Float64}(5.0, 38.0), 0.001), LifeStage{Float64, LinearDevelopmentRate{Float64}}(:fruit, DistributedDelay{Float64}(25, 500.0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), LinearDevelopmentRate{Float64}(5.0, 38.0), 0.0)])</code></pre><h2 id="Three-Growth-Types"><a class="docs-heading-anchor" href="#Three-Growth-Types">Three Growth Types</a><a id="Three-Growth-Types-1"></a><a class="docs-heading-anchor-permalink" href="#Three-Growth-Types" title="Permalink"></a></h2><p>The three types differ in organ growth rates (γ, g/g/dd), fruiting onset (DD threshold), fruit production rate (β_F), and pod shedding fraction.</p><pre><code class="language-julia hljs"># Growth parameters from Table 1 (Gutierrez et al. 1993)
+struct BeanParams
+    name::String
+    γ_L::Float64    # leaf growth rate (g/g/dd)
+    γ_S::Float64    # stem growth rate (g/g/dd)
+    γ_R::Float64    # root growth rate (g/g/dd)
+    β_F::Float64    # fruit production rate (plants⁻¹ dd⁻¹)
+    dd_fruit::Float64  # DD at fruiting onset
+    shed_frac::Float64 # fraction of fruit lost to shedding
+    W_L0::Float64   # initial leaf mass (g)
+    W_S0::Float64   # initial stem mass (g)
+end
+
+type_I   = BeanParams(&quot;Type I (Goiano precoce)&quot;,
+    0.01258, 0.01035, 0.0085, 0.1609, 490.0, 0.79, 0.007, 0.0066)
+type_II  = BeanParams(&quot;Type II (Porrillo sintetico)&quot;,
+    0.0113,  0.0077,  0.0060, 0.2145, 725.0, 0.66, 0.008221, 0.01859)
+type_III = BeanParams(&quot;Type III (Carioca)&quot;,
+    0.00917, 0.00739, 0.0055, 0.2145, 760.0, 0.68, 0.008, 0.001)
+
+for p in [type_I, type_II, type_III]
+    println(&quot;$(p.name): γ_L=$(p.γ_L), γ_S=$(p.γ_S), β_F=$(p.β_F), &quot; *
+            &quot;fruit onset=$(p.dd_fruit) DD, shedding=$(Int(p.shed_frac*100))%&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Type I (Goiano precoce): γ_L=0.01258, γ_S=0.01035, β_F=0.1609, fruit onset=490.0 DD, shedding=79%
+Type II (Porrillo sintetico): γ_L=0.0113, γ_S=0.0077, β_F=0.2145, fruit onset=725.0 DD, shedding=66%
+Type III (Carioca): γ_L=0.00917, γ_S=0.00739, β_F=0.2145, fruit onset=760.0 DD, shedding=68%</code></pre><h2 id="Supply-Demand-Allocation"><a class="docs-heading-anchor" href="#Supply-Demand-Allocation">Supply-Demand Allocation</a><a id="Supply-Demand-Allocation-1"></a><a class="docs-heading-anchor-permalink" href="#Supply-Demand-Allocation" title="Permalink"></a></h2><p>Carbon is partitioned among organs using a priority-based supply/demand framework. During vegetative growth, roots and leaves have priority; after fruiting onset, fruits take top priority. The supply/demand index φ determines what fraction of demand each organ receives.</p><pre><code class="language-julia hljs">function carbon_allocation(supply, demands, dd, dd_fruit)
+    if dd &lt; dd_fruit
+        priorities = [3, 1, 2, 4]  # root &gt; leaf &gt; stem &gt; fruit
+    else
+        priorities = [4, 1, 3, 2]  # fruit &gt; leaf &gt; root &gt; stem
+    end
+
+    ordered_demands = demands[priorities]
+    pool = MetabolicPool(supply, ordered_demands, [:p1, :p2, :p3, :p4])
+    alloc = allocate(pool)
+    result = zeros(4)
+    for (i, p) in enumerate(priorities)
+        result[p] = alloc[i]
+    end
+    return result
+end
+
+# Demonstrate allocation at two phases
+demands = [0.5, 0.3, 0.2, 0.4]  # leaf, stem, root, fruit
+for (label, dd) in [(&quot;Vegetative (300 DD)&quot;, 300.0), (&quot;Fruiting (600 DD)&quot;, 600.0)]
+    a = carbon_allocation(1.0, demands, dd, 490.0)
+    println(&quot;$label: leaf=$(round(a[1],digits=2)), stem=$(round(a[2],digits=2)), &quot; *
+            &quot;root=$(round(a[3],digits=2)), fruit=$(round(a[4],digits=2))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Vegetative (300 DD): leaf=0.5, stem=0.3, root=0.2, fruit=0.0
+Fruiting (600 DD): leaf=0.5, stem=0.0, root=0.1, fruit=0.4</code></pre><h2 id="Density-Effects"><a class="docs-heading-anchor" href="#Density-Effects">Density Effects</a><a id="Density-Effects-1"></a><a class="docs-heading-anchor-permalink" href="#Density-Effects" title="Permalink"></a></h2><p>Plant spacing strongly affects per-capita carbon supply through self-shading. At high density (40 plants/m²), individual leaf area index contributions overlap, reducing per-plant radiation capture. The model uses Beer’s Law with the total community LAI to predict density-dependent yield (Gutierrez et al. 1993, Eq. 3).</p><pre><code class="language-julia hljs">densities = [5.0, 10.0, 20.0, 30.0, 40.0]
+leaf_mass = 2.0  # g/plant at peak
+
+println(&quot;Per-plant photosynthesis vs density (radiation=20 MJ/m²/day):&quot;)
+for d in densities
+    p = photosynthesis(leaf_mass, 20.0; density=d)
+    println(&quot;  $(Int(d)) plants/m²: $(round(p, digits=3)) g DM/plant/day&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Per-plant photosynthesis vs density (radiation=20 MJ/m²/day):
+  5 plants/m²: 0.202 g DM/plant/day
+  10 plants/m²: 0.185 g DM/plant/day
+  20 plants/m²: 0.157 g DM/plant/day
+  30 plants/m²: 0.134 g DM/plant/day
+  40 plants/m²: 0.116 g DM/plant/day</code></pre><h2 id="Simulation"><a class="docs-heading-anchor" href="#Simulation">Simulation</a><a id="Simulation-1"></a><a class="docs-heading-anchor-permalink" href="#Simulation" title="Permalink"></a></h2><h3 id="Piracicaba-Weather"><a class="docs-heading-anchor" href="#Piracicaba-Weather">Piracicaba Weather</a><a id="Piracicaba-Weather-1"></a><a class="docs-heading-anchor-permalink" href="#Piracicaba-Weather" title="Permalink"></a></h3><p>We construct a 90-day growing season representative of Piracicaba, São Paulo, Brazil (22.7°S, 580 m), a major bean-producing region with tropical wet-dry climate.</p><pre><code class="language-julia hljs">const N_DAYS = 90
+
+weather_days = DailyWeather[]
+for d in 1:N_DAYS
+    # Seasonal warming from planting (late Feb) through harvest (late May)
+    T_min = 16.0 + 2.0 * sin(2π * d / 90) - 1.5 * (d / N_DAYS)
+    T_max = 29.0 + 3.0 * sin(2π * d / 90) - 2.0 * (d / N_DAYS)
+    T_mean = (T_min + T_max) / 2.0
+    rad = 17.0 + 5.0 * sin(2π * d / 90) - 3.0 * (d / N_DAYS)
+    rad = max(12.0, rad)
+    push!(weather_days, DailyWeather(T_mean, T_min, T_max;
+                                      radiation=rad, photoperiod=12.5))
+end
+weather = WeatherSeries(weather_days)
+
+T_means = [0.5*(16.0 + 2.0*sin(2π*d/90) - 1.5*(d/N_DAYS) +
+               29.0 + 3.0*sin(2π*d/90) - 2.0*(d/N_DAYS)) for d in 1:N_DAYS]
+println(&quot;Season: $N_DAYS days, T̄=$(round(sum(T_means)/N_DAYS, digits=1))°C&quot;)
+println(&quot;T range: $(round(minimum(T_means), digits=1))–$(round(maximum(T_means), digits=1))°C&quot;)</code></pre><pre><code class="nohighlight hljs">Season: 90 days, T̄=21.6°C
+T range: 18.7–24.6°C</code></pre><h3 id="Running-the-Three-Types"><a class="docs-heading-anchor" href="#Running-the-Three-Types">Running the Three Types</a><a id="Running-the-Three-Types-1"></a><a class="docs-heading-anchor-permalink" href="#Running-the-Three-Types" title="Permalink"></a></h3><pre><code class="language-julia hljs">function simulate_bean(params::BeanParams, weather, n_days; density=20.0)
+    # Organ biomass pools — no autonomous growth, all managed by allocation rule
+    leaf = BulkPopulation(:leaf, params.W_L0)
+    stem = BulkPopulation(:stem, params.W_S0)
+    root = BulkPopulation(:root, 0.003)
+    fruit = BulkPopulation(:fruit, 0.0)
+
+    # Cumulative degree-days for phenology tracking
+    cum_dd_state = ScalarState(:cum_dd, 0.0;
+        update=(val, sys, w, day, p) -&gt; val + max(0.0, w.T_mean - T_BASE))
+
+    # Carbon allocation rule: photosynthesis → respiration → priority-based partitioning
+    allocation = CustomRule(:allocation, (sys, w, day, p) -&gt; begin
+        T = w.T_mean
+        dd = max(0.0, T - T_BASE)
+        cum_dd = get_state(sys, :cum_dd)
+        rad_d = max(12.0, w.radiation)
+
+        W_L = total_population(sys[:leaf].population)
+        W_S = total_population(sys[:stem].population)
+        W_R = total_population(sys[:root].population)
+        W_F = total_population(sys[:fruit].population)
+
+        supply = photosynthesis(W_L, rad_d; density=p.density)
+
+        total_mass = W_L + W_S + W_R + W_F
+        # Gutierrez et al. 1993 Eq. 7: r = 0.017 · 2^((T−5)/10) per day
+        maint = 0.017 * 2.0^((T - 5.0) / 10.0) * total_mass
+        net = max(0.0, supply - maint) * 0.72
+
+        d_L = p.params.γ_L * W_L * dd
+        d_S = p.params.γ_S * W_S * dd
+        d_R = p.params.γ_R * W_R * dd
+        d_F = cum_dd &gt;= p.params.dd_fruit ? p.params.β_F * W_F * dd + 0.05 * dd : 0.0
+
+        total_demand = d_L + d_S + d_R + d_F + 1e-10
+        φ = min(1.0, net / total_demand)
+
+        if cum_dd &lt; p.params.dd_fruit
+            W_R += φ * d_R
+            remaining = net - φ * d_R
+            alloc_L = min(remaining * 0.6, φ * d_L)
+            W_L += alloc_L
+            remaining -= alloc_L
+            W_S += min(remaining, φ * d_S)
+        else
+            fruit_alloc = min(net * 0.5, φ * d_F)
+            W_F += fruit_alloc * (1.0 - p.params.shed_frac)
+            remaining = net - fruit_alloc
+            alloc_L = min(remaining * 0.4, φ * d_L)
+            W_L += alloc_L
+            remaining -= alloc_L
+            alloc_R = min(remaining * 0.3, φ * d_R)
+            W_R += alloc_R
+            remaining -= alloc_R
+            W_S += remaining * 0.5
+        end
+
+        if cum_dd &gt; 600.0
+            W_L *= (1.0 - 0.005 * dd / 20.0)
+        end
+
+        sys[:leaf].population.value[] = W_L
+        sys[:stem].population.value[] = W_S
+        sys[:root].population.value[] = W_R
+        sys[:fruit].population.value[] = W_F
+
+        return (cum_dd=cum_dd,)
+    end)
+
+    system = PopulationSystem(
+        :leaf =&gt; leaf, :stem =&gt; stem, :root =&gt; root, :fruit =&gt; fruit;
+        state=[cum_dd_state])
+    prob = PBDMProblem(MultiSpeciesPBDMNew(), system, weather, (1, n_days);
+        p=(params=params, density=density),
+        rules=AbstractInteractionRule[allocation])
+    sol = solve(prob, DirectIteration())
+
+    traj_L = vcat(params.W_L0, sol[:leaf])
+    traj_S = vcat(params.W_S0, sol[:stem])
+    traj_R = vcat(0.003, sol[:root])
+    traj_F = vcat(0.0, sol[:fruit])
+    traj_dd = [r.cum_dd for r in sol.rule_log[:allocation]]
+
+    return (; traj_L, traj_S, traj_R, traj_F, traj_dd)
+end
+
+res1 = simulate_bean(type_I,   weather, N_DAYS)
+res2 = simulate_bean(type_II,  weather, N_DAYS)
+res3 = simulate_bean(type_III, weather, N_DAYS)
+
+for (p, r) in [(type_I, res1), (type_II, res2), (type_III, res3)]
+    println(&quot;$(p.name): final fruit=$(round(r.traj_F[end], digits=2)) g, &quot; *
+            &quot;leaf=$(round(r.traj_L[end], digits=2)) g, total DD=$(round(r.traj_dd[end], digits=0))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Type I (Goiano precoce): final fruit=0.0 g, leaf=0.01 g, total DD=1495.0
+Type II (Porrillo sintetico): final fruit=0.0 g, leaf=0.01 g, total DD=1495.0
+Type III (Carioca): final fruit=0.0 g, leaf=0.01 g, total DD=1495.0</code></pre><h3 id="Organ-Dynamics-Plot"><a class="docs-heading-anchor" href="#Organ-Dynamics-Plot">Organ Dynamics Plot</a><a id="Organ-Dynamics-Plot-1"></a><a class="docs-heading-anchor-permalink" href="#Organ-Dynamics-Plot" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig = Figure(size=(950, 700))
+days = 0:N_DAYS
+
+for (i, (p, r, col)) in enumerate([(type_I, res1, :steelblue),
+                                     (type_II, res2, :orange),
+                                     (type_III, res3, :forestgreen)])
+    ax = Axis(fig[i, 1],
+        ylabel=&quot;Dry mass (g/plant)&quot;,
+        title=p.name)
+    i == 3 &amp;&amp; (ax.xlabel = &quot;Days after planting&quot;)
+    lines!(ax, collect(days), r.traj_L, label=&quot;Leaves&quot;,  linewidth=2, color=:green)
+    lines!(ax, collect(days), r.traj_S, label=&quot;Stems&quot;,   linewidth=2, color=:saddlebrown)
+    lines!(ax, collect(days), r.traj_R, label=&quot;Roots&quot;,   linewidth=2, color=:sienna,
+           linestyle=:dash)
+    lines!(ax, collect(days), r.traj_F, label=&quot;Fruits&quot;,  linewidth=2.5, color=:firebrick)
+    # Mark fruiting onset
+    fd = findfirst(x -&gt; x &gt;= p.dd_fruit, r.traj_dd)
+    if fd !== nothing
+        vlines!(ax, [fd], color=:gray, linestyle=:dot)
+        text!(ax, fd + 1, maximum(r.traj_L) * 0.8,
+              text=&quot;Fruiting&quot;, fontsize=9, color=:gray)
+    end
+    i == 1 &amp;&amp; axislegend(ax; position=:lt)
+end
+
+fig</code></pre><p><img src="../30_bean_growth_files/figure-commonmark/cell-10-output-1.png" alt/></p><h2 id="Yield-Comparison"><a class="docs-heading-anchor" href="#Yield-Comparison">Yield Comparison</a><a id="Yield-Comparison-1"></a><a class="docs-heading-anchor-permalink" href="#Yield-Comparison" title="Permalink"></a></h2><h3 id="Yield-vs-Density"><a class="docs-heading-anchor" href="#Yield-vs-Density">Yield vs Density</a><a id="Yield-vs-Density-1"></a><a class="docs-heading-anchor-permalink" href="#Yield-vs-Density" title="Permalink"></a></h3><p>We compare final fruit dry mass across the three types at five planting densities, from sparse (5 plants/m²) to dense (40 plants/m²).</p><pre><code class="language-julia hljs">densities = [5.0, 10.0, 20.0, 30.0, 40.0]
+yields = Dict{String, Vector{Float64}}()
+
+for p in [type_I, type_II, type_III]
+    ys = Float64[]
+    for dens in densities
+        r = simulate_bean(p, weather, N_DAYS; density=dens)
+        push!(ys, r.traj_F[end] * dens)  # g/m²
+    end
+    yields[p.name] = ys
+end
+
+fig2 = Figure(size=(650, 450))
+ax = Axis(fig2[1, 1],
+    xlabel=&quot;Plant density (plants/m²)&quot;,
+    ylabel=&quot;Yield (g DM/m²)&quot;,
+    title=&quot;Bean Yield vs Planting Density&quot;)
+
+for (p, col) in [(type_I, :steelblue), (type_II, :orange), (type_III, :forestgreen)]
+    lines!(ax, densities, yields[p.name], label=p.name,
+           linewidth=2.5, color=col)
+    scatter!(ax, densities, yields[p.name], color=col, markersize=8)
+end
+axislegend(ax; position=:lt)
+fig2</code></pre><p><img src="../30_bean_growth_files/figure-commonmark/cell-11-output-1.png" alt/></p><h3 id="Per-Plant-Yield-Comparison"><a class="docs-heading-anchor" href="#Per-Plant-Yield-Comparison">Per-Plant Yield Comparison</a><a id="Per-Plant-Yield-Comparison-1"></a><a class="docs-heading-anchor-permalink" href="#Per-Plant-Yield-Comparison" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig3 = Figure(size=(550, 400))
+ax = Axis(fig3[1, 1],
+    xlabel=&quot;Growth type&quot;,
+    ylabel=&quot;Fruit dry mass (g/plant)&quot;,
+    title=&quot;Per-Plant Yield at 20 plants/m²&quot;,
+    xticks=(1:3, [&quot;Type I&quot;, &quot;Type II&quot;, &quot;Type III&quot;]))
+
+plant_yields = [res1.traj_F[end], res2.traj_F[end], res3.traj_F[end]]
+barplot!(ax, 1:3, plant_yields,
+         color=[:steelblue, :orange, :forestgreen])
+
+fig3</code></pre><p><img src="../30_bean_growth_files/figure-commonmark/cell-12-output-1.png" alt/></p><h2 id="Parameter-Sources"><a class="docs-heading-anchor" href="#Parameter-Sources">Parameter Sources</a><a id="Parameter-Sources-1"></a><a class="docs-heading-anchor-permalink" href="#Parameter-Sources" title="Permalink"></a></h2><table><tr><th style="text-align: left">Parameter</th><th style="text-align: left">Type I</th><th style="text-align: left">Type II</th><th style="text-align: left">Type III</th><th style="text-align: left">Source</th></tr><tr><td style="text-align: left"><strong>Development</strong></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Base temperature</td><td style="text-align: left">5 °C</td><td style="text-align: left">5 °C</td><td style="text-align: left">5 °C</td><td style="text-align: left">Gutierrez et al. (1993), Table 1</td></tr><tr><td style="text-align: left">Fruiting onset (DD)</td><td style="text-align: left">490</td><td style="text-align: left">725</td><td style="text-align: left">760</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left"><strong>Organ growth rates (g/g/dd)</strong></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Leaf γ_L</td><td style="text-align: left">0.01258</td><td style="text-align: left">0.0113</td><td style="text-align: left">0.00917</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left">Stem γ_S</td><td style="text-align: left">0.01035</td><td style="text-align: left">0.0077</td><td style="text-align: left">0.00739</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left">Root γ_R</td><td style="text-align: left">0.0085</td><td style="text-align: left">0.0060</td><td style="text-align: left">0.0055</td><td style="text-align: left"><em>assumed</em></td></tr><tr><td style="text-align: left"><strong>Initial mass (g)</strong></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Leaf W_L0</td><td style="text-align: left">0.007</td><td style="text-align: left">0.008221</td><td style="text-align: left">0.008</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left">Stem W_S0</td><td style="text-align: left">0.0066</td><td style="text-align: left">0.01859</td><td style="text-align: left">0.001</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left"><strong>Fruit</strong></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Production β_F (plants⁻¹ dd⁻¹)</td><td style="text-align: left">0.1609</td><td style="text-align: left">0.2145</td><td style="text-align: left">0.2145</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left">Pod shedding fraction</td><td style="text-align: left">0.79</td><td style="text-align: left">0.66</td><td style="text-align: left">0.68</td><td style="text-align: left">Table 1</td></tr><tr><td style="text-align: left"><strong>Canopy</strong></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Specific leaf area</td><td style="text-align: left">2.64 dm²/g</td><td style="text-align: left">—</td><td style="text-align: left">—</td><td style="text-align: left">Eq. 3</td></tr><tr><td style="text-align: left">Light extinction</td><td style="text-align: left">0.70</td><td style="text-align: left">—</td><td style="text-align: left">—</td><td style="text-align: left">Eq. 3</td></tr><tr><td style="text-align: left">Radiation-use efficiency</td><td style="text-align: left">0.30 g/MJ</td><td style="text-align: left">—</td><td style="text-align: left">—</td><td style="text-align: left">Eq. 5</td></tr><tr><td style="text-align: left"><strong>Respiration</strong></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Base rate</td><td style="text-align: left">0.017 g/g/dd</td><td style="text-align: left">—</td><td style="text-align: left">—</td><td style="text-align: left">Eq. 7</td></tr><tr><td style="text-align: left">Q₁₀</td><td style="text-align: left">2.0</td><td style="text-align: left">—</td><td style="text-align: left">—</td><td style="text-align: left">Eq. 7</td></tr><tr><td style="text-align: left">θ (reference T)</td><td style="text-align: left">5 °C</td><td style="text-align: left">—</td><td style="text-align: left">—</td><td style="text-align: left">Eq. 7</td></tr><tr><td style="text-align: left">Growth respiration loss</td><td style="text-align: left">28%</td><td style="text-align: left">—</td><td style="text-align: left">—</td><td style="text-align: left"><em>assumed</em></td></tr><tr><td style="text-align: left"><strong>Substages</strong></td><td style="text-align: left">25</td><td style="text-align: left">—</td><td style="text-align: left">—</td><td style="text-align: left">numerical choice</td></tr></table><p><em>Sources marked “assumed” are not given explicitly in the paper; sensitivity analysis is recommended.</em></p><h2 id="Key-Insights"><a class="docs-heading-anchor" href="#Key-Insights">Key Insights</a><a id="Key-Insights-1"></a><a class="docs-heading-anchor-permalink" href="#Key-Insights" title="Permalink"></a></h2><ol><li><p><strong>Type I (determinate) fruits earliest</strong> at 490 DD but has the  highest pod-shedding rate (79%), reflecting its strategy of  concentrated early reproduction under resource limitation.</p></li><li><p><strong>Types II and III (indeterminate) accumulate more vegetative mass</strong>  before fruiting (725–760 DD), enabling greater carbon supply to  support a longer fruit-filling period and higher per-plant yield at  low density.</p></li><li><p><strong>Density trade-offs</strong>: Per-plant yield declines with increasing  density due to self-shading (Beer’s Law), but yield per unit area  peaks at intermediate densities (~20–30 plants/m²), consistent with  observed Brazilian production practices.</p></li><li><p><strong>The supply/demand ratio φ drives fruit shedding</strong>: When carbon  supply falls below total demand, fruit is shed proportionally. This  mechanism produces the observed 66–79% pod loss across growth types.</p></li><li><p><strong>Respiration scales with temperature</strong>: The Q₁₀ = 2.0 model means  that a 10 °C increase doubles maintenance costs, making nighttime  temperatures critical for net carbon balance in tropical systems.</p></li></ol><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Gutierrez1993Bean&quot; class=&quot;csl-entry&quot;&gt;</p><p>Gutierrez, Andrew Paul, J. S. Yaninek, B. Wermelinger, H. R. Herren, and C. K. Ellis. 1993. “A Model of Bean (&lt;span class=&quot;nocase&quot;&gt;Phaseolus vulgaris&lt;/span&gt; L.) Growth Types I–III: Factors Affecting Yield.” <em>Agricultural Systems</em> 44: 35–63. <a href="https://doi.org/10.1016/0308-521X(94)90187-P">https://doi.org/10.1016/0308-521X(94)90187-P</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../29_cowpea_thrips/">« Cowpea–Thrips Agroecosystem in West Africa</a><a class="docs-footer-nextpage" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

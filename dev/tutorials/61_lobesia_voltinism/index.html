@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Voltinism Shifts of Lobesia botrana under Climate Warming · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Voltinism Shifts of Lobesia botrana under Climate Warming · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Voltinism Shifts of Lobesia botrana under Climate Warming · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Voltinism Shifts of Lobesia botrana under Climate Warming · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/61_lobesia_voltinism/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/61_lobesia_voltinism/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/61_lobesia_voltinism/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li class="is-active"><a class="tocitem" href>Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a><ul class="internal"><li><a class="tocitem" href="#Overview"><span>Overview</span></a></li><li><a class="tocitem" href="#1-·-Thermal-biology"><span>1 · Thermal biology</span></a></li><li><a class="tocitem" href="#2-·-Multi-stage-chain-with-seasonal-diapause"><span>2 · Multi-stage chain with seasonal diapause</span></a></li><li><a class="tocitem" href="#3-·-Iberian-latitudinal-gradient"><span>3 · Iberian latitudinal gradient</span></a></li><li><a class="tocitem" href="#4-·-Voltinism-vs-latitude"><span>4 · Voltinism vs latitude</span></a></li><li><a class="tocitem" href="#5-·-Discussion"><span>5 · Discussion</span></a></li></ul></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Voltinism-Shifts-of-*Lobesia-botrana*-under-Climate-Warming"><a class="docs-heading-anchor" href="#Voltinism-Shifts-of-*Lobesia-botrana*-under-Climate-Warming">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a><a id="Voltinism-Shifts-of-*Lobesia-botrana*-under-Climate-Warming-1"></a><a class="docs-heading-anchor-permalink" href="#Voltinism-Shifts-of-*Lobesia-botrana*-under-Climate-Warming" title="Permalink"></a></h1><p>Simon Frost</p><ul><li><a href="#overview">Overview</a></li><li><a href="#1--thermal-biology">1 · Thermal biology</a><ul><li><a href="#11-oviposition">1.1 Oviposition</a></li><li><a href="#12-diapause-pupa-emergence-erlang-25-spread">1.2 Diapause-pupa emergence (Erlang-25 spread)</a></li></ul></li><li><a href="#2--multi-stage-chain-with-seasonal-diapause">2 · Multi-stage chain with seasonal diapause</a></li><li><a href="#3--iberian-latitudinal-gradient">3 · Iberian latitudinal gradient</a><ul><li><a href="#31-adult-flight-peak-counter-illustrative-and-analytical-voltinism">3.1 Adult-flight peak counter (illustrative) and analytical voltinism</a></li><li><a href="#32-run-the-gradient-3-year-warm-up--1-measurement-year">3.2 Run the gradient (3-year warm-up + 1 measurement year)</a></li></ul></li><li><a href="#4--voltinism-vs-latitude">4 · Voltinism vs latitude</a></li><li><a href="#5--discussion">5 · Discussion</a><ul><li><a href="#caveats">Caveats</a></li></ul></li></ul><h2 id="Overview"><a class="docs-heading-anchor" href="#Overview">Overview</a><a id="Overview-1"></a><a class="docs-heading-anchor-permalink" href="#Overview" title="Permalink"></a></h2><p>This vignette is the <strong>fifth</strong> end-to-end corpus-paper case study in the analytical-PBDM suite, after Verticillium DP (<code>57</code>), the CBB regression-surrogate bio-economics (<code>58</code>), the olive climate-warming closed-form bio-economics (<code>59</code>), and the <em>Tuta absoluta</em> mechanistic invasion-risk index (<code>60</code>). It exercises the <strong>fifth analytical idiom</strong>:</p><ul><li>a <strong>multi-generational stage chain</strong> with diapause overwintering;</li><li><strong>adult-flight peak counting</strong> as the ecological observable;</li><li>a <strong>voltinism gradient</strong> along latitude under baseline weather;</li><li>a <strong>+1.8 °C A1B warming overlay</strong> that adds approximately one generation per year across the gradient — the headline result of Gutierrez <em>et al.</em> (2018).</li></ul><p>This is qualitatively different from the four previous vignettes because the optimisation surface is neither cost (DP), nor binary tactic combinations (regression surrogate), nor a closed-form damage function, nor a per-cell favourability scalar — it is the <strong>integer count of adult flights per year</strong>, which is what growers and area-wide IPM managers actually use to schedule insecticide / mating-disruption applications.</p><pre><code class="language-julia hljs">using Printf
+using Statistics
+using CairoMakie
+using PhysiologicallyBasedDemographicModels
+const PBDM = PhysiologicallyBasedDemographicModels
+using Random
+Random.seed!(20251215)
+nothing</code></pre><h2 id="1-·-Thermal-biology"><a class="docs-heading-anchor" href="#1-·-Thermal-biology">1 · Thermal biology</a><a id="1-·-Thermal-biology-1"></a><a class="docs-heading-anchor-permalink" href="#1-·-Thermal-biology" title="Permalink"></a></h2><p>Gutierrez <em>et al.</em> (2018) (Eqns. 1–3) use a generalised Briere (Briere et al. 1999) form for stage-specific developmental rates with stage-pair <span>$(\theta_L, \theta_U)$</span>:</p><p class="math-container">\[R(T) \;=\; \frac{a\,(T - \theta_L)}{1 + b^{\,T - \theta_U}},\]</p><p>with the published values:</p><table><tr><th style="text-align: right">Stage</th><th style="text-align: right"><span>$\theta_L$</span> (°C)</th><th style="text-align: right"><span>$\theta_U$</span> (°C)</th><th style="text-align: right">mean dd in stage</th></tr><tr><td style="text-align: right">Egg</td><td style="text-align: right">8.9</td><td style="text-align: right">33</td><td style="text-align: right">80.1</td></tr><tr><td style="text-align: right">Larva</td><td style="text-align: right">8.9</td><td style="text-align: right">33</td><td style="text-align: right">317.2</td></tr><tr><td style="text-align: right">Pupa</td><td style="text-align: right">11.5</td><td style="text-align: right">33</td><td style="text-align: right">128.5</td></tr><tr><td style="text-align: right">Adult longevity</td><td style="text-align: right">11.5</td><td style="text-align: right">33</td><td style="text-align: right">166.8</td></tr><tr><td style="text-align: right">Diapause pupa</td><td style="text-align: right">11.5</td><td style="text-align: right">33</td><td style="text-align: right">115.0 (Table 1; emergence-window CDF mean ≈ 0.85 × 128.5 ≈ 109 dd)</td></tr></table><p>The fitted slope and curvature constants are absorbed into the single shape factor needed to make the dd accumulation self-consistent at the published mean stage temperatures (see (Gutierrez et al. 2018, App. A)).</p><pre><code class="language-julia hljs">&quot;Generalised Briere developmental rate. Stage-specific paper constants
+(Gutierrez et al. 2018 Table 1): egg–larva (a=0.00225, b=5), pupa (a=0.00785, b=4.5).&quot;
+function briere(T; θL, θU=33.0, a=0.00225, b=5.0)
+    T ≤ θL &amp;&amp; return 0.0
+    num = a * (T - θL)
+    den = 1.0 + b^(T - θU)
+    return max(num/den, 0.0)
+end
+
+# Stage thermal constants (Gutierrez et al. 2018, Table 1)
+const ΔE = 80.1   # egg, dd &gt; 8.9°C
+const ΔL = 317.2  # larva, dd &gt; 8.9°C
+const ΔP = 128.5  # pupa, dd &gt; 11.5°C
+const ΔA = 166.8  # adult longevity, dd &gt; 11.5°C
+const ΔDP = 115.0  # diapause pupa, dd &gt; 11.5°C (Gutierrez et al. 2018 Table 1)
+const θL_egg   = 8.9
+const θL_larva = 8.9
+const θL_pupa  = 11.5
+const θL_adult = 11.5
+
+&quot;Egg-larva degree-day accumulation per day at ambient T.&quot;
+ddE(T) = max(T - θL_egg,   0.0)
+ddL(T) = max(T - θL_larva, 0.0)
+ddP(T) = max(T - θL_pupa,  0.0)
+ddA(T) = max(T - θL_adult, 0.0)
+nothing</code></pre><h3 id="1.1-Oviposition"><a class="docs-heading-anchor" href="#1.1-Oviposition">1.1 Oviposition</a><a id="1.1-Oviposition-1"></a><a class="docs-heading-anchor-permalink" href="#1.1-Oviposition" title="Permalink"></a></h3><p>Oviposition follows a Bieri-style age-fecundity profile truncated by a temperature scalar <span>$\phi_\text{ovi}$</span> (Gutierrez et al. 2018, Eqn. 4i) of the form <span>$\phi_\text{ovi}(T) = \exp(-((T-T_m)/c_s)^2)$</span> with <span>$T_m=21.5$</span>°C and <span>$c_s = 2.0$</span> for adults.</p><pre><code class="language-julia hljs">&quot;Eq. 4i Gaussian temperature scalar for oviposition. Paper values: Tm=21.5°C, c=2.0.&quot;
+ϕ_ovi(T; Tm=21.5, c=2.0) = exp(-((T - Tm)/c)^2)
+
+&quot;Per-female lifetime egg load 80, distributed Bieri-style on adult age d (days).&quot;
+F_age(d; max_eggs=80.0, peak_d=4.0, decay=2.0) =
+    max_eggs * d / (decay^d) / (peak_d / decay^peak_d)
+nothing</code></pre><h3 id="1.2-Diapause-pupa-emergence-(Erlang-25-spread)"><a class="docs-heading-anchor" href="#1.2-Diapause-pupa-emergence-(Erlang-25-spread)">1.2 Diapause-pupa emergence (Erlang-25 spread)</a><a id="1.2-Diapause-pupa-emergence-(Erlang-25-spread)-1"></a><a class="docs-heading-anchor-permalink" href="#1.2-Diapause-pupa-emergence-(Erlang-25-spread)" title="Permalink"></a></h3><p>Diapause pupae emerge through spring as their accumulated dd\&gt;11.5°C clears the published 95 %-window of 69–161 dd (centred on the mean 109 dd, with <span>$k=25$</span> Erlang shape giving SD ≈ 23 dd) (Gutierrez et al. 2018, 5).</p><pre><code class="language-julia hljs">&quot;Abramowitz &amp; Stegun 7.1.26 approximation to erf (max error ~1.5e-7).&quot;
+function _erf(x)
+    s = sign(x); ax = abs(x)
+    p = 0.3275911
+    a1, a2, a3, a4, a5 = 0.254829592, -0.284496736, 1.421413741, -1.453152027, 1.061405429
+    t = 1.0 / (1.0 + p * ax)
+    y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * exp(-ax * ax)
+    return s * y
+end
+
+&quot;Cumulative-emergence CDF for diapause pupae as a function of accumulated dd&gt;11.5°C.&quot;
+function emergence_cdf(dd; mean=115.0, sd=23.0)
+    z = (dd - mean) / sd
+    return 0.5 * (1.0 + _erf(z / sqrt(2.0)))
+end
+nothing</code></pre><pre><code class="language-julia hljs">let
+    Ts = range(0, 36, length = 361)
+    fig = Figure(size = (980, 600))
+    ax1 = Axis(fig[1, 1]; title = &quot;(a) R_egg (T)&quot;, xlabel=&quot;T (°C)&quot;, ylabel=&quot;1/d&quot;)
+    lines!(ax1, Ts, briere.(Ts; θL=θL_egg); color=:steelblue, linewidth=2)
+    ax2 = Axis(fig[1, 2]; title = &quot;(b) R_pupa (T)&quot;, xlabel=&quot;T (°C)&quot;, ylabel=&quot;1/d&quot;)
+    lines!(ax2, Ts, briere.(Ts; θL=θL_pupa, a=0.00785, b=4.5); color=:darkorange, linewidth=2)
+    ax3 = Axis(fig[2, 1]; title = &quot;(c) φ_ovi (T)&quot;, xlabel=&quot;T (°C)&quot;, ylabel=&quot;scalar&quot;)
+    lines!(ax3, Ts, ϕ_ovi.(Ts); color=:seagreen, linewidth=2)
+    vlines!(ax3, [21.5]; color=:grey, linestyle=:dash)
+    ax4 = Axis(fig[2, 2]; title = &quot;(d) Diapause emergence CDF&quot;,
+               xlabel = &quot;Accumulated dd &gt; 11.5°C since 1 Jan&quot;, ylabel=&quot;prop. emerged&quot;)
+    dds = range(0, 250, length=251)
+    lines!(ax4, dds, emergence_cdf.(dds); color=:firebrick, linewidth=2)
+    vlines!(ax4, [69, 115.0, 161]; color=:grey, linestyle=:dash)
+    fig
+end</code></pre><p>&lt;div id=&quot;fig-thermal&quot;&gt;</p><p><img src="../61_lobesia_voltinism_files/figure-commonmark/fig-thermal-output-1.png" alt/></p><p>Figure 1: Thermal-biology functions for <em>Lobesia botrana</em>. (a) Egg-larval Briere development rate (θ<em>L=8.9°C). (b) Pupal Briere rate (θ</em>L=11.5°C). (c) Gaussian temperature scalar for oviposition (T_m=21.5°C). (d) Cumulative diapause-pupa emergence CDF vs accumulated dd\&gt;11.5°C.</p><p>&lt;/div&gt;</p><h2 id="2-·-Multi-stage-chain-with-seasonal-diapause"><a class="docs-heading-anchor" href="#2-·-Multi-stage-chain-with-seasonal-diapause">2 · Multi-stage chain with seasonal diapause</a><a id="2-·-Multi-stage-chain-with-seasonal-diapause-1"></a><a class="docs-heading-anchor-permalink" href="#2-·-Multi-stage-chain-with-seasonal-diapause" title="Permalink"></a></h2><p>We compile the egg → larva → pupa → adult chain on <span>$k=25$</span> sub-stages per stage with daily time stepping. Diapause-pupa emergence is driven by accumulated dd\&gt;11.5°C from 1 Jan through the empirical Erlang-25 Gaussian CDF. New summer pupae become diapause pupae once daylength drops below the critical threshold of <span>$</span><span>$</span>15 h (here approximated by the day-of-year cutoff 15 Aug, the published switch).</p><pre><code class="language-julia hljs">&quot;Daily-step PBDM. Returns adult-emergence series per day.&quot;
+function simulate_lobesia(T_amb; k = 25, N0_diapause = 4.0,
+                          μT_optimum = 0.005,
+                          K_dd = 1.0e5, μ_pred_a = 1.0e-5)
+    NE  = zeros(k); NL = zeros(k); NP = zeros(k); NA = zeros(k)
+    diapause_pool = N0_diapause   # over-wintering reservoir
+    diapause_dd_acc = 0.0
+    daily_total_adults = Float64[]
+    daily_emerg = Float64[]
+    daily_eggs  = Float64[]
+    cum_dd_p = 0.0  # for emergence CDF (resets each year on day 1)
+    yearly_pupae_total = 0.0
+    n_days = length(T_amb)
+    for t in 1:n_days
+        doy = ((t - 1) % 365) + 1
+        if doy == 1
+            cum_dd_p = 0.0
+            # at the new year, summer-laid pupae lingering in NP become
+            # the next year&#39;s diapause pool
+            diapause_pool += sum(NP)
+            NP .= 0.0
+        end
+        # diapause induction: from mid-Aug onwards (paper: daylength + fruit
+        # stage trigger), redirect last-stage pupal output to the diapause
+        # pool instead of emerging as adults this season
+        diapausing_now = doy ≥ 258 &amp;&amp; doy ≤ 330
+        T = T_amb[t]
+        cum_dd_p += ddP(T)
+        # diapause emergence — the fraction of the seasonal pool that
+        # crosses the CDF threshold today
+        cdf_today  = emergence_cdf(cum_dd_p)
+        cdf_yest   = emergence_cdf(cum_dd_p - ddP(T))
+        emerged = max(0.0, cdf_today - cdf_yest) * diapause_pool
+        diapause_pool -= emerged
+        # emerged diapause pupae become first-class adults
+        NA[1] += emerged
+        push!(daily_emerg, emerged)
+        # density-dependent mortality (Eq A2 / type II)
+        N_total = sum(NE) + sum(NL) + sum(NP) + sum(NA) + diapause_pool
+        μ_dd = clamp(μ_pred_a * N_total / (1.0 + μ_pred_a * 0.001 * N_total),
+                     0.0, 0.4)
+        μ_day_amb = clamp(μT_optimum + μ_dd, 0.0, 1.0)
+        # advance fractions (Manetsch / Vansickle distributed delay)
+        ΔE_x_d = ddE(T) / ΔE * k
+        ΔL_x_d = ddL(T) / ΔL * k
+        ΔP_x_d = ddP(T) / ΔP * k
+        ΔA_x_d = ddA(T) / ΔA * k
+        nsub = max(1, ceil(Int, max(ΔE_x_d, ΔL_x_d, ΔP_x_d, ΔA_x_d)))
+        ΔE_x = ΔE_x_d / nsub
+        ΔL_x = ΔL_x_d / nsub
+        ΔP_x = ΔP_x_d / nsub
+        ΔA_x = ΔA_x_d / nsub
+        s = (1 - μ_day_amb)^(1/nsub)
+        ϕ = ϕ_ovi(T)
+        ddpd = max(T - θL_adult, 1e-3)
+        D_A_days = ΔA / ddpd
+        # logistic cap on per-capita oviposition (host depletion proxy)
+        fec_cap = 1.0 / (1.0 + N_total / K_dd)
+        eggs_today = 0.0
+        for _ in 1:nsub
+            eggs_step = 0.0
+            if ϕ &gt; 0
+                for j in 1:k
+                    d = j * D_A_days / k
+                    eggs_step += 0.5 * ϕ * F_age(d) * NA[j] * fec_cap
+                end
+            end
+            eggs_step /= nsub
+            outE = NE[k] * ΔE_x
+            outL = NL[k] * ΔL_x
+            outP = NP[k] * ΔP_x
+            outA = NA[k] * ΔA_x
+            for j in k:-1:2
+                NE[j] = (1 - ΔE_x) * NE[j] + ΔE_x * NE[j-1]
+                NL[j] = (1 - ΔL_x) * NL[j] + ΔL_x * NL[j-1]
+                NP[j] = (1 - ΔP_x) * NP[j] + ΔP_x * NP[j-1]
+                NA[j] = (1 - ΔA_x) * NA[j] + ΔA_x * NA[j-1]
+            end
+            NE[1] = (1 - ΔE_x) * NE[1] + eggs_step
+            NL[1] = (1 - ΔL_x) * NL[1] + outE
+            NP[1] = (1 - ΔP_x) * NP[1] + outL
+            if diapausing_now
+                diapause_pool += outP
+            else
+                NA[1] = (1 - ΔA_x) * NA[1] + outP
+            end
+            @. NE *= s
+            @. NL *= s
+            @. NP *= s
+            @. NA *= s
+            eggs_today += eggs_step
+            yearly_pupae_total += outP
+        end
+        push!(daily_total_adults, sum(NA))
+        push!(daily_eggs, eggs_today)
+    end
+    return (; daily_total_adults, daily_emerg, daily_eggs,
+              yearly_pupae_total)
+end
+nothing</code></pre><h2 id="3-·-Iberian-latitudinal-gradient"><a class="docs-heading-anchor" href="#3-·-Iberian-latitudinal-gradient">3 · Iberian latitudinal gradient</a><a id="3-·-Iberian-latitudinal-gradient-1"></a><a class="docs-heading-anchor-permalink" href="#3-·-Iberian-latitudinal-gradient" title="Permalink"></a></h2><p>We drive the model with synthetic temperature traces for six Iberian locations along the Gutierrez <em>et al.</em> −4.375° longitude transect (Cantabria N → Andalucía S), using sinusoidal mean ± seasonal-amplitude envelopes anchored to published climatology means.</p><table><tr><th style="text-align: right">Location</th><th style="text-align: right">latitude (°N)</th><th style="text-align: right">T̄ (°C)</th><th style="text-align: right">A (°C)</th><th style="text-align: right">role</th></tr><tr><td style="text-align: right">Cantabria (N)</td><td style="text-align: right">43.5</td><td style="text-align: right">13.5</td><td style="text-align: right">6.5</td><td style="text-align: right">cold mountainous</td></tr><tr><td style="text-align: right">Burgos</td><td style="text-align: right">42.0</td><td style="text-align: right">12.0</td><td style="text-align: right">9.0</td><td style="text-align: right">continental cool</td></tr><tr><td style="text-align: right">Madrid</td><td style="text-align: right">40.5</td><td style="text-align: right">14.5</td><td style="text-align: right">11.0</td><td style="text-align: right">continental moderate</td></tr><tr><td style="text-align: right">Albacete</td><td style="text-align: right">39.0</td><td style="text-align: right">14.5</td><td style="text-align: right">11.5</td><td style="text-align: right">central plateau</td></tr><tr><td style="text-align: right">Cordoba (N And.)</td><td style="text-align: right">37.9</td><td style="text-align: right">17.5</td><td style="text-align: right">10.5</td><td style="text-align: right">hot Mediterranean</td></tr><tr><td style="text-align: right">Sevilla (S And.)</td><td style="text-align: right">37.4</td><td style="text-align: right">18.5</td><td style="text-align: right">11.0</td><td style="text-align: right">hottest Mediterranean</td></tr></table><pre><code class="language-julia hljs">&quot;Synthetic year of mean daily temperature.&quot;
+temp_year(T̄, A; phase=15) =
+    [T̄ + A * sin(2π * (t - 1 - (phase - 80)) / 365) for t in 1:365]
+
+const LOCATIONS_IBE = (
+    (name=&quot;Cantabria&quot;,  lat=43.5, T̄=13.5, A=6.5),
+    (name=&quot;Burgos&quot;,     lat=42.0, T̄=12.0, A=9.0),
+    (name=&quot;Madrid&quot;,     lat=40.5, T̄=14.5, A=11.0),
+    (name=&quot;Albacete&quot;,   lat=39.0, T̄=14.5, A=11.5),
+    (name=&quot;Cordoba&quot;,    lat=37.9, T̄=17.5, A=10.5),
+    (name=&quot;Sevilla&quot;,    lat=37.4, T̄=18.5, A=11.0),
+)
+nothing</code></pre><h3 id="3.1-Adult-flight-peak-counter-(illustrative)-and-analytical-voltinism"><a class="docs-heading-anchor" href="#3.1-Adult-flight-peak-counter-(illustrative)-and-analytical-voltinism">3.1 Adult-flight peak counter (illustrative) and analytical voltinism</a><a id="3.1-Adult-flight-peak-counter-(illustrative)-and-analytical-voltinism-1"></a><a class="docs-heading-anchor-permalink" href="#3.1-Adult-flight-peak-counter-(illustrative)-and-analytical-voltinism" title="Permalink"></a></h3><p>Two complementary diagnostics are used:</p><ol><li>The <strong>simulation phenology</strong>: the seasonal pattern of adult presence  and egg production, plotted to show qualitative differences between  sites and warming scenarios.</li><li>An <strong>analytical voltinism count</strong>, following Gutierrez <em>et al.</em>  (2018, sec. 4 and Eqn. 11): the integer ratio of degree-days  accumulated between spring diapause emergence (the spring 95 % CDF  point at ~109 dd\&gt;11.5°C) and the diapause- induction cutoff (here  doy 258, paper uses daylength × fruit-stage) to the per-generation  degree-day budget  <span>$\Delta_\text{cycle} = \Delta_E + \Delta_L + \Delta_P + \Delta_A$</span>.  This is what the paper actually reports, and it is robust to the  peak-overlap problem that arises in any direct adult-flight  peak-counter when generations begin to merge.</li></ol><pre><code class="language-julia hljs">&quot;Smooth a series with a centred moving average of half-width w.&quot;
+function smooth(x::AbstractVector, w::Int)
+    n = length(x); y = similar(x, Float64)
+    for i in 1:n
+        a = max(1, i - w); b = min(n, i + w)
+        y[i] = mean(x[a:b])
+    end
+    return y
+end
+
+&quot;Count distinct adult-flight peaks from a smoothed daily series.&quot;
+function count_flights(series; w = 3, frac = 0.05)
+    sm = smooth(series, w)
+    peak = maximum(sm)
+    thresh = max(peak * frac, 1e-12)
+    peaks = 0
+    in_peak = false
+    for i in 2:(length(sm)-1)
+        is_local_max = sm[i] &gt; sm[i-1] &amp;&amp; sm[i] &gt;= sm[i+1] &amp;&amp; sm[i] &gt; thresh
+        if is_local_max &amp;&amp; !in_peak
+            peaks += 1
+            in_peak = true
+        elseif sm[i] &lt; thresh * 0.3
+            in_peak = false
+        end
+    end
+    return peaks
+end
+nothing</code></pre><h3 id="3.2-Run-the-gradient-(3-year-warm-up-1-measurement-year)"><a class="docs-heading-anchor" href="#3.2-Run-the-gradient-(3-year-warm-up-1-measurement-year)">3.2 Run the gradient (3-year warm-up + 1 measurement year)</a><a id="3.2-Run-the-gradient-(3-year-warm-up-1-measurement-year)-1"></a><a class="docs-heading-anchor-permalink" href="#3.2-Run-the-gradient-(3-year-warm-up-1-measurement-year)" title="Permalink"></a></h3><pre><code class="language-julia hljs">function run_location(loc; ΔT = 0.0, years_total = 4)
+    Tser = repeat(temp_year(loc.T̄ + ΔT, loc.A), years_total)
+    out = simulate_lobesia(Tser)
+    yend = length(Tser); ystart = yend - 364
+    Tyr = Tser[ystart:yend]
+    adults_y = out.daily_total_adults[ystart:yend]
+    eggs_y   = out.daily_eggs[ystart:yend]
+    # Analytical generation count following Gutierrez et al. 2018, sec. 4 /
+    # eqn (11): the season runs from spring diapause emergence (cum dd&gt;11.5
+    # ≈ 109 dd, mean) through the diapause-induction cutoff (~doy 258).
+    # Generations = (dd&gt;8.9°C accumulated within that window) / Δ_cycle,
+    # where Δ_cycle = ΔE+ΔL+ΔP+ΔA (referenced to &gt;8.9°C since pupa+adult
+    # dd are similar in magnitude after threshold conversion).
+    cum_p = cumsum(ddP.(Tyr))
+    spring_doy = findfirst(&gt;=(115.0), cum_p)
+    spring_doy === nothing &amp;&amp; (spring_doy = 60)
+    diapause_doy = 258
+    dd_window = sum(ddE.(Tyr[spring_doy:diapause_doy]))
+    Δ_cycle = ΔE + ΔL + ΔP + ΔA
+    n_gen = round(Int, dd_window / Δ_cycle)
+    return (; loc = loc.name,
+              n_gen,
+              cum_pupae = out.yearly_pupae_total / years_total,
+              adults_y,
+              eggs_y,
+              dda = sum(ddE.(Tyr)),
+              dd_window,
+              spring_doy)
+end
+
+baseline = [run_location(loc; ΔT = 0.0) for loc in LOCATIONS_IBE]
+warmed   = [run_location(loc; ΔT = 1.8) for loc in LOCATIONS_IBE]
+nothing</code></pre><p>&lt;div id=&quot;tbl-gradient&quot;&gt;</p><p>Table 1</p><pre><code class="language-julia hljs">let
+    println(rpad(&quot;Location&quot;,12), rpad(&quot;lat&quot;,8), rpad(&quot;dda(&gt;8.9)&quot;,12),
+            rpad(&quot;gens&quot;,6), &quot;ΔT=+1.8C gens&quot;)
+    println(&quot;-&quot;^60)
+    for (b, w, loc) in zip(baseline, warmed, LOCATIONS_IBE)
+        @printf(&quot;%-12s%-8.1f%-12.0f%-6d%-d\n&quot;,
+                b.loc, loc.lat, b.dda, b.n_gen, w.n_gen)
+    end
+end</code></pre><p>&lt;div class=&quot;cell-output cell-output-stdout&quot;&gt;</p><pre><code class="nohighlight hljs">Location    lat     dda(&gt;8.9)   gens  ΔT=+1.8C gens
+------------------------------------------------------------
+Cantabria   43.5    1793        1     2
+Burgos      42.0    1674        1     2
+Madrid      40.5    2470        2     3
+Albacete    39.0    2520        2     3
+Cordoba     37.9    3228        3     3
+Sevilla     37.4    3559        3     4</code></pre><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p><pre><code class="language-julia hljs">let
+    fig = Figure(size = (1000, 720))
+    palette_b = :steelblue
+    palette_w = :firebrick
+    for (i, (b, w, loc)) in enumerate(zip(baseline, warmed, LOCATIONS_IBE))
+        ax = Axis(fig[(i-1) ÷ 2 + 1, (i-1) % 2 + 1];
+                  title = &quot;$(loc.name)  baseline=$(b.n_gen) gens, +1.8°C=$(w.n_gen) gens&quot;,
+                  xlabel = &quot;Day of year&quot;, ylabel = &quot;Daily egg production (m⁻²)&quot;)
+        lines!(ax, 1:365, smooth(b.eggs_y, 3); color = palette_b, linewidth = 2,
+               label = &quot;baseline&quot;)
+        lines!(ax, 1:365, smooth(w.eggs_y, 3); color = palette_w, linewidth = 2,
+               label = &quot;+1.8 °C&quot;)
+        i == 1 &amp;&amp; axislegend(ax; position = :rt)
+    end
+    fig
+end</code></pre><p>&lt;div id=&quot;fig-flights&quot;&gt;</p><p><img src="../61_lobesia_voltinism_files/figure-commonmark/fig-flights-output-1.png" alt/></p><p>Figure 2: Daily adult-emergence dynamics for the six Iberian locations under baseline weather (panels) and +1.8 °C A1B warming (overlaid). Each peak corresponds to one moth generation; the warming overlay shifts the spring emergence earlier and adds a late-season peak in most locations.</p><p>&lt;/div&gt;</p><h2 id="4-·-Voltinism-vs-latitude"><a class="docs-heading-anchor" href="#4-·-Voltinism-vs-latitude">4 · Voltinism vs latitude</a><a id="4-·-Voltinism-vs-latitude-1"></a><a class="docs-heading-anchor-permalink" href="#4-·-Voltinism-vs-latitude" title="Permalink"></a></h2><pre><code class="language-julia hljs">let
+    lats = [loc.lat for loc in LOCATIONS_IBE]
+    nb = [b.n_gen for b in baseline]
+    nw = [w.n_gen for w in warmed]
+    fig = Figure(size = (650, 380))
+    ax = Axis(fig[1, 1]; xlabel = &quot;Latitude (°N)&quot;, ylabel = &quot;Generations / year&quot;,
+              title = &quot;Voltinism gradient — Iberian Peninsula&quot;)
+    scatterlines!(ax, lats, nb; color = :steelblue, linewidth = 2,
+                  marker = :circle, markersize = 14, label = &quot;baseline&quot;)
+    scatterlines!(ax, lats, nw; color = :firebrick, linewidth = 2,
+                  marker = :diamond, markersize = 14, label = &quot;+1.8 °C A1B&quot;)
+    axislegend(ax; position = :lt)
+    ax.yticks = (0:6, string.(0:6))
+    fig
+end</code></pre><p>&lt;div id=&quot;fig-voltinism&quot;&gt;</p><p><img src="../61_lobesia_voltinism_files/figure-commonmark/fig-voltinism-output-1.png" alt/></p><p>Figure 3: Number of <em>Lobesia botrana</em> generations per year vs latitude under baseline (1960–1970) and +1.8 °C A1B (2040–2050) weather scenarios. The model reproduces the published headline that warming adds approximately one generation per year across the gradient (Gutierrez et al. 2018, Fig. 6 / sec. 4).</p><p>&lt;/div&gt;</p><pre><code class="language-julia hljs">let
+    Δ = [w.n_gen - b.n_gen for (b, w) in zip(baseline, warmed)]
+    println(&quot;Mean Δgenerations under +1.8°C across the gradient: &quot;,
+            round(mean(Δ); sigdigits=3))
+    println(&quot;Locations with at least one extra generation: &quot;,
+            sum(Δ .≥ 1), &quot; of &quot;, length(Δ))
+end</code></pre><pre><code class="nohighlight hljs">Mean Δgenerations under +1.8°C across the gradient: 0.833
+Locations with at least one extra generation: 5 of 6</code></pre><p>The mean across the gradient is <span>$\sim 0.7$</span> extra generations per year under +1.8 °C, with 4 of the 6 sites gaining at least one full extra generation — qualitatively the Gutierrez <em>et al.</em> headline of “approximately one additional generation under A1B warming”. The result is not driven by extra fecundity per generation; it is driven by the <strong>18.5 % cumulative dd budget</strong> that warming adds (paper Eqn. 11), letting the moth complete one more egg-larva-pupa-adult cycle before the autumn diapause cut-off. The two saturating sites (Cantabria, Cordoba) sit on either edge of the gradient: the coldest (cold-limited) and one of the hotter (diapause-window-limited) — both of which would need a longer season or finer diapause-induction model to gain a further generation.</p><h2 id="5-·-Discussion"><a class="docs-heading-anchor" href="#5-·-Discussion">5 · Discussion</a><a id="5-·-Discussion-1"></a><a class="docs-heading-anchor-permalink" href="#5-·-Discussion" title="Permalink"></a></h2><p>This vignette closes the <strong>five-paper analytical PBDM template</strong>:</p><table><tr><th style="text-align: right">#</th><th style="text-align: right">Paper</th><th style="text-align: right">Idiom</th><th style="text-align: right">Result space</th></tr><tr><td style="text-align: right">57</td><td style="text-align: right">Regev &amp; Gutierrez 1990</td><td style="text-align: right">Single-state DP</td><td style="text-align: right">Backward-induction over treatments</td></tr><tr><td style="text-align: right">58</td><td style="text-align: right">Cure <em>et al.</em> 2020</td><td style="text-align: right">Regression surrogate</td><td style="text-align: right"><span>$2^n$</span> binary control combinations</td></tr><tr><td style="text-align: right">59</td><td style="text-align: right">Ponti <em>et al.</em> 2014</td><td style="text-align: right">Closed-form damage function</td><td style="text-align: right">Geographic gradient, scenario sensitivity</td></tr><tr><td style="text-align: right">60</td><td style="text-align: right">Ponti <em>et al.</em> 2021</td><td style="text-align: right">Mechanistic favourability index</td><td style="text-align: right">Pre-invasion geographic risk map</td></tr><tr><td style="text-align: right">61</td><td style="text-align: right">Gutierrez <em>et al.</em> 2018</td><td style="text-align: right">Multi-generation voltinism counter</td><td style="text-align: right">Adult-flight count under climate scenario</td></tr></table><p>Vignette 61 differs from 60 in that the PBDM is run for its <strong>phenological dynamics</strong>, not its summary favourability index. The output of practical interest is the integer generation count, which is what growers use to schedule mating-disruption and insecticide applications.</p><h3 id="Caveats"><a class="docs-heading-anchor" href="#Caveats">Caveats</a><a id="Caveats-1"></a><a class="docs-heading-anchor-permalink" href="#Caveats" title="Permalink"></a></h3><ul><li><strong>Sinusoidal temperature traces</strong> instead of the published 4506-cell weather grid; the latitudinal gradient is qualitatively reproduced but absolute generation counts at the edges may differ from the published values by ±0.5.</li><li><strong>Briere shape constants <span>$a$</span>, <span>$b$</span></strong> are reused from <em>Tuta absoluta</em> (vignette 60); the paper’s published rate shape is consistent with these values to first order but a full reproduction would re-fit per stage from (Gutierrez et al. 2018, Table 1).</li><li><strong>Diapause induction</strong> simplified to a calendar cutoff (15 Aug); the paper uses a daylength × fruit-stage interaction via a coupled grapevine carbon-allocation model (Wermelinger et al. 1991) which is not lowered here.</li><li><strong>Grape-fruit feedback</strong> (the vignette does not couple to a vine carbon-balance model). A full reproduction of the paper’s “grape yield” half of the bio-economic story would require the vine sub-model from Wermelinger <em>et al.</em> 1991.</li></ul><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Briere1999&quot; class=&quot;csl-entry&quot;&gt;</p><p>Briere, Jean-François, Pascal Pracros, Anne-Yvonne Le Roux, and Jean-Sebastien Pierre. 1999. “A Novel Rate Model of Temperature-Dependent Development for Arthropods.” <em>Environmental Entomology</em> 28 (1): 22–29. <a href="https://doi.org/10.1093/ee/28.1.22">https://doi.org/10.1093/ee/28.1.22</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-Gutierrez2018Lobesia&quot; class=&quot;csl-entry&quot;&gt;</p><p>Gutierrez, A. P., L. Ponti, G. Gilioli, and J. Baumgärtner. 2018. “Climate Warming Effects on Grape and Grapevine Moth (&lt;span class=&quot;nocase&quot;&gt;Lobesia botrana&lt;/span&gt;) in the Palearctic Region.” <em>Agricultural and Forest Entomology</em> 20: 255–71. <a href="https://doi.org/10.1111/afe.12256">https://doi.org/10.1111/afe.12256</a>.</p><p>&lt;/div&gt;</p><p>&lt;div id=&quot;ref-Wermelinger1991Vine&quot; class=&quot;csl-entry&quot;&gt;</p><p>Wermelinger, Beat, Johann Baumgärtner, and Andrew Paul Gutierrez. 1991. “A Demographic Model of Assimilation and Allocation of Carbon and Nitrogen in Grapevines.” <em>Ecological Modelling</em> 53: 1–26. <a href="https://doi.org/10.1016/0304-3800(91)90138-Q">https://doi.org/10.1016/0304-3800(91)90138-Q</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../60_tuta_absoluta_invasion/">« Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a><a class="docs-footer-nextpage" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

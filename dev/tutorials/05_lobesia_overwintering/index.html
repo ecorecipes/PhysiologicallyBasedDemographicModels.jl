@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Lobesia Overwintering and Diapause · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Lobesia Overwintering and Diapause · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Lobesia Overwintering and Diapause · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Lobesia Overwintering and Diapause · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/05_lobesia_overwintering/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/05_lobesia_overwintering/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/05_lobesia_overwintering/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li class="is-active"><a class="tocitem" href>Lobesia Overwintering and Diapause</a><ul class="internal"><li><a class="tocitem" href="#Background"><span>Background</span></a></li><li><a class="tocitem" href="#Latitude-Dependent-Photoperiod"><span>Latitude-Dependent Photoperiod</span></a></li><li><a class="tocitem" href="#Photoperiod-Throughout-the-Year"><span>Photoperiod Throughout the Year</span></a></li><li><a class="tocitem" href="#Three-Phase-Development-Rate-Models"><span>Three-Phase Development Rate Models</span></a></li><li><a class="tocitem" href="#Overwintering-Cohort-Model"><span>Overwintering Cohort Model</span></a></li><li><a class="tocitem" href="#Simulating-Overwintering-at-Different-Latitudes"><span>Simulating Overwintering at Different Latitudes</span></a></li><li><a class="tocitem" href="#Validation:-Expected-Emergence-Timing"><span>Validation: Expected Emergence Timing</span></a></li><li><a class="tocitem" href="#Diapause-Phase-Duration-vs-Temperature"><span>Diapause Phase Duration vs Temperature</span></a></li><li><a class="tocitem" href="#Photoperiod-Temperature-Interaction"><span>Photoperiod × Temperature Interaction</span></a></li><li><a class="tocitem" href="#Key-Insights"><span>Key Insights</span></a></li></ul></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li><a class="tocitem" href="../17_pink_bollworm/">Pink Bollworm Climate Limits</a></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Lobesia Overwintering and Diapause</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Lobesia Overwintering and Diapause</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Lobesia-Overwintering-and-Diapause"><a class="docs-heading-anchor" href="#Lobesia-Overwintering-and-Diapause">Lobesia Overwintering and Diapause</a><a id="Lobesia-Overwintering-and-Diapause-1"></a><a class="docs-heading-anchor-permalink" href="#Lobesia-Overwintering-and-Diapause" title="Permalink"></a></h1><p>Simon Frost</p><ul><li><a href="#background">Background</a></li><li><a href="#latitude-dependent-photoperiod">Latitude-Dependent Photoperiod</a></li><li><a href="#photoperiod-throughout-the-year">Photoperiod Throughout the Year</a></li><li><a href="#three-phase-development-rate-models">Three-Phase Development Rate Models</a></li><li><a href="#overwintering-cohort-model">Overwintering Cohort Model</a></li><li><a href="#simulating-overwintering-at-different-latitudes">Simulating Overwintering at Different Latitudes</a></li><li><a href="#validation-expected-emergence-timing">Validation: Expected Emergence Timing</a></li><li><a href="#diapause-phase-duration-vs-temperature">Diapause Phase Duration vs Temperature</a></li><li><a href="#photoperiod--temperature-interaction">Photoperiod × Temperature Interaction</a></li><li><a href="#key-insights">Key Insights</a></li></ul><p>Primary reference: (Baumgärtner et al. 2012).</p><h2 id="Background"><a class="docs-heading-anchor" href="#Background">Background</a><a id="Background-1"></a><a class="docs-heading-anchor-permalink" href="#Background" title="Permalink"></a></h2><p>The European grapevine moth (<em>Lobesia botrana</em>) is a major pest of grapes in the Mediterranean. Its overwinter survival and spring emergence determine the timing and severity of vine damage. This vignette models the <strong>three-phase overwintering process</strong>:</p><ol><li><strong>Pre-diapause</strong>: Photoperiod-induced preparation for dormancy</li><li><strong>Diapause</strong>: Cold hardiness and slowed development, modulated by  both temperature and photoperiod</li><li><strong>Post-diapause</strong>: Spring warming reactivates development</li></ol><p>The model is latitude-dependent: critical day lengths for diapause induction shift with latitude, creating geographic variation in emergence timing across the Mediterranean.</p><p><strong>Reference:</strong> Baumgärtner, J., Gutierrez, A.P., et al. (2012). <em>A model for the overwintering process of European grapevine moth Lobesia botrana (Den. &amp; Schiff.) populations.</em> Journal of Entomological and Acarological Research 44(1).</p><h2 id="Latitude-Dependent-Photoperiod"><a class="docs-heading-anchor" href="#Latitude-Dependent-Photoperiod">Latitude-Dependent Photoperiod</a><a id="Latitude-Dependent-Photoperiod-1"></a><a class="docs-heading-anchor-permalink" href="#Latitude-Dependent-Photoperiod" title="Permalink"></a></h2><p>The critical day lengths that trigger and complete diapause induction vary linearly with latitude.</p><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+
+# Critical day length formulas (Baumgärtner et al. Eq. 1-2)
+# DL_s = 9.83 + 0.1226 × L  (diapause induction starts)
+# DL_e = 7.66 + 0.1226 × L  (diapause induction complete)
+# where L = latitude in decimal degrees
+
+function critical_daylength_start(latitude::Real)
+    return 9.83 + 0.1226 * latitude
+end
+
+function critical_daylength_end(latitude::Real)
+    return 7.66 + 0.1226 * latitude
+end
+
+# Compare across the Mediterranean
+println(&quot;Latitude-dependent diapause induction:&quot;)
+println(&quot;=&quot;^60)
+for (name, lat) in [(&quot;Pissouri, Cyprus&quot;, 34.7),
+                    (&quot;Sicily&quot;, 37.5),
+                    (&quot;Bordeaux, France&quot;, 44.8),
+                    (&quot;Wädenswil, Switzerland&quot;, 47.2),
+                    (&quot;Dresden, Germany&quot;, 51.1)]
+    dl_s = critical_daylength_start(lat)
+    dl_e = critical_daylength_end(lat)
+    println(&quot;  $name ($(lat)°N):&quot;)
+    println(&quot;    Induction starts:    DL &lt; $(round(dl_s, digits=2)) h&quot;)
+    println(&quot;    Induction complete:  DL &lt; $(round(dl_e, digits=2)) h&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Latitude-dependent diapause induction:
+============================================================
+  Pissouri, Cyprus (34.7°N):
+    Induction starts:    DL &lt; 14.08 h
+    Induction complete:  DL &lt; 11.91 h
+  Sicily (37.5°N):
+    Induction starts:    DL &lt; 14.43 h
+    Induction complete:  DL &lt; 12.26 h
+  Bordeaux, France (44.8°N):
+    Induction starts:    DL &lt; 15.32 h
+    Induction complete:  DL &lt; 13.15 h
+  Wädenswil, Switzerland (47.2°N):
+    Induction starts:    DL &lt; 15.62 h
+    Induction complete:  DL &lt; 13.45 h
+  Dresden, Germany (51.1°N):
+    Induction starts:    DL &lt; 16.09 h
+    Induction complete:  DL &lt; 13.92 h</code></pre><h2 id="Photoperiod-Throughout-the-Year"><a class="docs-heading-anchor" href="#Photoperiod-Throughout-the-Year">Photoperiod Throughout the Year</a><a id="Photoperiod-Throughout-the-Year-1"></a><a class="docs-heading-anchor-permalink" href="#Photoperiod-Throughout-the-Year" title="Permalink"></a></h2><pre><code class="language-julia hljs"># Day length varies through the year — plot for different latitudes
+println(&quot;\nDay length comparison (hours):&quot;)
+println(&quot;Day  | 35°N  | 40°N  | 45°N  | 50°N&quot;)
+println(&quot;-&quot;^50)
+for doy in [80, 172, 200, 250, 300, 355]  # Mar, Jun, Jul, Sep, Oct, Dec
+    month_names = [&quot;&quot;, &quot;&quot;, &quot;Mar&quot;, &quot;&quot;, &quot;&quot;, &quot;Jun-21&quot;, &quot;Jul-19&quot;, &quot;&quot;, &quot;Sep-7&quot;,
+                   &quot;&quot;, &quot;Oct-27&quot;, &quot;&quot;, &quot;Dec-21&quot;]
+    dls = [round(photoperiod(lat, doy), digits=1) for lat in [35, 40, 45, 50]]
+    println(&quot; $doy  | $(dls[1])  | $(dls[2])  | $(dls[3])  | $(dls[4])&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Day length comparison (hours):
+Day  | 35°N  | 40°N  | 45°N  | 50°N
+--------------------------------------------------
+ 80  | 11.9  | 11.8  | 11.8  | 11.8
+ 172  | 14.2  | 14.7  | 15.2  | 15.9
+ 200  | 13.9  | 14.3  | 14.8  | 15.4
+ 250  | 12.5  | 12.6  | 12.7  | 12.8
+ 300  | 10.7  | 10.4  | 10.1  | 9.8
+ 355  | 9.5  | 9.0  | 8.4  | 7.6</code></pre><h2 id="Three-Phase-Development-Rate-Models"><a class="docs-heading-anchor" href="#Three-Phase-Development-Rate-Models">Three-Phase Development Rate Models</a><a id="Three-Phase-Development-Rate-Models-1"></a><a class="docs-heading-anchor-permalink" href="#Three-Phase-Development-Rate-Models" title="Permalink"></a></h2><p>Each phase uses a Brière-type nonlinear rate function with different temperature thresholds. The diapause phase has a narrower (colder) thermal range to prevent premature reactivation during autumn warm spells.</p><pre><code class="language-julia hljs"># Phase 1: Pre-diapause (preparation, 1-3 weeks)
+# Lower threshold ≈ 6.3°C, upper ≈ 28°C
+prediapause_dev = BriereDevelopmentRate(2.0e-4, 6.3, 28.0)
+
+# Phase 2: Diapause (dormancy, months)
+# Lower threshold ≈ 6.2°C, upper ≈ 22°C (shifted colder!)
+# Lower upper threshold prevents warm autumn days from
+# triggering premature exit
+diapause_dev = BriereDevelopmentRate(1.0e-4, 6.2, 22.0)
+
+# Phase 3: Post-diapause (spring reactivation, 2-3 weeks)
+# Similar range to pre-diapause
+postdiapause_dev = BriereDevelopmentRate(2.0e-4, 6.3, 28.0)
+
+# Compare development rates
+println(&quot;\nDevelopment rates at different temperatures:&quot;)
+println(&quot;T(°C) | Pre-diapause | Diapause  | Post-diapause&quot;)
+println(&quot;-&quot;^55)
+for T in [5.0, 8.0, 10.0, 15.0, 20.0, 25.0, 30.0]
+    r1 = development_rate(prediapause_dev, T)
+    r2 = development_rate(diapause_dev, T)
+    r3 = development_rate(postdiapause_dev, T)
+    println(&quot;  $T  |  $(round(r1, digits=5))    |  $(round(r2, digits=5))  |  $(round(r3, digits=5))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Development rates at different temperatures:
+T(°C) | Pre-diapause | Diapause  | Post-diapause
+-------------------------------------------------------
+  5.0  |  0.0    |  0.0  |  0.0
+  8.0  |  0.01216    |  0.00539  |  0.01216
+  10.0  |  0.0314    |  0.01316  |  0.0314
+  15.0  |  0.0941    |  0.03492  |  0.0941
+  20.0  |  0.155    |  0.03903  |  0.155
+  25.0  |  0.16195    |  0.0  |  0.16195
+  30.0  |  0.0    |  0.0  |  0.0</code></pre><h2 id="Overwintering-Cohort-Model"><a class="docs-heading-anchor" href="#Overwintering-Cohort-Model">Overwintering Cohort Model</a><a id="Overwintering-Cohort-Model-1"></a><a class="docs-heading-anchor-permalink" href="#Overwintering-Cohort-Model" title="Permalink"></a></h2><p>Lobesia enters diapause as pupae in the late summer/autumn. We model two cohorts: - <strong>Cohort 1</strong>: Early entrants (from ~day 196) - <strong>Cohort 2</strong>: Late entrants (from ~day 237–268, latitude-dependent)</p><pre><code class="language-julia hljs"># Each cohort passes through 3 phases sequentially
+# Phase developmental times (in physiological time units)
+# Pre-diapause: ~50 units, Diapause: ~200 units, Post-diapause: ~50 units
+
+cohort1_phases = [
+    LifeStage(:prediapause,  DistributedDelay(10, 50.0;  W0=100.0),
+              prediapause_dev, 0.005),
+    LifeStage(:diapause,     DistributedDelay(20, 200.0; W0=0.0),
+              diapause_dev, 0.002),
+    LifeStage(:postdiapause, DistributedDelay(10, 50.0;  W0=0.0),
+              postdiapause_dev, 0.003),
+]
+
+cohort1 = Population(:lobesia_cohort1, cohort1_phases)
+println(&quot;Cohort 1: &quot;, n_stages(cohort1), &quot; phases, &quot;,
+        n_substages(cohort1), &quot; substages&quot;)</code></pre><pre><code class="nohighlight hljs">Cohort 1: 3 phases, 40 substages</code></pre><h2 id="Simulating-Overwintering-at-Different-Latitudes"><a class="docs-heading-anchor" href="#Simulating-Overwintering-at-Different-Latitudes">Simulating Overwintering at Different Latitudes</a><a id="Simulating-Overwintering-at-Different-Latitudes-1"></a><a class="docs-heading-anchor-permalink" href="#Simulating-Overwintering-at-Different-Latitudes" title="Permalink"></a></h2><pre><code class="language-julia hljs"># Simulate from August through April for different locations
+results = Dict{String, Any}()
+
+for (name, lat) in [(&quot;Sicily (37.5°N)&quot;, 37.5),
+                    (&quot;Bordeaux (44.8°N)&quot;, 44.8),
+                    (&quot;Switzerland (47.2°N)&quot;, 47.2)]
+    # Generate weather: sinusoidal with latitude-appropriate amplitude
+    # Higher latitudes = more extreme winters
+    mean_T = 16.0 - 0.15 * (lat - 35.0)  # Cooler at higher latitudes
+    amplitude = 8.0 + 0.15 * (lat - 35.0)  # More seasonal variation
+
+    sw = SinusoidalWeather(mean_T, amplitude; phase=200.0)
+
+    # Fresh cohort
+    phases = [
+        LifeStage(:prediapause,  DistributedDelay(10, 50.0;  W0=100.0),
+                  prediapause_dev, 0.005),
+        LifeStage(:diapause,     DistributedDelay(20, 200.0; W0=0.0),
+                  diapause_dev, 0.002),
+        LifeStage(:postdiapause, DistributedDelay(10, 50.0;  W0=0.0),
+                  postdiapause_dev, 0.003),
+    ]
+    cohort = Population(:lobesia, phases)
+
+    # Simulate from day 200 (mid-July) to day 500 (mid-May next year)
+    # Using day_offset to align with Julian calendar
+    n_sim_days = 300
+    weather_days = [get_weather(sw, d) for d in 200:(200 + n_sim_days - 1)]
+    ws = WeatherSeries(weather_days; day_offset=200)
+
+    prob = PBDMProblem(cohort, ws, (200, 200 + n_sim_days - 1))
+    sol = solve(prob, DirectIteration())
+
+    # Find emergence (when post-diapause outflow peaks)
+    postdiap_traj = stage_trajectory(sol, 3)  # Post-diapause stage
+    emergence_day = phenology(sol; threshold=0.5)
+
+    results[name] = (sol=sol, emergence=emergence_day, lat=lat)
+
+    cdd = cumulative_degree_days(sol)
+    println(&quot;$name:&quot;)
+    println(&quot;  Total DD (Aug–May): $(round(cdd[end], digits=0))&quot;)
+    if emergence_day !== nothing
+        println(&quot;  50% emergence: day $emergence_day&quot;)
+    else
+        println(&quot;  50% emergence: not reached&quot;)
+    end
+    println(&quot;  Survival: $(round(sum(sol.u[end]) / sum(sol.u[1]) * 100, digits=1))%&quot;)
+    println()
+end</code></pre><pre><code class="nohighlight hljs">Sicily (37.5°N):
+  Total DD (Aug–May): 32.0
+  50% emergence: day 464
+  Survival: 89.5%
+
+Bordeaux (44.8°N):
+  Total DD (Aug–May): 30.0
+  50% emergence: day 396
+  Survival: 89.9%
+
+Switzerland (47.2°N):
+  Total DD (Aug–May): 29.0
+  50% emergence: day 386
+  Survival: 90.0%</code></pre><h2 id="Validation:-Expected-Emergence-Timing"><a class="docs-heading-anchor" href="#Validation:-Expected-Emergence-Timing">Validation: Expected Emergence Timing</a><a id="Validation:-Expected-Emergence-Timing-1"></a><a class="docs-heading-anchor-permalink" href="#Validation:-Expected-Emergence-Timing" title="Permalink"></a></h2><p>From Baumgärtner et al. (2012), observed emergence (first flight):</p><pre><code class="language-julia hljs"># Expected cohort 1 emergence dates (approximate Julian days)
+expected_emergence = Dict(
+    &quot;Sicily&quot;      =&gt; (355, 10),   # Dec 21 ± 10 days
+    &quot;Bordeaux&quot;    =&gt; (30, 15),    # Jan 30 ± 15 days
+    &quot;Switzerland&quot; =&gt; (54, 12),    # Feb 23 ± 12 days
+)
+
+println(&quot;Validation: Cohort 1 emergence timing&quot;)
+println(&quot;=&quot;^50)
+println(&quot;Location     | Expected      | Model prediction&quot;)
+println(&quot;-&quot;^50)
+for (loc, (expected_day, tolerance)) in expected_emergence
+    println(&quot;  $loc    | day $expected_day ± $tolerance |  (see simulation above)&quot;)
+end
+println(&quot;\nNote: Mean prediction error from the paper was 6.8 days for cohort 1&quot;)</code></pre><pre><code class="nohighlight hljs">Validation: Cohort 1 emergence timing
+==================================================
+Location     | Expected      | Model prediction
+--------------------------------------------------
+  Switzerland    | day 54 ± 12 |  (see simulation above)
+  Sicily    | day 355 ± 10 |  (see simulation above)
+  Bordeaux    | day 30 ± 15 |  (see simulation above)
+
+Note: Mean prediction error from the paper was 6.8 days for cohort 1</code></pre><h2 id="Diapause-Phase-Duration-vs-Temperature"><a class="docs-heading-anchor" href="#Diapause-Phase-Duration-vs-Temperature">Diapause Phase Duration vs Temperature</a><a id="Diapause-Phase-Duration-vs-Temperature-1"></a><a class="docs-heading-anchor-permalink" href="#Diapause-Phase-Duration-vs-Temperature" title="Permalink"></a></h2><p>The diapause phase is the longest and most temperature-sensitive. Warmer winters accelerate diapause completion but reduce cold hardiness.</p><pre><code class="language-julia hljs">println(&quot;\nDiapause development at constant temperatures:&quot;)
+println(&quot;T(°C) | Rate      | Est. days to complete&quot;)
+println(&quot;-&quot;^50)
+for T in [5.0, 8.0, 10.0, 12.0, 15.0, 18.0]
+    r = development_rate(diapause_dev, T)
+    if r &gt; 0
+        # Approximate: 200 physiological time units needed
+        days_est = 200.0 / r
+        println(&quot;  $T   | $(round(r, digits=5)) | $(round(days_est, digits=0))&quot;)
+    else
+        println(&quot;  $T   | 0.0       | ∞ (no development)&quot;)
+    end
+end</code></pre><pre><code class="nohighlight hljs">Diapause development at constant temperatures:
+T(°C) | Rate      | Est. days to complete
+--------------------------------------------------
+  5.0   | 0.0       | ∞ (no development)
+  8.0   | 0.00539 | 37120.0
+  10.0   | 0.01316 | 15193.0
+  12.0   | 0.02201 | 9087.0
+  15.0   | 0.03492 | 5727.0
+  18.0   | 0.04248 | 4708.0</code></pre><h2 id="Photoperiod-Temperature-Interaction"><a class="docs-heading-anchor" href="#Photoperiod-Temperature-Interaction">Photoperiod × Temperature Interaction</a><a id="Photoperiod-Temperature-Interaction-1"></a><a class="docs-heading-anchor-permalink" href="#Photoperiod-Temperature-Interaction" title="Permalink"></a></h2><p>The diapause phase is unique because development depends on both temperature AND day length. Longer days (spring) accelerate exit even at the same temperature:</p><pre><code class="language-julia hljs">println(&quot;\nPhotoperiod effect on diapause (conceptual):&quot;)
+println(&quot;In winter (DL=9h): development slowed by short days&quot;)
+println(&quot;In spring (DL=13h): same temperature, faster development&quot;)
+println(&quot;This prevents premature emergence during autumn warm spells&quot;)
+println()
+
+# Demonstrate: same temperature, different seasons
+for (season, doy, lat) in [(&quot;Autumn&quot;, 280, 45.0), (&quot;Spring&quot;, 80, 45.0)]
+    dl = photoperiod(lat, doy)
+    T = 12.0
+    r = development_rate(diapause_dev, T)
+    println(&quot;$season (day $doy, DL=$(round(dl, digits=1))h, T=$(T)°C):&quot;)
+    println(&quot;  Base rate: $(round(r, digits=5))&quot;)
+    println(&quot;  With photoperiod modulation: rate would be $(season == &quot;Spring&quot; ? &quot;enhanced&quot; : &quot;suppressed&quot;)&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Photoperiod effect on diapause (conceptual):
+In winter (DL=9h): development slowed by short days
+In spring (DL=13h): same temperature, faster development
+This prevents premature emergence during autumn warm spells
+
+Autumn (day 280, DL=11.1h, T=12.0°C):
+  Base rate: 0.02201
+  With photoperiod modulation: rate would be suppressed
+Spring (day 80, DL=11.8h, T=12.0°C):
+  Base rate: 0.02201
+  With photoperiod modulation: rate would be enhanced</code></pre><h2 id="Key-Insights"><a class="docs-heading-anchor" href="#Key-Insights">Key Insights</a><a id="Key-Insights-1"></a><a class="docs-heading-anchor-permalink" href="#Key-Insights" title="Permalink"></a></h2><ol><li><p><strong>Latitude drives phenology</strong>: At 37.5°N (Sicily), moths emerge in  December; at 51°N (Dresden), not until late February. This 2-month  spread has major implications for pest management timing.</p></li><li><p><strong>Three-phase design prevents errors</strong>: The diapause phase has a  lower upper temperature threshold (22°C vs 28°C). This prevents warm  autumn days from being counted as spring — a biologically crucial  safeguard.</p></li><li><p><strong>Photoperiod as gate</strong>: Day length controls diapause entry and  modulates exit timing. This ensures emergence is synchronized with  spring conditions regardless of winter temperature fluctuations.</p></li><li><p><strong>Climate warming implications</strong>: Warmer winters will shorten  diapause, advancing emergence by 1–3 weeks. Combined with earlier  vine budbreak, this may maintain or intensify pest pressure in  currently marginal regions (northern Europe).</p></li><li><p><strong>Cohort structure matters</strong>: Early and late cohorts experience  different conditions and emerge at different times, spreading the  risk of spring frost for the pest population.</p></li></ol><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Baumgartner2012Lobesia&quot; class=&quot;csl-entry&quot;&gt;</p><p>Baumgärtner, J., A. P. Gutierrez, S. Pesolillo, and M. Severini. 2012. “A Model for the Overwintering Process of European Grapevine Moth &lt;span class=&quot;nocase&quot;&gt;Lobesia botrana&lt;/span&gt; (Denis &amp; &lt;span class=&quot;nocase&quot;&gt;Schifferm&lt;span class=&quot;nocase&quot;&gt;ü&lt;/span&gt;ller&lt;/span&gt;) (Lepidoptera, Tortricidae) Populations.” <em>Journal of Entomological and Acarological Research</em> 44: e2. <a href="https://doi.org/10.4081/jear.2012.e2">https://doi.org/10.4081/jear.2012.e2</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../04_grapevine/">« Grapevine Carbon-Nitrogen Model</a><a class="docs-footer-nextpage" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

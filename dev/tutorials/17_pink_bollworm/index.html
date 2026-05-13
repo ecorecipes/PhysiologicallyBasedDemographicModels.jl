@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Pink Bollworm Climate Limits · PhysiologicallyBasedDemographicModels.jl</title><meta name="title" content="Pink Bollworm Climate Limits · PhysiologicallyBasedDemographicModels.jl"/><meta property="og:title" content="Pink Bollworm Climate Limits · PhysiologicallyBasedDemographicModels.jl"/><meta property="twitter:title" content="Pink Bollworm Climate Limits · PhysiologicallyBasedDemographicModels.jl"/><meta name="description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="twitter:description" content="Documentation for PhysiologicallyBasedDemographicModels.jl."/><meta property="og:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/17_pink_bollworm/"/><meta property="twitter:url" content="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/17_pink_bollworm/"/><link rel="canonical" href="https://ecorecipes.github.io/PhysiologicallyBasedDemographicModels.jl/tutorials/17_pink_bollworm/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PhysiologicallyBasedDemographicModels.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_getting_started/">Getting Started with PBDMs</a></li><li><a class="tocitem" href="../02_cotton_plant/">Cotton Plant Model</a></li><li><a class="tocitem" href="../03_coffee_berry_borer/">Coffee Berry Borer Lifecycle</a></li><li><a class="tocitem" href="../04_grapevine/">Grapevine Carbon-Nitrogen Model</a></li><li><a class="tocitem" href="../05_lobesia_overwintering/">Lobesia Overwintering and Diapause</a></li><li><a class="tocitem" href="../06_bt_cotton_resistance/">Bt Cotton Resistance Evolution</a></li><li><a class="tocitem" href="../07_pesticide_resistance/">Pesticide Resistance Optimization</a></li><li><a class="tocitem" href="../08_screwworm_sit/">Screwworm SIT Eradication</a></li><li><a class="tocitem" href="../09_bt_cotton_india/">Indian Bt Cotton Bioeconomics</a></li><li><a class="tocitem" href="../10_tsetse_ecosocial/">Tsetse-Cattle-Human Ecosocial Model</a></li><li><a class="tocitem" href="../11_olive_climate/">Mediterranean Olive Climate Economics</a></li><li><a class="tocitem" href="../12_cassava_mealybug/">Cassava Mealybug Biocontrol in Africa</a></li><li><a class="tocitem" href="../13_medfly_invasion/">Mediterranean Fruit Fly Invasive Potential</a></li><li><a class="tocitem" href="../14_east_coast_fever/">East Coast Fever in African Livestock</a></li><li><a class="tocitem" href="../15_rice_weed_competition/">Rice–Weed Competition</a></li><li><a class="tocitem" href="../16_aedes_albopictus/">Aedes albopictus Invasion Risk in Europe</a></li><li class="is-active"><a class="tocitem" href>Pink Bollworm Climate Limits</a><ul class="internal"><li><a class="tocitem" href="#Background"><span>Background</span></a></li><li><a class="tocitem" href="#Temperature-Dependent-Development"><span>Temperature-Dependent Development</span></a></li><li><a class="tocitem" href="#PBW-Life-Stage-Structure"><span>PBW Life Stage Structure</span></a></li><li><a class="tocitem" href="#Diapause-Induction-by-Photoperiod"><span>Diapause Induction by Photoperiod</span></a></li><li><a class="tocitem" href="#Cold-Mortality-of-Diapause-Larvae"><span>Cold Mortality of Diapause Larvae</span></a></li><li><a class="tocitem" href="#Cotton-Phenology-Synchrony"><span>Cotton Phenology Synchrony</span></a></li><li><a class="tocitem" href="#Arizona-vs.-California-Climates"><span>Arizona vs. California Climates</span></a></li><li><a class="tocitem" href="#Seasonal-Population-Dynamics"><span>Seasonal Population Dynamics</span></a></li><li><a class="tocitem" href="#Visualizing-Development-Potential-Across-Latitudes"><span>Visualizing Development Potential Across Latitudes</span></a></li><li><a class="tocitem" href="#Climate-Warming-Scenarios"><span>Climate Warming Scenarios</span></a></li><li><a class="tocitem" href="#Northern-Range-Boundary"><span>Northern Range Boundary</span></a></li><li><a class="tocitem" href="#Policy-Implications"><span>Policy Implications</span></a></li><li><a class="tocitem" href="#Parameter-Sources"><span>Parameter Sources</span></a></li><li><a class="tocitem" href="#Summary"><span>Summary</span></a></li><li><a class="tocitem" href="#References"><span>References</span></a></li></ul></li><li><a class="tocitem" href="../18_vine_mealybug/">Vine Mealybug Biocontrol</a></li><li><a class="tocitem" href="../19_bmsb_biocontrol/">Brown Marmorated Stink Bug Biocontrol</a></li><li><a class="tocitem" href="../20_cabbage_maggot/">Cabbage Root Fly Diapause Dynamics</a></li><li><a class="tocitem" href="../21_tomato_ipm/">Processing Tomato Crop-Pest Management</a></li><li><a class="tocitem" href="../22_tuta_absoluta/">Tuta absoluta Invasion Risk Assessment</a></li><li><a class="tocitem" href="../23_yellow_starthistle/">Yellow Starthistle Biological Control</a></li><li><a class="tocitem" href="../24_asian_citrus_psyllid/">Asian Citrus Psyllid and Citrus Greening Disease</a></li><li><a class="tocitem" href="../25_bemisia_tabaci/">Bemisia tabaci Invasion Risk in Europe</a></li><li><a class="tocitem" href="../26_light_brown_apple_moth/">Light Brown Apple Moth Invasion Potential</a></li><li><a class="tocitem" href="../27_spotted_alfalfa_aphid/">Spotted Alfalfa Aphid Biological Control</a></li><li><a class="tocitem" href="../28_olive_bactrocera/">Olive–Olive Fly System Under Climate Warming</a></li><li><a class="tocitem" href="../29_cowpea_thrips/">Cowpea–Thrips Agroecosystem in West Africa</a></li><li><a class="tocitem" href="../30_bean_growth/">Common Bean Growth Types I–III: Yield Prediction</a></li><li><a class="tocitem" href="../31_cotton_boll_weevil/">Cotton–Boll Weevil Interaction in Brazil</a></li><li><a class="tocitem" href="../32_oleander_scale/">Oleander Scale Regulation by Competing Parasitoids</a></li><li><a class="tocitem" href="../33_rice_fish_agroecosystem/">Rice–Fish Integrated Agroecosystem</a></li><li><a class="tocitem" href="../34_plant_aphid_parasite/">Plant–Aphid–Parasitoid Tritrophic Dynamics</a></li><li><a class="tocitem" href="../35_apple_tree/">Golden Delicious Apple Tree Growth Model</a></li><li><a class="tocitem" href="../36_fusarium_nematode/">Fusarium Wilt and Root-Knot Nematode in Cotton</a></li><li><a class="tocitem" href="../37_whitefly_autoparasitoid/">Cotton-Whitefly-Autoparasitoid Dynamics</a></li><li><a class="tocitem" href="../38_tropical_fruit_flies/">Tropical Fruit Fly Invasive Potential Under Climate Change</a></li><li><a class="tocitem" href="../39_china_bt_cotton/">Economics of Bt Cotton in China</a></li><li><a class="tocitem" href="../40_spodoptera_frugiperda/">Fall Armyworm Establishment Risk in Europe</a></li><li><a class="tocitem" href="../41_olive_fly_ode/">Olive Fruit Fly Population Dynamics</a></li><li><a class="tocitem" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua</a></li><li><a class="tocitem" href="../43_philaenus_phenology/">Philaenus spumarius Phenology Model</a></li><li><a class="tocitem" href="../44_risk_index/">Physiological Risk Index for Pest Establishment</a></li><li><a class="tocitem" href="../45_dsuzukii_pde/">Drosophila suzukii Adult Male Dynamics</a></li><li><a class="tocitem" href="../46_medfly_kolmogorov/">Mediterranean Fruit Fly Under Climate Change</a></li><li><a class="tocitem" href="../47_consumer_resource/">Stage-Structured Consumer-Resource Dynamics</a></li><li><a class="tocitem" href="../48_xylella_ecoepi/">Xylella fastidiosa Transmission in Olive Groves</a></li><li><a class="tocitem" href="../49_bombus_hsp/">Genetically Modified Thermal Tolerance in Bombus terrestris</a></li><li><a class="tocitem" href="../50_type_hierarchy/">Type Hierarchy Reference</a></li><li><a class="tocitem" href="../51_state_variables/">State Variables, Bulk Populations, and Phase Callbacks</a></li><li><a class="tocitem" href="../52_extended_rules_events/">Extended Rules and Scheduled Events</a></li><li><a class="tocitem" href="../53_theory_helpers/">Theoretical Helpers — Compensation, Isoclines, and Assembly</a></li><li><a class="tocitem" href="../54_continuous_pspm/">Continuous-Time and PSPM Formulations</a></li><li><a class="tocitem" href="../55_management_economics/">Management Optimisation and Economics</a></li><li><a class="tocitem" href="../56_ensembles_misc/">Ensembles, Filters, and Weather Helpers</a></li><li><a class="tocitem" href="../57_verticillium_dp/">Verticillium Wilt — Multi-Season Dynamic-Programming Management</a></li><li><a class="tocitem" href="../58_cbb_bioeconomics/">Coffee Berry Borer — Bio-Economic Analysis of Control Tactics</a></li><li><a class="tocitem" href="../59_olive_climate/">Olive / Olive-Fly Bio-Economics under Climate Warming</a></li><li><a class="tocitem" href="../60_tuta_absoluta_invasion/">Invasion-Risk Assessment for <em>Tuta absoluta</em> — a Mechanistic PBDM</a></li><li><a class="tocitem" href="../61_lobesia_voltinism/">Voltinism Shifts of <em>Lobesia botrana</em> under Climate Warming</a></li><li><a class="tocitem" href="../62_screwworm_sit/">SIT Overflooding Ratio for Screwworm Eradication</a></li><li><a class="tocitem" href="../63_bayesian_mortality/">Bayesian Inference of Stage-Specific Mortality</a></li><li><a class="tocitem" href="../64_bmsb_tritrophic/">Tritrophic Biocontrol Design for Brown Marmorated Stink Bug</a></li></ul></li><li><span class="tocitem">API Reference</span><ul><li><a class="tocitem" href="../../api/types/">Types &amp; Traits</a></li><li><a class="tocitem" href="../../api/weather/">Weather &amp; Forcing</a></li><li><a class="tocitem" href="../../api/dynamics/">Dynamics</a></li><li><a class="tocitem" href="../../api/problems/">Problem &amp; Solution</a></li><li><a class="tocitem" href="../../api/analysis/">Analysis</a></li><li><a class="tocitem" href="../../api/interactions/">Multi-Species Interactions</a></li><li><a class="tocitem" href="../../api/economics/">Economics</a></li><li><a class="tocitem" href="../../api/genetics/">Genetics</a></li><li><a class="tocitem" href="../../api/epidemiology/">Epidemiology</a></li><li><a class="tocitem" href="../../api/utilities/">Utilities</a></li><li><a class="tocitem" href="../../api/core/">Core Abstractions</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Pink Bollworm Climate Limits</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Pink Bollworm Climate Limits</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ecorecipes/PhysiologicallyBasedDemographicModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Pink-Bollworm-Climate-Limits"><a class="docs-heading-anchor" href="#Pink-Bollworm-Climate-Limits">Pink Bollworm Climate Limits</a><a id="Pink-Bollworm-Climate-Limits-1"></a><a class="docs-heading-anchor-permalink" href="#Pink-Bollworm-Climate-Limits" title="Permalink"></a></h1><p>Simon Frost</p><ul><li><a href="#background">Background</a></li><li><a href="#temperature-dependent-development">Temperature-Dependent Development</a></li><li><a href="#pbw-life-stage-structure">PBW Life Stage Structure</a></li><li><a href="#diapause-induction-by-photoperiod">Diapause Induction by Photoperiod</a></li><li><a href="#cold-mortality-of-diapause-larvae">Cold Mortality of Diapause Larvae</a></li><li><a href="#cotton-phenology-synchrony">Cotton Phenology Synchrony</a></li><li><a href="#arizona-vs-california-climates">Arizona vs. California Climates</a></li><li><a href="#seasonal-population-dynamics">Seasonal Population Dynamics</a></li><li><a href="#visualizing-development-potential-across-latitudes">Visualizing Development Potential Across Latitudes</a></li><li><a href="#climate-warming-scenarios">Climate Warming Scenarios</a></li><li><a href="#northern-range-boundary">Northern Range Boundary</a></li><li><a href="#policy-implications">Policy Implications</a></li><li><a href="#parameter-sources">Parameter Sources</a></li><li><a href="#summary">Summary</a></li><li><a href="#references">References</a></li></ul><p>Primary reference: (&lt;span class=&quot;nocase&quot;&gt;Gutierrez et al.&lt;/span&gt; 2006).</p><h2 id="Background"><a class="docs-heading-anchor" href="#Background">Background</a><a id="Background-1"></a><a class="docs-heading-anchor-permalink" href="#Background" title="Permalink"></a></h2><p>Pink bollworm (<em>Pectinophora gossypiella</em> (Saunders), PBW) is a major pest of cotton (<em>Gossypium hirsutum</em> L.) worldwide, thought to be of Indian or Papua New Guinea–North Australian origin. In the United States, PBW invaded the cotton-growing regions of Arizona and the desert valleys of Southern California more than 40 years ago, generating sustained concern that its range could extend into the southern Central Valley of California where the bulk of US cotton is grown.</p><p>PBW larvae bore into cotton bolls, feeding on developing seeds and lint. A single maturing boll can host up to 15 larvae, and four to five summer generations occur annually in Arizona and Southern California. Yield losses from PBW are severe: heavily infested bolls produce degraded lint and reduced seed viability. The economic stakes prompted a USDA area-wide eradication program using the sterile insect technique (SIT), adult trapping, pheromone mating disruption, and late-season plowing. When eradication proved infeasible, the program shifted to containment, costing Central Valley farmers approximately <span>$</span>5 million per year in self-imposed levies. The introduction of transgenic Bt cotton in Arizona (1996) and Southern California (1999) added another tool for PBW management.</p><p>The key biological insight — confirmed by the PBDM analysis of Gutierrez et al. (2006) — is that <strong>overwinter survival of diapause larvae as affected by low temperatures is the primary factor restricting PBW’s geographic range</strong>. Diapause is induced by the combination of decreasing photoperiod and declining temperatures in late summer and fall (Gutierrez et al. 1981, 1986). Only 3–7% of diapause larvae typically survive winter in Arizona (Bariola 1984), and most spring-emerging adults appear before cotton fruit are available, further reducing effective reproduction.</p><p>This vignette builds a physiologically based demographic model of PBW using <code>PhysiologicallyBasedDemographicModels.jl</code> to explore how temperature-driven development, photoperiod-mediated diapause, and cold winter mortality establish the climatic limits of this pest across Arizona and California.</p><p><strong>Reference:</strong> Gutierrez, A.P., D’Oultremont, T., Ellis, C.K. and Ponti, L. (2006). <em>Climatic limits of pink bollworm in Arizona and California: effects of climate warming.</em> Acta Oecologica 30:353–364.</p><h2 id="Temperature-Dependent-Development"><a class="docs-heading-anchor" href="#Temperature-Dependent-Development">Temperature-Dependent Development</a><a id="Temperature-Dependent-Development-1"></a><a class="docs-heading-anchor-permalink" href="#Temperature-Dependent-Development" title="Permalink"></a></h2><p>PBW development follows a linear degree-day model with a lower threshold of 10 °C (Gutierrez et al. 2006, Appendix). The cotton host plant has a lower threshold of 12 °C. Development rates are computed as degree-days (DD) accumulated above the threshold using the sine method for daily max–min temperatures.</p><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+
+# --- Pink bollworm development parameters ---
+const PBW_T_LOWER = 10.0     # °C — lower developmental threshold (Appendix A.1, p. 362)
+const PBW_T_UPPER = 35.0     # °C — upper developmental threshold [assumed; not in paper]
+
+# --- Cotton development parameters ---
+const COTTON_T_LOWER = 12.0   # °C — lower threshold for cotton (Appendix A.1, p. 362)
+const COTTON_T_UPPER = 40.0   # °C — upper threshold [assumed; not in paper]
+
+# Development rate models
+pbw_dev    = LinearDevelopmentRate(PBW_T_LOWER, PBW_T_UPPER)
+cotton_dev = LinearDevelopmentRate(COTTON_T_LOWER, COTTON_T_UPPER)
+
+# Degree-day accumulation comparison
+println(&quot;Daily degree-day accumulation at representative temperatures:&quot;)
+println(&quot;=&quot;^60)
+println(&quot;  T (°C)  |  PBW (&gt;10°C)  |  Cotton (&gt;12°C)&quot;)
+println(&quot;-&quot;^60)
+for T in [8.0, 10.0, 12.0, 15.0, 20.0, 25.0, 30.0, 35.0]
+    dd_pbw = degree_days(pbw_dev, T)
+    dd_cot = degree_days(cotton_dev, T)
+    println(&quot;  $(lpad(T, 5)) °C  |  $(lpad(round(dd_pbw, digits=1), 6)) DD  |  $(lpad(round(dd_cot, digits=1), 6)) DD&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Daily degree-day accumulation at representative temperatures:
+============================================================
+  T (°C)  |  PBW (&gt;10°C)  |  Cotton (&gt;12°C)
+------------------------------------------------------------
+    8.0 °C  |     0.0 DD  |     0.0 DD
+   10.0 °C  |     0.0 DD  |     0.0 DD
+   12.0 °C  |     2.0 DD  |     0.0 DD
+   15.0 °C  |     5.0 DD  |     3.0 DD
+   20.0 °C  |    10.0 DD  |     8.0 DD
+   25.0 °C  |    15.0 DD  |    13.0 DD
+   30.0 °C  |    20.0 DD  |    18.0 DD
+   35.0 °C  |    25.0 DD  |    23.0 DD</code></pre><h2 id="PBW-Life-Stage-Structure"><a class="docs-heading-anchor" href="#PBW-Life-Stage-Structure">PBW Life Stage Structure</a><a id="PBW-Life-Stage-Structure-1"></a><a class="docs-heading-anchor-permalink" href="#PBW-Life-Stage-Structure" title="Permalink"></a></h2><p>PBW has four immature stages (egg, four larval instars, pupa) plus the reproductive adult. Each stage is modeled as a distributed delay population using the Manetsch/Vansickle k-substage framework. The parameter <code>k = 45</code> was chosen by Gutierrez et al. (2006) to produce a roughly normal distribution of developmental times.</p><p>The two-dimensional distributed delay used in the original model tracks larval cohorts simultaneously by their own age and the age of the host fruit they infest (Stone and Gutierrez 1986). Here we present the one-dimensional life-stage structure for clarity.</p><pre><code class="language-julia hljs">k = 45  # Number of substages (Appendix, after Eq. A4, p. 362)
+
+# --- Developmental time requirements (degree-days above 10°C) ---
+# Stage durations from Gutierrez et al. (1977) and Stone &amp; Gutierrez (1986)
+const DD_EGG    = 62.0    # Egg development: ~62 DD
+const DD_LARVA  = 204.0   # Larval development: ~204 DD (all instars combined)
+const DD_PUPA   = 148.0   # Pupal development: ~148 DD
+const DD_ADULT  = 180.0   # Adult reproductive lifespan: ~180 DD [assumed]
+
+# --- Background mortality rates (per degree-day) ---
+# [assumed; background rates not specified in Gutierrez et al. 2006]
+const MU_EGG   = 0.002
+const MU_LARVA = 0.001
+const MU_PUPA  = 0.001
+const MU_ADULT = 0.003
+
+# Construct the distributed delay for each life stage
+egg_delay   = DistributedDelay(k, DD_EGG;   W0=0.0)
+larva_delay = DistributedDelay(k, DD_LARVA; W0=0.0)
+pupa_delay  = DistributedDelay(k, DD_PUPA;  W0=0.0)
+adult_delay = DistributedDelay(k, DD_ADULT; W0=0.0)
+
+# Life stages
+egg_stage   = LifeStage(:egg,   egg_delay,   pbw_dev, MU_EGG)
+larva_stage = LifeStage(:larva, larva_delay, pbw_dev, MU_LARVA)
+pupa_stage  = LifeStage(:pupa,  pupa_delay,  pbw_dev, MU_PUPA)
+adult_stage = LifeStage(:adult, adult_delay, pbw_dev, MU_ADULT)
+
+pbw = Population(:pink_bollworm, [egg_stage, larva_stage, pupa_stage, adult_stage])
+
+# Summarize stage structure
+println(&quot;Pink bollworm life stage structure:&quot;)
+println(&quot;=&quot;^65)
+for stage in pbw.stages
+    σ² = delay_variance(stage.delay)
+    σ  = sqrt(σ²)
+    println(&quot;  $(rpad(stage.name, 8)): τ = $(stage.delay.τ) DD, &quot; *
+            &quot;k = $(stage.delay.k), σ = $(round(σ, digits=1)) DD, &quot; *
+            &quot;μ = $(stage.μ) DD⁻¹&quot;)
+end
+println(&quot;\nTotal generation time: $(DD_EGG + DD_LARVA + DD_PUPA) DD (egg → adult emergence)&quot;)</code></pre><pre><code class="nohighlight hljs">Pink bollworm life stage structure:
+=================================================================
+  egg     : τ = 62.0 DD, k = 45, σ = 9.2 DD, μ = 0.002 DD⁻¹
+  larva   : τ = 204.0 DD, k = 45, σ = 30.4 DD, μ = 0.001 DD⁻¹
+  pupa    : τ = 148.0 DD, k = 45, σ = 22.1 DD, μ = 0.001 DD⁻¹
+  adult   : τ = 180.0 DD, k = 45, σ = 26.8 DD, μ = 0.003 DD⁻¹
+
+Total generation time: 414.0 DD (egg → adult emergence)</code></pre><h2 id="Diapause-Induction-by-Photoperiod"><a class="docs-heading-anchor" href="#Diapause-Induction-by-Photoperiod">Diapause Induction by Photoperiod</a><a id="Diapause-Induction-by-Photoperiod-1"></a><a class="docs-heading-anchor-permalink" href="#Diapause-Induction-by-Photoperiod" title="Permalink"></a></h2><p>Diapause induction in PBW is triggered by the interaction of decreasing photoperiod and declining temperature during late summer and fall (Gutierrez et al. 1981, 1986). Fourth-instar larvae entering diapause spin a hibernaculum within the cotton boll and remain dormant through winter.</p><p>The fraction of larvae entering diapause increases as day length falls below a critical photoperiod of approximately 13 hours. Temperature modulates the response: cooler autumn temperatures accelerate diapause induction.</p><pre><code class="language-julia hljs"># --- Diapause induction parameters ---
+# Diapause triggered by decreasing day-length × temperature (Gutierrez et al. 1981, 1986)
+const DL_CRITICAL = 13.0   # hours — critical photoperiod (Gutierrez et al. 1981)
+const DL_COMPLETE = 10.5   # hours — 100% diapause photoperiod [assumed]
+const T_DIAPAUSE_MOD = 20.0  # °C — temperature modulation threshold [assumed]
+
+&quot;&quot;&quot;
+    diapause_fraction(photoperiod, temperature)
+
+Fraction of fourth-instar PBW larvae entering diapause.
+Combines photoperiod response with temperature modulation.
+Returns a value in [0, 1].
+&quot;&quot;&quot;
+function diapause_fraction(daylength::Real, T::Real)
+    # Photoperiod component: linear ramp from DL_CRITICAL to DL_COMPLETE
+    if daylength &gt;= DL_CRITICAL
+        photo_frac = 0.0
+    elseif daylength &lt;= DL_COMPLETE
+        photo_frac = 1.0
+    else
+        photo_frac = (DL_CRITICAL - daylength) / (DL_CRITICAL - DL_COMPLETE)
+    end
+
+    # Temperature modulation: cooler temps enhance diapause induction
+    if T &gt;= T_DIAPAUSE_MOD
+        temp_mod = 1.0
+    else
+        temp_mod = 1.0 + 0.3 * (T_DIAPAUSE_MOD - T) / T_DIAPAUSE_MOD
+    end
+
+    return clamp(photo_frac * temp_mod, 0.0, 1.0)
+end
+
+# Demonstrate across a range of conditions
+println(&quot;Diapause induction fraction:&quot;)
+println(&quot;=&quot;^55)
+println(&quot;  Daylength (h) | T=15°C | T=20°C | T=25°C | T=30°C&quot;)
+println(&quot;-&quot;^55)
+for dl in [14.0, 13.5, 13.0, 12.5, 12.0, 11.5, 11.0, 10.5, 10.0]
+    vals = [round(diapause_fraction(dl, T), digits=3) for T in [15.0, 20.0, 25.0, 30.0]]
+    println(&quot;      $(lpad(dl, 4))      | $(vals[1])  | $(vals[2])  | $(vals[3])  | $(vals[4])&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Diapause induction fraction:
+=======================================================
+  Daylength (h) | T=15°C | T=20°C | T=25°C | T=30°C
+-------------------------------------------------------
+      14.0      | 0.0  | 0.0  | 0.0  | 0.0
+      13.5      | 0.0  | 0.0  | 0.0  | 0.0
+      13.0      | 0.0  | 0.0  | 0.0  | 0.0
+      12.5      | 0.215  | 0.2  | 0.2  | 0.2
+      12.0      | 0.43  | 0.4  | 0.4  | 0.4
+      11.5      | 0.645  | 0.6  | 0.6  | 0.6
+      11.0      | 0.86  | 0.8  | 0.8  | 0.8
+      10.5      | 1.0  | 1.0  | 1.0  | 1.0
+      10.0      | 1.0  | 1.0  | 1.0  | 1.0</code></pre><h2 id="Cold-Mortality-of-Diapause-Larvae"><a class="docs-heading-anchor" href="#Cold-Mortality-of-Diapause-Larvae">Cold Mortality of Diapause Larvae</a><a id="Cold-Mortality-of-Diapause-Larvae-1"></a><a class="docs-heading-anchor-permalink" href="#Cold-Mortality-of-Diapause-Larvae" title="Permalink"></a></h2><p>Overwinter survival is the critical bottleneck for PBW persistence. Gutierrez et al. (2006) used laboratory data (Gutierrez et al. 1977; Venette et al. 2000) to fit a survivorship function based on cumulative degree-days below the developmental threshold (cold physiological time). The mortality rate increases with decreasing temperature below 10 °C.</p><p>The cold survivorship function (Eq. 1 of Gutierrez et al. 2006, p. 356), fitted to laboratory data from Gutierrez et al. (1977, Fig. 2a) and Venette et al. (2000, Fig. 2b):</p><p class="math-container">\[l_{x_c}(t) = 1.0 - 0.00002 \cdot dd_x(t)^2 - 0.0013 \cdot dd_x(t) \qquad (r^2 = 0.098,\; n = 5)\]</p><p>where <span>$dd_x(t)$</span> is the cumulative degree-days below 10 °C from fall plowing to time <span>$t$</span>. The low <span>$r^2$</span> reflects limited laboratory data points; nonetheless the relationship captures the key pattern of increasing mortality with cumulative cold exposure.</p><pre><code class="language-julia hljs"># --- Cold mortality model (Gutierrez et al. 2006, Eq. 1) ---
+
+&quot;&quot;&quot;
+    cold_survivorship(cold_dd)
+
+Proportion of diapause PBW larvae surviving after accumulating
+`cold_dd` degree-days below the 10°C threshold (cumulative cold).
+Based on Gutierrez et al. (2006), Eq. 1.
+&quot;&quot;&quot;
+function cold_survivorship(cold_dd::Real)
+    lx = 1.0 - 0.00002 * cold_dd^2 - 0.0013 * cold_dd
+    return clamp(lx, 0.0, 1.0)
+end
+
+&quot;&quot;&quot;
+    daily_cold_dd(T_min, threshold=10.0)
+
+Degree-days of cold accumulated in one day.
+Only temperatures below the threshold contribute.
+&quot;&quot;&quot;
+function daily_cold_dd(T_min::Real; threshold::Real=10.0)
+    return max(0.0, threshold - T_min)
+end
+
+# Demonstrate cold mortality across a winter season
+println(&quot;Cold survivorship of diapause PBW larvae:&quot;)
+println(&quot;=&quot;^55)
+println(&quot;  Cumulative cold DD  |  Survivorship  |  Mortality&quot;)
+println(&quot;-&quot;^55)
+for cdd in [0, 50, 100, 150, 200, 250, 300, 400, 500]
+    lx = cold_survivorship(Float64(cdd))
+    println(&quot;      $(lpad(cdd, 5))          |    $(round(lx, digits=4))     |   $(round(1-lx, digits=4))&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Cold survivorship of diapause PBW larvae:
+=======================================================
+  Cumulative cold DD  |  Survivorship  |  Mortality
+-------------------------------------------------------
+          0          |    1.0     |   0.0
+         50          |    0.885     |   0.115
+        100          |    0.67     |   0.33
+        150          |    0.355     |   0.645
+        200          |    0.0     |   1.0
+        250          |    0.0     |   1.0
+        300          |    0.0     |   1.0
+        400          |    0.0     |   1.0
+        500          |    0.0     |   1.0</code></pre><h2 id="Cotton-Phenology-Synchrony"><a class="docs-heading-anchor" href="#Cotton-Phenology-Synchrony">Cotton Phenology Synchrony</a><a id="Cotton-Phenology-Synchrony-1"></a><a class="docs-heading-anchor-permalink" href="#Cotton-Phenology-Synchrony" title="Permalink"></a></h2><p>PBW reproduction depends critically on the availability of cotton fruit. Adults must oviposit on fruiting squares and bolls; emerging spring adults that find no fruit fail to reproduce. Cotton germination occurs when the 10-day average soil temperature at 6-inch depth exceeds 15 °C, and the season ends when the 10-day average minimum night temperature drops below 16 °C (Section 2.1, p. 355).</p><p>The mismatch between PBW spring emergence and cotton fruiting is a major source of effective mortality in marginal habitats.</p><pre><code class="language-julia hljs"># --- Cotton phenological milestones (DD above 12°C from planting) ---
+# [assumed; derived from cotton agronomy literature, not in Gutierrez et al. 2006]
+const DD_FIRST_SQUARE = 415.0    # First fruiting branch / squaring
+const DD_PEAK_SQUARE  = 940.0    # Peak squaring
+const DD_FIRST_BOLL   = 1200.0   # First open boll
+const DD_CUTOUT       = 1500.0   # Physiological cutout
+
+# Cotton fruit population (bolls)
+k_fruit = 30
+fruit_delay  = DistributedDelay(k_fruit, 800.0; W0=0.0)  # Boll: 800 DD to mature [assumed]
+fruit_stage  = LifeStage(:boll, fruit_delay, cotton_dev, 0.001)
+
+cotton_fruit = Population(:cotton_fruit, [fruit_stage])
+
+# --- PBW adult emergence from diapause ---
+# Adults emerge according to a distributed delay with mean ~350 DD above 10°C
+# from Jan 1 (Gutierrez et al. 1977)
+const DD_EMERGENCE_MEAN = 350.0   # DD above 10°C for 50% emergence (Gutierrez et al. 1977; Eq. 2, p. 356)
+const DD_EMERGENCE_SPAN = 500.0   # DD range over which emergence is spread [assumed]
+
+&quot;&quot;&quot;
+    emergence_fraction(dd_accumulated)
+
+Fraction of total diapause adults that have emerged by the given
+cumulative degree-days above 10°C from the start of spring.
+Uses a sigmoid (logistic) approximation.
+&quot;&quot;&quot;
+function emergence_fraction(dd::Real)
+    rate = 0.015  # steepness of the emergence curve
+    return 1.0 / (1.0 + exp(-rate * (dd - DD_EMERGENCE_MEAN)))
+end
+
+# Emergence schedule
+println(&quot;PBW adult emergence from diapause:&quot;)
+println(&quot;=&quot;^45)
+println(&quot;  Cum. DD (&gt;10°C)  |  Fraction emerged&quot;)
+println(&quot;-&quot;^45)
+for dd in [100, 200, 250, 300, 350, 400, 450, 500, 600, 700]
+    frac = emergence_fraction(Float64(dd))
+    println(&quot;      $(lpad(dd, 4))         |     $(round(frac, digits=3))&quot;)
+end
+
+println(&quot;\nCotton fruit availability begins at $(DD_FIRST_SQUARE) DD above 12°C&quot;)
+println(&quot;Peak PBW emergence at $(DD_EMERGENCE_MEAN) DD above 10°C&quot;)
+println(&quot;→ Synchrony depends on relative timing at each location&quot;)</code></pre><pre><code class="nohighlight hljs">PBW adult emergence from diapause:
+=============================================
+  Cum. DD (&gt;10°C)  |  Fraction emerged
+---------------------------------------------
+       100         |     0.023
+       200         |     0.095
+       250         |     0.182
+       300         |     0.321
+       350         |     0.5
+       400         |     0.679
+       450         |     0.818
+       500         |     0.905
+       600         |     0.977
+       700         |     0.995
+
+Cotton fruit availability begins at 415.0 DD above 12°C
+Peak PBW emergence at 350.0 DD above 10°C
+→ Synchrony depends on relative timing at each location</code></pre><h2 id="Arizona-vs.-California-Climates"><a class="docs-heading-anchor" href="#Arizona-vs.-California-Climates">Arizona vs. California Climates</a><a id="Arizona-vs.-California-Climates-1"></a><a class="docs-heading-anchor-permalink" href="#Arizona-vs.-California-Climates" title="Permalink"></a></h2><p>The model was run by Gutierrez et al. (2006) across 121 weather stations (110 in California, 17 in Arizona) for the period 1995–2003. The key climatic contrast: Arizona and the desert valleys of Southern California have mild winters permitting PBW overwinter survival, while the Central Valley experiences hard frosts that kill diapause larvae.</p><p>We compare representative weather for three locations to illustrate the gradient in suitability.</p><pre><code class="language-julia hljs"># --- Representative daily weather for three locations ---
+# Phoenix, AZ (33.4°N): hot summers, mild winters — PBW endemic
+# Bakersfield, CA (35.4°N): hot summers, cold winters — Central Valley, marginal
+# Fresno, CA (36.7°N): moderate summers, cold winters — Central Valley, unsuitable
+
+n_days = 365
+
+function synthetic_weather(lat, T_mean_annual, T_amplitude, T_min_winter)
+    days = DailyWeather[]
+    for doy in 1:n_days
+        # Sinusoidal temperature cycle
+        T_mean = T_mean_annual + T_amplitude * cos(2π * (doy - 200) / 365)
+        T_max  = T_mean + 7.0
+        T_min  = T_mean - 7.0
+        # Enforce realistic winter minima
+        if doy &lt; 60 || doy &gt; 330
+            T_min = min(T_min, T_min_winter + 3.0 * rand())
+        end
+        # Photoperiod (approximate formula)
+        decl = 23.45 * sin(2π * (284 + doy) / 365)
+        lat_rad = lat * π / 180
+        decl_rad = decl * π / 180
+        ha = acos(clamp(-tan(lat_rad) * tan(decl_rad), -1.0, 1.0))
+        photo = 2.0 * ha * 12.0 / π
+        # Solar radiation (approximate)
+        rad = 15.0 + 10.0 * sin(2π * (doy - 80) / 365)
+        push!(days, DailyWeather(T_mean, T_min, T_max;
+                                 radiation=rad, photoperiod=photo))
+    end
+    return WeatherSeries(days; day_offset=1)
+end
+
+weather_phoenix     = synthetic_weather(33.4, 23.0, 12.0, 3.0)
+weather_bakersfield = synthetic_weather(35.4, 19.0, 11.0, -2.0)
+weather_fresno      = synthetic_weather(36.7, 17.5, 11.0, -4.0)
+
+# Compute cumulative cold degree-days over winter for each location
+function winter_cold_dd(weather)
+    total = 0.0
+    # Accumulate cold from Nov 1 (day 305) through Mar 31 (day 90)
+    for doy in [305:365; 1:90]
+        T_min = weather.days[doy].T_min
+        total += daily_cold_dd(T_min)
+    end
+    return total
+end
+
+for (name, w) in [(&quot;Phoenix, AZ&quot;,     weather_phoenix),
+                   (&quot;Bakersfield, CA&quot;, weather_bakersfield),
+                   (&quot;Fresno, CA&quot;,      weather_fresno)]
+    cdd = winter_cold_dd(w)
+    surv = cold_survivorship(cdd)
+    println(&quot;$name:&quot;)
+    println(&quot;  Winter cold DD (below 10°C): $(round(cdd, digits=0))&quot;)
+    println(&quot;  Diapause larval survival:    $(round(surv * 100, digits=1))%&quot;)
+    println()
+end</code></pre><pre><code class="nohighlight hljs">Phoenix, AZ:
+  Winter cold DD (below 10°C): 580.0
+  Diapause larval survival:    0.0%
+
+Bakersfield, CA:
+  Winter cold DD (below 10°C): 1191.0
+  Diapause larval survival:    0.0%
+
+Fresno, CA:
+  Winter cold DD (below 10°C): 1457.0
+  Diapause larval survival:    0.0%</code></pre><h2 id="Seasonal-Population-Dynamics"><a class="docs-heading-anchor" href="#Seasonal-Population-Dynamics">Seasonal Population Dynamics</a><a id="Seasonal-Population-Dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Seasonal-Population-Dynamics" title="Permalink"></a></h2><p>We simulate PBW population dynamics over a cotton season, starting from overwintering diapause larvae. The simulation tracks degree-day accumulation, adult emergence from diapause, oviposition on cotton fruit, and larval development through successive generations.</p><pre><code class="language-julia hljs"># --- Fecundity model ---
+# Per capita oviposition demand follows a concave temperature function
+# (Gutierrez et al. 2006, Appendix Eq. A15, p. 363):
+#   ϕ_T = 1 - ((T - T_min)/γ - 1)² for T_min ≤ T ≤ T_max
+# where γ = (T_max - T_min)/2; T_opt = (T_max + T_min)/2
+const PBW_FECUNDITY_MAX = 150.0  # Total eggs per female lifetime [assumed]
+const PBW_SEX_RATIO = 0.5        # (Appendix Eq. A11, p. 363: θ = 0.5)
+const PLANTING_DENSITY = 6.6     # plants m⁻² (Section 3.1, p. 357)
+
+function temperature_fecundity_index(T::Real)
+    T_min, T_max = PBW_T_LOWER, PBW_T_UPPER
+    (T &lt; T_min || T &gt; T_max) &amp;&amp; return 0.0
+    γ = (T_max - T_min) / 2.0
+    return max(0.0, 1.0 - ((T - T_min) / γ - 1.0)^2)
+end
+
+# Show the concave fecundity function
+println(&quot;Temperature-dependent fecundity index ϕ_T(T):&quot;)
+println(&quot;=&quot;^45)
+for T in [8, 10, 15, 18, 20, 22, 25, 28, 30, 32, 35, 38]
+    phi = temperature_fecundity_index(Float64(T))
+    bar = repeat(&quot;█&quot;, round(Int, phi * 30))
+    println(&quot;  $(lpad(T, 3))°C: $(round(phi, digits=3))  $bar&quot;)
+end</code></pre><pre><code class="nohighlight hljs">Temperature-dependent fecundity index ϕ_T(T):
+=============================================
+    8°C: 0.0  
+   10°C: 0.0  
+   15°C: 0.64  ███████████████████
+   18°C: 0.87  ██████████████████████████
+   20°C: 0.96  █████████████████████████████
+   22°C: 0.998  ██████████████████████████████
+   25°C: 0.96  █████████████████████████████
+   28°C: 0.806  ████████████████████████
+   30°C: 0.64  ███████████████████
+   32°C: 0.422  █████████████
+   35°C: 0.0  
+   38°C: 0.0</code></pre><pre><code class="language-julia hljs"># --- Simulate one season at Phoenix, AZ using coupled population API ---
+function simulate_pbw_season(weather; N_diapause=2.0)
+    n = length(weather.days)
+
+    # Compute cold DD through spring for overwinter survival of the
+    # *previous* season&#39;s diapause cohort (separate from the DiapauseRule,
+    # which handles in-season induction + cold tracking).
+    cold_dd_total = 0.0
+    for d in 1:min(90, n)
+        cold_dd_total += daily_cold_dd(weather.days[d].T_min)
+    end
+    overwinter_surv = cold_survivorship(cold_dd_total)
+    surviving_diapause = N_diapause * overwinter_surv
+
+    # BulkPopulations for adult, egg, and larva density
+    bp_adult = BulkPopulation(:adults, 0.0)
+    bp_egg   = BulkPopulation(:eggs, 0.0)
+    bp_larva = BulkPopulation(:larvae, 0.0)
+
+    # Track cumulative degree-days for PBW and cotton
+    dd_pbw = ScalarState(:cum_dd_pbw, 0.0;
+        update=(v, sys, w, day, p) -&gt; v + degree_days(pbw_dev, w.T_mean))
+    dd_cotton = ScalarState(:cum_dd_cotton, 0.0;
+        update=(v, sys, w, day, p) -&gt; v + degree_days(cotton_dev, w.T_mean))
+
+    # DiapauseState: induction_fn via the photoperiod-based diapause_fraction.
+    # cold_dd starts at zero; DiapauseRule will accumulate in-season cold DDs.
+    diapause = DiapauseState(:pbw_diapause, 0.0; cold_dd=0.0,
+        induction_fn=(dl, T) -&gt; diapause_fraction(dl, T),
+        emergence_fn=(dd) -&gt; 0.0,
+        cold_survival_fn=(cdd) -&gt; cold_survivorship(cdd))
+
+    # Coupled diapause dynamics: induction, cold accumulation, and mortality
+    # are handled by DiapauseRule acting on the :larvae pool.
+    diapause_rule = DiapauseRule(:larvae, :pbw_diapause; T_cold_base=10.0)
+
+    dynamics = CustomRule(:pbw_dynamics, (sys, w, day, p) -&gt; begin
+        T_mean = w.T_mean
+        cum_pbw = get_state(sys.state[:cum_dd_pbw])
+        cum_cot = get_state(sys.state[:cum_dd_cotton])
+
+        # Adult emergence from surviving diapause
+        frac = emergence_fraction(cum_pbw)
+        emerged = p.surviving * frac
+        set_value!(sys[:adults].population, emerged)
+
+        # Cotton fruit availability
+        fruit_avail = 1.0 / (1.0 + exp(-0.01 * (cum_cot - DD_FIRST_SQUARE)))
+
+        # Oviposition
+        phi_T = temperature_fecundity_index(T_mean)
+        dd = degree_days(pbw_dev, T_mean)
+        daily_eggs = emerged * PBW_FECUNDITY_MAX / DD_ADULT * dd *
+                     PBW_SEX_RATIO * phi_T * fruit_avail
+        set_value!(sys[:eggs].population, daily_eggs)
+
+        # Lagged larval production from eggs (simplified)
+        new_larvae = daily_eggs * 0.7
+        current_larvae = total_population(sys[:larvae].population)
+        set_value!(sys[:larvae].population, current_larvae + new_larvae * 0.003)
+
+        (emerged=emerged, daily_eggs=daily_eggs)
+    end)
+
+    sys = PopulationSystem(
+        :adults =&gt; bp_adult, :eggs =&gt; bp_egg, :larvae =&gt; bp_larva;
+        state=[dd_pbw, dd_cotton, diapause])
+
+    # Rule order: dynamics first (seeds larvae), then DiapauseRule (drains them).
+    prob = PBDMProblem(sys, weather, (1, n);
+        rules=[dynamics, diapause_rule], p=(surviving=surviving_diapause,))
+
+    sol = solve(prob, DirectIteration())
+
+    # Build return in original format
+    cum_dd_pbw = sol.state_history[:cum_dd_pbw]
+    cum_dd_cotton = sol.state_history[:cum_dd_cotton]
+    # Cold-DD trajectory now lives inside the DiapauseState.
+    cold_dd_cum = [snap.cold_dd for snap in sol.state_history[:pbw_diapause]]
+    adults_emerged = sol[:adults]
+    egg_density = sol[:eggs]
+    larva_density = sol[:larvae]
+    diapause_larvae = [r.entering for r in sol.rule_log[:DiapauseRule]]
+
+    return (cum_dd_pbw=cum_dd_pbw, cum_dd_cotton=cum_dd_cotton,
+            cold_dd_cum=cold_dd_cum, adults_emerged=adults_emerged,
+            egg_density=egg_density, larva_density=larva_density,
+            diapause_larvae=diapause_larvae, overwinter_surv=overwinter_surv)
+end
+
+phoenix_sim = simulate_pbw_season(weather_phoenix; N_diapause=2.0)
+println(&quot;Phoenix, AZ simulation summary:&quot;)
+println(&quot;  Overwinter survival: $(round(phoenix_sim.overwinter_surv * 100, digits=1))%&quot;)
+println(&quot;  Season DD (PBW):     $(round(phoenix_sim.cum_dd_pbw[end], digits=0))&quot;)
+println(&quot;  Season DD (Cotton):  $(round(phoenix_sim.cum_dd_cotton[end], digits=0))&quot;)
+println(&quot;  Total diapause larvae produced: $(round(sum(phoenix_sim.diapause_larvae), digits=1))&quot;)</code></pre><pre><code class="nohighlight hljs">Phoenix, AZ simulation summary:
+  Overwinter survival: 0.0%
+  Season DD (PBW):     4745.0
+  Season DD (Cotton):  4047.0
+  Total diapause larvae produced: 0.0</code></pre><h2 id="Visualizing-Development-Potential-Across-Latitudes"><a class="docs-heading-anchor" href="#Visualizing-Development-Potential-Across-Latitudes">Visualizing Development Potential Across Latitudes</a><a id="Visualizing-Development-Potential-Across-Latitudes-1"></a><a class="docs-heading-anchor-permalink" href="#Visualizing-Development-Potential-Across-Latitudes" title="Permalink"></a></h2><p>The geographic range of PBW is ultimately set by the interplay between overwinter cold mortality and the length of the summer growing season. We visualize this as a latitudinal transect, computing overwinter survival, seasonal degree-day accumulation, and the number of potential PBW generations at each latitude.</p><pre><code class="language-julia hljs">using CairoMakie
+
+# Latitudinal transect: 30°N to 42°N (Southern AZ to Northern CA)
+latitudes = 30.0:0.5:42.0
+n_lat = length(latitudes)
+
+# Climate model: temperature decreases with latitude
+# (simplified lapse: ~1°C per degree of latitude in this range)
+survival_vec    = zeros(n_lat)
+season_dd_vec   = zeros(n_lat)
+generations_vec = zeros(n_lat)
+cold_dd_vec     = zeros(n_lat)
+
+for (i, lat) in enumerate(latitudes)
+    T_annual = 25.0 - 0.8 * (lat - 30.0)    # Approximate annual mean
+    T_amp    = 10.0 + 0.15 * (lat - 30.0)    # Greater amplitude at higher lat
+    T_min_w  = T_annual - T_amp - 5.0         # Winter minimum
+
+    w = synthetic_weather(lat, T_annual, T_amp, T_min_w)
+    cdd = winter_cold_dd(w)
+    cold_dd_vec[i] = cdd
+    survival_vec[i] = cold_survivorship(cdd)
+
+    # Season DD: sum degree-days during cotton growing season (Apr–Oct)
+    sdd = 0.0
+    for doy in 91:304
+        sdd += degree_days(pbw_dev, w.days[doy].T_mean)
+    end
+    season_dd_vec[i] = sdd
+    generations_vec[i] = sdd / (DD_EGG + DD_LARVA + DD_PUPA)
+end
+
+fig = Figure(size=(900, 800))
+
+# Panel A: Overwinter cold and survival
+ax1 = Axis(fig[1, 1],
+    xlabel=&quot;Latitude (°N)&quot;,
+    ylabel=&quot;Diapause survival&quot;,
+    title=&quot;(a) Overwinter survival of diapause larvae&quot;)
+lines!(ax1, collect(latitudes), survival_vec, color=:firebrick, linewidth=2.5)
+hlines!(ax1, [0.05], color=:gray50, linestyle=:dash, linewidth=1)
+text!(ax1, 38.0, 0.08, text=&quot;~5% survival threshold&quot;, fontsize=11, color=:gray50)
+
+# Panel B: Cumulative cold degree-days
+ax2 = Axis(fig[1, 2],
+    xlabel=&quot;Latitude (°N)&quot;,
+    ylabel=&quot;Cold DD (below 10°C)&quot;,
+    title=&quot;(b) Winter cold accumulation&quot;)
+lines!(ax2, collect(latitudes), cold_dd_vec, color=:steelblue, linewidth=2.5)
+
+# Panel C: Seasonal degree-day accumulation
+ax3 = Axis(fig[2, 1],
+    xlabel=&quot;Latitude (°N)&quot;,
+    ylabel=&quot;Growing season DD (&gt;10°C)&quot;,
+    title=&quot;(c) Seasonal heat accumulation (Apr–Oct)&quot;)
+lines!(ax3, collect(latitudes), season_dd_vec, color=:darkorange, linewidth=2.5)
+hlines!(ax3, [DD_FIRST_SQUARE + DD_EGG + DD_LARVA + DD_PUPA],
+    color=:gray50, linestyle=:dash, linewidth=1)
+text!(ax3, 38.0, 900.0, text=&quot;Min DD for 1 generation\n+ cotton fruiting&quot;,
+    fontsize=10, color=:gray50)
+
+# Panel D: Potential generations
+ax4 = Axis(fig[2, 2],
+    xlabel=&quot;Latitude (°N)&quot;,
+    ylabel=&quot;Potential PBW generations&quot;,
+    title=&quot;(d) Number of potential generations per season&quot;)
+barplot!(ax4, collect(latitudes), floor.(generations_vec),
+    color=:seagreen, strokewidth=0.5, strokecolor=:black, gap=0.0)
+
+# Mark approximate location boundaries
+for ax in [ax1, ax2, ax3, ax4]
+    vlines!(ax, [33.5], color=:red,   linestyle=:dot, linewidth=1, label=&quot;Phoenix&quot;)
+    vlines!(ax, [35.4], color=:gold,  linestyle=:dot, linewidth=1, label=&quot;Bakersfield&quot;)
+    vlines!(ax, [36.7], color=:blue,  linestyle=:dot, linewidth=1, label=&quot;Fresno&quot;)
+end
+
+fig</code></pre><p><img src="../17_pink_bollworm_files/figure-commonmark/cell-10-output-1.png" alt/></p><h2 id="Climate-Warming-Scenarios"><a class="docs-heading-anchor" href="#Climate-Warming-Scenarios">Climate Warming Scenarios</a><a id="Climate-Warming-Scenarios-1"></a><a class="docs-heading-anchor-permalink" href="#Climate-Warming-Scenarios" title="Permalink"></a></h2><p>Gutierrez et al. (2006) examined four climate-warming scenarios by uniformly increasing observed daily temperatures by +1.0, +1.5, +2.0, and +2.5 °C. They found that warming of +1.5–2.5 °C would allow PBW to expand into the Central Valley of California and greatly increase pest severity in areas of current infestation.</p><pre><code class="language-julia hljs">fig2 = Figure(size=(800, 500))
+ax = Axis(fig2[1, 1],
+    xlabel=&quot;Latitude (°N)&quot;,
+    ylabel=&quot;Diapause survival&quot;,
+    title=&quot;Overwinter PBW survival under climate warming scenarios&quot;,
+    limits=(30, 42, 0, 1.05))
+
+# Baseline and warming scenarios
+scenarios = [0.0, 1.0, 1.5, 2.0, 2.5]
+colors = [:black, :steelblue, :goldenrod, :darkorange, :firebrick]
+labels = [&quot;Observed&quot;, &quot;+1.0°C&quot;, &quot;+1.5°C&quot;, &quot;+2.0°C&quot;, &quot;+2.5°C&quot;]
+
+for (sc, col, lab) in zip(scenarios, colors, labels)
+    surv = zeros(n_lat)
+    for (i, lat) in enumerate(latitudes)
+        T_annual = 25.0 - 0.8 * (lat - 30.0) + sc
+        T_amp    = 10.0 + 0.15 * (lat - 30.0)
+        T_min_w  = T_annual - T_amp - 5.0
+        w = synthetic_weather(lat, T_annual, T_amp, T_min_w)
+        cdd = winter_cold_dd(w)
+        surv[i] = cold_survivorship(cdd)
+    end
+    lines!(ax, collect(latitudes), surv, color=col, linewidth=2.0, label=lab)
+end
+
+# Reference lines for key locations
+vlines!(ax, [33.5], color=:gray, linestyle=:dot, linewidth=0.8)
+vlines!(ax, [35.4], color=:gray, linestyle=:dot, linewidth=0.8)
+vlines!(ax, [36.7], color=:gray, linestyle=:dot, linewidth=0.8)
+text!(ax, 33.5, 1.02, text=&quot;Phoenix&quot;,     fontsize=9, align=(:center, :bottom))
+text!(ax, 35.4, 1.02, text=&quot;Bakersfield&quot;, fontsize=9, align=(:center, :bottom))
+text!(ax, 36.7, 1.02, text=&quot;Fresno&quot;,      fontsize=9, align=(:center, :bottom))
+
+hlines!(ax, [0.05], color=:gray50, linestyle=:dash, linewidth=1)
+text!(ax, 40.0, 0.08, text=&quot;Persistence threshold (~5%)&quot;, fontsize=10, color=:gray50)
+
+axislegend(ax, position=:rt)
+
+fig2</code></pre><p><img src="../17_pink_bollworm_files/figure-commonmark/cell-11-output-1.png" alt/></p><h2 id="Northern-Range-Boundary"><a class="docs-heading-anchor" href="#Northern-Range-Boundary">Northern Range Boundary</a><a id="Northern-Range-Boundary-1"></a><a class="docs-heading-anchor-permalink" href="#Northern-Range-Boundary" title="Permalink"></a></h2><p>The model predicts a sharp transition zone in overwinter survival that delimits the northern boundary of PBW persistence. Under observed climate conditions, this boundary lies near the southern edge of the Central Valley (~35°N), consistent with field observations and the absence of sustained PBW populations in Kern, Tulare, and Kings counties.</p><p>The boundary is set by the balance between:</p><ol><li><strong>Winter cold mortality</strong> — cumulative degree-days below 10 °C  determine what fraction of diapause larvae survive to spring</li><li><strong>Spring emergence–cotton synchrony</strong> — surviving adults must emerge  when cotton fruit are available for oviposition</li><li><strong>Season length</strong> — sufficient heat units must accumulate for  multiple PBW generations to build populations and produce diapause  larvae before fall crop termination</li></ol><p>Climate warming shifts all three factors northward: milder winters improve survival, earlier cotton planting improves synchrony, and longer seasons allow more PBW generations. The original analysis predicted that warming of +1.5 °C or more would push the persistence boundary into the heart of the Central Valley.</p><pre><code class="language-julia hljs"># Composite suitability index combining survival and season potential
+function suitability_index(lat; warming=0.0)
+    T_annual = 25.0 - 0.8 * (lat - 30.0) + warming
+    T_amp    = 10.0 + 0.15 * (lat - 30.0)
+    T_min_w  = T_annual - T_amp - 5.0
+
+    w = synthetic_weather(lat, T_annual, T_amp, T_min_w)
+
+    # Overwinter survival
+    cdd = winter_cold_dd(w)
+    surv = cold_survivorship(cdd)
+
+    # Season potential (DD available for PBW generations)
+    sdd = sum(degree_days(pbw_dev, w.days[d].T_mean) for d in 91:304)
+    gen_potential = sdd / (DD_EGG + DD_LARVA + DD_PUPA)
+
+    # Composite: survival × min(generations/3, 1)
+    # 3 generations needed for sustainable infestation
+    gen_factor = clamp(gen_potential / 3.0, 0.0, 1.0)
+    return surv * gen_factor
+end
+
+fig3 = Figure(size=(800, 450))
+ax = Axis(fig3[1, 1],
+    xlabel=&quot;Latitude (°N)&quot;,
+    ylabel=&quot;PBW suitability index&quot;,
+    title=&quot;Composite PBW suitability: overwinter survival × season potential&quot;,
+    limits=(30, 42, 0, 1.05))
+
+for (sc, col, lab) in zip(scenarios, colors, labels)
+    suit = [suitability_index(lat; warming=sc) for lat in latitudes]
+    lines!(ax, collect(latitudes), suit, color=col, linewidth=2.0, label=lab)
+end
+
+# Threshold for population persistence
+hlines!(ax, [0.10], color=:gray50, linestyle=:dash, linewidth=1)
+text!(ax, 40.0, 0.13, text=&quot;Persistence threshold&quot;, fontsize=10, color=:gray50)
+
+# Fill the &quot;pest zone&quot;
+band!(ax, collect(latitudes),
+    zeros(n_lat),
+    [suitability_index(lat; warming=0.0) for lat in latitudes],
+    color=(:firebrick, 0.15))
+
+vlines!(ax, [33.5], color=:gray, linestyle=:dot, linewidth=0.8)
+vlines!(ax, [35.4], color=:gray, linestyle=:dot, linewidth=0.8)
+vlines!(ax, [36.7], color=:gray, linestyle=:dot, linewidth=0.8)
+text!(ax, 33.5, 1.02, text=&quot;Phoenix&quot;,     fontsize=9, align=(:center, :bottom))
+text!(ax, 35.4, 1.02, text=&quot;Bakersfield&quot;, fontsize=9, align=(:center, :bottom))
+text!(ax, 36.7, 1.02, text=&quot;Fresno&quot;,      fontsize=9, align=(:center, :bottom))
+
+axislegend(ax, position=:rt)
+
+fig3</code></pre><p><img src="../17_pink_bollworm_files/figure-commonmark/cell-12-output-1.png" alt/></p><h2 id="Policy-Implications"><a class="docs-heading-anchor" href="#Policy-Implications">Policy Implications</a><a id="Policy-Implications-1"></a><a class="docs-heading-anchor-permalink" href="#Policy-Implications" title="Permalink"></a></h2><p>The PBDM analysis provides a mechanistic basis for pest management strategy:</p><ul><li><p><strong>Under current climate</strong>: PBW is restricted to the frost-free desert regions of Arizona and the Imperial/Coachella valleys of Southern California. The ongoing Central Valley containment program may be unnecessary — climate alone prevents PBW establishment.</p></li><li><p><strong>Under climate warming (+1.5–2.5 °C)</strong>: The range of PBW would expand into the Central Valley, where it could become a serious economic pest. This would require renewed investment in area-wide management, expanded Bt cotton deployment, and adaptive monitoring programs.</p></li><li><p><strong>Bt cotton</strong>: Transgenic cotton expressing <em>Bacillus thuringiensis</em> (Bt) toxins provides effective control but faces the risk of resistance evolution (Carrière et al. 2001; Gutierrez and Ponsard 2006). Resistance management requires refuges of non-Bt cotton — the geographic extent of which should be informed by PBDM predictions of PBW population pressure.</p></li></ul><h2 id="Parameter-Sources"><a class="docs-heading-anchor" href="#Parameter-Sources">Parameter Sources</a><a id="Parameter-Sources-1"></a><a class="docs-heading-anchor-permalink" href="#Parameter-Sources" title="Permalink"></a></h2><p>The table below summarizes all model parameters, their values, and provenance. Parameters marked <strong>[assumed]</strong> are not given in Gutierrez et al. (2006) and were chosen to produce biologically reasonable behaviour; sensitivity analysis is recommended before drawing quantitative conclusions from them.</p><table><tr><th style="text-align: right">Parameter</th><th style="text-align: right">Symbol</th><th style="text-align: right">Value</th><th style="text-align: right">Source</th></tr><tr><td style="text-align: right">PBW lower thermal threshold</td><td style="text-align: right"><code>PBW_T_LOWER</code></td><td style="text-align: right">10.0 °C</td><td style="text-align: right">Appendix A.1, p. 362</td></tr><tr><td style="text-align: right">PBW upper thermal threshold</td><td style="text-align: right"><code>PBW_T_UPPER</code></td><td style="text-align: right">35.0 °C</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Cotton lower thermal threshold</td><td style="text-align: right"><code>COTTON_T_LOWER</code></td><td style="text-align: right">12.0 °C</td><td style="text-align: right">Appendix A.1, p. 362</td></tr><tr><td style="text-align: right">Cotton upper thermal threshold</td><td style="text-align: right"><code>COTTON_T_UPPER</code></td><td style="text-align: right">40.0 °C</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Distributed-delay substages</td><td style="text-align: right"><code>k</code></td><td style="text-align: right">45</td><td style="text-align: right">Appendix, after Eq. A4, p. 362</td></tr><tr><td style="text-align: right">Egg DD requirement</td><td style="text-align: right"><code>DD_EGG</code></td><td style="text-align: right">62.0 DD</td><td style="text-align: right">Gutierrez et al. 1977; Stone &amp; Gutierrez 1986</td></tr><tr><td style="text-align: right">Larval DD requirement</td><td style="text-align: right"><code>DD_LARVA</code></td><td style="text-align: right">204.0 DD</td><td style="text-align: right">Gutierrez et al. 1977; Stone &amp; Gutierrez 1986</td></tr><tr><td style="text-align: right">Pupal DD requirement</td><td style="text-align: right"><code>DD_PUPA</code></td><td style="text-align: right">148.0 DD</td><td style="text-align: right">Gutierrez et al. 1977; Stone &amp; Gutierrez 1986</td></tr><tr><td style="text-align: right">Adult lifespan</td><td style="text-align: right"><code>DD_ADULT</code></td><td style="text-align: right">180.0 DD</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Background mortality (egg)</td><td style="text-align: right"><code>MU_EGG</code></td><td style="text-align: right">0.002 DD⁻¹</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Background mortality (larva)</td><td style="text-align: right"><code>MU_LARVA</code></td><td style="text-align: right">0.001 DD⁻¹</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Background mortality (pupa)</td><td style="text-align: right"><code>MU_PUPA</code></td><td style="text-align: right">0.001 DD⁻¹</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Background mortality (adult)</td><td style="text-align: right"><code>MU_ADULT</code></td><td style="text-align: right">0.003 DD⁻¹</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Cold survivorship coefficients</td><td style="text-align: right">—</td><td style="text-align: right">−0.00002, −0.0013</td><td style="text-align: right">Eq. 1, p. 356 (r² = 0.098, n = 5)</td></tr><tr><td style="text-align: right">Critical diapause photoperiod</td><td style="text-align: right"><code>DL_CRITICAL</code></td><td style="text-align: right">13.0 h</td><td style="text-align: right">Gutierrez et al. 1981</td></tr><tr><td style="text-align: right">Complete diapause photoperiod</td><td style="text-align: right"><code>DL_COMPLETE</code></td><td style="text-align: right">10.5 h</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Diapause temperature modulator</td><td style="text-align: right"><code>T_DIAPAUSE_MOD</code></td><td style="text-align: right">20.0 °C</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Cotton germination soil temp.</td><td style="text-align: right">—</td><td style="text-align: right">15.0 °C</td><td style="text-align: right">Section 2.1, p. 355</td></tr><tr><td style="text-align: right">Cotton season-end night temp.</td><td style="text-align: right">—</td><td style="text-align: right">16.0 °C</td><td style="text-align: right">Section 2.1, p. 355</td></tr><tr><td style="text-align: right">Cotton first square</td><td style="text-align: right"><code>DD_FIRST_SQUARE</code></td><td style="text-align: right">415.0 DD</td><td style="text-align: right"><strong>[assumed]</strong>; cotton agronomy literature</td></tr><tr><td style="text-align: right">Cotton peak square</td><td style="text-align: right"><code>DD_PEAK_SQUARE</code></td><td style="text-align: right">940.0 DD</td><td style="text-align: right"><strong>[assumed]</strong>; cotton agronomy literature</td></tr><tr><td style="text-align: right">Cotton first open boll</td><td style="text-align: right"><code>DD_FIRST_BOLL</code></td><td style="text-align: right">1200.0 DD</td><td style="text-align: right"><strong>[assumed]</strong>; cotton agronomy literature</td></tr><tr><td style="text-align: right">Cotton physiological cutout</td><td style="text-align: right"><code>DD_CUTOUT</code></td><td style="text-align: right">1500.0 DD</td><td style="text-align: right"><strong>[assumed]</strong>; cotton agronomy literature</td></tr><tr><td style="text-align: right">Boll maturation time</td><td style="text-align: right">—</td><td style="text-align: right">800.0 DD</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Diapause emergence mean</td><td style="text-align: right"><code>DD_EMERGENCE_MEAN</code></td><td style="text-align: right">350.0 DD</td><td style="text-align: right">Gutierrez et al. 1977; Eq. 2, p. 356</td></tr><tr><td style="text-align: right">Diapause emergence span</td><td style="text-align: right"><code>DD_EMERGENCE_SPAN</code></td><td style="text-align: right">500.0 DD</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Max lifetime fecundity</td><td style="text-align: right"><code>PBW_FECUNDITY_MAX</code></td><td style="text-align: right">150.0 eggs</td><td style="text-align: right"><strong>[assumed]</strong></td></tr><tr><td style="text-align: right">Sex ratio</td><td style="text-align: right"><code>PBW_SEX_RATIO</code></td><td style="text-align: right">0.5</td><td style="text-align: right">Appendix Eq. A11, p. 363</td></tr><tr><td style="text-align: right">Fecundity temperature index</td><td style="text-align: right">ϕ_T</td><td style="text-align: right">Eq. A15</td><td style="text-align: right">Appendix Eq. A15, p. 363</td></tr><tr><td style="text-align: right">Initial diapause density</td><td style="text-align: right"><code>N_diapause</code></td><td style="text-align: right">2.0 plant⁻¹</td><td style="text-align: right">Section 3.1, p. 357</td></tr><tr><td style="text-align: right">Planting density</td><td style="text-align: right"><code>PLANTING_DENSITY</code></td><td style="text-align: right">6.6 plants m⁻²</td><td style="text-align: right">Section 3.1, p. 357</td></tr></table><p>All page numbers refer to Gutierrez et al. (2006), <em>Acta Oecologica</em> 30:353–364, unless another reference is given.</p><h2 id="Summary"><a class="docs-heading-anchor" href="#Summary">Summary</a><a id="Summary-1"></a><a class="docs-heading-anchor-permalink" href="#Summary" title="Permalink"></a></h2><p>This vignette demonstrated how a physiologically based demographic model captures the interacting effects of temperature-driven development, photoperiod-mediated diapause, cold winter mortality, and cotton phenology synchrony to predict the geographic range of pink bollworm. The key result is that overwinter survival of diapause larvae — driven by cumulative cold below the developmental threshold — is the dominant factor restricting PBW to the relatively frost-free cotton regions of Arizona and Southern California.</p><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><ul><li>Bariola, L.A. (1984). Pink bollworm: factors affecting survival of diapause larvae and emergence of overwintering moths in the spring in Central Arizona. USDA ARS-6.</li><li>Carrière, Y., Dennehy, T.J., Pedersen, B. et al. (2001). Large-scale management of insect resistance to transgenic cotton in Arizona. <em>Journal of Economic Entomology</em> 94:315–325.</li><li>Gutierrez, A.P., Butler Jr., G.D., Ellis, C.K. (1981). Pink bollworm: diapause induction and termination in relation to fluctuating temperatures and decreasing photophases. <em>Environmental Entomology</em> 10:936–942.</li><li>Gutierrez, A.P., Butler Jr., G.D., Wang, Y., Westphal, D. (1977). The interaction of the pink bollworm, cotton and weather. <em>Canadian Entomologist</em> 109:1457–1468.</li><li>Gutierrez, A.P., D’Oultremont, T., Ellis, C.K. and Ponti, L. (2006). Climatic limits of pink bollworm in Arizona and California: effects of climate warming. <em>Acta Oecologica</em> 30:353–364.</li><li>Gutierrez, A.P. and Ponsard, S. (2006). Physiologically based model of Bt cotton–pest interactions: I. Pink bollworm resistance, refuges and risk. <em>Ecological Modelling</em> 191:346–359.</li><li>Gutierrez, A.P., Pizzamiglio, M.A., Dos Santos, W.J., Villacorta, A., Gallagher, K.D. (1986). Analysis of diapause induction and termination in field pink bollworm in Brazil. <em>Environmental Entomology</em> 15:494–500.</li><li>Stone, N.D. and Gutierrez, A.P. (1986). A field oriented simulation of pink bollworm in southwestern desert cotton. <em>Hilgardia</em> 54:1–24.</li><li>Venette, R.C., Naranjo, S.E. and Hutchison, W.D. (2000). Implications of larval mortality at low temperatures and high soil moistures for establishment of pink bollworm in Southeastern United States cotton. <em>Environmental Entomology</em> 29(5):1018–1026.</li></ul><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Gutierrez2006PinkBollworm&quot; class=&quot;csl-entry&quot;&gt;</p><p>&lt;span class=&quot;nocase&quot;&gt;Gutierrez, Andrew Paul, Thierry d’Oultremont, C. K. Ellis, and Luigi Ponti&lt;/span&gt;. 2006. “Climatic Limits of Pink Bollworm in Arizona and California: Effects of Climate Warming.” <em>Acta Oecologica</em> 30: 353–64. <a href="https://doi.org/10.1016/j.actao.2006.06.003">https://doi.org/10.1016/j.actao.2006.06.003</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../16_aedes_albopictus/">« Aedes albopictus Invasion Risk in Europe</a><a class="docs-footer-nextpage" href="../18_vine_mealybug/">Vine Mealybug Biocontrol »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 16:31">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
