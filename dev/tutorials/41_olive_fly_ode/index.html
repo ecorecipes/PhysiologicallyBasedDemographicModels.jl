@@ -8,9 +8,105 @@
 \frac{dx_{A_m}}{dt}  &amp;= (1-\text{SR})\, G(T)\, x_P - M_A(T)\, G(T)\, x_{A_m} \\[4pt]
 \frac{dx_{A_{nmf}}}{dt} &amp;= \text{SR}\, G(T)\, x_P - \lambda(T)\, x_{A_{nmf}} \\[4pt]
 \frac{dx_{A_{mf}}}{dt}  &amp;= \lambda(T)\, x_{A_{nmf}} - M_A(T)\, G(T)\, x_{A_{mf}}
-\end{aligned}\]</p><p>where <span>$\text{SR} = 0.5$</span> is the sex ratio and <span>$\lambda(T) \approx G(T)$</span> is the mating rate. Adult males and mated females are terminal stages: they experience mortality but no development outflow.</p><h2 id="Rate-Functions"><a class="docs-heading-anchor" href="#Rate-Functions">Rate Functions</a><a id="Rate-Functions-1"></a><a class="docs-heading-anchor-permalink" href="#Rate-Functions" title="Permalink"></a></h2><h3 id="Development-Rate-(Brière-Model,-Eq.-6)"><a class="docs-heading-anchor" href="#Development-Rate-(Brière-Model,-Eq.-6)">Development Rate (Brière Model, Eq. 6)</a><a id="Development-Rate-(Brière-Model,-Eq.-6)-1"></a><a class="docs-heading-anchor-permalink" href="#Development-Rate-(Brière-Model,-Eq.-6)" title="Permalink"></a></h3><p>The temperature-dependent development rate uses a Brière function:</p><p class="math-container">\[G(T) = a \cdot T \cdot (T - T_L) \cdot (T_M - T)^{1/m}\]</p><p>with best-fit parameters from Rossini et al. (2022), Table 1: <span>$a = 4.6 \times 10^{-5}$</span>, <span>$T_L = 7.23\,°\text{C}$</span>, <span>$T_M = 32.2\,°\text{C}$</span>, <span>$m = 2.5$</span>.</p><p>Note that the standard <code>BriereDevelopmentRate</code> in <code>PhysiologicallyBasedDemographicModels.jl</code> uses an exponent of <span>$1/2$</span> (i.e., <span>$m = 2$</span>). Since Rossini et al. use <span>$m = 2.5$</span> (exponent <span>$= 0.4$</span>), we define a custom Brière function here.</p><h3 id="Mortality-Rate-(Eqs.-7–8)"><a class="docs-heading-anchor" href="#Mortality-Rate-(Eqs.-7–8)">Mortality Rate (Eqs. 7–8)</a><a id="Mortality-Rate-(Eqs.-7–8)-1"></a><a class="docs-heading-anchor-permalink" href="#Mortality-Rate-(Eqs.-7–8)" title="Permalink"></a></h3><p>Stage-specific daily mortality follows a Gumbel-like survival function:</p><p class="math-container">\[M_i(T) = 1 - k_i \cdot \exp\!\left(1 + \frac{T_{\max,i} - T}{\rho_{T,i}} - \exp\!\left(\frac{T_{\max,i} - T}{\rho_{T,i}}\right)\right)\]</p><p>At <span>$T = T_{\max}$</span>, the exponent evaluates to <span>$1 + 0 - 1 = 0$</span>, giving <span>$M = 1 - k$</span> (minimum mortality, maximum survival <span>$= k$</span>). As temperature deviates from the optimum, mortality increases toward 1.</p><p>Stage-specific parameters (Table 2):</p><table><tr><th style="text-align: left">Stage</th><th style="text-align: center"><span>$k$</span></th><th style="text-align: center"><span>$\rho_T$</span></th><th style="text-align: center"><span>$T_{\max}$</span> (°C)</th></tr><tr><td style="text-align: left">Egg</td><td style="text-align: center">0.87</td><td style="text-align: center">−4</td><td style="text-align: center">25.0</td></tr><tr><td style="text-align: left">Larva</td><td style="text-align: center">0.80</td><td style="text-align: center">−4</td><td style="text-align: center">22.0</td></tr><tr><td style="text-align: left">Pupa</td><td style="text-align: center">0.82</td><td style="text-align: center">−6</td><td style="text-align: center">24.6</td></tr><tr><td style="text-align: left">Adult</td><td style="text-align: center">0.60</td><td style="text-align: center">−6</td><td style="text-align: center">25.0</td></tr></table><p>The instantaneous daily mortality rate in the ODE is <span>$M_i(T) \cdot G(T)$</span>, where <span>$M_i$</span> gives the fraction dying per unit of physiological development and <span>$G(T)$</span> converts from developmental time to calendar time.</p><h3 id="Fecundity-(Eq.-9)"><a class="docs-heading-anchor" href="#Fecundity-(Eq.-9)">Fecundity (Eq. 9)</a><a id="Fecundity-(Eq.-9)-1"></a><a class="docs-heading-anchor-permalink" href="#Fecundity-(Eq.-9)" title="Permalink"></a></h3><p>The temperature-dependent fecundity component:</p><p class="math-container">\[\beta_{\text{temp}}(T) = \max\!\left(0,\; 1 - \left(\frac{T - \tau}{\delta}\right)^2\right)\]</p><p>with <span>$\tau = 25.6\,°\text{C}$</span> (optimal temperature) and <span>$\delta = 7.0$</span> (width).</p><p>The age-dependent component (from the Bieri function, Eq. 7) gives peak daily oviposition <span>$\approx 4.6$</span> eggs/female/day. We use <span>$\beta_{\max} = 5.0$</span> eggs/mated-female/day as the peak fecundity:</p><p class="math-container">\[\beta(T) = \beta_{\max} \cdot \beta_{\text{temp}}(T)\]</p><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
+\end{aligned}\]</p><p>where <span>$\text{SR} = 0.5$</span> is the sex ratio and <span>$\lambda(T) \approx G(T)$</span> is the mating rate. Adult males and mated females are terminal stages: they experience mortality but no development outflow.</p><h2 id="Rate-Functions"><a class="docs-heading-anchor" href="#Rate-Functions">Rate Functions</a><a id="Rate-Functions-1"></a><a class="docs-heading-anchor-permalink" href="#Rate-Functions" title="Permalink"></a></h2><h3 id="Development-Rate-(Brière-Model,-Eq.-6)"><a class="docs-heading-anchor" href="#Development-Rate-(Brière-Model,-Eq.-6)">Development Rate (Brière Model, Eq. 6)</a><a id="Development-Rate-(Brière-Model,-Eq.-6)-1"></a><a class="docs-heading-anchor-permalink" href="#Development-Rate-(Brière-Model,-Eq.-6)" title="Permalink"></a></h3><p>The temperature-dependent development rate uses a Brière function:</p><p class="math-container">\[G(T) = a \cdot T \cdot (T - T_L) \cdot (T_M - T)^{1/m}\]</p><p>with best-fit parameters from Rossini et al. (2022), Table 1: <span>$a = 4.6 \times 10^{-5}$</span>, <span>$T_L = 7.23\,°\text{C}$</span>, <span>$T_M = 32.2\,°\text{C}$</span>, <span>$m = 2.5$</span>.</p><p>Note that the standard <code>BriereDevelopmentRate</code> in <code>PhysiologicallyBasedDemographicModels.jl</code> uses an exponent of <span>$1/2$</span> (i.e., <span>$m = 2$</span>). Since Rossini et al. use <span>$m = 2.5$</span> (exponent <span>$= 0.4$</span>), we define a custom Brière function here.</p><h3 id="Mortality-Rate-(Eqs.-7–8)"><a class="docs-heading-anchor" href="#Mortality-Rate-(Eqs.-7–8)">Mortality Rate (Eqs. 7–8)</a><a id="Mortality-Rate-(Eqs.-7–8)-1"></a><a class="docs-heading-anchor-permalink" href="#Mortality-Rate-(Eqs.-7–8)" title="Permalink"></a></h3><p>Stage-specific daily mortality follows a Gumbel-like survival function:</p><p class="math-container">\[M_i(T) = 1 - k_i \cdot \exp\!\left(1 + \frac{T_{\max,i} - T}{\rho_{T,i}} - \exp\!\left(\frac{T_{\max,i} - T}{\rho_{T,i}}\right)\right)\]</p><p>At <span>$T = T_{\max}$</span>, the exponent evaluates to <span>$1 + 0 - 1 = 0$</span>, giving <span>$M = 1 - k$</span> (minimum mortality, maximum survival <span>$= k$</span>). As temperature deviates from the optimum, mortality increases toward 1.</p><p>Stage-specific parameters (Table 2):</p><table><tr><th style="text-align: left">Stage</th><th style="text-align: center"><span>$k$</span></th><th style="text-align: center"><span>$\rho_T$</span></th><th style="text-align: center"><span>$T_{\max}$</span> (°C)</th></tr><tr><td style="text-align: left">Egg</td><td style="text-align: center">0.87</td><td style="text-align: center">−4.5</td><td style="text-align: center">25.0</td></tr><tr><td style="text-align: left">Larva</td><td style="text-align: center">0.8516</td><td style="text-align: center">−4.53</td><td style="text-align: center">22.295</td></tr><tr><td style="text-align: left">Pupa</td><td style="text-align: center">0.82</td><td style="text-align: center">−6</td><td style="text-align: center">24.6</td></tr><tr><td style="text-align: left">Adult</td><td style="text-align: center">0.6384</td><td style="text-align: center">−6</td><td style="text-align: center">24.9276</td></tr></table><p><strong>Note:</strong> The egg, larval, and adult mortality corrections above were cross-checked against the Rossini et al. GitHub reference implementation (<code>lucaros1190/ODE-bactrocera</code>, <code>Parameters.py</code>).</p><p>The instantaneous daily mortality rate in the ODE is <span>$M_i(T) \cdot G(T)$</span>, where <span>$M_i$</span> gives the fraction dying per unit of physiological development and <span>$G(T)$</span> converts from developmental time to calendar time.</p><h3 id="Fecundity-(Eq.-9)"><a class="docs-heading-anchor" href="#Fecundity-(Eq.-9)">Fecundity (Eq. 9)</a><a id="Fecundity-(Eq.-9)-1"></a><a class="docs-heading-anchor-permalink" href="#Fecundity-(Eq.-9)" title="Permalink"></a></h3><p>The temperature-dependent fecundity component:</p><p class="math-container">\[\beta_{\text{temp}}(T) = \max\!\left(0,\; 1 - \left(\frac{T - \tau}{\delta}\right)^2\right)\]</p><p>with <span>$\tau = 25.6\,°\text{C}$</span> (optimal temperature) and <span>$\delta = 7.0$</span> (width).</p><p>The age-dependent component (from the Bieri function, Eq. 7) gives peak daily oviposition <span>$\approx 4.6$</span> eggs/female/day. We use <span>$\beta_{\max} = 5.0$</span> eggs/mated-female/day as the peak fecundity:</p><p class="math-container">\[\beta(T) = \beta_{\max} \cdot \beta_{\text{temp}}(T)\]</p><pre><code class="language-julia hljs">using PhysiologicallyBasedDemographicModels
 using OrdinaryDiffEq
-using CairoMakie</code></pre><h2 id="Implementation"><a class="docs-heading-anchor" href="#Implementation">Implementation</a><a id="Implementation-1"></a><a class="docs-heading-anchor-permalink" href="#Implementation" title="Permalink"></a></h2><h3 id="Parameter-Definitions"><a class="docs-heading-anchor" href="#Parameter-Definitions">Parameter Definitions</a><a id="Parameter-Definitions-1"></a><a class="docs-heading-anchor-permalink" href="#Parameter-Definitions" title="Permalink"></a></h3><pre><code class="language-julia hljs"># --- Development rate: Brière with exponent 1/m (Eq. 6) ---
+using CairoMakie</code></pre><pre><code class="nohighlight hljs">Precompiling packages...
+   2719.7 ms  ✓ FastBroadcast
+   3995.8 ms  ✓ PreallocationTools
+   4792.7 ms  ✓ NLSolversBase
+   5144.8 ms  ✓ FunctionWrappersWrappers
+   2623.7 ms  ✓ FastBroadcast → FastBroadcastStaticExt
+   3061.3 ms  ✓ FastBroadcast → FastBroadcastPolyesterExt
+   5923.6 ms  ✓ SymbolicIndexingInterface
+   6857.4 ms  ✓ SciMLOperators
+   3086.2 ms  ✓ PreallocationTools → PreallocationToolsForwardDiffExt
+   3853.9 ms  ✓ LineSearches
+   1914.8 ms  ✓ SciMLOperators → SciMLOperatorsStaticArraysCoreExt
+   2529.4 ms  ✓ SciMLOperators → SciMLOperatorsSparseArraysExt
+   7341.6 ms  ✓ RecursiveArrayTools
+   2084.6 ms  ✓ RecursiveArrayTools → RecursiveArrayToolsFastBroadcastExt
+   2026.1 ms  ✓ RecursiveArrayTools → RecursiveArrayToolsSparseArraysExt
+   2577.2 ms  ✓ RecursiveArrayTools → RecursiveArrayToolsStatisticsExt
+   3241.2 ms  ✓ RecursiveArrayTools → RecursiveArrayToolsForwardDiffExt
+   4018.7 ms  ✓ RecursiveArrayTools → RecursiveArrayToolsFastBroadcastPolyesterExt
+  20719.9 ms  ✓ SciMLBase
+   3736.8 ms  ✓ SciMLBase → SciMLBaseDifferentiationInterfaceExt
+   5027.4 ms  ✓ SciMLBase → SciMLBaseForwardDiffExt
+   6431.8 ms  ✓ SciMLJacobianOperators
+  14516.9 ms  ✓ LinearSolve
+   8187.7 ms  ✓ LineSearch
+   8609.2 ms  ✓ LinearSolve → LinearSolveForwardDiffExt
+   8558.7 ms  ✓ LinearSolve → LinearSolveSparseArraysExt
+  13794.2 ms  ✓ NonlinearSolveBase
+   7345.1 ms  ✓ LineSearch → LineSearchLineSearchesExt
+   7592.5 ms  ✓ LinearSolve → LinearSolveEnzymeExt
+   6752.9 ms  ✓ NonlinearSolveBase → NonlinearSolveBaseSparseMatrixColoringsExt
+   6577.5 ms  ✓ NonlinearSolveBase → NonlinearSolveBaseSparseArraysExt
+   6640.0 ms  ✓ NonlinearSolveBase → NonlinearSolveBaseLineSearchExt
+   7170.5 ms  ✓ NonlinearSolveBase → NonlinearSolveBaseLinearSolveExt
+   9687.6 ms  ✓ BracketingNonlinearSolve
+  12023.4 ms  ✓ NonlinearSolveBase → NonlinearSolveBaseForwardDiffExt
+   6231.1 ms  ✓ BracketingNonlinearSolve → BracketingNonlinearSolveForwardDiffExt
+   8313.7 ms  ✓ DiffEqBase
+  16131.9 ms  ✓ NonlinearSolveSpectralMethods
+   8342.0 ms  ✓ DiffEqBase → DiffEqBaseSparseArraysExt
+  10228.4 ms  ✓ NonlinearSolveSpectralMethods → NonlinearSolveSpectralMethodsForwardDiffExt
+  25837.2 ms  ✓ NonlinearSolveQuasiNewton
+  14678.8 ms  ✓ DiffEqBase → DiffEqBaseForwardDiffExt
+  16053.7 ms  ✓ OrdinaryDiffEqCore
+  22426.2 ms  ✓ SimpleNonlinearSolve
+   8322.3 ms  ✓ NonlinearSolveQuasiNewton → NonlinearSolveQuasiNewtonForwardDiffExt
+  10534.6 ms  ✓ OrdinaryDiffEqCore → OrdinaryDiffEqCoreSparseArraysExt
+  15801.4 ms  ✓ OrdinaryDiffEqExplicitRK
+  14162.1 ms  ✓ OrdinaryDiffEqSSPRK
+  14450.4 ms  ✓ OrdinaryDiffEqSymplecticRK
+  15317.3 ms  ✓ OrdinaryDiffEqHighOrderRK
+  14779.2 ms  ✓ OrdinaryDiffEqStabilizedRK
+  13141.3 ms  ✓ OrdinaryDiffEqLowOrderRK
+  41059.3 ms  ✓ NonlinearSolveFirstOrder
+  15267.5 ms  ✓ OrdinaryDiffEqFunctionMap
+  10183.3 ms  ✓ OrdinaryDiffEqPRK
+  10257.6 ms  ✓ OrdinaryDiffEqRKN
+  11296.9 ms  ✓ OrdinaryDiffEqFeagin
+  10756.2 ms  ✓ OrdinaryDiffEqQPRK
+  11641.5 ms  ✓ OrdinaryDiffEqLowStorageRK
+  19878.6 ms  ✓ OrdinaryDiffEqTsit5
+  15653.5 ms  ✓ OrdinaryDiffEqLinear
+  12522.1 ms  ✓ OrdinaryDiffEqNordsieck
+  17022.1 ms  ✓ OrdinaryDiffEqAdamsBashforthMoulton
+  27508.1 ms  ✓ OrdinaryDiffEqDifferentiation
+  34159.1 ms  ✓ OrdinaryDiffEqVerner
+   7036.7 ms  ✓ OrdinaryDiffEqDifferentiation → OrdinaryDiffEqDifferentiationSparseArraysExt
+  19557.5 ms  ✓ OrdinaryDiffEqExtrapolation
+  23672.8 ms  ✓ OrdinaryDiffEqExponentialRK
+  36055.7 ms  ✓ OrdinaryDiffEqRosenbrock
+  69320.7 ms  ✓ NonlinearSolve
+   7504.7 ms  ✓ OrdinaryDiffEqNonlinearSolve
+   7145.3 ms  ✓ OrdinaryDiffEqIMEXMultistep
+   7494.1 ms  ✓ OrdinaryDiffEqPDIRK
+   8099.8 ms  ✓ OrdinaryDiffEqStabilizedIRK
+  18122.8 ms  ✓ OrdinaryDiffEqSDIRK
+  23855.2 ms  ✓ OrdinaryDiffEqFIRK
+  13922.4 ms  ✓ OrdinaryDiffEqBDF
+  29156.1 ms  ✓ OrdinaryDiffEqDefault
+  15989.2 ms  ✓ OrdinaryDiffEq
+  79 dependencies successfully precompiled in 307 seconds. 147 already precompiled.
+Precompiling packages...
+   6276.3 ms  ✓ RecursiveArrayTools → RecursiveArrayToolsStructArraysExt
+   6485.5 ms  ✓ SciMLBase → SciMLBaseChainRulesCoreExt
+   6459.6 ms  ✓ NonlinearSolveBase → NonlinearSolveBaseChainRulesCoreExt
+   6568.4 ms  ✓ RecursiveArrayTools → RecursiveArrayToolsTablesExt
+   6498.9 ms  ✓ LinearSolve → LinearSolveChainRulesCoreExt
+   7003.2 ms  ✓ BracketingNonlinearSolve → BracketingNonlinearSolveChainRulesCoreExt
+   6956.5 ms  ✓ SimpleNonlinearSolve → SimpleNonlinearSolveChainRulesCoreExt
+   7024.1 ms  ✓ DiffEqBase → DiffEqBaseChainRulesCoreExt
+   8570.4 ms  ✓ SciMLBase → SciMLBaseDistributionsExt
+   3353.2 ms  ✓ DiffEqBase → DiffEqBaseUnitfulExt
+   7909.9 ms  ✓ DelayDiffEq
+  13148.3 ms  ✓ SciMLBase → SciMLBaseMakieExt
+   7926.4 ms  ✓ PhysiologicallyBasedDemographicModels → OrdinaryDiffEqExt
+   7910.5 ms  ✓ PhysiologicallyBasedDemographicModels → DelayDiffEqExt
+  14 dependencies successfully precompiled in 62 seconds. 451 already precompiled.</code></pre><h2 id="Implementation"><a class="docs-heading-anchor" href="#Implementation">Implementation</a><a id="Implementation-1"></a><a class="docs-heading-anchor-permalink" href="#Implementation" title="Permalink"></a></h2><h3 id="Parameter-Definitions"><a class="docs-heading-anchor" href="#Parameter-Definitions">Parameter Definitions</a><a id="Parameter-Definitions-1"></a><a class="docs-heading-anchor-permalink" href="#Parameter-Definitions" title="Permalink"></a></h3><pre><code class="language-julia hljs"># --- Development rate: Brière with exponent 1/m (Eq. 6) ---
 struct BriereGeneralized{T&lt;:Real}
     a::T
     T_L::T
@@ -26,7 +122,7 @@ end
 # Best-fit parameters (Table 1)
 const dev_params = BriereGeneralized(4.6e-5, 7.23, 32.2, 1.0 / 2.5)
 
-# --- Mortality: Gumbel survival (Eqs. 7-8, Table 2) ---
+# --- Mortality: Gumbel survival (Eqs. 7-8, Table 2; corrected against Rossini&#39;s reference implementation) ---
 struct MortalityParams{T&lt;:Real}
     k::T
     ρ_T::T
@@ -38,10 +134,10 @@ function mortality_fraction(p::MortalityParams, T)
     return 1.0 - p.k * exp(1.0 + z - exp(z))
 end
 
-const mort_egg   = MortalityParams(0.87, -4.0, 25.0)
-const mort_larva = MortalityParams(0.80, -4.0, 22.0)
+const mort_egg   = MortalityParams(0.87, -4.5, 25.0)
+const mort_larva = MortalityParams(0.8516, -4.53, 22.295)
 const mort_pupa  = MortalityParams(0.82, -6.0, 24.6)
-const mort_adult = MortalityParams(0.60, -6.0, 25.0)
+const mort_adult = MortalityParams(0.6384, -6.0, 24.9276)
 
 # --- Fecundity (Eq. 9, Table 3) ---
 const β_max = 5.0   # peak eggs/mated-female/day
@@ -138,13 +234,13 @@ end</code></pre><pre><code class="nohighlight hljs">Rate function values at key 
 ===========================================================================
   T(°C)  | G(T)      | β(T)      | M_egg   | M_larva | M_pupa  | M_adult
 ---------------------------------------------------------------------------
-   10.0  |    0.0044 |       0.0 |  0.9457 |   0.897 |  0.8208 |  0.8767
-   15.0  |   0.01673 |       0.0 |  0.8212 |  0.6824 |  0.6322 |   0.745
-   20.0  |   0.03195 |       1.8 |  0.4912 |  0.2808 |  0.3493 |   0.541
-   25.0  |   0.04501 |     4.963 |    0.13 |  0.4458 |  0.1819 |     0.4
-   28.0  |    0.0475 |     4.412 |  0.3973 |  0.8897 |  0.3258 |  0.4829
-   30.0  |   0.04307 |     3.024 |  0.7483 |  0.9901 |  0.5314 |  0.6241
-   32.0  |   0.01915 |      0.82 |  0.9569 |  0.9999 |  0.7529 |  0.7889</code></pre><h3 id="ODE-Right-Hand-Side"><a class="docs-heading-anchor" href="#ODE-Right-Hand-Side">ODE Right-Hand Side</a><a id="ODE-Right-Hand-Side-1"></a><a class="docs-heading-anchor-permalink" href="#ODE-Right-Hand-Side" title="Permalink"></a></h3><pre><code class="language-julia hljs">&quot;&quot;&quot;
+   10.0  |    0.0044 |       0.0 |  0.9186 |  0.8564 |  0.8208 |  0.8673
+   15.0  |   0.01673 |       0.0 |    0.77 |  0.6212 |  0.6322 |   0.726
+   20.0  |   0.03195 |       1.8 |  0.4399 |  0.2365 |  0.3493 |  0.5083
+   25.0  |   0.04501 |     4.963 |    0.13 |  0.3164 |  0.1819 |  0.3616
+   28.0  |    0.0475 |     4.412 |  0.3432 |  0.7594 |  0.3258 |  0.4542
+   30.0  |   0.04307 |     3.024 |  0.6556 |  0.9471 |  0.5314 |  0.6064
+   32.0  |   0.01915 |      0.82 |  0.9019 |  0.9961 |  0.7529 |  0.7814</code></pre><h3 id="ODE-Right-Hand-Side"><a class="docs-heading-anchor" href="#ODE-Right-Hand-Side">ODE Right-Hand Side</a><a id="ODE-Right-Hand-Side-1"></a><a class="docs-heading-anchor-permalink" href="#ODE-Right-Hand-Side" title="Permalink"></a></h3><pre><code class="language-julia hljs">&quot;&quot;&quot;
     bactrocera_rhs!(du, u, p, t)
 
 8-coupled ODE system for *Bactrocera oleae* life cycle dynamics.
@@ -276,18 +372,18 @@ for day in [196, 210, 227, 243, 258, 273]
 end</code></pre><pre><code class="nohighlight hljs">Summer simulation (Jul 15 – Sep 30):
   Time span: day 196 to 273 (77 days)
   Initial total: 6.0 individuals
-  Final total:   501.8 individuals
+  Final total:   583.9 individuals
 
   Stage populations at selected dates:
   -------------------------------------------------------------------------------------
   Day  | T(°C) |      Egg |       L1 |       L2 |       L3 |     Pupa |     Male |   NM Fem |    M Fem | Total
   -------------------------------------------------------------------------------------
    196 |  29.2 |      2.0 |      0.0 |      0.0 |      0.0 |      0.0 |      0.0 |      0.0 |      4.0 | 6.0
-   210 |  28.1 |    120.2 |     31.5 |      6.1 |      0.9 |      0.1 |      0.0 |      0.0 |      2.8 | 161.7
-   227 |  26.2 |    162.3 |     72.6 |     26.7 |      8.2 |      2.4 |      0.3 |      0.3 |      2.1 | 274.8
-   243 |  24.0 |    178.3 |    103.3 |     50.4 |     21.0 |      8.2 |      1.9 |      1.5 |      2.1 | 366.6
-   258 |  21.7 |    191.4 |    128.5 |     74.3 |     37.2 |     16.6 |      4.7 |      3.7 |      2.9 | 459.2
-   273 |  19.4 |    177.7 |    138.8 |     90.1 |     51.0 |     25.1 |      8.2 |      6.4 |      4.5 | 501.8</code></pre><h3 id="Full-Year-Simulation"><a class="docs-heading-anchor" href="#Full-Year-Simulation">Full-Year Simulation</a><a id="Full-Year-Simulation-1"></a><a class="docs-heading-anchor-permalink" href="#Full-Year-Simulation" title="Permalink"></a></h3><p>We extend the simulation to a full year, starting from a small founding population on January 1.</p><pre><code class="language-julia hljs"># Full year: day 1 to day 365
+   210 |  28.1 |    123.6 |     32.9 |      6.5 |      1.0 |      0.1 |      0.0 |      0.0 |      2.9 | 167.0
+   227 |  26.2 |    169.3 |     79.8 |     30.2 |      9.4 |      2.7 |      0.4 |      0.3 |      2.1 | 294.2
+   243 |  24.0 |    189.1 |    115.4 |     58.8 |     25.3 |      9.7 |      2.2 |      1.7 |      2.2 | 404.5
+   258 |  21.7 |    211.8 |    144.5 |     86.3 |     44.7 |     19.9 |      5.6 |      4.4 |      3.4 | 520.5
+   273 |  19.4 |    205.7 |    159.4 |    105.0 |     60.9 |     30.0 |     10.0 |      7.7 |      5.3 | 583.9</code></pre><h3 id="Full-Year-Simulation"><a class="docs-heading-anchor" href="#Full-Year-Simulation">Full-Year Simulation</a><a id="Full-Year-Simulation-1"></a><a class="docs-heading-anchor-permalink" href="#Full-Year-Simulation" title="Permalink"></a></h3><p>We extend the simulation to a full year, starting from a small founding population on January 1.</p><pre><code class="language-julia hljs"># Full year: day 1 to day 365
 u0_year = [
     0.0,   # x_e
     0.0,   # x_L1
@@ -312,9 +408,9 @@ peak_idx = argmax(sum.(sol_year.u))
 println(&quot;  Peak day:      $(round(sol_year.t[peak_idx], digits=0)) &quot; *
         &quot;(T = $(round(T_forcing(sol_year.t[peak_idx]), digits=1))°C)&quot;)</code></pre><pre><code class="nohighlight hljs">Full-year simulation:
   Initial total: 2.0 individuals
-  Final total:   411.8 individuals
-  Peak total:    993.8 individuals
-  Peak day:      271.0 (T = 19.7°C)</code></pre><h2 id="Results"><a class="docs-heading-anchor" href="#Results">Results</a><a id="Results-1"></a><a class="docs-heading-anchor-permalink" href="#Results" title="Permalink"></a></h2><h3 id="Time-Series:-Summer-Season"><a class="docs-heading-anchor" href="#Time-Series:-Summer-Season">Time Series: Summer Season</a><a id="Time-Series:-Summer-Season-1"></a><a class="docs-heading-anchor-permalink" href="#Time-Series:-Summer-Season" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig_summer = Figure(size=(900, 700))
+  Final total:   667.3 individuals
+  Peak total:    1505.7 individuals
+  Peak day:      272.0 (T = 19.5°C)</code></pre><h2 id="Results"><a class="docs-heading-anchor" href="#Results">Results</a><a id="Results-1"></a><a class="docs-heading-anchor-permalink" href="#Results" title="Permalink"></a></h2><h3 id="Time-Series:-Summer-Season"><a class="docs-heading-anchor" href="#Time-Series:-Summer-Season">Time Series: Summer Season</a><a id="Time-Series:-Summer-Season-1"></a><a class="docs-heading-anchor-permalink" href="#Time-Series:-Summer-Season" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig_summer = Figure(size=(900, 700))
 
 # Panel A: Temperature
 ax_t = Axis(fig_summer[1, 1],
@@ -461,13 +557,13 @@ println(&quot;   → Approx. $(round(dd_summer * G25 / G25, digits=1)) developme
    → Generation time ≈ 22.0 days (expect ~30-60)
 2. Mortality at T_max (optimal survival):
    Egg: M(25.0°C) = 0.13 (survival = 0.87)
-   Larva: M(22.0°C) = 0.2 (survival = 0.8)
+   Larva: M(22.295°C) = 0.148 (survival = 0.852)
    Pupa: M(24.6°C) = 0.18 (survival = 0.82)
-   Adult: M(25.0°C) = 0.4 (survival = 0.6)
+   Adult: M(24.9276°C) = 0.362 (survival = 0.638)
 3. β(25.6°C) = 5.0 eggs/female/day
    β(20°C) = 1.8 eggs/female/day
    β(30°C) = 3.02 eggs/female/day
-4. Peak total population: 993.8 individuals
+4. Peak total population: 1505.7 individuals
    (expect 10s–100s per spatial unit, not millions)
 5. Summer DD accumulation:
    Jul–Sep total development: 3.32
@@ -537,7 +633,7 @@ end</code></pre><pre><code class="nohighlight hljs">Warming scenario summary:
 ======================================================================
   Scenario  | Peak pop. | Peak day | Season length | Total ind·days
 ----------------------------------------------------------------------
-  Baseline   |     993.8 | day 271 |    361 days    | 110532.0
-  +1°C       |     809.9 | day 278 |    362 days    | 89754.0
-  +2°C       |     663.5 | day 284 |    365 days    | 73709.0
-  +3°C       |     641.1 | day 292 |    365 days    | 70984.0</code></pre><h2 id="Discussion"><a class="docs-heading-anchor" href="#Discussion">Discussion</a><a id="Discussion-1"></a><a class="docs-heading-anchor-permalink" href="#Discussion" title="Permalink"></a></h2><p>This vignette demonstrates the implementation of the Rossini et al. (2022) 8-ODE system for <em>Bactrocera oleae</em> using Julia’s <code>OrdinaryDiffEq.jl</code> solver. The model captures the essential temperature-driven dynamics of the olive fruit fly lifecycle: spring emergence as temperatures exceed the lower developmental threshold (<span>$T_L = 7.23\,°\text{C}$</span>), rapid population buildup during the warm season, and autumn collapse as temperatures drop below the developmental range.</p><p>The explicit separation of adult males, non-mated females, and mated females allows the model to track mating dynamics and predict male trap catches — quantities directly observable in field monitoring programs. The Brière development rate with exponent <span>$1/m = 0.4$</span> captures the asymmetric thermal response with rapid decline near the upper thermal limit (<span>$T_M = 32.2\,°\text{C}$</span>), which is ecologically important in hot Mediterranean summers.</p><p><strong>Comparison with the PBDM approach:</strong> The distributed-delay framework in vignette 28 offers several advantages for applied modeling: (1) the Erlang chain provides realistic variance in stage durations, (2) the Frazer-Gilbert functional response couples fly reproduction to fruit availability, and (3) the supply/demand paradigm naturally incorporates resource limitation. However, the ODE approach here is more transparent mathematically, easier to analyze for stability and bifurcations, and more directly connected to the parameter estimation literature. A complete modeling study would ideally validate both approaches against the same field dataset.</p><p><strong>Code availability:</strong> The original Python implementation by Rossini et al. is available at <a href="https://github.com/lucaros1190/ODE-bactrocera">https://github.com/lucaros1190/ODE-bactrocera</a>.</p><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Rossini2022BactroceraODE&quot; class=&quot;csl-entry&quot;&gt;</p><p>Rossini, Luca, Octavio A. Bruzzone, Mario Contarini, Lucrezia Bufacchi, and Stefano Speranza. 2022. “A Physiologically Based ODE Model for an Old Pest: Modeling Life Cycle and Population Dynamics of &lt;span class=&quot;nocase&quot;&gt;Bactrocera oleae&lt;/span&gt; (Rossi).” <em>Agronomy</em> 12 (10): 2298. <a href="https://doi.org/10.3390/agronomy12102298">https://doi.org/10.3390/agronomy12102298</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../40_spodoptera_frugiperda/">« Fall Armyworm Establishment Risk in Europe</a><a class="docs-footer-nextpage" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 19:54">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+  Baseline   |    1505.7 | day 272 |    363 days    | 165156.0
+  +1°C       |    1195.3 | day 279 |    365 days    | 130207.0
+  +2°C       |     952.0 | day 286 |    365 days    | 103572.0
+  +3°C       |     898.4 | day 293 |    365 days    | 97111.0</code></pre><h2 id="Discussion"><a class="docs-heading-anchor" href="#Discussion">Discussion</a><a id="Discussion-1"></a><a class="docs-heading-anchor-permalink" href="#Discussion" title="Permalink"></a></h2><p>This vignette demonstrates the implementation of the Rossini et al. (2022) 8-ODE system for <em>Bactrocera oleae</em> using Julia’s <code>OrdinaryDiffEq.jl</code> solver. The model captures the essential temperature-driven dynamics of the olive fruit fly lifecycle: spring emergence as temperatures exceed the lower developmental threshold (<span>$T_L = 7.23\,°\text{C}$</span>), rapid population buildup during the warm season, and autumn collapse as temperatures drop below the developmental range.</p><p>The explicit separation of adult males, non-mated females, and mated females allows the model to track mating dynamics and predict male trap catches — quantities directly observable in field monitoring programs. The Brière development rate with exponent <span>$1/m = 0.4$</span> captures the asymmetric thermal response with rapid decline near the upper thermal limit (<span>$T_M = 32.2\,°\text{C}$</span>), which is ecologically important in hot Mediterranean summers.</p><p><strong>Comparison with the PBDM approach:</strong> The distributed-delay framework in vignette 28 offers several advantages for applied modeling: (1) the Erlang chain provides realistic variance in stage durations, (2) the Frazer-Gilbert functional response couples fly reproduction to fruit availability, and (3) the supply/demand paradigm naturally incorporates resource limitation. However, the ODE approach here is more transparent mathematically, easier to analyze for stability and bifurcations, and more directly connected to the parameter estimation literature. A complete modeling study would ideally validate both approaches against the same field dataset.</p><p><strong>Code availability:</strong> The original Python implementation by Rossini et al. is available at <a href="https://github.com/lucaros1190/ODE-bactrocera">https://github.com/lucaros1190/ODE-bactrocera</a>; the mortality parameter corrections in this vignette were cross-checked against its <code>Parameters.py</code> reference implementation.</p><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><p>&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot;&gt;</p><p>&lt;div id=&quot;ref-Rossini2022BactroceraODE&quot; class=&quot;csl-entry&quot;&gt;</p><p>Rossini, Luca, Octavio A. Bruzzone, Mario Contarini, Lucrezia Bufacchi, and Stefano Speranza. 2022. “A Physiologically Based ODE Model for an Old Pest: Modeling Life Cycle and Population Dynamics of &lt;span class=&quot;nocase&quot;&gt;Bactrocera oleae&lt;/span&gt; (Rossi).” <em>Agronomy</em> 12 (10): 2298. <a href="https://doi.org/10.3390/agronomy12102298">https://doi.org/10.3390/agronomy12102298</a>.</p><p>&lt;/div&gt;</p><p>&lt;/div&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../40_spodoptera_frugiperda/">« Fall Armyworm Establishment Risk in Europe</a><a class="docs-footer-nextpage" href="../42_spodoptera_biocontrol/">Biological Control of Spodoptera exigua »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 13 May 2026 20:30">Wednesday 13 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
