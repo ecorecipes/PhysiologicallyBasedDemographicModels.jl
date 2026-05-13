@@ -19,6 +19,8 @@ PhysiologicallyBasedDemographicModels.jl
   - [Simulation driver](#simulation-driver)
   - [Running the simulation](#running-the-simulation)
   - [Tracking phenological events](#tracking-phenological-events)
+  - [Apple organ biomass and carbon balance
+    trajectories](#apple-organ-biomass-and-carbon-balance-trajectories)
 - [Results](#results)
   - [Seasonal growth curves](#seasonal-growth-curves)
   - [Fruit development timing](#fruit-development-timing)
@@ -128,6 +130,7 @@ and related apple physiology literature.
 
 ``` julia
 using PhysiologicallyBasedDemographicModels
+using CairoMakie
 
 # --- Temperature and development ---
 # Lower developmental threshold for apple (Baumgärtner et al., 1983)
@@ -463,6 +466,45 @@ end
     June drop closes: day 73 (DOY 163, 863.0 DD)
     T-stage (fruit morphogenesis): day 89 (DOY 179, 1107.0 DD)
     Harvest maturity: day 165 (DOY 255, 2212.0 DD)
+
+### Apple organ biomass and carbon balance trajectories
+
+``` julia
+event_days = [
+    findfirst(c -> c >= DD_BLOOM, cdd),
+    findfirst(c -> c >= DD_JUNEDROP, cdd),
+    findfirst(c -> c >= DD_JUNEDROP_END, cdd),
+    findfirst(c -> c >= DD_HARVEST, cdd),
+]
+
+fig = Figure(size=(900, 620))
+ax = Axis(fig[1, 1],
+    xlabel="Day after budbreak",
+    ylabel="Biomass (kg)",
+    title="Apple organ biomass trajectories")
+lines!(ax, res.t, res.traj_L; color=:forestgreen, linewidth=3, label="Leaf")
+lines!(ax, res.t, res.traj_S; color=:saddlebrown, linewidth=3, label="Shoot")
+lines!(ax, res.t, res.traj_F; color=:darkorange, linewidth=3, label="Fruit")
+lines!(ax, res.t, res.traj_R; color=:steelblue, linewidth=3, label="Root")
+for event_day in event_days
+    if event_day !== nothing
+        vlines!(ax, [event_day]; color=:slategray, linewidth=1.5, linestyle=:dash)
+    end
+end
+axislegend(ax, position=:rt, framevisible=false)
+
+ax = Axis(fig[2, 1],
+    xlabel="Day after budbreak",
+    ylabel="Supply/demand ratio φ",
+    title="Metabolic pool supply/demand trajectory")
+lines!(ax, 1:length(res.traj_phi), res.traj_phi; color=:slateblue, linewidth=3, label="φ")
+lines!(ax, [1, length(res.traj_phi)], [1.0, 1.0]; color=:firebrick, linewidth=2, linestyle=:dash, label="φ = 1")
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+<img src="35_apple_tree_files/figure-commonmark/cell-9-output-1.png"
+width="900" height="620" />
 
 ## Results
 

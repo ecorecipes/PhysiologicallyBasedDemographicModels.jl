@@ -9,6 +9,10 @@ Simon Frost
 - [Overwintering Cohort Model](#overwintering-cohort-model)
 - [Simulating Overwintering at Different
   Latitudes](#simulating-overwintering-at-different-latitudes)
+  - [Post-diapause emergence trajectory at
+    Bordeaux](#post-diapause-emergence-trajectory-at-bordeaux)
+  - [Emergence trajectories across
+    latitudes](#emergence-trajectories-across-latitudes)
 - [Validation: Expected Emergence
   Timing](#validation-expected-emergence-timing)
 - [Diapause Phase Duration vs
@@ -47,6 +51,7 @@ vary linearly with latitude.
 
 ``` julia
 using PhysiologicallyBasedDemographicModels
+using CairoMakie
 
 # Critical day length formulas (Baumgärtner et al. Eq. 1-2)
 # DL_s = 9.83 + 0.1226 × L  (diapause induction starts)
@@ -263,6 +268,55 @@ end
       Total DD (Aug–May): 29.0
       50% emergence: day 386
       Survival: 90.0%
+
+### Post-diapause emergence trajectory at Bordeaux
+
+``` julia
+bordeaux_result = results["Bordeaux (44.8°N)"]
+bordeaux_sol = bordeaux_result.sol
+bordeaux_emergence = bordeaux_result.emergence === nothing ? NaN : Float64(bordeaux_result.emergence)
+
+fig = Figure(size=(800, 460))
+ax = Axis(fig[1, 1],
+    xlabel="Julian day",
+    ylabel="Post-diapause population",
+    title="Post-diapause emergence trajectory at Bordeaux")
+lines!(ax, bordeaux_sol.t, stage_trajectory(bordeaux_sol, 3);
+       color=:darkorange, linewidth=3, label="Post-diapause")
+if !isnan(bordeaux_emergence)
+    vlines!(ax, [bordeaux_emergence]; color=:firebrick, linewidth=2, linestyle=:dash)
+end
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+<img
+src="05_lobesia_overwintering_files/figure-commonmark/cell-7-output-1.png"
+width="800" height="460" />
+
+### Emergence trajectories across latitudes
+
+``` julia
+location_order = ["Sicily (37.5°N)", "Bordeaux (44.8°N)", "Switzerland (47.2°N)"]
+location_colors = [:goldenrod, :purple, :steelblue]
+
+fig = Figure(size=(850, 480))
+ax = Axis(fig[1, 1],
+    xlabel="Julian day",
+    ylabel="Post-diapause population",
+    title="Latitude shifts Lobesia spring emergence")
+for (name, color) in zip(location_order, location_colors)
+    loc_sol = results[name].sol
+    lines!(ax, loc_sol.t, stage_trajectory(loc_sol, 3);
+           color=color, linewidth=2, label=name)
+end
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+<img
+src="05_lobesia_overwintering_files/figure-commonmark/cell-8-output-1.png"
+width="850" height="480" />
 
 ## Validation: Expected Emergence Timing
 

@@ -15,6 +15,8 @@ Simon Frost
 - [Comparing Long-Term Profits](#comparing-long-term-profits)
 - [Resistance Gene Frequency
   Trajectories](#resistance-gene-frequency-trajectories)
+  - [Resistance and cumulative profit under standard and adaptive
+    spraying](#resistance-and-cumulative-profit-under-standard-and-adaptive-spraying)
 - [Key Insights](#key-insights)
 
 Primary reference: (Gutierrez et al. 1979).
@@ -41,6 +43,7 @@ Egyptian alfalfa weevil — an example.* Environmental Entomology
 
 ``` julia
 using PhysiologicallyBasedDemographicModels
+using CairoMakie
 
 # --- Physical time ---
 const BASE_TEMP = 5.5       # °C base temperature for both plant and weevil
@@ -512,6 +515,60 @@ end
        8   |  1.0   |  0.9749   | 0.0251
        9   |  1.0   |  0.9839   | 0.0161
       10   |  1.0   |  0.9897   | 0.0103
+
+### Resistance and cumulative profit under standard and adaptive spraying
+
+``` julia
+season_axis = 1:7
+standard_resistance = Float64[]
+adaptive_resistance = Float64[]
+standard_cum_profit = Float64[]
+adaptive_cum_profit = Float64[]
+
+W1 = W_init; d1 = I_0; cum1 = 0.0
+W2 = W_init; d2 = I_0; cum2 = 0.0
+
+for season in season_axis
+    r1 = simulate_season(W1, standard_spray, d1)
+    p1 = season_profit(standard_spray, W1, d1)
+    cum1 += p1
+    push!(standard_resistance, r1.W_new)
+    push!(standard_cum_profit, cum1)
+    W1 = r1.W_new
+    d1 = max(0.5, r1.total_larvae * OVERWINTER_RETURN)
+
+    spray2 = adaptive_spray(W2)
+    r2 = simulate_season(W2, spray2, d2)
+    p2 = season_profit(spray2, W2, d2)
+    cum2 += p2
+    push!(adaptive_resistance, r2.W_new)
+    push!(adaptive_cum_profit, cum2)
+    W2 = r2.W_new
+    d2 = max(0.5, r2.total_larvae * OVERWINTER_RETURN)
+end
+
+fig = Figure(size=(920, 420))
+ax = Axis(fig[1, 1],
+    xlabel="Season",
+    ylabel="Resistance allele frequency",
+    title="Resistance evolution")
+lines!(ax, season_axis, standard_resistance; color=:firebrick, linewidth=3, label="Standard")
+lines!(ax, season_axis, adaptive_resistance; color=:steelblue, linewidth=3, label="Adaptive")
+axislegend(ax, position=:rt, framevisible=false)
+
+ax = Axis(fig[1, 2],
+    xlabel="Season",
+    ylabel="Cumulative profit (\$/acre)",
+    title="Cumulative profit")
+lines!(ax, season_axis, standard_cum_profit; color=:firebrick, linewidth=3, label="Standard")
+lines!(ax, season_axis, adaptive_cum_profit; color=:steelblue, linewidth=3, label="Adaptive")
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+<img
+src="07_pesticide_resistance_files/figure-commonmark/cell-12-output-1.png"
+width="920" height="420" />
 
 ## Key Insights
 

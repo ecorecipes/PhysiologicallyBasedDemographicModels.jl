@@ -12,9 +12,12 @@ Simon Frost
 - [Tracking Phenological Events](#tracking-phenological-events)
 - [Stage-Specific Population
   Dynamics](#stage-specific-population-dynamics)
+  - [Organ biomass trajectories](#organ-biomass-trajectories)
 - [Supply/Demand Analysis](#supplydemand-analysis)
 - [Sensitivity Analysis: Temperature
   Effects](#sensitivity-analysis-temperature-effects)
+  - [Temperature sensitivity: fruit biomass
+    comparison](#temperature-sensitivity-fruit-biomass-comparison)
 - [Key Insights](#key-insights)
 
 Primary reference: (Gutierrez et al. 1984).
@@ -40,8 +43,7 @@ development as an example.* Ecological Modelling 44:247–260.
 
 ``` julia
 using PhysiologicallyBasedDemographicModels
-
-# Temperature threshold for cotton development
+using CairoMakie
 const T_THRESHOLD = 12.0  # °C
 
 # Development rate (linear degree-day model)
@@ -207,6 +209,37 @@ end
     root: peak=0.0 at day 190
     fruit: peak=0.0 at day 1
 
+### Organ biomass trajectories
+
+``` julia
+organ_colors = [:forestgreen, :saddlebrown, :darkorange, :purple]
+
+fig = Figure(size=(800, 500))
+ax = Axis(fig[1, 1], xlabel="Day", ylabel="Biomass (dry mass units)",
+          title="Cotton Organ Dynamics — IAC-17, Londrina")
+
+for (i, name) in enumerate(stage_names)
+    traj = stage_trajectory(sol, i)
+    lines!(ax, sol.t[1:length(traj)], traj, color=organ_colors[i],
+           linewidth=2, label=String(name))
+end
+
+# Mark phenological milestones
+cdd = cumulative_degree_days(sol)
+for (lbl, dd_thresh, ls) in [("FFB", DD_FFB, :dash), ("Peak sq.", DD_PEAK, :dot), ("Open boll", DD_BOLL, :dashdot)]
+    idx = findfirst(c -> c >= dd_thresh, cdd)
+    if idx !== nothing
+        vlines!(ax, [sol.t[idx]], color=:gray50, linestyle=ls, linewidth=1, label=lbl)
+    end
+end
+
+axislegend(ax, position=:lt, framevisible=false, labelsize=10)
+fig
+```
+
+<img src="02_cotton_plant_files/figure-commonmark/cell-9-output-1.png"
+width="800" height="500" />
+
 ## Supply/Demand Analysis
 
 The supply/demand ratio `φ` is central to cotton growth. When `φ < 1`,
@@ -259,7 +292,9 @@ by 50%.
 
 ``` julia
 # Compare three temperature scenarios
-for (label, offset) in [("Standard", 0.0), ("-10%", -2.2), ("+10%", +2.2)]
+scenarios = [("Standard", 0.0), ("-10%", -2.2), ("+10%", +2.2)]
+scenario_sols = []
+for (label, offset) in scenarios
     # Build modified weather
     mod_temps = temps .+ offset
     mod_days = [DailyWeather(mod_temps[d], mod_temps[d]-4, mod_temps[d]+4;
@@ -281,6 +316,7 @@ for (label, offset) in [("Standard", 0.0), ("-10%", -2.2), ("+10%", +2.2)]
 
     prob = PBDMProblem(cotton_hybrid, mod_cotton, mod_weather, (1, n_days))
     s = solve(prob, DirectIteration())
+    push!(scenario_sols, (label, s))
     cdd = cumulative_degree_days(s)
     r = net_growth_rate(s)
     println("$label: total DD=$(round(cdd[end], digits=0)), mean λ=$(round(r, digits=4))")
@@ -290,6 +326,27 @@ end
     Standard: total DD=2519.0, mean λ=0.9709
     -10%: total DD=2057.0, mean λ=0.9803
     +10%: total DD=2981.0, mean λ=0.9565
+
+### Temperature sensitivity: fruit biomass comparison
+
+``` julia
+fig = Figure(size=(800, 450))
+ax = Axis(fig[1, 1], xlabel="Day", ylabel="Fruit biomass",
+          title="Cotton Fruit Growth Under Temperature Scenarios")
+
+scen_colors = [:steelblue, :teal, :firebrick]
+for (i, (label, s)) in enumerate(scenario_sols)
+    traj = stage_trajectory(s, 4)  # fruit = stage 4
+    lines!(ax, s.t[1:length(traj)], traj, color=scen_colors[i],
+           linewidth=2, label=label)
+end
+
+axislegend(ax, position=:lt, framevisible=false)
+fig
+```
+
+<img src="02_cotton_plant_files/figure-commonmark/cell-12-output-1.png"
+width="800" height="450" />
 
 ## Key Insights
 

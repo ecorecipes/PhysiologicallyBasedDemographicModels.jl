@@ -193,14 +193,15 @@ BMSB females lay eggs in an age- and temperature-dependent manner. The
 age-specific oviposition profile (eggs per day at age *i* in weeks at 26
 °C) follows Eq. 4 of Gutierrez et al. (2023):
 
-$$f(i) = \frac{1.375 \, i}{1 + 1.078 \, i}$$
+$$f(i) = \frac{1.375 \, i}{1 + 1.078^{i}}$$
 
 Temperature affects oviposition via a concave scalar ϕ(T) active in the
 range 18.5–34.0 °C (Table 1: ϕ(18.5, 34)), with a peak near 26 °C.
 
 ``` julia
 # Age-specific oviposition profile (eggs/day at age i in weeks)
-bmsb_oviposition(i) = 1.375 * i / (1.0 + 1.078 * i)
+# Bieri et al. (1983) form with exponential denominator
+bmsb_oviposition(i) = 1.375 * i / (1.0 + 1.078^i)
 
 # Oviposition thermal limits from Table 1: ϕ(18.5, 34)
 const BMSB_OVIP_T_LOWER = 18.5   # lower oviposition threshold (°C)
@@ -224,13 +225,13 @@ end
 
     Oviposition profile (eggs/day at 26°C):
       Week 1: 0.66 eggs/day
-      Week 2: 0.87 eggs/day
-      Week 3: 0.97 eggs/day
-      Week 4: 1.04 eggs/day
-      Week 5: 1.08 eggs/day
-      Week 6: 1.1 eggs/day
-      Week 7: 1.13 eggs/day
-      Week 8: 1.14 eggs/day
+      Week 2: 1.27 eggs/day
+      Week 3: 1.83 eggs/day
+      Week 4: 2.34 eggs/day
+      Week 5: 2.8 eggs/day
+      Week 6: 3.21 eggs/day
+      Week 7: 3.58 eggs/day
+      Week 8: 3.9 eggs/day
 
 ### *Trissolcus japonicus* (Egg Parasitoid)
 

@@ -46,6 +46,7 @@ temperature-driven development.
 
 ```{julia}
 using PhysiologicallyBasedDemographicModels
+using CairoMakie
 
 # --- Temperature thresholds for Glossina pallidipes ---
 const TSETSE_T_LOWER = 10.0    # °C base developmental temperature
@@ -146,6 +147,23 @@ for (i, name) in enumerate([:pupa, :teneral, :mature_adult])
     println("  $name: mean=$(round(sum(traj)/length(traj), digits=1)), " *
             "peak=$(round(maximum(traj), digits=1))")
 end
+```
+
+### Tsetse stage trajectories through the baseline simulation
+
+```{julia}
+tsetse_years = sol_tsetse.t ./ 365
+
+fig = Figure(size=(860, 480))
+ax = Axis(fig[1, 1],
+    xlabel="Year",
+    ylabel="Population per km²",
+    title="Baseline tsetse population trajectories")
+for (i, (name, color)) in enumerate(zip([:pupa, :teneral, :mature_adult], [:saddlebrown, :goldenrod, :forestgreen]))
+    lines!(ax, tsetse_years, stage_trajectory(sol_tsetse, i); color=color, linewidth=2, label=string(name))
+end
+axislegend(ax, position=:rt, framevisible=false)
+fig
 ```
 
 ## Cattle Population Model
@@ -344,6 +362,28 @@ for yr in 1:3
             "$(rpad(round(vector_inf_history[idx] * 100, digits=1), 12))| " *
             "$(round(cattle_alive_history[idx], digits=0))")
 end
+```
+
+### Endemic disease prevalence and cattle survival
+
+```{julia}
+disease_years = (1:n_sim) ./ 365
+
+fig = Figure(size=(900, 420))
+ax = Axis(fig[1, 1],
+    xlabel="Year",
+    ylabel="Prevalence (%)",
+    title="Endemic trypanosomosis prevalence")
+lines!(ax, disease_years, prev_history .* 100; color=:firebrick, linewidth=3, label="Cattle prevalence")
+axislegend(ax, position=:rt, framevisible=false)
+
+ax = Axis(fig[1, 2],
+    xlabel="Year",
+    ylabel="Cattle alive",
+    title="Cattle population under endemic transmission")
+lines!(ax, disease_years, cattle_alive_history; color=:steelblue, linewidth=3, label="Cattle alive")
+axislegend(ax, position=:rt, framevisible=false)
+fig
 ```
 
 ### Disease Impact on Productivity

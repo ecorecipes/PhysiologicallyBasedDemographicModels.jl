@@ -31,6 +31,7 @@ Veterinary Entomology 33:282–295.
 
 ```{julia}
 using PhysiologicallyBasedDemographicModels
+using CairoMakie
 
 # --- Temperature thresholds ---
 const SW_T_LOWER = 14.5    # °C lower developmental threshold
@@ -397,15 +398,53 @@ println("-"^60)
 
 baseline = simulate_screwworm_coupled(sterile_release_rate=0.0)
 base_final = baseline.observables[:total_wild][end]
+release_ratios = Float64[]
+suppression_pct = Float64[]
+final_wild_pop = Float64[]
 
 for rate in [0, 50, 100, 500, 1000, 5000]
     sol = simulate_screwworm_coupled(sterile_release_rate=Float64(rate))
     final = sol.observables[:total_wild][end]
     reduction = base_final > 0 ? (1 - final / base_final) * 100 : 0.0
     n_events = length(sol.event_log)
+    push!(release_ratios, rate / 100.0)
+    push!(suppression_pct, reduction)
+    push!(final_wild_pop, final)
     println("  $(rpad(rate, 11))| $(rpad(round(final, digits=1), 10)) | " *
             "$(rpad(round(reduction, digits=1), 9))% | $n_events")
 end
+```
+
+### Wild population suppression across SIT release ratios
+
+```{julia}
+fig = Figure(size=(780, 440))
+ax = Axis(fig[1, 1],
+    xlabel="Sterile:wild release ratio",
+    ylabel="Wild population reduction (%)",
+    title="SIT suppression response")
+lines!(ax, release_ratios, suppression_pct; color=:firebrick, linewidth=3, label="Reduction")
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+### Wild and sterile population trajectories during SIT
+
+```{julia}
+temporal_sol = simulate_screwworm_coupled(sterile_release_rate=1000.0)
+temporal_days = 1:length(temporal_sol.observables[:total_wild])
+
+fig = Figure(size=(850, 460))
+ax = Axis(fig[1, 1],
+    xlabel="Day",
+    ylabel="Population",
+    title="Representative SIT trajectory (1000 sterile males per release)")
+lines!(ax, temporal_days, temporal_sol.observables[:total_wild];
+       color=:forestgreen, linewidth=3, label="Wild")
+lines!(ax, temporal_days, temporal_sol.observables[:sterile_males];
+       color=:steelblue, linewidth=3, label="Sterile males")
+axislegend(ax, position=:rt, framevisible=false)
+fig
 ```
 
 ## Myiasis Prediction Model

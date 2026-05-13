@@ -12,7 +12,11 @@ Simon Frost
   Genotypes)](#single-season-simulation-all-three-genotypes)
 - [Allele Frequency Tracking Across
   Seasons](#allele-frequency-tracking-across-seasons)
+  - [Resistance allele frequency across
+    seasons](#resistance-allele-frequency-across-seasons)
 - [Effect of Spatial Refuges](#effect-of-spatial-refuges)
+  - [Refuge size slows resistance
+    evolution](#refuge-size-slows-resistance-evolution)
 - [Natural Enemy Feedback](#natural-enemy-feedback)
 - [Two-Toxin (Pyramid) Strategy](#two-toxin-pyramid-strategy)
 - [Species Tolerance Hierarchy](#species-tolerance-hierarchy)
@@ -48,6 +52,7 @@ follow Hardy-Weinberg equilibrium each generation.
 
 ``` julia
 using PhysiologicallyBasedDemographicModels
+using CairoMakie
 
 # --- Hardy-Weinberg Genetics ---
 
@@ -362,6 +367,23 @@ end
       14   | 1.0 | 100.0   | 0.0   | 0.0   | 100.0
       15   | 1.0 | 100.0   | 0.0   | 0.0   | 100.0
 
+### Resistance allele frequency across seasons
+
+``` julia
+fig = Figure(size=(780, 440))
+ax = Axis(fig[1, 1],
+    xlabel="Season",
+    ylabel="Resistance allele frequency",
+    title="Bt resistance evolution without refuge")
+lines!(ax, 0:n_seasons, R_history; color=:firebrick, linewidth=3, label="No refuge")
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+<img
+src="06_bt_cotton_resistance_files/figure-commonmark/cell-9-output-1.png"
+width="780" height="440" />
+
 ## Effect of Spatial Refuges
 
 Mandated refuges of non-Bt cotton preserve susceptible genotypes. Gene
@@ -378,6 +400,8 @@ function apply_refuge_dilution(R_bt, refuge_fraction, R_refuge=0.01)
 end
 
 # Compare resistance trajectories at different refuge sizes
+refuge_trajectories = Dict{Int, Vector{Float64}}()
+
 println("\nResistance allele frequency after 15 seasons:")
 println("Refuge | Final R | Resistance status")
 println("-"^50)
@@ -385,6 +409,7 @@ println("-"^50)
 for (refuge_pct, refuge_frac) in [(0, 0.0), (5, 0.05), (10, 0.10),
                                    (15, 0.15), (20, 0.20)]
     R = R_init
+    R_trajectory = Float64[R]
     for season in 1:15
         # Selection on Bt field (simplified: R increases by ~30% per generation)
         # This is a simplified selection model
@@ -406,8 +431,10 @@ for (refuge_pct, refuge_frac) in [(0, 0.0), (5, 0.05), (10, 0.10),
         # Apply refuge dilution
         R = apply_refuge_dilution(R_sel, refuge_frac)
         R = clamp(R, 0.0, 1.0)
+        push!(R_trajectory, R)
     end
 
+    refuge_trajectories[refuge_pct] = R_trajectory
     status = R > 0.5 ? "RESISTANT" : R > 0.1 ? "building" : "controlled"
     println("  $(lpad(refuge_pct, 2))%  | $(round(R, digits=4)) | $status")
 end
@@ -422,6 +449,25 @@ end
       10%  | 0.0388 | controlled
       15%  | 0.0222 | controlled
       20%  | 0.0149 | controlled
+
+### Refuge size slows resistance evolution
+
+``` julia
+fig = Figure(size=(820, 460))
+ax = Axis(fig[1, 1],
+    xlabel="Season",
+    ylabel="Resistance allele frequency",
+    title="Refuge dilution delays Bt resistance")
+for (pct, color) in zip([0, 5, 10, 15, 20], [:firebrick, :darkorange, :goldenrod, :steelblue, :forestgreen])
+    lines!(ax, 0:15, refuge_trajectories[pct]; color=color, linewidth=2, label="$(pct)% refuge")
+end
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+<img
+src="06_bt_cotton_resistance_files/figure-commonmark/cell-11-output-1.png"
+width="820" height="460" />
 
 ## Natural Enemy Feedback
 

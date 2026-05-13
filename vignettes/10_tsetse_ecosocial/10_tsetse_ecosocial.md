@@ -8,11 +8,15 @@ Simon Frost
   - [Weather: Southern Rift Valley,
     Ethiopia](#weather-southern-rift-valley-ethiopia)
   - [Baseline Tsetse Dynamics](#baseline-tsetse-dynamics)
+  - [Tsetse stage trajectories through the baseline
+    simulation](#tsetse-stage-trajectories-through-the-baseline-simulation)
 - [Cattle Population Model](#cattle-population-model)
   - [Pasture Resource Supply/Demand](#pasture-resource-supplydemand)
   - [Metabolic Pool Allocation](#metabolic-pool-allocation)
 - [Disease Transmission](#disease-transmission)
   - [Simulating Endemic Transmission](#simulating-endemic-transmission)
+  - [Endemic disease prevalence and cattle
+    survival](#endemic-disease-prevalence-and-cattle-survival)
   - [Disease Impact on Productivity](#disease-impact-on-productivity)
 - [Trophic Coupling](#trophic-coupling)
   - [Blood-Feeding Functional
@@ -71,6 +75,7 @@ temperature-driven development.
 
 ``` julia
 using PhysiologicallyBasedDemographicModels
+using CairoMakie
 
 # --- Temperature thresholds for Glossina pallidipes ---
 const TSETSE_T_LOWER = 10.0    # °C base developmental temperature
@@ -200,6 +205,27 @@ end
       pupa: mean=255.7, peak=47205.1
       teneral: mean=38.7, peak=4677.1
       mature_adult: mean=606.6, peak=48713.5
+
+### Tsetse stage trajectories through the baseline simulation
+
+``` julia
+tsetse_years = sol_tsetse.t ./ 365
+
+fig = Figure(size=(860, 480))
+ax = Axis(fig[1, 1],
+    xlabel="Year",
+    ylabel="Population per km²",
+    title="Baseline tsetse population trajectories")
+for (i, (name, color)) in enumerate(zip([:pupa, :teneral, :mature_adult], [:saddlebrown, :goldenrod, :forestgreen]))
+    lines!(ax, tsetse_years, stage_trajectory(sol_tsetse, i); color=color, linewidth=2, label=string(name))
+end
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+<img
+src="10_tsetse_ecosocial_files/figure-commonmark/cell-6-output-1.png"
+width="860" height="480" />
 
 ## Cattle Population Model
 
@@ -442,6 +468,32 @@ end
       1    | 5.6         | 64.8        | 526.0
       2    | 0.2         | 67.0        | 524.0
       3    | 0.0         | 67.0        | 524.0
+
+### Endemic disease prevalence and cattle survival
+
+``` julia
+disease_years = (1:n_sim) ./ 365
+
+fig = Figure(size=(900, 420))
+ax = Axis(fig[1, 1],
+    xlabel="Year",
+    ylabel="Prevalence (%)",
+    title="Endemic trypanosomosis prevalence")
+lines!(ax, disease_years, prev_history .* 100; color=:firebrick, linewidth=3, label="Cattle prevalence")
+axislegend(ax, position=:rt, framevisible=false)
+
+ax = Axis(fig[1, 2],
+    xlabel="Year",
+    ylabel="Cattle alive",
+    title="Cattle population under endemic transmission")
+lines!(ax, disease_years, cattle_alive_history; color=:steelblue, linewidth=3, label="Cattle alive")
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+<img
+src="10_tsetse_ecosocial_files/figure-commonmark/cell-12-output-1.png"
+width="900" height="420" />
 
 ### Disease Impact on Productivity
 

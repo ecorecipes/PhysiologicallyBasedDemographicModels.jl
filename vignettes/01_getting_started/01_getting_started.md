@@ -9,7 +9,10 @@ Simon Frost
 - [Degree-Day Accumulation](#degree-day-accumulation)
 - [Running a Simulation](#running-a-simulation)
 - [Analyzing Results](#analyzing-results)
+  - [Population and degree-day
+    trajectory](#population-and-degree-day-trajectory)
 - [Multi-Stage Lifecycle](#multi-stage-lifecycle)
+  - [Stage trajectory plot](#stage-trajectory-plot)
 - [The Supply/Demand Framework](#the-supplydemand-framework)
 - [Metabolic Pool Allocation](#metabolic-pool-allocation)
 - [Temperature-Dependent
@@ -58,6 +61,7 @@ Let’s model a cohort of insect eggs developing in warm weather.
 
 ``` julia
 using PhysiologicallyBasedDemographicModels
+using CairoMakie
 
 # 1. Define a development rate model
 # Eggs develop above 10°C, with upper limit at 35°C
@@ -76,6 +80,30 @@ println("Initial population: ", total_population(pop))  # 20000 (20 × 1000)
 println("Delay variance: ", delay_variance(egg_delay))  # 500.0
 ```
 
+    Precompiling packages...
+      16965.1 ms  ✓ JSON
+      18728.7 ms  ✓ Cairo_jll
+       8658.2 ms  ✓ ColorBrewer
+      11123.9 ms  ✓ HarfBuzz_jll
+      15253.3 ms  ✓ libass_jll
+      47428.6 ms  ✓ Distributions
+      14789.7 ms  ✓ Pango_jll
+      21443.9 ms  ✓ FFMPEG_jll
+      20187.3 ms  ✓ Cairo
+      29494.1 ms  ✓ Distributions → DistributionsChainRulesCoreExt
+      53559.1 ms  ✓ KernelDensity
+     202196.7 ms  ✓ Makie
+      76002.6 ms  ✓ CairoMakie
+      13 dependencies successfully precompiled in 562 seconds. 264 already precompiled.
+    Precompiling packages...
+       2324.9 ms  ✓ QuartoNotebookWorkerJSONExt (serial)
+      1 dependency successfully precompiled in 3 seconds
+    Precompiling packages...
+      12967.5 ms  ✓ QuartoNotebookWorkerMakieExt (serial)
+      1 dependency successfully precompiled in 13 seconds
+    Precompiling packages...
+      13381.3 ms  ✓ QuartoNotebookWorkerCairoMakieExt (serial)
+      1 dependency successfully precompiled in 13 seconds
     Substages: 20
     Initial population: 20000.0
     Delay variance: 500.0
@@ -142,6 +170,34 @@ println("Mean λ: ", round(mean(sol.lambdas), digits=4))
     Final:       0.0
     Mean λ: 0.1483
 
+### Population and degree-day trajectory
+
+``` julia
+fig = Figure(size=(700, 400))
+
+ax1 = Axis(fig[1, 1], xlabel="Day", ylabel="Total population",
+           title="Single-Stage Egg Cohort (constant 25°C)")
+lines!(ax1, sol.t, tp, color=:steelblue, linewidth=2, label="Population")
+
+ax2 = Axis(fig[1, 1], ylabel="Cumulative DD", yaxisposition=:right,
+           yticklabelcolor=:firebrick, ylabelcolor=:firebrick)
+hidespines!(ax2)
+hidexdecorations!(ax2)
+lines!(ax2, sol.t, cdd, color=:firebrick, linewidth=2, linestyle=:dash,
+       label="Cumulative DD")
+
+Legend(fig[1, 2],
+       [LineElement(color=:steelblue, linewidth=2),
+        LineElement(color=:firebrick, linewidth=2, linestyle=:dash)],
+       ["Population", "Cumulative DD"], framevisible=false)
+
+fig
+```
+
+<img
+src="01_getting_started_files/figure-commonmark/cell-7-output-1.png"
+width="700" height="400" />
+
 ## Multi-Stage Lifecycle
 
 Real organisms have multiple life stages. Here’s a 4-stage insect:
@@ -184,6 +240,33 @@ end
     larva: peak at day 6
     pupa: peak at day 23
     adult: peak at day 31
+
+### Stage trajectory plot
+
+``` julia
+stage_colors = [:goldenrod, :forestgreen, :slateblue, :darkorange]
+stage_labels = [String(s.name) for s in pop.stages]
+
+fig = Figure(size=(800, 500))
+ax = Axis(fig[1, 1], xlabel="Day of year", ylabel="Stage population",
+          title="Four-Stage Insect Lifecycle — Seasonal Dynamics")
+
+for i in 1:4
+    traj = stage_trajectory(sol, i)
+    lines!(ax, sol.t[1:length(traj)], traj, color=stage_colors[i],
+           linewidth=2, label=stage_labels[i])
+end
+
+vlines!(ax, [mid], color=:gray40, linestyle=:dash, linewidth=1,
+        label="50% maturation (day $mid)")
+axislegend(ax, position=:rt, framevisible=false)
+
+fig
+```
+
+<img
+src="01_getting_started_files/figure-commonmark/cell-9-output-1.png"
+width="800" height="500" />
 
 ## The Supply/Demand Framework
 

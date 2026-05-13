@@ -8,8 +8,12 @@ Simon Frost
 - [Weather: Colombian Coffee Zone](#weather-colombian-coffee-zone)
 - [Basic Simulation](#basic-simulation)
 - [Lifecycle Analysis](#lifecycle-analysis)
+  - [Coffee berry borer stage
+    trajectories](#coffee-berry-borer-stage-trajectories)
 - [Degree-Day Accumulation in Tropical
   Climate](#degree-day-accumulation-in-tropical-climate)
+  - [Logan and linear development rate
+    comparison](#logan-and-linear-development-rate-comparison)
 - [Berry Preference Model](#berry-preference-model)
 - [Density-Dependent Simulation](#density-dependent-simulation)
 - [Migration Rate Comparison](#migration-rate-comparison)
@@ -38,6 +42,7 @@ coffee–coffee berry borer system.*
 
 ``` julia
 using PhysiologicallyBasedDemographicModels
+using CairoMakie
 
 # CBB temperature thresholds
 const CBB_T_LOWER = 14.9   # °C — minimum development threshold
@@ -162,6 +167,26 @@ end
     young_adult: peak=943.0 (day 49), final=0.0
     mature_female: peak=1166.5 (day 64), final=0.0
 
+### Coffee berry borer stage trajectories
+
+``` julia
+fig = Figure(size=(850, 480))
+ax = Axis(fig[1, 1],
+    xlabel="Day",
+    ylabel="Population",
+    title="Coffee berry borer stage trajectories")
+stage_colors = [:forestgreen, :steelblue, :darkorange, :purple, :firebrick, :goldenrod, :teal]
+for (i, (name, color)) in enumerate(zip(stage_names, stage_colors))
+    lines!(ax, sol.t, stage_trajectory(sol, i); color=color, linewidth=2, label=string(name))
+end
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+<img
+src="03_coffee_berry_borer_files/figure-commonmark/cell-8-output-1.png"
+width="850" height="480" />
+
 ## Degree-Day Accumulation in Tropical Climate
 
 In the Colombian coffee zone, temperatures are warm year-round, so
@@ -182,6 +207,28 @@ println("Estimated generations/year: ", round(gens, digits=1))
     Mean DD/day: 7.1
     Total annual DD: 2592.0
     Estimated generations/year: 8.3
+
+### Logan and linear development rate comparison
+
+``` julia
+temperature_grid = 10.0:0.5:38.0
+logan_rates = [development_rate(cbb_dev, T) for T in temperature_grid]
+linear_rates = [development_rate(cbb_linear, T) for T in temperature_grid]
+
+fig = Figure(size=(780, 440))
+ax = Axis(fig[1, 1],
+    xlabel="Temperature (°C)",
+    ylabel="Development rate",
+    title="Coffee berry borer development rate models")
+lines!(ax, temperature_grid, logan_rates; color=:steelblue, linewidth=3, label="Logan")
+lines!(ax, temperature_grid, linear_rates; color=:darkorange, linewidth=3, label="Linear")
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+<img
+src="03_coffee_berry_borer_files/figure-commonmark/cell-10-output-1.png"
+width="780" height="440" />
 
 ## Berry Preference Model
 

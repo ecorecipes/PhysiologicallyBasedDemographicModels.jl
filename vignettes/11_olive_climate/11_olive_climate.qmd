@@ -45,6 +45,7 @@ representative Mediterranean climate baseline (mean 18 °C, amplitude 8 °C).
 
 ```{julia}
 using PhysiologicallyBasedDemographicModels
+using CairoMakie
 
 # --- Olive phenology parameters (Ponti et al. 2014; Gutierrez et al. 2009) ---
 const OLIVE_T_BASE   = 9.1    # °C — base temperature for degree-day accumulation
@@ -142,6 +143,9 @@ end
 println("  Total season DD:  $(round(cdd[end], digits=0))")
 
 # Phenological shift under warming scenarios
+warming_levels = Float64[]
+bloom_days = Float64[]
+
 println("\nPhenological shift (bloom timing) under warming:")
 println("-"^50)
 for ΔT in [0.0, 1.0, 1.8, 2.5, 3.6]
@@ -156,10 +160,40 @@ for ΔT in [0.0, 1.0, 1.8, 2.5, 3.6]
     cdd_w = cumulative_degree_days(sol_w)
     bloom_idx = findfirst(c -> c >= DD_BLOOM, cdd_w)
     bloom_day = bloom_idx !== nothing ? sol_w.t[bloom_idx] : 999
+    push!(warming_levels, ΔT)
+    push!(bloom_days, Float64(bloom_day))
     shift = bloom_day - (ΔT == 0.0 ? bloom_day : bloom_day)
     println("  +$(ΔT)°C: bloom day $(lpad(bloom_day, 3))  " *
             "($(round(cdd_w[end], digits=0)) total DD)")
 end
+```
+
+### Olive canopy biomass trajectories under the baseline scenario
+
+```{julia}
+fig = Figure(size=(860, 480))
+ax = Axis(fig[1, 1],
+    xlabel="Day of year",
+    ylabel="Dry matter (g/tree)",
+    title="Olive canopy and fruit trajectories")
+for (i, (name, color)) in enumerate(zip([:leaf, :shoot, :fruit], [:forestgreen, :saddlebrown, :darkorange]))
+    lines!(ax, sol_olive.t, stage_trajectory(sol_olive, i); color=color, linewidth=2, label=string(name))
+end
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+### Bloom timing response to warming
+
+```{julia}
+fig = Figure(size=(760, 440))
+ax = Axis(fig[1, 1],
+    xlabel="Warming (°C)",
+    ylabel="Bloom day",
+    title="Olive bloom advances with warming")
+lines!(ax, warming_levels, bloom_days; color=:firebrick, linewidth=3, label="Bloom day")
+axislegend(ax, position=:rt, framevisible=false)
+fig
 ```
 
 ## Olive Fly Population Model

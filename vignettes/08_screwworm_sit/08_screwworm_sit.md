@@ -11,6 +11,10 @@ Simon Frost
   - [Building the Population System](#building-the-population-system)
   - [Rules and Events](#rules-and-events)
   - [Running the Coupled Simulation](#running-the-coupled-simulation)
+  - [Wild population suppression across SIT release
+    ratios](#wild-population-suppression-across-sit-release-ratios)
+  - [Wild and sterile population trajectories during
+    SIT](#wild-and-sterile-population-trajectories-during-sit)
 - [Myiasis Prediction Model](#myiasis-prediction-model)
 - [Historical Eradication Timeline](#historical-eradication-timeline)
 - [The Critical Period: 1976–1982](#the-critical-period-19761982)
@@ -44,6 +48,7 @@ Veterinary Entomology 33:282–295.
 
 ``` julia
 using PhysiologicallyBasedDemographicModels
+using CairoMakie
 
 # --- Temperature thresholds ---
 const SW_T_LOWER = 14.5    # °C lower developmental threshold
@@ -457,12 +462,18 @@ println("-"^60)
 
 baseline = simulate_screwworm_coupled(sterile_release_rate=0.0)
 base_final = baseline.observables[:total_wild][end]
+release_ratios = Float64[]
+suppression_pct = Float64[]
+final_wild_pop = Float64[]
 
 for rate in [0, 50, 100, 500, 1000, 5000]
     sol = simulate_screwworm_coupled(sterile_release_rate=Float64(rate))
     final = sol.observables[:total_wild][end]
     reduction = base_final > 0 ? (1 - final / base_final) * 100 : 0.0
     n_events = length(sol.event_log)
+    push!(release_ratios, rate / 100.0)
+    push!(suppression_pct, reduction)
+    push!(final_wild_pop, final)
     println("  $(rpad(rate, 11))| $(rpad(round(final, digits=1), 10)) | " *
             "$(rpad(round(reduction, digits=1), 9))% | $n_events")
 end
@@ -478,6 +489,44 @@ end
       500        | 56.1       | 1.8      % | 27
       1000       | 55.1       | 3.5      % | 27
       5000       | 48.8       | 14.5     % | 27
+
+### Wild population suppression across SIT release ratios
+
+``` julia
+fig = Figure(size=(780, 440))
+ax = Axis(fig[1, 1],
+    xlabel="Sterile:wild release ratio",
+    ylabel="Wild population reduction (%)",
+    title="SIT suppression response")
+lines!(ax, release_ratios, suppression_pct; color=:firebrick, linewidth=3, label="Reduction")
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+<img src="08_screwworm_sit_files/figure-commonmark/cell-9-output-1.png"
+width="780" height="440" />
+
+### Wild and sterile population trajectories during SIT
+
+``` julia
+temporal_sol = simulate_screwworm_coupled(sterile_release_rate=1000.0)
+temporal_days = 1:length(temporal_sol.observables[:total_wild])
+
+fig = Figure(size=(850, 460))
+ax = Axis(fig[1, 1],
+    xlabel="Day",
+    ylabel="Population",
+    title="Representative SIT trajectory (1000 sterile males per release)")
+lines!(ax, temporal_days, temporal_sol.observables[:total_wild];
+       color=:forestgreen, linewidth=3, label="Wild")
+lines!(ax, temporal_days, temporal_sol.observables[:sterile_males];
+       color=:steelblue, linewidth=3, label="Sterile males")
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+<img src="08_screwworm_sit_files/figure-commonmark/cell-10-output-1.png"
+width="850" height="460" />
 
 ## Myiasis Prediction Model
 

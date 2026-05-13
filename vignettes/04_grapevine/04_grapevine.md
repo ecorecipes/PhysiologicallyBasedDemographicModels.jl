@@ -13,8 +13,11 @@ Simon Frost
 - [Seasonal Simulation](#seasonal-simulation)
 - [Carbon Budget Analysis](#carbon-budget-analysis)
 - [Tissue Trajectories](#tissue-trajectories)
+  - [Grapevine tissue trajectories across the growing
+    season](#grapevine-tissue-trajectories-across-the-growing-season)
 - [Climate Sensitivity: Warming
   Scenarios](#climate-sensitivity-warming-scenarios)
+  - [Harvest timing under warming](#harvest-timing-under-warming)
 - [Key Insights](#key-insights)
 
 Primary reference: (Wermelinger et al. 1991).
@@ -42,6 +45,7 @@ and nitrogen in grapevines.* Ecological Modelling 53:1–26.
 
 ``` julia
 using PhysiologicallyBasedDemographicModels
+using CairoMakie
 
 # Base temperature threshold for grapevine
 const GRAPE_T_THRESHOLD = 10.0  # °C
@@ -353,10 +357,31 @@ end
       trunk: peak=1500.0 (day 1), end=11.48
       fruit: peak=0.23 (day 103), end=0.0
 
+### Grapevine tissue trajectories across the growing season
+
+``` julia
+fig = Figure(size=(880, 500))
+ax = Axis(fig[1, 1],
+    xlabel="Day of year",
+    ylabel="Dry matter",
+    title="Grapevine tissue trajectories")
+tissue_colors = [:forestgreen, :steelblue, :firebrick, :saddlebrown, :darkorange]
+for (i, (name, color)) in enumerate(zip(tissue_names, tissue_colors))
+    lines!(ax, sol.t, stage_trajectory(sol, i); color=color, linewidth=2, label=string(name))
+end
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+<img src="04_grapevine_files/figure-commonmark/cell-12-output-1.png"
+width="880" height="500" />
+
 ## Climate Sensitivity: Warming Scenarios
 
 ``` julia
 println("\nClimate warming sensitivity:")
+warming_levels = Float64[]
+harvest_days = Float64[]
 for warming in [0.0, 1.0, 2.0, 3.0]
     warm_temps = swiss_temps .+ warming
     warm_days = [DailyWeather(warm_temps[d], warm_temps[d] - 4, warm_temps[d] + 4;
@@ -380,6 +405,9 @@ for warming in [0.0, 1.0, 2.0, 3.0]
     # Find harvest date
     harvest_idx = findfirst(x -> x >= DD_HARVEST, c)
     harvest_day = harvest_idx !== nothing ? s.t[harvest_idx] : "N/A"
+    harvest_day_value = harvest_idx !== nothing ? Float64(s.t[harvest_idx]) : NaN
+    push!(warming_levels, warming)
+    push!(harvest_days, harvest_day_value)
 
     println("  +$(warming)°C: total DD=$(round(c[end], digits=0)), " *
             "harvest day=$harvest_day")
@@ -392,6 +420,22 @@ end
       +1.0°C: total DD=1466.0, harvest day=223
       +2.0°C: total DD=1664.0, harvest day=212
       +3.0°C: total DD=1873.0, harvest day=203
+
+### Harvest timing under warming
+
+``` julia
+fig = Figure(size=(760, 440))
+ax = Axis(fig[1, 1],
+    xlabel="Warming (°C)",
+    ylabel="Harvest day",
+    title="Earlier harvest under warmer conditions")
+lines!(ax, warming_levels, harvest_days; color=:firebrick, linewidth=3, label="Harvest day")
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+<img src="04_grapevine_files/figure-commonmark/cell-14-output-1.png"
+width="760" height="440" />
 
 ## Key Insights
 

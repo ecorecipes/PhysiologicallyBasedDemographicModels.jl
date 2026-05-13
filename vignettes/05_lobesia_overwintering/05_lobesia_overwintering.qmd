@@ -35,6 +35,7 @@ vary linearly with latitude.
 
 ```{julia}
 using PhysiologicallyBasedDemographicModels
+using CairoMakie
 
 # Critical day length formulas (Baumgärtner et al. Eq. 1-2)
 # DL_s = 9.83 + 0.1226 × L  (diapause induction starts)
@@ -192,6 +193,47 @@ for (name, lat) in [("Sicily (37.5°N)", 37.5),
     println("  Survival: $(round(sum(sol.u[end]) / sum(sol.u[1]) * 100, digits=1))%")
     println()
 end
+```
+
+### Post-diapause emergence trajectory at Bordeaux
+
+```{julia}
+bordeaux_result = results["Bordeaux (44.8°N)"]
+bordeaux_sol = bordeaux_result.sol
+bordeaux_emergence = bordeaux_result.emergence === nothing ? NaN : Float64(bordeaux_result.emergence)
+
+fig = Figure(size=(800, 460))
+ax = Axis(fig[1, 1],
+    xlabel="Julian day",
+    ylabel="Post-diapause population",
+    title="Post-diapause emergence trajectory at Bordeaux")
+lines!(ax, bordeaux_sol.t, stage_trajectory(bordeaux_sol, 3);
+       color=:darkorange, linewidth=3, label="Post-diapause")
+if !isnan(bordeaux_emergence)
+    vlines!(ax, [bordeaux_emergence]; color=:firebrick, linewidth=2, linestyle=:dash)
+end
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+### Emergence trajectories across latitudes
+
+```{julia}
+location_order = ["Sicily (37.5°N)", "Bordeaux (44.8°N)", "Switzerland (47.2°N)"]
+location_colors = [:goldenrod, :purple, :steelblue]
+
+fig = Figure(size=(850, 480))
+ax = Axis(fig[1, 1],
+    xlabel="Julian day",
+    ylabel="Post-diapause population",
+    title="Latitude shifts Lobesia spring emergence")
+for (name, color) in zip(location_order, location_colors)
+    loc_sol = results[name].sol
+    lines!(ax, loc_sol.t, stage_trajectory(loc_sol, 3);
+           color=color, linewidth=2, label=name)
+end
+axislegend(ax, position=:rt, framevisible=false)
+fig
 ```
 
 ## Validation: Expected Emergence Timing

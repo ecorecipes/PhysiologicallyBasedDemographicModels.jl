@@ -6,6 +6,8 @@ Simon Frost
 - [1. Cotton Growth Model](#1-cotton-growth-model)
   - [Temperature response](#temperature-response)
   - [Simulating a growing season](#simulating-a-growing-season)
+  - [Cotton biomass trajectories over the kharif
+    season](#cotton-biomass-trajectories-over-the-kharif-season)
 - [2. Pink Bollworm Pest Model](#2-pink-bollworm-pest-model)
   - [Larval feeding and resource
     acquisition](#larval-feeding-and-resource-acquisition)
@@ -19,6 +21,8 @@ Simon Frost
     generations](#resistance-evolution-over-20-generations)
   - [Effect of refuge size on resistance
     durability](#effect-of-refuge-size-on-resistance-durability)
+  - [Pink bollworm population and resistance
+    trajectories](#pink-bollworm-population-and-resistance-trajectories)
   - [Two-toxin pyramid: Bollgard II](#two-toxin-pyramid-bollgard-ii)
   - [Verifying allele frequencies from field
     monitoring](#verifying-allele-frequencies-from-field-monitoring)
@@ -89,6 +93,7 @@ yield, lint and seed quality, and profitability in northwest India.
 
 ``` julia
 using PhysiologicallyBasedDemographicModels
+using CairoMakie
 ```
 
 ## 1. Cotton Growth Model
@@ -232,6 +237,24 @@ end
       120 | 1464.0 |       0.0 |     0.8 |     0.8
       150 | 1781.0 |       0.0 |     0.0 |     0.0
       180 | 2148.0 |       0.0 |     0.0 |     0.0
+
+### Cotton biomass trajectories over the kharif season
+
+``` julia
+fig = Figure(size=(820, 460))
+ax = Axis(fig[1, 1],
+    xlabel="Day",
+    ylabel="Biomass",
+    title="Cotton vegetative and fruit biomass trajectories")
+lines!(ax, sol.t, veg_traj; color=:forestgreen, linewidth=3, label="Vegetative")
+lines!(ax, sol.t, fruit_traj; color=:darkorange, linewidth=3, label="Fruiting")
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+<img
+src="09_bt_cotton_india_files/figure-commonmark/cell-7-output-1.png"
+width="820" height="460" />
 
 ## 2. Pink Bollworm Pest Model
 
@@ -507,6 +530,9 @@ refuge_frac = 0.05
 R_refuge = 0.005  # near-zero selection pressure in refuge
 
 locus_sim = DialleleicLocus(0.005, 0.0)
+resistance_gens = Int[]
+resistance_R = Float64[]
+resistance_efficacy = Float64[]
 
 println("\n--- Resistance Evolution (5% Refuge, 20 Generations) ---")
 println("Gen | R allele |   SS (%) |   SR (%) |   RR (%) | Bt Efficacy (%)")
@@ -516,6 +542,9 @@ for gen in 0:20
     freq = genotype_frequencies(locus_sim)
     # Bt efficacy = weighted kill rate across genotypes
     efficacy = freq.SS * 0.95 + freq.SR * 0.50 + freq.RR * 0.10
+    push!(resistance_gens, gen)
+    push!(resistance_R, locus_sim.R)
+    push!(resistance_efficacy, efficacy)
     if gen % 2 == 0 || gen == 20
         println("  $(lpad(string(gen), 2)) | $(lpad(string(round(locus_sim.R, digits=5)), 8)) | $(lpad(string(round(100 * freq.SS, digits=2)), 7)) | $(lpad(string(round(100 * freq.SR, digits=2)), 7)) | $(lpad(string(round(100 * freq.RR, digits=4)), 7)) | $(lpad(string(round(100 * efficacy, digits=1)), 10))")
     end
@@ -587,6 +616,36 @@ end
            10% |              4 |                    4
            20% |              4 |                    4
            40% |           >200 |                 >200
+
+### Pink bollworm population and resistance trajectories
+
+``` julia
+fig = Figure(size=(920, 620))
+ax = Axis(fig[1, 1],
+    xlabel="Day",
+    ylabel="Population",
+    title="Pink bollworm stage trajectories")
+for (traj, label, color) in zip(
+    [egg_traj, larva_traj, pupa_traj, adult_traj],
+    ["Egg", "Larva", "Pupa", "Adult"],
+    [:goldenrod, :darkorange, :purple, :steelblue]
+)
+    lines!(ax, pbw_sol.t, traj; color=color, linewidth=2, label=label)
+end
+axislegend(ax, position=:rt, framevisible=false)
+
+ax = Axis(fig[2, 1],
+    xlabel="Generation",
+    ylabel="Resistance allele frequency",
+    title="Bt resistance evolution")
+lines!(ax, resistance_gens, resistance_R; color=:firebrick, linewidth=3, label="R allele")
+axislegend(ax, position=:rt, framevisible=false)
+fig
+```
+
+<img
+src="09_bt_cotton_india_files/figure-commonmark/cell-17-output-1.png"
+width="920" height="620" />
 
 ### Two-toxin pyramid: Bollgard II
 

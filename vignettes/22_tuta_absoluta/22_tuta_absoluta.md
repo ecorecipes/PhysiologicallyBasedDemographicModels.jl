@@ -102,7 +102,7 @@ nonlinear function fitted to data from multiple studies (Barrientos et
 al. 1998; Krechemer and Foerster 2015; Martins et al. 2016; Campos et
 al. 2020):
 
-$$r(T) = \frac{a \cdot (T - \theta_L)}{1 + b \cdot (T - \theta_V)}$$
+$$r(T) = \frac{a \cdot (T - \theta_L)}{1 + b^{T - \theta_V}}$$
 
 where $a = 0.0024$, $\theta_L = 7.9$°C (lower threshold),
 $\theta_V = 34.95$°C (upper inflection), and $b = 3.95$.
@@ -111,10 +111,10 @@ $\theta_V = 34.95$°C (upper inflection), and $b = 3.95$.
 using PhysiologicallyBasedDemographicModels
 
 # --- Ponti et al. (2021) Eq. 3: Egg-to-pupa development rate ---
-# r(T) = a(T - θ_L) / (1 + b(T - θ_V))
-# This is a modified Brière/Bieri form, not the standard Brière.
-# We implement it directly and also approximate it with the package's
-# BriereDevelopmentRate for the stage-structured model.
+# r(T) = a(T - θ_L) / (1 + b^(T - θ_V))
+# This is a Bieri (1983) function with an exponential denominator.
+# The exponential suppresses development above θ_V while keeping
+# near-linear growth below it.
 
 function tuta_ep_devrate(T::Real)
     a = 0.0024
@@ -122,7 +122,7 @@ function tuta_ep_devrate(T::Real)
     θ_V = 34.95  # upper inflection temperature (°C)
     b = 3.95
     T <= θ_L && return 0.0
-    r = a * (T - θ_L) / (1 + b * (T - θ_V))
+    r = a * (T - θ_L) / (1 + b^(T - θ_V))
     return max(0.0, r)
 end
 
@@ -148,14 +148,14 @@ end
     =================================================================
       T (°C)  |  r(T) (day⁻¹)  |  Dev. time (days)  |  DD above 7.9°C
     -----------------------------------------------------------------
-       10.0   |   0.0          |       ∞           |    —
-       15.0   |   0.0          |       ∞           |    —
-       20.0   |   0.0          |       ∞           |    —
-       25.0   |   0.0          |       ∞           |    —
-       28.0   |   0.0          |       ∞           |    —
-       30.0   |   0.0          |       ∞           |    —
-       33.0   |   0.0          |       ∞           |    —
-       35.0   |    0.05431    |       18.4       |    499.0
+       10.0   |    0.00504    |      198.4       |    417.0
+       15.0   |    0.01704    |       58.7       |    417.0
+       20.0   |    0.02904    |       34.4       |    417.0
+       25.0   |    0.04104    |       24.4       |    417.0
+       28.0   |    0.04824    |       20.7       |    417.0
+       30.0   |    0.05298    |       18.9       |    417.0
+       33.0   |    0.05637    |       17.7       |    445.0
+       35.0   |     0.0314    |       31.8       |    863.0
 
 ### Thermal constants (degree-days above 7.9°C)
 
@@ -311,13 +311,14 @@ Age-specific fecundity at the optimum temperature (25°C) follows a
 left-biased function from Marcano (1995), and is temperature-corrected
 using a concave function (Eq. 7):
 
-$$\phi_{fec}(T) = \frac{0.0665 \cdot (T - 7.9)}{1 + 2.2 \cdot (T - 27.5)}$$
+$$\phi_{fec}(T) = \frac{0.0665 \cdot (T - 7.9)}{1 + 2.2^{T - 27.5}}$$
 
 ``` julia
 # Temperature-dependent fecundity scalar (Ponti et al. 2021, Eq. 7)
+# Uses the same Bieri exponential-denominator form as the development rate
 function tuta_fecundity_T(T::Real)
     T <= 7.9 && return 0.0
-    ϕ = 0.0665 * (T - 7.9) / (1 + 2.2 * (T - 27.5))
+    ϕ = 0.0665 * (T - 7.9) / (1 + 2.2^(T - 27.5))
     return clamp(ϕ, 0.0, 1.0)
 end
 
@@ -336,15 +337,15 @@ end
     Temperature-dependent fecundity scalar ϕ_fec:
     T (°C) | ϕ_fec  | Interpretation
     -------------------------------------------------------
-        8.0 |    0.0 | Marginal/None
-       12.0 |    0.0 | Marginal/None
-       15.0 |    0.0 | Marginal/None
-       20.0 |    0.0 | Marginal/None
-       25.0 |    0.0 | Marginal/None
-       27.0 |    0.0 | Marginal/None
-       28.0 |  0.637 | Moderate
-       30.0 |  0.226 | Reduced
-       32.0 |  0.147 | Reduced
+        8.0 |  0.007 | Marginal/None
+       12.0 |  0.273 | Reduced
+       15.0 |  0.472 | Reduced
+       20.0 |  0.802 | Near optimal
+       25.0 |  0.998 | Near optimal
+       27.0 |  0.759 | Moderate
+       28.0 |  0.538 | Moderate
+       30.0 |   0.18 | Reduced
+       32.0 |  0.045 | Marginal/None
 
 ## Stage-Structured PBDM
 

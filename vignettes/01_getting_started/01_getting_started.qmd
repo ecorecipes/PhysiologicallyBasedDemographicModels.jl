@@ -41,6 +41,7 @@ Let's model a cohort of insect eggs developing in warm weather.
 
 ```{julia}
 using PhysiologicallyBasedDemographicModels
+using CairoMakie
 
 # 1. Define a development rate model
 # Eggs develop above 10°C, with upper limit at 35°C
@@ -109,6 +110,30 @@ println("Final:       ", round(tp[end], digits=1))
 println("Mean λ: ", round(mean(sol.lambdas), digits=4))
 ```
 
+### Population and degree-day trajectory
+
+```{julia}
+fig = Figure(size=(700, 400))
+
+ax1 = Axis(fig[1, 1], xlabel="Day", ylabel="Total population",
+           title="Single-Stage Egg Cohort (constant 25°C)")
+lines!(ax1, sol.t, tp, color=:steelblue, linewidth=2, label="Population")
+
+ax2 = Axis(fig[1, 1], ylabel="Cumulative DD", yaxisposition=:right,
+           yticklabelcolor=:firebrick, ylabelcolor=:firebrick)
+hidespines!(ax2)
+hidexdecorations!(ax2)
+lines!(ax2, sol.t, cdd, color=:firebrick, linewidth=2, linestyle=:dash,
+       label="Cumulative DD")
+
+Legend(fig[1, 2],
+       [LineElement(color=:steelblue, linewidth=2),
+        LineElement(color=:firebrick, linewidth=2, linestyle=:dash)],
+       ["Population", "Cumulative DD"], framevisible=false)
+
+fig
+```
+
 ## Multi-Stage Lifecycle
 
 Real organisms have multiple life stages. Here's a 4-stage insect:
@@ -144,6 +169,29 @@ for i in 1:4
     peak_day = sol.t[argmax(traj)]
     println("$(pop.stages[i].name): peak at day $peak_day")
 end
+```
+
+### Stage trajectory plot
+
+```{julia}
+stage_colors = [:goldenrod, :forestgreen, :slateblue, :darkorange]
+stage_labels = [String(s.name) for s in pop.stages]
+
+fig = Figure(size=(800, 500))
+ax = Axis(fig[1, 1], xlabel="Day of year", ylabel="Stage population",
+          title="Four-Stage Insect Lifecycle — Seasonal Dynamics")
+
+for i in 1:4
+    traj = stage_trajectory(sol, i)
+    lines!(ax, sol.t[1:length(traj)], traj, color=stage_colors[i],
+           linewidth=2, label=stage_labels[i])
+end
+
+vlines!(ax, [mid], color=:gray40, linestyle=:dash, linewidth=1,
+        label="50% maturation (day $mid)")
+axislegend(ax, position=:rt, framevisible=false)
+
+fig
 ```
 
 ## The Supply/Demand Framework
