@@ -125,12 +125,14 @@ deviates from the optimum, mortality increases toward 1.
 
 Stage-specific parameters (Table 2):
 
-| Stage  | $k$   | $\rho_T$ | $T_{\max}$ (°C) |
-|:-------|:-----:|:--------:|:---------------:|
-| Egg    | 0.87  | −4       | 25.0            |
-| Larva  | 0.80  | −4       | 22.0            |
-| Pupa   | 0.82  | −6       | 24.6            |
-| Adult  | 0.60  | −6       | 25.0            |
+| Stage  | $k$    | $\rho_T$ | $T_{\max}$ (°C) |
+|:-------|:------:|:--------:|:---------------:|
+| Egg    | 0.87   | −4.5     | 25.0            |
+| Larva  | 0.8516 | −4.53    | 22.295          |
+| Pupa   | 0.82   | −6       | 24.6            |
+| Adult  | 0.6384 | −6       | 24.9276         |
+
+**Note:** The egg, larval, and adult mortality corrections above were cross-checked against the Rossini et al. GitHub reference implementation (`lucaros1190/ODE-bactrocera`, `Parameters.py`).
 
 The instantaneous daily mortality rate in the ODE is $M_i(T) \cdot G(T)$,
 where $M_i$ gives the fraction dying per unit of physiological development
@@ -183,7 +185,7 @@ end
 # Best-fit parameters (Table 1)
 const dev_params = BriereGeneralized(4.6e-5, 7.23, 32.2, 1.0 / 2.5)
 
-# --- Mortality: Gumbel survival (Eqs. 7-8, Table 2) ---
+# --- Mortality: Gumbel survival (Eqs. 7-8, Table 2; corrected against Rossini's reference implementation) ---
 struct MortalityParams{T<:Real}
     k::T
     ρ_T::T
@@ -195,10 +197,10 @@ function mortality_fraction(p::MortalityParams, T)
     return 1.0 - p.k * exp(1.0 + z - exp(z))
 end
 
-const mort_egg   = MortalityParams(0.87, -4.0, 25.0)
-const mort_larva = MortalityParams(0.80, -4.0, 22.0)
+const mort_egg   = MortalityParams(0.87, -4.5, 25.0)
+const mort_larva = MortalityParams(0.8516, -4.53, 22.295)
 const mort_pupa  = MortalityParams(0.82, -6.0, 24.6)
-const mort_adult = MortalityParams(0.60, -6.0, 25.0)
+const mort_adult = MortalityParams(0.6384, -6.0, 24.9276)
 
 # --- Fecundity (Eq. 9, Table 3) ---
 const β_max = 5.0   # peak eggs/mated-female/day
@@ -822,7 +824,9 @@ parameter estimation literature. A complete modeling study would ideally
 validate both approaches against the same field dataset.
 
 **Code availability:** The original Python implementation by Rossini et al.
-is available at <https://github.com/lucaros1190/ODE-bactrocera>.
+is available at <https://github.com/lucaros1190/ODE-bactrocera>; the mortality
+parameter corrections in this vignette were cross-checked against its
+`Parameters.py` reference implementation.
 
 
 ## References

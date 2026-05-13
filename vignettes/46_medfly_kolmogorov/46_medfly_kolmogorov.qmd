@@ -147,7 +147,7 @@ $$G^i(T) = a_i \, T \, (T - T_L^i)\, \sqrt{T_M^i - T}$$
 which is positive only for $T_L^i < T < T_M^i$.
 
 ```{julia}
-# ── Brière development rate parameters (Gilioli et al. 2022, Table S2)
+# ── Brière development rate parameters (pedagogical values; cf. Gilioli et al. 2022)
 # Stage-specific: (a, T_lower, T_upper)
 const DEV_PARAMS = (
     egg   = (a = 6.73e-5, T_L = 10.5, T_M = 35.5),

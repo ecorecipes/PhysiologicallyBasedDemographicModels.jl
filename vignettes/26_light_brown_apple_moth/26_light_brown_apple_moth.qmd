@@ -51,7 +51,7 @@ Key biological features relevant to modeling include:
 - **No diapause**: unlike many temperate Lepidoptera, LBAM develops continuously
   whenever temperatures permit, leading to overlapping generations year-round in
   mild climates.
-- **Thermal biology**: development occurs between approximately 7°C and 31°C,
+- **Thermal biology**: development occurs between approximately 6.8°C and 31°C,
   with optimum rates near 22–25°C. The nonlinear relationship between temperature
   and development rate is well described by a Brière-type function.
 - **Polyphagy**: larvae feed on foliage and fruit of an enormous range of hosts,
@@ -99,13 +99,15 @@ using Statistics
 
 We parameterize Brière-type development rate functions for each immature stage.
 Parameters are based on the reanalysis by @gutierrez2010prospective of laboratory
-data from @danthanarayana1975bionomics.
+data from @danthanarayana1975bionomics. The corrected lower thresholds below use
+Gutierrez et al. (2010)'s 6.8°C reanalysis while retaining the published stage DD
+requirements.
 
 ```{julia}
-# Lower developmental thresholds (°C)
-T_L_egg   = 7.5
-T_L_larva = 7.5
-T_L_pupa  = 7.5
+# Lower developmental thresholds (°C; Gutierrez et al. 2010 reanalysis)
+T_L_egg   = 6.8
+T_L_larva = 6.8
+T_L_pupa  = 6.8
 
 # Upper developmental thresholds (°C)
 T_U_egg   = 31.3
@@ -167,50 +169,55 @@ lbam = Population(:LBAM, [egg, larva, pupa])
 
 ### Temperature-Dependent Mortality
 
-LBAM experiences elevated mortality at temperature extremes. Cold stress increases
-below approximately 5°C, and heat stress increases above approximately 30°C.
-Following the PBDM approach, we define stress functions that return a daily
-mortality multiplier.
+LBAM experiences elevated mortality at temperature extremes. Following
+@gutierrez2010prospective, cold stress begins below 6.8°C and heat stress above
+28°C. The original paper accumulates cold and heat degree-days through time; for
+this vignette we use a simpler daily degree-day approximation that preserves the
+corrected thresholds and fitted stress coefficients.
 
 ```{julia}
 """
-    cold_stress(T_min; T_crit=2.0, k_cold=0.1)
+    cold_stress(T_min; T_crit=6.8, c_cold=0.015, r_cold=0.323)
 
-Daily cold-stress mortality multiplier. Increases exponentially as
-minimum temperature falls below `T_crit`.
+Daily cold-stress mortality multiplier. Gutierrez et al. (2010) formulate
+cold stress cumulatively from degree-days below `T_crit`; here we use the
+same threshold and coefficients in a daily degree-day approximation.
 """
-function cold_stress(T_min; T_crit=2.0, k_cold=0.1)
-    T_min >= T_crit && return 0.0
-    return 1.0 - exp(-k_cold * (T_crit - T_min))
+function cold_stress(T_min; T_crit=6.8, c_cold=0.015, r_cold=0.323)
+    dd_cold = max(0.0, T_crit - T_min)
+    dd_cold == 0.0 && return 0.0
+    return clamp(c_cold * exp(r_cold * dd_cold), 0.0, 1.0)
 end
 
 """
-    heat_stress(T_max; T_crit=33.0, k_heat=0.08)
+    heat_stress(T_max; T_crit=28.0, c_heat=0.125, r_heat=0.025)
 
-Daily heat-stress mortality multiplier. Increases exponentially as
-maximum temperature exceeds `T_crit`.
+Daily heat-stress mortality multiplier. Gutierrez et al. (2010) formulate
+heat stress cumulatively from degree-days above `T_crit`; here we use the
+same threshold and coefficients in a daily degree-day approximation.
 """
-function heat_stress(T_max; T_crit=33.0, k_heat=0.08)
-    T_max <= T_crit && return 0.0
-    return 1.0 - exp(-k_heat * (T_max - T_crit))
+function heat_stress(T_max; T_crit=28.0, c_heat=0.125, r_heat=0.025)
+    dd_heat = max(0.0, T_max - T_crit)
+    dd_heat == 0.0 && return 0.0
+    return clamp(c_heat * exp(r_heat * dd_heat), 0.0, 1.0)
 end
 ```
 
 ### Fecundity Model
 
 Fecundity in LBAM is temperature-dependent, with maximum oviposition occurring
-at intermediate temperatures (~20–25°C). We model per-capita daily egg production
-as a function of mean daily temperature, scaled to produce a lifetime fecundity
-of approximately 300 eggs at optimal temperature.
+near 20°C in the Gutierrez et al. (2010) reanalysis. We model per-capita daily
+egg production as a function of mean daily temperature, scaled to produce a
+lifetime fecundity of approximately 300 eggs at optimal temperature.
 
 ```{julia}
 """
-    fecundity(T_mean; F_max=15.0, T_opt=22.0, T_range=12.0)
+    fecundity(T_mean; F_max=15.0, T_opt=20.0, T_range=12.0)
 
 Daily per-capita fecundity (eggs per adult female) as a Gaussian
 function of mean temperature, peaking at `T_opt`.
 """
-function fecundity(T_mean; F_max=15.0, T_opt=22.0, T_range=12.0)
+function fecundity(T_mean; F_max=15.0, T_opt=20.0, T_range=12.0)
     T_mean <= 0.0 && return 0.0
     return F_max * exp(-((T_mean - T_opt) / T_range)^2)
 end
@@ -295,8 +302,9 @@ function simulate_lbam(pop::Population, weather::WeatherSeries; n0::Float64=100.
     bp_adult  = BulkPopulation(:adult, 0.0)
 
     # Phenology: LBAM generational phase driven by the egg-stage Brière
-    # development rate. Each "generation" is ~597.8 DD = τ_egg + τ_larva + τ_pupa.
-    gen_dd = tau_egg + tau_larva + tau_pupa
+    # development rate. We track the ~594 DD full-generation total reported
+    # by Gutierrez et al. (2010) in this simplified vignette.
+    gen_dd = 594.0
     phen = PhenologyState(:phen,
         [(:gen1, gen_dd), (:gen2, 2*gen_dd), (:gen3, 3*gen_dd),
          (:gen4, 4*gen_dd), (:gen5, 5*gen_dd)];
@@ -569,8 +577,8 @@ ax5 = Axis(fig5[1, 1],
 
 T_range = 0.0:0.5:40.0
 lines!(ax5, collect(T_range), [fecundity(T) for T in T_range], linewidth = 2)
-vlines!(ax5, [22.0], color = :gray60, linestyle = :dash)
-text!(ax5, 23.0, fecundity(22.0), text = "T_opt = 22°C", fontsize = 11)
+vlines!(ax5, [20.0], color = :gray60, linestyle = :dash)
+text!(ax5, 21.0, fecundity(20.0), text = "T_opt = 20°C", fontsize = 11)
 
 fig5
 ```
@@ -579,11 +587,11 @@ fig5
 
 | Parameter | Symbol | Value | Unit | Source |
 |-----------|--------|-------|------|--------|
-| Egg lower threshold | $T_L$ | 7.5 | °C | @danthanarayana1975bionomics |
+| Egg lower threshold | $T_L$ | 6.8 | °C | @gutierrez2010prospective |
 | Egg upper threshold | $T_U$ | 31.3 | °C | @gutierrez2010prospective |
-| Larva lower threshold | $T_L$ | 7.5 | °C | @danthanarayana1975bionomics |
+| Larva lower threshold | $T_L$ | 6.8 | °C | @gutierrez2010prospective |
 | Larva upper threshold | $T_U$ | 31.5 | °C | @gutierrez2010prospective |
-| Pupa lower threshold | $T_L$ | 7.5 | °C | @danthanarayana1975bionomics |
+| Pupa lower threshold | $T_L$ | 6.8 | °C | @gutierrez2010prospective |
 | Pupa upper threshold | $T_U$ | 31.5 | °C | @gutierrez2010prospective |
 | Egg degree-days | $\tau$ | 120.8 | DD | @gutierrez2010prospective |
 | Larva degree-days | $\tau$ | 335.0 | DD | @gutierrez2010prospective |
@@ -598,9 +606,14 @@ fig5
 | Pupa mortality | $\mu$ | 0.01 | day$^{-1}$ | Assumed |
 | Adult mortality | — | 0.08 | day$^{-1}$ | Assumed |
 | Max fecundity | $F_{max}$ | 15.0 | eggs·female$^{-1}$·day$^{-1}$ | @danthanarayana1975bionomics |
-| Optimal temperature | $T_{opt}$ | 22.0 | °C | @danthanarayana1975bionomics |
-| Cold stress threshold | $T_{crit}$ | 2.0 | °C | @gutierrez2010prospective |
-| Heat stress threshold | $T_{crit}$ | 33.0 | °C | @gutierrez2010prospective |
+| Optimal temperature | $T_{opt}$ | 20.0 | °C | @gutierrez2010prospective |
+| Cold stress threshold | $T_{crit}$ | 6.8 | °C | @gutierrez2010prospective |
+| Heat stress threshold | $T_{crit}$ | 28.0 | °C | @gutierrez2010prospective |
+
+*Lower thresholds, stress thresholds, and oviposition optimum are corrected here
+following the Gutierrez et al. (2010) reanalysis; the stress functions remain a
+simplified daily degree-day approximation rather than the paper's full cumulative
+stress-survival model.*
 
 ## Summary and Interpretation
 

@@ -85,7 +85,7 @@ $$
 
 $$
 \hat{p}_0(I) \;=\; p_0\, e^{-\alpha\, I},
-\qquad \alpha = 0.5\;\;(\text{40\% price at }I=100\%).
+\qquad \alpha = 0.5\;\;(\text{$\approx$61\% price at }I=100\%).
 $$
 
 ### Spray count (Eq. 4)
@@ -226,7 +226,7 @@ let
     lines!(ax1, Is, [quality_price(bio, I) for I in Is];
         color=:firebrick, linewidth=2.5)
     hlines!(ax1, [0.4 * bio.p0]; color=:gray, linestyle=:dash)
-    text!(ax1, 50, 0.4 * bio.p0; text="40% price floor at I=100%", fontsize=10, offset=(0, 5))
+    text!(ax1, 50, exp(-0.5) * bio.p0; text="≈61% price at I=100%", fontsize=10, offset=(0, 5))
 
     ax2 = Axis(fig[1,2]; xlabel="Infestation I (%)",
         ylabel="Insecticide applications n(I)",
