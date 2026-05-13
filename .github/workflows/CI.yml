@@ -48,3 +48,40 @@ jobs:
       - uses: julia-actions/julia-runtest@v1
         with:
           project: PhysiologicallyBasedDemographicModels.jl
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+      statuses: write
+    steps:
+      - name: Checkout PhysiologicallyBasedDemographicModels.jl
+        uses: actions/checkout@v4
+        with:
+          path: PhysiologicallyBasedDemographicModels.jl
+      - name: Checkout StructuredPopulationCore.jl
+        uses: actions/checkout@v4
+        with:
+          repository: ecorecipes/ProjectionModels.jl
+          path: StructuredPopulationCore.jl
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1'
+      - uses: julia-actions/cache@v2
+        with:
+          cache-compiled: 'true'
+      - name: Install dependencies
+        run: |
+          julia --project=PhysiologicallyBasedDemographicModels.jl/docs -e '
+            using Pkg
+            Pkg.develop([
+              PackageSpec(path=joinpath(pwd(), "StructuredPopulationCore.jl")),
+              PackageSpec(path=joinpath(pwd(), "PhysiologicallyBasedDemographicModels.jl")),
+            ])
+            Pkg.instantiate()'
+      - name: Build and deploy docs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+        run: julia --project=PhysiologicallyBasedDemographicModels.jl/docs PhysiologicallyBasedDemographicModels.jl/docs/make.jl
