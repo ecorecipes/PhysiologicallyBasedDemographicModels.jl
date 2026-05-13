@@ -129,13 +129,13 @@ parameterisation consistent with the figures (peak development near 30
 °C, oviposition optimum 25 °C, both falling to zero by 35 °C / 30 °C
 respectively).
 
-$$F(d, T_\text{opt}) \;=\; 16.0\,d / 2.6^d,
+$$F(d, T_\text{opt}) \;=\; 160.0\,d / 2.6^d,
 \qquad
 \phi_\text{fec}(T) \;=\; \mathrm{clamp}\!\Bigl(\tfrac{0.0665(T-7.9)}{1 + 2.2^{\,T-27.5}},\,0,\,1\Bigr).$$
 
 ``` julia
 "Bieri left-biased age-fecundity at T_opt=25°C (eggs / female / day)."
-F_age(d) = 16.0 * d / (2.6^d)
+F_age(d) = 160.0 * d / (2.6^d)
 
 "Eq. 7 normalised temperature scalar for oviposition."
 function ϕ_fec(T)
@@ -427,10 +427,10 @@ end
 
     Location    T̄     dda     μ_lo    μ_hi    favour    
     ------------------------------------------------------------
-    Tunis       18.5  3869    0.00    0.00    2.098     
-    Sevilla     18.0  3686    0.00    0.00    1.960     
-    Sacramento  16.5  3340    6.31    0.00    1.204     
-    Berlin      10.0  1685    21.70   0.00    0.000     
+    Tunis       18.5  3869    0.00    0.00    2.086     
+    Sevilla     18.0  3686    0.00    0.00    2.045     
+    Sacramento  16.5  3340    6.31    0.00    1.682     
+    Berlin      10.0  1685    21.70   0.00    0.028     
     Riyadh      25.0  6242    0.00    57.80   0.000     
 
 </div>
@@ -545,10 +545,10 @@ end
 
     Location     PBDM cum. pupae   Surrogate
     ------------------------------------------------
-    Tunis       2.098             2.098       
-    Sevilla     1.960             1.214       
-    Sacramento  1.204             0.323       
-    Berlin      0.000             0.001       
+    Tunis       2.086             2.086       
+    Sevilla     2.045             1.206       
+    Sacramento  1.682             0.321       
+    Berlin      0.028             0.001       
     Riyadh      0.000             0.000       
 
 </div>
@@ -595,10 +595,10 @@ end
 
     Location     baseline    +1.8°C    Δ favour
     --------------------------------------------------
-    Tunis       2.098       2.338     0.240     
-    Sevilla     1.960       2.037     0.077     
-    Sacramento  1.204       1.511     0.307     
-    Berlin      0.000       0.000     0.000     
+    Tunis       2.086       2.516     0.431     
+    Sevilla     2.045       2.502     0.457     
+    Sacramento  1.682       2.279     0.597     
+    Berlin      0.028       0.647     0.618     
     Riyadh      0.000       0.000     -0.000    
 
 ``` julia

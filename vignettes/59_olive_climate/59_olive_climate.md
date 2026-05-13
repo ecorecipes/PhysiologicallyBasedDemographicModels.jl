@@ -67,22 +67,22 @@ pest-control cost:
 ### Yield correction (Eqs. 1–2)
 
 $$Y_\text{index}
-   \;=\; \frac{Y_{+1.8} - Y_0}{\Delta Y_\max - \Delta Y_\min},
+   \;=\; \frac{Y_{+1.8} - Y_0}{\Delta Y_{\max} - \Delta Y_{\min}},
 \qquad
 \Delta Y \;=\; Y_\text{obs} \cdot Y_\text{index}.$$
 
 ### Quality-adjusted oil price (in-line)
 
 $$\hat{p}_0(I) \;=\; p_0\, e^{-\alpha\, I},
-\qquad \alpha = 0.5\;\;(\text{40\% price at }I=100\%).$$
+\qquad \alpha = 0.5\;\;(\text{$\approx$61\% price at }I=100\%).$$
 
 ### Spray count (Eq. 4)
 
 The number of insecticide applications scales linearly with infestation
 between an action threshold $I_\text{th} = 4\%$ and a saturation
-$I_\max = 85\%$:
+$I_{\max} = 85\%$:
 
-$$n(I) \;=\; \mathrm{clamp}\!\left(7\cdot\tfrac{I - I_\text{th}}{I_\max - I_\text{th}},\;0,\;7\right),
+$$n(I) \;=\; \mathrm{clamp}\!\left(7\cdot\tfrac{I - I_\text{th}}{I_{\max} - I_\text{th}},\;0,\;7\right),
 \qquad
 \Delta n \;=\; n(I_{+1.8}) - n(I_0).$$
 
@@ -160,7 +160,7 @@ nothing
 ```
 
 The yield-index normalisation requires the cross-Basin
-$\Delta Y_\max - \Delta Y_\min$. Working from the Table 1 values:
+$\Delta Y_{\max} - \Delta Y_{\min}$. Working from the Table 1 values:
 
 ``` julia
 let
@@ -220,7 +220,7 @@ let
     lines!(ax1, Is, [quality_price(bio, I) for I in Is];
         color=:firebrick, linewidth=2.5)
     hlines!(ax1, [0.4 * bio.p0]; color=:gray, linestyle=:dash)
-    text!(ax1, 50, 0.4 * bio.p0; text="40% price floor at I=100%", fontsize=10, offset=(0, 5))
+    text!(ax1, 50, exp(-0.5) * bio.p0; text="≈61% price at I=100%", fontsize=10, offset=(0, 5))
 
     ax2 = Axis(fig[1,2]; xlabel="Infestation I (%)",
         ylabel="Insecticide applications n(I)",

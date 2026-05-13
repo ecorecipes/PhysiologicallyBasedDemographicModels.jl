@@ -166,7 +166,7 @@ $$G^i(T) = a_i \, T \, (T - T_L^i)\, \sqrt{T_M^i - T}$$
 which is positive only for $T_L^i < T < T_M^i$.
 
 ``` julia
-# ── Brière development rate parameters (Gilioli et al. 2022, Table S2)
+# ── Brière development rate parameters (pedagogical values; cf. Gilioli et al. 2022)
 # Stage-specific: (a, T_lower, T_upper)
 const DEV_PARAMS = (
     egg   = (a = 6.73e-5, T_L = 10.5, T_M = 35.5),
@@ -1026,8 +1026,8 @@ sufficient.
 Gilioli, Gianni, Giorgio Sperandio, Michele Colturato, et al. 2022.
 “Nonlinear Physiological Responses to Climate Change: The Case of
 <span class="nocase">Ceratitis capitata</span> Distribution and
-Abundance in Europe.” *Ecological Modelling* 471: 110071.
-<https://doi.org/10.1016/j.ecolmodel.2022.110071>.
+Abundance in Europe.” *Biological Invasions* 24: 261–79.
+<https://doi.org/10.1007/s10530-021-02639-9>.
 
 </div>
 

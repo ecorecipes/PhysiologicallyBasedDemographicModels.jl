@@ -110,9 +110,9 @@ end
 *Masonaphis maxima* colonizes thimbleberry foliage in spring. The
 lifecycle is modeled as two stages: nymph (instars I–IV) and adult.
 Development is temperature-driven with a lower threshold typical of
-temperate aphids (~4.4 °C).
+temperate aphids (~3.3 °C).
 
-- **Nymph development**: ~110 degree-days (DD) above 4.4 °C (~7–10 days
+- **Nymph development**: ~110 degree-days (DD) above 3.3 °C (~7–10 days
   in Berkeley spring)
 - **Adult longevity**: ~250 DD
 - **Fecundity**: ~4 nymphs/adult/day at optimal temperature (~20 °C)
@@ -413,14 +413,14 @@ Gilbert & Gutierrez (1973).
 
 | Parameter | Value | Source |
 |----|----|----|
-| Aphid base temperature | 4.4 °C | Estimated; temperate aphid biology |
+| Aphid base temperature | 3.3 °C | 38 °F; Gilbert & Gutierrez 1973 |
 | Aphid upper threshold | 32.0 °C | Estimated; temperate aphid biology |
 | Nymph development time | ~110 DD | Gilbert & Gutierrez (1973), Table 2 |
 | Adult longevity | ~250 DD | Gilbert & Gutierrez (1973), Table 2 |
 | Nymph substages | 15 | **\[assumed\]** |
 | Adult substages | 10 | **\[assumed\]** |
 | Aphid fecundity | ~4 nymphs/adult/day | Gilbert & Gutierrez (1973), Fig. 3 |
-| Parasitoid base temperature | 6.0 °C | Estimated; braconid parasitoid biology |
+| Parasitoid base temperature | 5.6 °C | 42 °F; Gilbert & Gutierrez 1973 |
 | Parasitoid upper threshold | 33.0 °C | **\[assumed\]** |
 | Larval development time | ~160 DD | Estimated from Gilbert & Gutierrez (1973) |
 | Adult parasitoid longevity | ~120 DD | Estimated from Gilbert & Gutierrez (1973) |

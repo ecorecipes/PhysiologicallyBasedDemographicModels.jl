@@ -163,6 +163,12 @@ growing regions.
 
 ### Vital-rate functions
 
+**Note:** The vital-rate functions below are *illustrative*
+parameterizations chosen to demonstrate the RI framework. They are
+representative of each species’ thermal biology but are not taken
+directly from Ndjomatchoua et al. (2024). For species-specific parameter
+fitting, consult the primary entomological literature for each pest.
+
 **Development rates** use the Brière function (Brière et al. 1999):
 
 $$D(T) = a \, T \, (T - T_L) \, \sqrt{T_M - T}, \quad T_L < T < T_M$$

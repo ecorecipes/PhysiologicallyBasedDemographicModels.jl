@@ -32,7 +32,8 @@ Simon Frost
   - [Model Limitations](#model-limitations)
 - [References](#references)
 
-Primary reference: (Sweidan et al. 2025).
+Primary framing references: primary *P. spumarius* phenology literature
+and EFSA risk-assessment material.
 
 ## Introduction
 
@@ -46,15 +47,21 @@ infected plants and transmit it when they move to healthy hosts. Because
 critically, understanding **when** adults are active and feeding — is
 the cornerstone of control strategies.
 
-This vignette implements a **pure phenology model** for *P. spumarius*
-following Sweidan et al. (2025). The model predicts the timing of
-emergence through 7 life stages (egg → 5 nymphal instars → adult) using
-a Kolmogorov–Von Foerster equation driven by temperature-dependent
-development rates. No mortality or reproduction is modeled — the focus
-is entirely on **when** each stage appears during the year. This is
-directly relevant to *Xylella* management because only adults transmit
-the pathogen, and the adult feeding window defines the transmission
-window.
+This vignette implements a **pure phenology model** for *P. spumarius*.
+The model predicts the timing of emergence through 7 life stages (egg →
+5 nymphal instars → adult) using a Kolmogorov–Von Foerster equation
+driven by temperature-dependent development rates. No mortality or
+reproduction is modeled — the focus is entirely on **when** each stage
+appears during the year. This is directly relevant to *Xylella*
+management because only adults transmit the pathogen, and the adult
+feeding window defines the transmission window.
+
+**Note:** The original bibliography entry cited for this vignette does
+not correspond to a published paper. The Lactin development rate
+parameters used here are pedagogical approximations. Users should verify
+parameters against primary *P. spumarius* literature (e.g., Ponti et al.
+2014; Di Lena et al. 2019; EFSA 2019 PLH Panel opinion) before use in
+research.
 
 ### Kolmogorov–Von Foerster Equation
 
@@ -93,7 +100,7 @@ The `max(0, ·)` clamp prevents negative rates at low temperatures.
 
 ### Stage-Specific Parameters
 
-Parameters from Sweidan et al. (2025), Table 1:
+Pedagogical Lactin development rate parameters used in this vignette:
 
 | Stage | $\rho$ | $T_{\max}$ (°C) | $\Delta T$ (°C) | $\gamma$ |
 |-------|--------|-----------------|-----------------|----------|
@@ -159,7 +166,7 @@ end
 ### Stage-Specific Parameters
 
 ``` julia
-# Lactin parameters from Sweidan et al. (2025), Table 1
+# Lactin development rate parameters used here as pedagogical approximations
 #   (ρ, T_max, ΔT, γ) for each life stage
 const LACTIN_PARAMS = (
     egg   = (ρ = 0.0038, T_max = 41.8, ΔT = 3.1, γ = -1.00),
@@ -742,17 +749,6 @@ coupling adult maturation output back to egg input.
 
 ## References
 
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-Sweidan2025PhilaenusPhenology" class="csl-entry">
-
-Sweidan, Ali H., Lucia Ferreri, Marco Ferrante, Giulia Ferretti, Daniela
-Ferrara, and Federica Ferraro. 2025. “A Physiologically Based Phenology
-Model for <span class="nocase">Philaenus spumarius</span> (Hemiptera:
-Aphrophoridae), the Main Vector of <span class="nocase">Xylella
-fastidiosa</span> in Europe.” *Ecological Modelling* 489: 110928.
-<https://doi.org/10.1016/j.ecolmodel.2025.110928>.
-
-</div>
-
-</div>
+Suggested primary literature for parameter verification includes Ponti
+et al. (2014), Di Lena et al. (2019), and the EFSA PLH Panel opinion
+(2019).

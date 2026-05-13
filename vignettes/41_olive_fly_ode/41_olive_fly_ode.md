@@ -124,12 +124,16 @@ deviates from the optimum, mortality increases toward 1.
 
 Stage-specific parameters (Table 2):
 
-| Stage | $k$  | $\rho_T$ | $T_{\max}$ (°C) |
-|:------|:----:|:--------:|:---------------:|
-| Egg   | 0.87 |    −4    |      25.0       |
-| Larva | 0.80 |    −4    |      22.0       |
-| Pupa  | 0.82 |    −6    |      24.6       |
-| Adult | 0.60 |    −6    |      25.0       |
+| Stage |  $k$   | $\rho_T$ | $T_{\max}$ (°C) |
+|:------|:------:|:--------:|:---------------:|
+| Egg   |  0.87  |   −4.5   |      25.0       |
+| Larva | 0.8516 |  −4.53   |     22.295      |
+| Pupa  |  0.82  |    −6    |      24.6       |
+| Adult | 0.6384 |    −6    |     24.9276     |
+
+**Note:** The egg, larval, and adult mortality corrections above were
+cross-checked against the Rossini et al. GitHub reference implementation
+(`lucaros1190/ODE-bactrocera`, `Parameters.py`).
 
 The instantaneous daily mortality rate in the ODE is
 $M_i(T) \cdot G(T)$, where $M_i$ gives the fraction dying per unit of
@@ -157,6 +161,104 @@ using OrdinaryDiffEq
 using CairoMakie
 ```
 
+    Precompiling packages...
+       2719.7 ms  ✓ FastBroadcast
+       3995.8 ms  ✓ PreallocationTools
+       4792.7 ms  ✓ NLSolversBase
+       5144.8 ms  ✓ FunctionWrappersWrappers
+       2623.7 ms  ✓ FastBroadcast → FastBroadcastStaticExt
+       3061.3 ms  ✓ FastBroadcast → FastBroadcastPolyesterExt
+       5923.6 ms  ✓ SymbolicIndexingInterface
+       6857.4 ms  ✓ SciMLOperators
+       3086.2 ms  ✓ PreallocationTools → PreallocationToolsForwardDiffExt
+       3853.9 ms  ✓ LineSearches
+       1914.8 ms  ✓ SciMLOperators → SciMLOperatorsStaticArraysCoreExt
+       2529.4 ms  ✓ SciMLOperators → SciMLOperatorsSparseArraysExt
+       7341.6 ms  ✓ RecursiveArrayTools
+       2084.6 ms  ✓ RecursiveArrayTools → RecursiveArrayToolsFastBroadcastExt
+       2026.1 ms  ✓ RecursiveArrayTools → RecursiveArrayToolsSparseArraysExt
+       2577.2 ms  ✓ RecursiveArrayTools → RecursiveArrayToolsStatisticsExt
+       3241.2 ms  ✓ RecursiveArrayTools → RecursiveArrayToolsForwardDiffExt
+       4018.7 ms  ✓ RecursiveArrayTools → RecursiveArrayToolsFastBroadcastPolyesterExt
+      20719.9 ms  ✓ SciMLBase
+       3736.8 ms  ✓ SciMLBase → SciMLBaseDifferentiationInterfaceExt
+       5027.4 ms  ✓ SciMLBase → SciMLBaseForwardDiffExt
+       6431.8 ms  ✓ SciMLJacobianOperators
+      14516.9 ms  ✓ LinearSolve
+       8187.7 ms  ✓ LineSearch
+       8609.2 ms  ✓ LinearSolve → LinearSolveForwardDiffExt
+       8558.7 ms  ✓ LinearSolve → LinearSolveSparseArraysExt
+      13794.2 ms  ✓ NonlinearSolveBase
+       7345.1 ms  ✓ LineSearch → LineSearchLineSearchesExt
+       7592.5 ms  ✓ LinearSolve → LinearSolveEnzymeExt
+       6752.9 ms  ✓ NonlinearSolveBase → NonlinearSolveBaseSparseMatrixColoringsExt
+       6577.5 ms  ✓ NonlinearSolveBase → NonlinearSolveBaseSparseArraysExt
+       6640.0 ms  ✓ NonlinearSolveBase → NonlinearSolveBaseLineSearchExt
+       7170.5 ms  ✓ NonlinearSolveBase → NonlinearSolveBaseLinearSolveExt
+       9687.6 ms  ✓ BracketingNonlinearSolve
+      12023.4 ms  ✓ NonlinearSolveBase → NonlinearSolveBaseForwardDiffExt
+       6231.1 ms  ✓ BracketingNonlinearSolve → BracketingNonlinearSolveForwardDiffExt
+       8313.7 ms  ✓ DiffEqBase
+      16131.9 ms  ✓ NonlinearSolveSpectralMethods
+       8342.0 ms  ✓ DiffEqBase → DiffEqBaseSparseArraysExt
+      10228.4 ms  ✓ NonlinearSolveSpectralMethods → NonlinearSolveSpectralMethodsForwardDiffExt
+      25837.2 ms  ✓ NonlinearSolveQuasiNewton
+      14678.8 ms  ✓ DiffEqBase → DiffEqBaseForwardDiffExt
+      16053.7 ms  ✓ OrdinaryDiffEqCore
+      22426.2 ms  ✓ SimpleNonlinearSolve
+       8322.3 ms  ✓ NonlinearSolveQuasiNewton → NonlinearSolveQuasiNewtonForwardDiffExt
+      10534.6 ms  ✓ OrdinaryDiffEqCore → OrdinaryDiffEqCoreSparseArraysExt
+      15801.4 ms  ✓ OrdinaryDiffEqExplicitRK
+      14162.1 ms  ✓ OrdinaryDiffEqSSPRK
+      14450.4 ms  ✓ OrdinaryDiffEqSymplecticRK
+      15317.3 ms  ✓ OrdinaryDiffEqHighOrderRK
+      14779.2 ms  ✓ OrdinaryDiffEqStabilizedRK
+      13141.3 ms  ✓ OrdinaryDiffEqLowOrderRK
+      41059.3 ms  ✓ NonlinearSolveFirstOrder
+      15267.5 ms  ✓ OrdinaryDiffEqFunctionMap
+      10183.3 ms  ✓ OrdinaryDiffEqPRK
+      10257.6 ms  ✓ OrdinaryDiffEqRKN
+      11296.9 ms  ✓ OrdinaryDiffEqFeagin
+      10756.2 ms  ✓ OrdinaryDiffEqQPRK
+      11641.5 ms  ✓ OrdinaryDiffEqLowStorageRK
+      19878.6 ms  ✓ OrdinaryDiffEqTsit5
+      15653.5 ms  ✓ OrdinaryDiffEqLinear
+      12522.1 ms  ✓ OrdinaryDiffEqNordsieck
+      17022.1 ms  ✓ OrdinaryDiffEqAdamsBashforthMoulton
+      27508.1 ms  ✓ OrdinaryDiffEqDifferentiation
+      34159.1 ms  ✓ OrdinaryDiffEqVerner
+       7036.7 ms  ✓ OrdinaryDiffEqDifferentiation → OrdinaryDiffEqDifferentiationSparseArraysExt
+      19557.5 ms  ✓ OrdinaryDiffEqExtrapolation
+      23672.8 ms  ✓ OrdinaryDiffEqExponentialRK
+      36055.7 ms  ✓ OrdinaryDiffEqRosenbrock
+      69320.7 ms  ✓ NonlinearSolve
+       7504.7 ms  ✓ OrdinaryDiffEqNonlinearSolve
+       7145.3 ms  ✓ OrdinaryDiffEqIMEXMultistep
+       7494.1 ms  ✓ OrdinaryDiffEqPDIRK
+       8099.8 ms  ✓ OrdinaryDiffEqStabilizedIRK
+      18122.8 ms  ✓ OrdinaryDiffEqSDIRK
+      23855.2 ms  ✓ OrdinaryDiffEqFIRK
+      13922.4 ms  ✓ OrdinaryDiffEqBDF
+      29156.1 ms  ✓ OrdinaryDiffEqDefault
+      15989.2 ms  ✓ OrdinaryDiffEq
+      79 dependencies successfully precompiled in 307 seconds. 147 already precompiled.
+    Precompiling packages...
+       6276.3 ms  ✓ RecursiveArrayTools → RecursiveArrayToolsStructArraysExt
+       6485.5 ms  ✓ SciMLBase → SciMLBaseChainRulesCoreExt
+       6459.6 ms  ✓ NonlinearSolveBase → NonlinearSolveBaseChainRulesCoreExt
+       6568.4 ms  ✓ RecursiveArrayTools → RecursiveArrayToolsTablesExt
+       6498.9 ms  ✓ LinearSolve → LinearSolveChainRulesCoreExt
+       7003.2 ms  ✓ BracketingNonlinearSolve → BracketingNonlinearSolveChainRulesCoreExt
+       6956.5 ms  ✓ SimpleNonlinearSolve → SimpleNonlinearSolveChainRulesCoreExt
+       7024.1 ms  ✓ DiffEqBase → DiffEqBaseChainRulesCoreExt
+       8570.4 ms  ✓ SciMLBase → SciMLBaseDistributionsExt
+       3353.2 ms  ✓ DiffEqBase → DiffEqBaseUnitfulExt
+       7909.9 ms  ✓ DelayDiffEq
+      13148.3 ms  ✓ SciMLBase → SciMLBaseMakieExt
+       7926.4 ms  ✓ PhysiologicallyBasedDemographicModels → OrdinaryDiffEqExt
+       7910.5 ms  ✓ PhysiologicallyBasedDemographicModels → DelayDiffEqExt
+      14 dependencies successfully precompiled in 62 seconds. 451 already precompiled.
+
 ## Implementation
 
 ### Parameter Definitions
@@ -178,7 +280,7 @@ end
 # Best-fit parameters (Table 1)
 const dev_params = BriereGeneralized(4.6e-5, 7.23, 32.2, 1.0 / 2.5)
 
-# --- Mortality: Gumbel survival (Eqs. 7-8, Table 2) ---
+# --- Mortality: Gumbel survival (Eqs. 7-8, Table 2; corrected against Rossini's reference implementation) ---
 struct MortalityParams{T<:Real}
     k::T
     ρ_T::T
@@ -190,10 +292,10 @@ function mortality_fraction(p::MortalityParams, T)
     return 1.0 - p.k * exp(1.0 + z - exp(z))
 end
 
-const mort_egg   = MortalityParams(0.87, -4.0, 25.0)
-const mort_larva = MortalityParams(0.80, -4.0, 22.0)
+const mort_egg   = MortalityParams(0.87, -4.5, 25.0)
+const mort_larva = MortalityParams(0.8516, -4.53, 22.295)
 const mort_pupa  = MortalityParams(0.82, -6.0, 24.6)
-const mort_adult = MortalityParams(0.60, -6.0, 25.0)
+const mort_adult = MortalityParams(0.6384, -6.0, 24.9276)
 
 # --- Fecundity (Eq. 9, Table 3) ---
 const β_max = 5.0   # peak eggs/mated-female/day
@@ -321,13 +423,13 @@ end
     ===========================================================================
       T(°C)  | G(T)      | β(T)      | M_egg   | M_larva | M_pupa  | M_adult
     ---------------------------------------------------------------------------
-       10.0  |    0.0044 |       0.0 |  0.9457 |   0.897 |  0.8208 |  0.8767
-       15.0  |   0.01673 |       0.0 |  0.8212 |  0.6824 |  0.6322 |   0.745
-       20.0  |   0.03195 |       1.8 |  0.4912 |  0.2808 |  0.3493 |   0.541
-       25.0  |   0.04501 |     4.963 |    0.13 |  0.4458 |  0.1819 |     0.4
-       28.0  |    0.0475 |     4.412 |  0.3973 |  0.8897 |  0.3258 |  0.4829
-       30.0  |   0.04307 |     3.024 |  0.7483 |  0.9901 |  0.5314 |  0.6241
-       32.0  |   0.01915 |      0.82 |  0.9569 |  0.9999 |  0.7529 |  0.7889
+       10.0  |    0.0044 |       0.0 |  0.9186 |  0.8564 |  0.8208 |  0.8673
+       15.0  |   0.01673 |       0.0 |    0.77 |  0.6212 |  0.6322 |   0.726
+       20.0  |   0.03195 |       1.8 |  0.4399 |  0.2365 |  0.3493 |  0.5083
+       25.0  |   0.04501 |     4.963 |    0.13 |  0.3164 |  0.1819 |  0.3616
+       28.0  |    0.0475 |     4.412 |  0.3432 |  0.7594 |  0.3258 |  0.4542
+       30.0  |   0.04307 |     3.024 |  0.6556 |  0.9471 |  0.5314 |  0.6064
+       32.0  |   0.01915 |      0.82 |  0.9019 |  0.9961 |  0.7529 |  0.7814
 
 ### ODE Right-Hand Side
 
@@ -497,18 +599,18 @@ end
     Summer simulation (Jul 15 – Sep 30):
       Time span: day 196 to 273 (77 days)
       Initial total: 6.0 individuals
-      Final total:   501.8 individuals
+      Final total:   583.9 individuals
 
       Stage populations at selected dates:
       -------------------------------------------------------------------------------------
       Day  | T(°C) |      Egg |       L1 |       L2 |       L3 |     Pupa |     Male |   NM Fem |    M Fem | Total
       -------------------------------------------------------------------------------------
        196 |  29.2 |      2.0 |      0.0 |      0.0 |      0.0 |      0.0 |      0.0 |      0.0 |      4.0 | 6.0
-       210 |  28.1 |    120.2 |     31.5 |      6.1 |      0.9 |      0.1 |      0.0 |      0.0 |      2.8 | 161.7
-       227 |  26.2 |    162.3 |     72.6 |     26.7 |      8.2 |      2.4 |      0.3 |      0.3 |      2.1 | 274.8
-       243 |  24.0 |    178.3 |    103.3 |     50.4 |     21.0 |      8.2 |      1.9 |      1.5 |      2.1 | 366.6
-       258 |  21.7 |    191.4 |    128.5 |     74.3 |     37.2 |     16.6 |      4.7 |      3.7 |      2.9 | 459.2
-       273 |  19.4 |    177.7 |    138.8 |     90.1 |     51.0 |     25.1 |      8.2 |      6.4 |      4.5 | 501.8
+       210 |  28.1 |    123.6 |     32.9 |      6.5 |      1.0 |      0.1 |      0.0 |      0.0 |      2.9 | 167.0
+       227 |  26.2 |    169.3 |     79.8 |     30.2 |      9.4 |      2.7 |      0.4 |      0.3 |      2.1 | 294.2
+       243 |  24.0 |    189.1 |    115.4 |     58.8 |     25.3 |      9.7 |      2.2 |      1.7 |      2.2 | 404.5
+       258 |  21.7 |    211.8 |    144.5 |     86.3 |     44.7 |     19.9 |      5.6 |      4.4 |      3.4 | 520.5
+       273 |  19.4 |    205.7 |    159.4 |    105.0 |     60.9 |     30.0 |     10.0 |      7.7 |      5.3 | 583.9
 
 ### Full-Year Simulation
 
@@ -544,9 +646,9 @@ println("  Peak day:      $(round(sol_year.t[peak_idx], digits=0)) " *
 
     Full-year simulation:
       Initial total: 2.0 individuals
-      Final total:   411.8 individuals
-      Peak total:    993.8 individuals
-      Peak day:      271.0 (T = 19.7°C)
+      Final total:   667.3 individuals
+      Peak total:    1505.7 individuals
+      Peak day:      272.0 (T = 19.5°C)
 
 ## Results
 
@@ -762,13 +864,13 @@ println("   → Approx. $(round(dd_summer * G25 / G25, digits=1)) developmental 
        → Generation time ≈ 22.0 days (expect ~30-60)
     2. Mortality at T_max (optimal survival):
        Egg: M(25.0°C) = 0.13 (survival = 0.87)
-       Larva: M(22.0°C) = 0.2 (survival = 0.8)
+       Larva: M(22.295°C) = 0.148 (survival = 0.852)
        Pupa: M(24.6°C) = 0.18 (survival = 0.82)
-       Adult: M(25.0°C) = 0.4 (survival = 0.6)
+       Adult: M(24.9276°C) = 0.362 (survival = 0.638)
     3. β(25.6°C) = 5.0 eggs/female/day
        β(20°C) = 1.8 eggs/female/day
        β(30°C) = 3.02 eggs/female/day
-    4. Peak total population: 993.8 individuals
+    4. Peak total population: 1505.7 individuals
        (expect 10s–100s per spatial unit, not millions)
     5. Summer DD accumulation:
        Jul–Sep total development: 3.32
@@ -906,10 +1008,10 @@ end
     ======================================================================
       Scenario  | Peak pop. | Peak day | Season length | Total ind·days
     ----------------------------------------------------------------------
-      Baseline   |     993.8 | day 271 |    361 days    | 110532.0
-      +1°C       |     809.9 | day 278 |    362 days    | 89754.0
-      +2°C       |     663.5 | day 284 |    365 days    | 73709.0
-      +3°C       |     641.1 | day 292 |    365 days    | 70984.0
+      Baseline   |    1505.7 | day 272 |    363 days    | 165156.0
+      +1°C       |    1195.3 | day 279 |    365 days    | 130207.0
+      +2°C       |     952.0 | day 286 |    365 days    | 103572.0
+      +3°C       |     898.4 | day 293 |    365 days    | 97111.0
 
 ## Discussion
 
@@ -942,7 +1044,9 @@ complete modeling study would ideally validate both approaches against
 the same field dataset.
 
 **Code availability:** The original Python implementation by Rossini et
-al. is available at <https://github.com/lucaros1190/ODE-bactrocera>.
+al. is available at <https://github.com/lucaros1190/ODE-bactrocera>; the
+mortality parameter corrections in this vignette were cross-checked
+against its `Parameters.py` reference implementation.
 
 ## References
 

@@ -31,7 +31,14 @@ Simon Frost
 - [Key Insights](#key-insights)
 - [References](#references)
 
-Primary reference: (Garay-Narváez et al. 2015).
+Primary framing reference: Gutierrez (1996).
+
+**Note:** The original bibliography entry for this vignette contained an
+incorrect reference. This vignette presents a pedagogical model of *S.
+exigua* host–parasitoid dynamics following general physiologically based
+demographic modeling principles; parameter values are approximate values
+assembled from general entomological literature rather than a single
+verified source.
 
 ## Introduction
 
@@ -50,14 +57,14 @@ oviposit into early-instar *Spodoptera* larvae; the parasitoid larva
 develops inside the host, consuming it from within, and eventually kills
 the host at the prepupal stage before pupating externally.
 
-Garay-Narváez et al. (2015) developed a discrete-time, stage-structured
-model of the *S. exigua*–*H. didymator* system using distributed delays
-(the Manetsch/Vansickle framework) for both host and parasitoid
-development. Temperature drives development rates through linear
-degree-day accumulation, and the parasitoid attacks small (early-instar)
-host larvae via a Type III functional response.
+This vignette presents a discrete-time, stage-structured model of the
+*S. exigua*–*H. didymator* system using distributed delays (the
+Manetsch/Vansickle framework) for both host and parasitoid development.
+Temperature drives development rates through linear degree-day
+accumulation, and the parasitoid attacks small (early-instar) host
+larvae via a Type III functional response.
 
-This vignette reconstructs the Garay-Narváez et al. (2015) model using
+This vignette implements this pedagogical model using
 `PhysiologicallyBasedDemographicModels.jl`, explores host dynamics with
 and without parasitoid control, and evaluates the effect of parasitoid
 release timing on pest suppression in a greenhouse setting.
@@ -75,10 +82,10 @@ using Statistics
 ### Development Rate
 
 *S. exigua* development is temperature-driven with stage-specific lower
-developmental thresholds ($T_{min}$) estimated from laboratory rearing
-data (Garay-Narváez et al. 2015, Table 1). Each stage accumulates
-degree-days (DD) above its threshold; transit through the stage requires
-a fixed thermal constant $\tau$ (in DD).
+developmental thresholds ($T_{min}$) and thermal constants chosen as
+pedagogical values consistent with general *S. exigua* rearing studies.
+Each stage accumulates degree-days (DD) above its threshold; transit
+through the stage requires a fixed thermal constant $\tau$ (in DD).
 
 | Stage               | $\tau$ (DD) | $T_{min}$ (°C) | $T_{max}$ (°C) | $k$ substages |
 |---------------------|-------------|----------------|----------------|---------------|
@@ -95,7 +102,7 @@ $115.2 / (25 - 8.3)
 days at 25 °C, consistent with published *S. exigua* life tables.
 
 ``` julia
-# Stage-specific development rates (Table 1, Garay-Narváez et al. 2015)
+# Stage-specific development rates (pedagogical values consistent with general *S. exigua* thermal biology literature)
 host_dev_egg = LinearDevelopmentRate(13.9, 40.0)
 host_dev_sl  = LinearDevelopmentRate(12.5, 40.0)
 host_dev_ll  = LinearDevelopmentRate(8.7, 40.0)
@@ -317,7 +324,7 @@ density, $a(N) \to 1 / T_h \approx 132$ hosts/parasitoid/day
 (saturation).
 
 ``` julia
-# Type III functional response parameters (Garay-Narváez et al. 2015)
+# Type III functional response parameters (pedagogical host–parasitoid response values)
 const ẑ = 0.00828   # search rate coefficient
 const T_h = 0.0076  # handling time (days)
 
@@ -960,38 +967,38 @@ end
 
 | Parameter | Value | Source | Notes |
 |----|----|----|----|
-| Egg DD ($\tau$) | 32.8 | Garay-Narváez et al. (2015), Table 1 |  |
-| Egg $T_{min}$ | 13.9 °C | Table 1 |  |
-| Small larva DD | 98.0 | Table 1 | L1–L3 combined |
-| Small larva $T_{min}$ | 12.5 °C | Table 1 |  |
-| Large larva DD | 116.4 | Table 1 | L4–L5 combined |
-| Large larva $T_{min}$ | 8.7 °C | Table 1 |  |
-| Pupa DD | 115.2 | Table 1 |  |
-| Pupa $T_{min}$ | 8.3 °C | Table 1 |  |
-| $k$ (substages) | 15, 15, 20, 25 | **\[assumed\]** | Erlang shape parameter |
-| Egg mortality (25 °C) | 0.02/day | **\[assumed\]** | Quadratic model centered at 25 °C |
-| Small larva mortality (25 °C) | 0.03/day | **\[assumed\]** | Centered at 26 °C |
-| Large larva mortality (25 °C) | 0.025/day | **\[assumed\]** | Centered at 24 °C |
-| Pupa mortality (25 °C) | 0.015/day | **\[assumed\]** | Centered at 23 °C |
-| Adult mortality | 0.05/day | **\[assumed\]** | Constant |
-| Total fecundity | ~1293 eggs/♀ | Table 1 |  |
-| Sex ratio | 0.5 | Table 1 |  |
-| Fecundity peak temp | 27 °C | **\[assumed\]** | Concave thermal scalar |
-| Parasitoid egg-larva DD | 150 | **\[estimated\]** | From *H. didymator* biology |
-| Parasitoid pupa DD | 100 | **\[estimated\]** |  |
-| Parasitoid $T_{min}$ | 10.0 °C | **\[estimated\]** |  |
-| Parasitoid $T_{max}$ | 38.0 °C | **\[assumed\]** |  |
-| $k$ parasitoid egg-larva | 10 | **\[assumed\]** |  |
-| $k$ parasitoid pupa | 15 | **\[assumed\]** |  |
-| Search rate coeff ($\hat{z}$) | 0.00828 | Garay-Narváez et al. (2015) | Type III |
-| Handling time ($T_h$) | 0.0076 days | Garay-Narváez et al. (2015) |  |
-| Parasitoid immature mortality | 0.02/day | **\[assumed\]** |  |
-| Parasitoid adult mortality | 0.05/day | **\[assumed\]** |  |
+| Egg DD ($\tau$) | 32.8 | General *S. exigua* thermal biology literature | Pedagogical approximation |
+| Egg $T_{min}$ | 13.9 °C | General *S. exigua* thermal biology literature |  |
+| Small larva DD | 98.0 | General *S. exigua* thermal biology literature | L1–L3 combined |
+| Small larva $T_{min}$ | 12.5 °C | General *S. exigua* thermal biology literature |  |
+| Large larva DD | 116.4 | General *S. exigua* thermal biology literature | L4–L5 combined |
+| Large larva $T_{min}$ | 8.7 °C | General *S. exigua* thermal biology literature |  |
+| Pupa DD | 115.2 | General *S. exigua* thermal biology literature |  |
+| Pupa $T_{min}$ | 8.3 °C | General *S. exigua* thermal biology literature |  |
+| $k$ (substages) | 15, 15, 20, 25 | Pedagogical approximation | Erlang shape parameter |
+| Egg mortality (25 °C) | 0.02/day | Pedagogical approximation | Quadratic model centered at 25 °C |
+| Small larva mortality (25 °C) | 0.03/day | Pedagogical approximation | Centered at 26 °C |
+| Large larva mortality (25 °C) | 0.025/day | Pedagogical approximation | Centered at 24 °C |
+| Pupa mortality (25 °C) | 0.015/day | Pedagogical approximation | Centered at 23 °C |
+| Adult mortality | 0.05/day | Pedagogical approximation | Constant |
+| Total fecundity | ~1293 eggs/♀ | General *S. exigua* fecundity literature |  |
+| Sex ratio | 0.5 | General *S. exigua* biology literature |  |
+| Fecundity peak temp | 27 °C | Pedagogical approximation | Concave thermal scalar |
+| Parasitoid egg-larva DD | 150 | General ichneumonid parasitoid literature | Approximate |
+| Parasitoid pupa DD | 100 | General ichneumonid parasitoid literature | Approximate |
+| Parasitoid $T_{min}$ | 10.0 °C | General ichneumonid parasitoid literature | Approximate |
+| Parasitoid $T_{max}$ | 38.0 °C | Pedagogical approximation |  |
+| $k$ parasitoid egg-larva | 10 | Pedagogical approximation |  |
+| $k$ parasitoid pupa | 15 | Pedagogical approximation |  |
+| Search rate coeff ($\hat{z}$) | 0.00828 | Pedagogical host–parasitoid response parameter | Type III |
+| Handling time ($T_h$) | 0.0076 days | Pedagogical host–parasitoid response parameter |  |
+| Parasitoid immature mortality | 0.02/day | Pedagogical approximation |  |
+| Parasitoid adult mortality | 0.05/day | Pedagogical approximation |  |
 
-Parameters marked **\[assumed\]** or **\[estimated\]** are not directly
-reported in Garay-Narváez et al. (2015) and are estimated from related
-*Spodoptera*–ichneumonid parasitoid systems or chosen to produce
-biologically plausible dynamics.
+All values in this vignette should be treated as pedagogical or
+approximate rather than as a parameterization traceable to a single
+verified paper. The original bibliography entry associated with this
+vignette was incorrect.
 
 ## Key Insights
 
@@ -1023,10 +1030,6 @@ biologically plausible dynamics.
 
 ## References
 
-- Garay-Narváez L, Arim M, Flores JD, Ramos-Jiliberto R (2015). The more
-  polluted the environment, the more important observational ecology
-  becomes. *Environmental Modelling and Software* 67:27–35.
-
 - Gutierrez AP (1996). *Applied Population Ecology: A Supply–Demand
   Approach*. John Wiley & Sons, New York.
 
@@ -1040,16 +1043,3 @@ biologically plausible dynamics.
 - van Lenteren JC (2012). The state of commercial augmentative
   biological control: plenty of natural enemies, but a frustrating lack
   of uptake. *BioControl* 57:1–20.
-
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-GarayNarvaez2015Spodoptera" class="csl-entry">
-
-Garay-Narváez, Loreto, Matías Arim, Julián D. Flores, and Rodrigo
-Ramos-Jiliberto. 2015. “The More Polluted the Environment, the More
-Important Observational Ecology Becomes.” *Environmental Modelling and
-Software* 67: 27–35. <https://doi.org/10.1016/j.envsoft.2015.01.005>.
-
-</div>
-
-</div>

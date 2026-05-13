@@ -53,8 +53,8 @@ and adult. Key biological features relevant to modeling include:
 - **No diapause**: unlike many temperate Lepidoptera, LBAM develops
   continuously whenever temperatures permit, leading to overlapping
   generations year-round in mild climates.
-- **Thermal biology**: development occurs between approximately 7°C and
-  31°C, with optimum rates near 22–25°C. The nonlinear relationship
+- **Thermal biology**: development occurs between approximately 6.8°C
+  and 31°C, with optimum rates near 22–25°C. The nonlinear relationship
   between temperature and development rate is well described by a
   Brière-type function.
 - **Polyphagy**: larvae feed on foliage and fruit of an enormous range
@@ -103,13 +103,15 @@ using Statistics
 
 We parameterize Brière-type development rate functions for each immature
 stage. Parameters are based on the reanalysis by Gutierrez et al. (2010)
-of laboratory data from Danthanarayana (1975).
+of laboratory data from Danthanarayana (1975). The corrected lower
+thresholds below use Gutierrez et al. (2010)’s 6.8°C reanalysis while
+retaining the published stage DD requirements.
 
 ``` julia
-# Lower developmental thresholds (°C)
-T_L_egg   = 7.5
-T_L_larva = 7.5
-T_L_pupa  = 7.5
+# Lower developmental thresholds (°C; Gutierrez et al. 2010 reanalysis)
+T_L_egg   = 6.8
+T_L_larva = 6.8
+T_L_pupa  = 6.8
 
 # Upper developmental thresholds (°C)
 T_U_egg   = 31.3
@@ -127,7 +129,7 @@ dev_larva = BriereDevelopmentRate(a_larva, T_L_larva, T_U_larva)
 dev_pupa  = BriereDevelopmentRate(a_pupa,  T_L_pupa,  T_U_pupa)
 ```
 
-    BriereDevelopmentRate{Float64}(2.0e-5, 7.5, 31.5)
+    BriereDevelopmentRate{Float64}(2.0e-5, 6.8, 31.5)
 
 ### Degree-Day Requirements and Distributed Delays
 
@@ -175,36 +177,42 @@ pupa  = LifeStage(:pupa,  delay_pupa,  dev_pupa,  mu_pupa)
 lbam = Population(:LBAM, [egg, larva, pupa])
 ```
 
-    Population{Float64}(:LBAM, LifeStage{Float64, BriereDevelopmentRate{Float64}}[LifeStage{Float64, BriereDevelopmentRate{Float64}}(:egg, DistributedDelay{Float64}(25, 120.8, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), BriereDevelopmentRate{Float64}(2.0e-5, 7.5, 31.3), 0.01), LifeStage{Float64, BriereDevelopmentRate{Float64}}(:larva, DistributedDelay{Float64}(30, 335.0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), BriereDevelopmentRate{Float64}(2.0e-5, 7.5, 31.5), 0.02), LifeStage{Float64, BriereDevelopmentRate{Float64}}(:pupa, DistributedDelay{Float64}(25, 142.0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), BriereDevelopmentRate{Float64}(2.0e-5, 7.5, 31.5), 0.01)])
+    Population{Float64}(:LBAM, LifeStage{Float64, BriereDevelopmentRate{Float64}}[LifeStage{Float64, BriereDevelopmentRate{Float64}}(:egg, DistributedDelay{Float64}(25, 120.8, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), BriereDevelopmentRate{Float64}(2.0e-5, 6.8, 31.3), 0.01), LifeStage{Float64, BriereDevelopmentRate{Float64}}(:larva, DistributedDelay{Float64}(30, 335.0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), BriereDevelopmentRate{Float64}(2.0e-5, 6.8, 31.5), 0.02), LifeStage{Float64, BriereDevelopmentRate{Float64}}(:pupa, DistributedDelay{Float64}(25, 142.0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), BriereDevelopmentRate{Float64}(2.0e-5, 6.8, 31.5), 0.01)])
 
 ### Temperature-Dependent Mortality
 
-LBAM experiences elevated mortality at temperature extremes. Cold stress
-increases below approximately 5°C, and heat stress increases above
-approximately 30°C. Following the PBDM approach, we define stress
-functions that return a daily mortality multiplier.
+LBAM experiences elevated mortality at temperature extremes. Following
+Gutierrez et al. (2010), cold stress begins below 6.8°C and heat stress
+above 28°C. The original paper accumulates cold and heat degree-days
+through time; for this vignette we use a simpler daily degree-day
+approximation that preserves the corrected thresholds and fitted stress
+coefficients.
 
 ``` julia
 """
-    cold_stress(T_min; T_crit=2.0, k_cold=0.1)
+    cold_stress(T_min; T_crit=6.8, c_cold=0.015, r_cold=0.323)
 
-Daily cold-stress mortality multiplier. Increases exponentially as
-minimum temperature falls below `T_crit`.
+Daily cold-stress mortality multiplier. Gutierrez et al. (2010) formulate
+cold stress cumulatively from degree-days below `T_crit`; here we use the
+same threshold and coefficients in a daily degree-day approximation.
 """
-function cold_stress(T_min; T_crit=2.0, k_cold=0.1)
-    T_min >= T_crit && return 0.0
-    return 1.0 - exp(-k_cold * (T_crit - T_min))
+function cold_stress(T_min; T_crit=6.8, c_cold=0.015, r_cold=0.323)
+    dd_cold = max(0.0, T_crit - T_min)
+    dd_cold == 0.0 && return 0.0
+    return clamp(c_cold * exp(r_cold * dd_cold), 0.0, 1.0)
 end
 
 """
-    heat_stress(T_max; T_crit=33.0, k_heat=0.08)
+    heat_stress(T_max; T_crit=28.0, c_heat=0.125, r_heat=0.025)
 
-Daily heat-stress mortality multiplier. Increases exponentially as
-maximum temperature exceeds `T_crit`.
+Daily heat-stress mortality multiplier. Gutierrez et al. (2010) formulate
+heat stress cumulatively from degree-days above `T_crit`; here we use the
+same threshold and coefficients in a daily degree-day approximation.
 """
-function heat_stress(T_max; T_crit=33.0, k_heat=0.08)
-    T_max <= T_crit && return 0.0
-    return 1.0 - exp(-k_heat * (T_max - T_crit))
+function heat_stress(T_max; T_crit=28.0, c_heat=0.125, r_heat=0.025)
+    dd_heat = max(0.0, T_max - T_crit)
+    dd_heat == 0.0 && return 0.0
+    return clamp(c_heat * exp(r_heat * dd_heat), 0.0, 1.0)
 end
 ```
 
@@ -213,19 +221,19 @@ end
 ### Fecundity Model
 
 Fecundity in LBAM is temperature-dependent, with maximum oviposition
-occurring at intermediate temperatures (~20–25°C). We model per-capita
-daily egg production as a function of mean daily temperature, scaled to
-produce a lifetime fecundity of approximately 300 eggs at optimal
-temperature.
+occurring near 20°C in the Gutierrez et al. (2010) reanalysis. We model
+per-capita daily egg production as a function of mean daily temperature,
+scaled to produce a lifetime fecundity of approximately 300 eggs at
+optimal temperature.
 
 ``` julia
 """
-    fecundity(T_mean; F_max=15.0, T_opt=22.0, T_range=12.0)
+    fecundity(T_mean; F_max=15.0, T_opt=20.0, T_range=12.0)
 
 Daily per-capita fecundity (eggs per adult female) as a Gaussian
 function of mean temperature, peaking at `T_opt`.
 """
-function fecundity(T_mean; F_max=15.0, T_opt=22.0, T_range=12.0)
+function fecundity(T_mean; F_max=15.0, T_opt=20.0, T_range=12.0)
     T_mean <= 0.0 && return 0.0
     return F_max * exp(-((T_mean - T_opt) / T_range)^2)
 end
@@ -315,8 +323,9 @@ function simulate_lbam(pop::Population, weather::WeatherSeries; n0::Float64=100.
     bp_adult  = BulkPopulation(:adult, 0.0)
 
     # Phenology: LBAM generational phase driven by the egg-stage Brière
-    # development rate. Each "generation" is ~597.8 DD = τ_egg + τ_larva + τ_pupa.
-    gen_dd = tau_egg + tau_larva + tau_pupa
+    # development rate. We track the ~594 DD full-generation total reported
+    # by Gutierrez et al. (2010) in this simplified vignette.
+    gen_dd = 594.0
     phen = PhenologyState(:phen,
         [(:gen1, gen_dd), (:gen2, 2*gen_dd), (:gen3, 3*gen_dd),
          (:gen4, 4*gen_dd), (:gen5, 5*gen_dd)];
@@ -413,7 +422,7 @@ sim_sub  = simulate_lbam(
 )
 ```
 
-    (t = 1:1095, totals = [99.9770070832025 0.010413458694509877 0.0; 99.95409088792732 0.02079013161455699 0.0; … ; 68.315028187016 12.25567144559103 9.970240448624199e-27; 68.29785178382303 12.261109943935043 1.0156283230217006e-26], stage_names = [:egg, :larva, :pupa], dd_accum = [0.012579458102967931, 0.02511923360409734, 0.03762155945980894, 0.050088680946880924, 0.06252285483411003, 0.07492634856657693, 0.08730143946193576, 0.09965041391809903, 0.11197556663164292, 0.12427919982621571  …  19.896540317049872, 19.90957494110679, 19.922550483867845, 19.93546902783502, 19.948332675921023, 19.96114355049076, 19.973903792418017, 19.986615560157315, 19.999281028830826, 20.011902389330224], fec_out = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], adults = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  3.412341466486372e-55, 3.52238720468044e-55, 3.6355351527038926e-55, 3.751890396796919e-55, 3.8715635112163874e-55, 3.994670848472418e-55, 4.121334842573275e-55, 4.251684326013106e-55, 4.385854861290502e-55, 4.523989087802103e-55], final_phase = :pre)
+    (t = 1:1095, totals = [99.97535318764574 0.011162505595201606 0.0; 99.95078466164445 0.022287212459037038 0.0; … ; 19.899550812042612 3.7252608060938117 1.1928153813596436e-26; 19.894161721569834 3.726943169133092 1.2154469693531454e-26], stage_names = [:egg, :larva, :pupa], dd_accum = [0.01348430675900354, 0.02692841682082707, 0.04033458930717051, 0.05370509630266674, 0.0670422219897252, 0.08034826179546506, 0.09362552155018988, 0.10687631665680786, 0.1201029712705555, 0.13330781748834064  …  20.86446856238507, 20.878413715901793, 20.892299073235048, 20.906126735712682, 20.91989882601885, 20.93361748720472, 20.947284881713568, 20.96090319042029, 20.97447461168528, 20.98800136042249], fec_out = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], adults = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  1.353174814907018e-54, 1.3978814988431042e-54, 1.4438916999829193e-54, 1.4912498141213117e-54, 1.5400024860409948e-54, 1.5901987287912308e-54, 1.6418900484467493e-54, 1.6951305746484507e-54, 1.749977197248712e-54, 1.8064897094065628e-54], final_phase = :pre)
 
 ## Temperature Response Curves
 
@@ -623,8 +632,8 @@ ax5 = Axis(fig5[1, 1],
 
 T_range = 0.0:0.5:40.0
 lines!(ax5, collect(T_range), [fecundity(T) for T in T_range], linewidth = 2)
-vlines!(ax5, [22.0], color = :gray60, linestyle = :dash)
-text!(ax5, 23.0, fecundity(22.0), text = "T_opt = 22°C", fontsize = 11)
+vlines!(ax5, [20.0], color = :gray60, linestyle = :dash)
+text!(ax5, 21.0, fecundity(20.0), text = "T_opt = 20°C", fontsize = 11)
 
 fig5
 ```
@@ -644,11 +653,11 @@ temperature, showing the Gaussian thermal optimum.
 
 | Parameter | Symbol | Value | Unit | Source |
 |----|----|----|----|----|
-| Egg lower threshold | $T_L$ | 7.5 | °C | Danthanarayana (1975) |
+| Egg lower threshold | $T_L$ | 6.8 | °C | Gutierrez et al. (2010) |
 | Egg upper threshold | $T_U$ | 31.3 | °C | Gutierrez et al. (2010) |
-| Larva lower threshold | $T_L$ | 7.5 | °C | Danthanarayana (1975) |
+| Larva lower threshold | $T_L$ | 6.8 | °C | Gutierrez et al. (2010) |
 | Larva upper threshold | $T_U$ | 31.5 | °C | Gutierrez et al. (2010) |
-| Pupa lower threshold | $T_L$ | 7.5 | °C | Danthanarayana (1975) |
+| Pupa lower threshold | $T_L$ | 6.8 | °C | Gutierrez et al. (2010) |
 | Pupa upper threshold | $T_U$ | 31.5 | °C | Gutierrez et al. (2010) |
 | Egg degree-days | $\tau$ | 120.8 | DD | Gutierrez et al. (2010) |
 | Larva degree-days | $\tau$ | 335.0 | DD | Gutierrez et al. (2010) |
@@ -663,9 +672,14 @@ temperature, showing the Gaussian thermal optimum.
 | Pupa mortality | $\mu$ | 0.01 | day$^{-1}$ | Assumed |
 | Adult mortality | — | 0.08 | day$^{-1}$ | Assumed |
 | Max fecundity | $F_{max}$ | 15.0 | eggs·female$^{-1}$·day$^{-1}$ | Danthanarayana (1975) |
-| Optimal temperature | $T_{opt}$ | 22.0 | °C | Danthanarayana (1975) |
-| Cold stress threshold | $T_{crit}$ | 2.0 | °C | Gutierrez et al. (2010) |
-| Heat stress threshold | $T_{crit}$ | 33.0 | °C | Gutierrez et al. (2010) |
+| Optimal temperature | $T_{opt}$ | 20.0 | °C | Gutierrez et al. (2010) |
+| Cold stress threshold | $T_{crit}$ | 6.8 | °C | Gutierrez et al. (2010) |
+| Heat stress threshold | $T_{crit}$ | 28.0 | °C | Gutierrez et al. (2010) |
+
+*Lower thresholds, stress thresholds, and oviposition optimum are
+corrected here following the Gutierrez et al. (2010) reanalysis; the
+stress functions remain a simplified daily degree-day approximation
+rather than the paper’s full cumulative stress-survival model.*
 
 ## Summary and Interpretation
 

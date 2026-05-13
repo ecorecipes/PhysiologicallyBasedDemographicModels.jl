@@ -101,9 +101,10 @@ reduces oviposition rates in all four species.
 ## Parameters
 
 Parameters are drawn from Table 2, Figs. 5–8, and supplementary Excel
-files S1–S4 of Gutierrez et al. (2021). Where the paper reports data for
-egg-larval and pupal stages separately, we combine them into immature
-stage estimates for simplicity.
+files S1–S4 of Gutierrez et al. (2021). The stage-specific T_base and DD
+values below are corrected to match Table 2. Where the paper reports
+data for egg-larval and pupal stages separately, we combine them into
+immature stage estimates for simplicity.
 
 ### Development Rates
 
@@ -141,35 +142,35 @@ struct FruitFlySpecies
     RH_threshold::Float64       # RH below which reproduction declines
 end
 
-# Mediterranean fruit fly (Fig. 5, Table 2)
+# Mediterranean fruit fly (Fig. 5, Table 2; corrected thresholds/DD)
 medfly = FruitFlySpecies(
     "Mediterranean fruit fly", "Cc",
-    9.0, 10.0, 28.0, 36.0,
-    160.0, 180.0,
+    10.345, 9.5, 28.0, 36.0,
+    129.0, 165.0,
     20.0, 800.0, 75.0, 60.0
 )
 
-# Oriental fruit fly (Fig. 7, Table 2)
+# Oriental fruit fly (Fig. 7, Table 2; corrected thresholds/DD)
 oriental = FruitFlySpecies(
     "Oriental fruit fly", "Bd",
-    10.0, 10.5, 29.0, 35.0,
-    140.0, 170.0,
+    8.87, 8.87, 29.0, 35.0,
+    136.0, 177.0,
     30.0, 1200.0, 90.0, 55.0
 )
 
-# Melon fly (Fig. 6, Table 2)
+# Melon fly (Fig. 6, Table 2; corrected thresholds/DD)
 melon = FruitFlySpecies(
     "Melon fly", "Bc",
-    10.0, 11.0, 28.0, 36.0,
-    150.0, 200.0,
+    7.95, 7.95, 28.0, 36.0,
+    104.0, 164.0,
     15.0, 600.0, 80.0, 55.0
 )
 
-# Mexican fruit fly (Fig. 8, Table 2)
+# Mexican fruit fly (Fig. 8, Table 2; corrected thresholds/DD)
 mexfly = FruitFlySpecies(
     "Mexican fruit fly", "Al",
-    7.5, 8.0, 27.0, 38.0,
-    200.0, 220.0,
+    10.3, 10.3, 27.0, 38.0,
+    258.0, 264.0,
     18.0, 1500.0, 130.0, 50.0
 )
 
@@ -183,17 +184,18 @@ for sp in all_species
 end
 ```
 
-    Mediterranean fruit fly (Cc): T_base=9.0–10.0°C, T_opt=28.0°C, T_max=36.0°C, DD total=340.0
-    Oriental fruit fly (Bd): T_base=10.0–10.5°C, T_opt=29.0°C, T_max=35.0°C, DD total=310.0
-    Melon fly (Bc): T_base=10.0–11.0°C, T_opt=28.0°C, T_max=36.0°C, DD total=350.0
-    Mexican fruit fly (Al): T_base=7.5–8.0°C, T_opt=27.0°C, T_max=38.0°C, DD total=420.0
+    Mediterranean fruit fly (Cc): T_base=10.345–9.5°C, T_opt=28.0°C, T_max=36.0°C, DD total=294.0
+    Oriental fruit fly (Bd): T_base=8.87–8.87°C, T_opt=29.0°C, T_max=35.0°C, DD total=313.0
+    Melon fly (Bc): T_base=7.95–7.95°C, T_opt=28.0°C, T_max=36.0°C, DD total=268.0
+    Mexican fruit fly (Al): T_base=10.3–10.3°C, T_opt=27.0°C, T_max=38.0°C, DD total=522.0
 
 ### Thermal Thresholds per Species
 
 The four species differ most in their lower developmental thresholds,
-which determine the poleward limit of their range. The Mexican fruit fly
-is the most cold-tolerant (T_base ≈ 7.5 °C), while the melon and
-oriental fruit flies have the highest lower thresholds (~10–11 °C):
+which determine the poleward limit of their range. In the corrected
+Table 2 values, melon fly has the lowest shared T_base (≈ 7.95 °C),
+oriental fruit fly is intermediate (≈ 8.87 °C), and medfly/mexfly
+require roughly 9.5–10.35 °C depending on stage:
 
 ``` julia
 # Linear development rate models (degree-day accumulation).
@@ -220,11 +222,11 @@ end
 
     Daily degree-day accumulation (DD/day):
     Temp (°C)   Cc        Bd        Bc        Al        
-    15          6.0       5.0       5.0       7.5       
-    20          11.0      10.0      10.0      12.5      
-    25          16.0      15.0      15.0      17.5      
-    30          21.0      20.0      20.0      22.5      
-    35          26.0      25.0      25.0      27.5      
+    15          4.655     6.13      7.05      4.7       
+    20          9.655     11.13     12.05     9.7       
+    25          14.655    16.13     17.05     14.7      
+    30          19.655    21.13     22.05     19.7      
+    35          24.655    26.13     27.05     24.7      
 
 ### Mortality and Reproduction Parameters
 
@@ -291,12 +293,12 @@ end
 
     Oviposition temperature scalars ψ(T):
     Temp    Cc        Bd        Bc        Al        
-    10°C    0.029     0.01      0.022     0.083     
-    15°C    0.157     0.081     0.135     0.29      
-    20°C    0.495     0.355     0.469     0.656     
-    25°C    0.906     0.815     0.899     0.966     
-    30°C    0.957     0.987     0.954     0.926     
-    35°C    0.584     0.631     0.56      0.577     
+    10°C    0.0       0.015     0.037     0.0       
+    15°C    0.128     0.101     0.179     0.223     
+    20°C    0.459     0.387     0.522     0.6       
+    25°C    0.896     0.829     0.913     0.959     
+    30°C    0.953     0.988     0.96      0.91      
+    35°C    0.551     0.656     0.608     0.513     
 
 ## Climate Scenarios
 
@@ -377,10 +379,12 @@ lines!(ax, 1:N_DAYS, Ts_curr, label="Current (1980–1990)",
 lines!(ax, 1:N_DAYS, Ts_rcp, label="RCP 8.5 (2055–2065)",
        linewidth=2, color=:firebrick, linestyle=:dash)
 
-# Mark thermal thresholds
-hlines!(ax, [9.0],  color=(:green, 0.4), linestyle=:dot, label="Medfly T_base")
-hlines!(ax, [10.0], color=(:orange, 0.4), linestyle=:dot, label="Oriental/Melon T_base")
-hlines!(ax, [7.5],  color=(:purple, 0.4), linestyle=:dot, label="Mexfly T_base")
+# Mark corrected lower developmental thresholds
+hlines!(ax, [10.345], color=(:green, 0.4), linestyle=:dot, label="Medfly egg-larva T_base")
+hlines!(ax, [9.5],   color=(:green, 0.25), linestyle=:dash, label="Medfly pupa T_base")
+hlines!(ax, [8.87],  color=(:orange, 0.4), linestyle=:dot, label="Oriental T_base")
+hlines!(ax, [7.95],  color=(:purple, 0.4), linestyle=:dot, label="Melon T_base")
+hlines!(ax, [10.3],  color=(:brown, 0.4), linestyle=:dot, label="Mexfly T_base")
 
 axislegend(ax; position=:lt, fontsize=9)
 fig_wx
@@ -459,10 +463,10 @@ for sp in all_species
 end
 ```
 
-    Cc annual DD=2555.0, potential generations=7.5
-    Bd annual DD=2190.0, potential generations=7.1
-    Bc annual DD=2190.0, potential generations=6.3
-    Al annual DD=3102.0, potential generations=7.4
+    Cc annual DD=2064.0, potential generations=7.0
+    Bd annual DD=2602.0, potential generations=8.3
+    Bc annual DD=2938.0, potential generations=11.0
+    Al annual DD=2081.0, potential generations=4.0
 
 ### PBDMProblem and Solve
 
@@ -584,10 +588,10 @@ end
 
     Annual normalized favorability index (log-scaled pupal abundance):
     Species                       Current FI     RCP 8.5 FI
-    Mediterranean fruit fly       0.656          1.0 (+52.4%)
-    Oriental fruit fly            0.614          1.0 (+62.9%)
-    Melon fly                     0.631          1.0 (+58.5%)
-    Mexican fruit fly             0.72           1.0 (+38.9%)
+    Mediterranean fruit fly       0.619          1.0 (+61.7%)
+    Oriental fruit fly            0.643          1.0 (+55.5%)
+    Melon fly                     0.682          1.0 (+46.6%)
+    Mexican fruit fly             0.647          1.0 (+54.5%)
 
 ## Results
 
@@ -768,26 +772,27 @@ end
     ═══ Climate Change Impact Summary ═══
 
     Mediterranean fruit fly (Cc): WINNER ↑
-      Population change: 52.4%
-      Favorable latitudes: 7 → 10 (+3°)
+      Population change: 61.7%
+      Favorable latitudes: 5 → 9 (+4°)
 
     Oriental fruit fly (Bd): WINNER ↑
-      Population change: 62.9%
-      Favorable latitudes: 7 → 10 (+3°)
+      Population change: 55.5%
+      Favorable latitudes: 7 → 11 (+4°)
 
     Melon fly (Bc): WINNER ↑
-      Population change: 58.5%
-      Favorable latitudes: 5 → 8 (+3°)
+      Population change: 46.6%
+      Favorable latitudes: 7 → 11 (+4°)
 
     Mexican fruit fly (Al): WINNER ↑
-      Population change: 38.9%
-      Favorable latitudes: 8 → 12 (+4°)
+      Population change: 54.5%
+      Favorable latitudes: 4 → 8 (+4°)
 
-**Mexican fruit fly** is the strongest “climate winner” — its lower
-thermal thresholds (T_base ≈ 7.5 °C) and tolerance of higher
-temperatures (T_max ≈ 38 °C) give it the widest thermal niche among the
-four species. Under RCP 8.5, mexfly is predicted to expand into coastal
-California and parts of southern Europe that are currently marginal.
+With the corrected Table 2 thresholds, the strongest “climate winner”
+should be read directly from the simulated favorability indices above
+rather than from the superseded placeholder T_base values. In
+particular, the corrected parameters no longer make mexfly the most
+cold-tolerant species: melon fly (7.95 °C) and oriental fruit fly (8.87
+°C) initiate development at cooler temperatures than mexfly (10.3 °C).
 
 ### Losers
 
@@ -849,9 +854,9 @@ consistent with Gutierrez et al. (2021):
 
 1.  **Temperature is the primary range determinant.** All four tropical
     fruit flies are excluded from most temperate regions by cold winter
-    temperatures. The species’ lower developmental thresholds (7.5–11
-    °C) set their poleward limits, while upper lethal temperatures
-    (35–38 °C) constrain their equatorial range.
+    temperatures. The species’ corrected lower developmental thresholds
+    (~7.95–10.35 °C) set their poleward limits, while upper lethal
+    temperatures (35–38 °C) constrain their equatorial range.
 
 2.  **Climate change produces species-specific range shifts.** Under RCP
     8.5, warming winters expand potential range poleward, but increased
@@ -859,11 +864,12 @@ consistent with Gutierrez et al. (2021):
     favourable subtropical areas — a finding most pronounced for melon
     fly in the Mediterranean Basin.
 
-3.  **Mexican fruit fly has the broadest thermal niche.** With the
-    lowest T_base (7.5 °C) and highest T_max (38 °C), mexfly tolerates
-    the widest temperature range, giving it the greatest projected range
-    expansion under climate change. This is consistent with its current
-    distribution extending further into temperate Mexico.
+3.  **Thermal niches differ materially across species.** With the
+    corrected Table 2 values, melon fly has the lowest shared T_base
+    (7.95 °C), oriental fruit fly is next (8.87 °C), medfly spans
+    9.5–10.345 °C across immature stages, and mexfly is about 10.3 °C.
+    These corrected thresholds shift the relative establishment-risk
+    ranking compared with the earlier draft.
 
 4.  **Relative humidity modulates reproduction.** The RH sensitivity
     analysis shows that all four species require RH \> 50–60% for
@@ -899,12 +905,12 @@ the detection location under current and projected climate conditions.
 | Parameter | Medfly (Cc) | Oriental (Bd) | Melon (Bc) | Mexfly (Al) | Source |
 |:---|:---|:---|:---|:---|:---|
 | **Development** |  |  |  |  |  |
-| T_base egg-larva (°C) | 9.0 | 10.0 | 10.0 | 7.5 | Table 2, Figs. 5–8 |
-| T_base pupa (°C) | 10.0 | 10.5 | 11.0 | 8.0 | Table 2, Figs. 5–8 |
+| T_base egg-larva (°C) | 10.345 | 8.87 | 7.95 | 10.3 | Table 2, Figs. 5–8 |
+| T_base pupa (°C) | 9.5 | 8.87 | 7.95 | 10.3 | Table 2, Figs. 5–8 |
 | T_opt (°C) | 28.0 | 29.0 | 28.0 | 27.0 | Figs. 5–8 |
 | T_max (°C) | 36.0 | 35.0 | 36.0 | 38.0 | Figs. 5–8 |
-| DD egg-larva | 160 | 140 | 150 | 200 | Table 2 |
-| DD pupa | 180 | 170 | 200 | 220 | Table 2 |
+| DD egg-larva | 129 | 136 | 104 | 258 | Table 2 |
+| DD pupa | 165 | 177 | 164 | 264 | Table 2 |
 | **Reproduction** |  |  |  |  |  |
 | Peak fecundity (eggs/♀/day) | 20 | 30 | 15 | 18 | Figs. 5–8 |
 | Lifetime fecundity (eggs) | 800 | 1200 | 600 | 1500 | Table 2 |
@@ -917,15 +923,18 @@ the detection location under current and projected climate conditions.
 | **Substages** | 25 | 25 | 25 | 25 | numerical choice |
 
 *Parameters drawn from Table 2 and Figs. 5–8 of Gutierrez et al. (2021).
-Stage-specific degree-day totals are approximate values derived from the
-reported nonlinear development rate curves.*
+The T_base and stage-specific DD values in this vignette are corrected
+to the Table 2 values; the simplified implementation still approximates
+the paper’s full nonlinear development functions with linear DD
+accrual.*
 
 ## Key Insights
 
-1.  **Cold tolerance sets the poleward limit.** Mexican fruit fly
-    (T_base ≈ 7.5 °C) can develop at temperatures 1.5–3.5 °C below the
-    thresholds of the other three species, explaining its broader
-    prospective range in temperate regions.
+1.  **Cold tolerance sets the poleward limit.** With the corrected Table
+    2 values, melon fly (T_base ≈ 7.95 °C) and oriental fruit fly (8.87
+    °C) can accumulate degree-days at cooler temperatures than medfly
+    and mexfly, materially changing the comparative cold-tolerance
+    ranking from the earlier draft.
 
 2.  **Climate change is not uniformly beneficial.** While warming
     expands the poleward range boundary, increased heat stress and
