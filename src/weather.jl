@@ -104,7 +104,7 @@ Base.length(ws::WeatherSeries) = length(ws.days)
 Generate synthetic daily weather from sinusoidal annual temperature.
 Useful for testing.
 
-`T(d) = T_mean + amplitude * sin(2π(d - phase) / 365)`
+`T(d) = T_mean + amplitude * cos(2π(d - phase) / 365)`
 """
 struct SinusoidalWeather{T<:Real} <: AbstractWeather
     T_mean::T
@@ -124,7 +124,7 @@ function SinusoidalWeather(T_mean::Real, amplitude::Real;
 end
 
 function get_weather(sw::SinusoidalWeather, d::Int)
-    temp = sw.T_mean + sw.amplitude * sin(2π * (d - sw.phase) / 365)
+    temp = sw.T_mean + sw.amplitude * cos(2π * (d - sw.phase) / 365)
     return DailyWeather(temp, temp - 3, temp + 3;
                         radiation=sw.radiation, photoperiod=12.0,
                         rainfall=0.0, humidity=0.5)

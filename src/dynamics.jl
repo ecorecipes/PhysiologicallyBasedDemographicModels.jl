@@ -16,7 +16,7 @@ Advance a distributed delay by one physiological time step.
 - `dd::Real`: Degree-days accumulated this time step
 - `inflow::Real`: Input to the first substage
 - `μ::Real`: Background mortality rate (per degree-day)
-- `stress::Real`: Stress-induced attrition rate (from supply/demand deficit)
+- `stress::Real`: Stress-induced daily attrition fraction in `[0, 1]`
 
 # Returns
 Named tuple `(outflow, attrition)`:
@@ -39,12 +39,14 @@ function step_delay!(delay::DistributedDelay{T}, dd::Real, inflow::Real;
     total_outflow = zero(T)
 
     # Split large daily steps into stable substeps so no substage can send more
-    # mass onward than it contains.
-    total_fraction = ((k / τ) + μ + stress) * dd
+    # mass onward than it contains. Stress is treated as a daily survival penalty,
+    # independent of the day's degree-day accumulation.
+    total_fraction = ((k / τ) + μ) * dd + stress
     n_substeps = max(1, ceil(Int, total_fraction))
     dd_sub = T(dd / n_substeps)
     flow_fraction = (k / τ) * dd_sub
-    attrition_fraction = (μ + stress) * dd_sub
+    stress_fraction = T(one(T) - (one(T) - T(stress))^(1 / n_substeps))
+    attrition_fraction = μ * dd_sub + stress_fraction
 
     substep_inflow = T(inflow)
     for _ in 1:n_substeps
@@ -141,9 +143,21 @@ plain distributed-delay update; BDF/MP/hybrid approaches can inject stress or
 resource-allocation effects before the stage update.
 """
 function step_system!(pop::Population{T}, weather_day::DailyWeather,
-                      ::Nothing=nothing; inflow::Real=zero(T), kwargs...) where {T}
-    result = step_population!(pop, weather_day; inflow=inflow)
+                      ::Nothing=nothing; inflow::Real=zero(T),
+                      stage_stress=nothing, kwargs...) where {T}
+    result = step_population!(pop, weather_day; inflow=inflow, stage_stress=stage_stress)
     return (; result..., approach_family=:legacy)
+end
+
+function _merge_stage_stress(pop::Population{T}, stage_stress, computed_stress) where {T}
+    ns = n_stages(pop)
+    supplied = stage_stress === nothing ? fill(zero(T), ns) : T.(stage_stress)
+    computed = computed_stress === nothing ? fill(zero(T), ns) : T.(computed_stress)
+    length(supplied) == ns ||
+        throw(DimensionMismatch("stage_stress must have length $(ns)"))
+    length(computed) == ns ||
+        throw(DimensionMismatch("computed stress must have length $(ns)"))
+    return max.(supplied, computed)
 end
 
 function _population_demands(pop::Population{T}) where {T}
@@ -177,12 +191,12 @@ end
 
 function step_system!(pop::Population{T}, weather_day::DailyWeather,
                       model::BiodemographicFunctions;
-                      inflow::Real=zero(T), kwargs...) where {T}
+                      inflow::Real=zero(T), stage_stress=nothing, kwargs...) where {T}
     budget = _bdf_budget(pop, weather_day, model)
     deficit = budget.demand > 0 ? max(zero(T), one(T) - budget.net_supply / budget.demand) : zero(T)
     ratio = budget.demand > 0 ? min(one(T), budget.net_supply / budget.demand) : one(T)
-    stage_stress = fill(deficit, n_stages(pop))
-    result = step_population!(pop, weather_day; inflow=inflow, stage_stress=stage_stress)
+    combined_stress = _merge_stage_stress(pop, stage_stress, fill(deficit, n_stages(pop)))
+    result = step_population!(pop, weather_day; inflow=inflow, stage_stress=combined_stress)
     return (; result..., gross_supply=budget.gross_supply, respiration=budget.respiration,
             net_supply=budget.net_supply, demand=budget.demand,
             supply_demand=ratio, supply_demand_ratio=ratio,
@@ -204,11 +218,12 @@ end
 
 function step_system!(pop::Population{T}, weather_day::DailyWeather,
                       pool::MetabolicPool{T};
-                      inflow::Real=zero(T), kwargs...) where {T}
+                      inflow::Real=zero(T), stage_stress=nothing, kwargs...) where {T}
     realized_pool = _instantiate_pool(pool, pop)
     alloc, stress = _allocation_stress(realized_pool)
     ratio = supply_demand_index(realized_pool)
-    result = step_population!(pop, weather_day; inflow=inflow, stage_stress=stress)
+    combined_stress = _merge_stage_stress(pop, stage_stress, stress)
+    result = step_population!(pop, weather_day; inflow=inflow, stage_stress=combined_stress)
     return (; result..., allocations=alloc, demand=sum(realized_pool.demands),
             supply=realized_pool.supply,
             supply_demand=ratio, supply_demand_ratio=ratio,
@@ -217,12 +232,13 @@ end
 
 function step_system!(pop::Population{T}, weather_day::DailyWeather,
                       model::CoupledPBDMModel;
-                      inflow::Real=zero(T), kwargs...) where {T}
+                      inflow::Real=zero(T), stage_stress=nothing, kwargs...) where {T}
     budget = _bdf_budget(pop, weather_day, biodemography(model))
     realized_pool = _instantiate_pool(allocation_model(model), pop; supply=budget.net_supply)
     alloc, stress = _allocation_stress(realized_pool)
     ratio = supply_demand_index(realized_pool)
-    result = step_population!(pop, weather_day; inflow=inflow, stage_stress=stress)
+    combined_stress = _merge_stage_stress(pop, stage_stress, stress)
+    result = step_population!(pop, weather_day; inflow=inflow, stage_stress=combined_stress)
     return (; result..., gross_supply=budget.gross_supply, respiration=budget.respiration,
             net_supply=budget.net_supply, demand=sum(realized_pool.demands),
             allocations=alloc,

@@ -185,7 +185,7 @@ Compute degree-day accumulation for one day at temperature `T`.
 For `LinearDevelopmentRate`, this is `max(0, T - T_lower)`.
 """
 function degree_days(m::LinearDevelopmentRate, T::Real)
-    return max(zero(T), T - m.T_lower)
+    return development_rate(m, T)
 end
 
 function degree_days(m::AbstractDevelopmentRate, T::Real)

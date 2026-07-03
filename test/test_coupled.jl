@@ -240,6 +240,23 @@
         @test sol[:prey][end] < sol[:prey][1]
     end
 
+    @testset "PredationRule supports FraserGilbertResponse" begin
+        sys = PopulationSystem(
+            :prey => make_test_pop(:prey, 80.0, 40.0),
+            :pred => make_test_pop(:pred, 20.0, 10.0),
+        )
+        prey_before = component_total(sys, :prey)
+        pred_before = component_total(sys, :pred)
+        rule = PredationRule(:pred, :prey, FraserGilbertResponse(0.05); conversion=0.1)
+
+        result = apply_rule!(rule, sys, DailyWeather(25.0), 1, nothing)
+
+        @test result.consumed > 0.0
+        @test isfinite(result.consumed)
+        @test component_total(sys, :prey) < prey_before
+        @test component_total(sys, :pred) > pred_before
+    end
+
     @testset "Coupled solver - convenience constructor" begin
         pop = make_test_pop(:x, 10.0, 5.0)
         sys = PopulationSystem(:x => pop)
@@ -306,6 +323,35 @@
         @test sol.retcode == :Success
         # With merged stress (max), population should decline faster
         @test sol[:x][end] < 150.0  # initial total = 150
+    end
+
+    @testset "StressRule applies with explicit approach" begin
+        days = [DailyWeather(25.0, 20.0, 30.0; radiation=20.0) for _ in 1:10]
+        weather = WeatherSeries(days)
+        approach = MetabolicPool(1.0e6, [1.0, 1.0], [:juvenile, :adult])
+
+        prob_no = PBDMProblem(
+            MultiSpeciesPBDMNew(),
+            PopulationSystem(:x => make_test_pop(:x, 100.0, 50.0)),
+            weather,
+            (1, 10);
+            approach=approach,
+        )
+        sol_no = solve(prob_no, DirectIteration())
+
+        stress_rule = StressRule(:heavy_stress, (sys, w, day, p) -> Dict(:x => [0.5, 0.5]))
+        prob_stress = PBDMProblem(
+            MultiSpeciesPBDMNew(),
+            PopulationSystem(:x => make_test_pop(:x, 100.0, 50.0)),
+            weather,
+            (1, 10);
+            approach=approach,
+            stress_rules=AbstractStressRule[stress_rule],
+        )
+        sol_stress = solve(prob_stress, DirectIteration())
+
+        @test sol_stress.retcode == :Success
+        @test sol_stress[:x][end] < sol_no[:x][end]
     end
 
     # ========================================================================
@@ -745,6 +791,20 @@
         @test haskey(result, :survival)
         @test haskey(result, :entering)
         @test result.entering >= 0.0
+    end
+
+    @testset "DiapauseRule applies incremental cold survival" begin
+        ds = DiapauseState(:winter_pool, 100.0;
+            cold_survival_fn=cdd -> exp(-0.1 * cdd))
+        sys = PopulationSystem(:moths => BulkPopulation(:moths, 0.0); state=[ds])
+        rule = DiapauseRule(:moths, :winter_pool; T_cold_base=10.0)
+
+        for day in 1:3
+            apply_rule!(rule, sys, DailyWeather(5.0, 2.0, 8.0), day, nothing)
+        end
+
+        @test ds.cold_dd[] ≈ 15.0
+        @test ds.pool[] ≈ 100.0 * exp(-0.1 * 15.0) atol=1e-8
     end
 
     @testset "PhenologyState" begin

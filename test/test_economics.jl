@@ -52,6 +52,7 @@
         @test n ≈ 300.0
         n2 = npv(cf, 0.1)
         @test n2 < 300.0
+        @test npv([100.0], 0.25) == 100.0
     end
 
     @testset "Benefit-cost ratio" begin

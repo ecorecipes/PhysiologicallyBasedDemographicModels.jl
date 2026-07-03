@@ -1025,6 +1025,7 @@ function apply_rule!(rule::DiapauseRule, sys::PopulationSystem, w, day::Int, p)
 
     # Accumulate cold degree-days (below base)
     cold_dd_today = max(0.0, rule.T_cold_base - T)
+    cold_dd_before = ds.cold_dd[]
     ds.cold_dd[] += cold_dd_today
 
     # Induction: fraction of active population entering diapause
@@ -1038,8 +1039,10 @@ function apply_rule!(rule::DiapauseRule, sys::PopulationSystem, w, day::Int, p)
     end
 
     # Cold mortality on diapausing pool
+    lx_prev = clamp(ds.cold_survival_fn(cold_dd_before), 0.0, 1.0)
     lx = clamp(ds.cold_survival_fn(ds.cold_dd[]), 0.0, 1.0)
-    ds.pool[] *= lx
+    daily_survival = lx_prev > 0 ? clamp(lx / lx_prev, 0.0, 1.0) : lx
+    ds.pool[] *= daily_survival
 
     # Emergence: fraction of pool becoming active
     dd_today = max(0.0, T - rule.T_cold_base)
@@ -1522,7 +1525,8 @@ function _solve(::S, ::DensityDependent, ::Deterministic,
                 ss = get(component_stress, name, nothing)
                 step_population!(pop, w; stage_stress=ss)
             else
-                step_system!(pop, w, approach)
+                ss = get(component_stress, name, nothing)
+                step_system!(pop, w, approach; stage_stress=ss)
             end
         end
 

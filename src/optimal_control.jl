@@ -189,11 +189,12 @@ end
 
 Maximize discounted profit from a resource trophic level.
 
-Objective: `max Σₜ δᵗ × [p × M_resource(t) − Σⱼ cⱼ × uⱼ(t)²]`
+Objective: `max Σₜ δᵗ × [Σⱼ pⱼ × harvestⱼ(t) − Σⱼ cⱼ × uⱼ(t)²]`
 
 # Fields
 - `resource_level::Int` — index of the revenue-generating trophic level
-- `price_per_unit::Float64` — revenue per unit biomass
+- `price_per_unit::Float64` — fallback revenue per unit harvested biomass when a
+  matching `HarvestControl` does not specify `revenue_per_unit`
 - `control_cost_weight::Float64` — global scaling of control costs
 - `discount_rate::Float64` — per-period discount factor δ = 1/(1+r)
 """

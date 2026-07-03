@@ -159,12 +159,18 @@ function PhysiologicallyBasedDemographicModels.optimize_management(
 
     elseif obj isa MaximizeProfit
         obj_expr = AffExpr(0.0)
-        for t_idx in 1:(n_steps+1)
+        for t_idx in 1:n_steps
             discount = 1.0 / (1.0 + obj.discount_rate)^((t_idx-1) * dt)
-            obj_expr += discount * obj.price_per_unit * M[obj.resource_level, t_idx]
             for (j, action) in enumerate(prob.controls)
+                u_j = ctrl_vars[j][t_idx]
+                if action isa HarvestControl
+                    unit_revenue = action.revenue_per_unit > 0 ? action.revenue_per_unit :
+                                   (action.target == obj.resource_level ? obj.price_per_unit : 0.0)
+                    harvest_flow = dt * u_j * M[action.target, t_idx]
+                    obj_expr += discount * unit_revenue * harvest_flow
+                end
                 cw = _get_cost_weight(action) * obj.control_cost_weight
-                obj_expr -= discount * cw * ctrl_vars[j][t_idx]^2
+                obj_expr -= discount * cw * u_j^2
             end
         end
         @objective(model, Max, obj_expr)

@@ -208,7 +208,7 @@ Compute net present value of a vector of periodic cash flows.
 function npv(cash_flows::AbstractVector{<:Real}, discount_rate::Real)
     total = 0.0
     for (t, cf) in enumerate(cash_flows)
-        total += cf / (1 + discount_rate)^t
+        total += cf / (1 + discount_rate)^(t - 1)
     end
     return total
 end

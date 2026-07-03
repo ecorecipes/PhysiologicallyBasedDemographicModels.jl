@@ -13,6 +13,7 @@ using Statistics
     include("test_temperature_responses.jl")
     include("test_interactions.jl")
     include("test_economics.jl")
+    include("test_optimal_control.jl")
     include("test_genetics.jl")
     include("test_epidemiology.jl")
     include("test_coupled.jl")

@@ -9,6 +9,7 @@
         @test development_rate(ldr, 40.0) == 25.0   # Capped at T_upper - T_lower
         @test degree_days(ldr, 20.0) == 10.0
         @test degree_days(ldr, 5.0) == 0.0
+        @test degree_days(ldr, 40.0) == 25.0
         @test_throws ArgumentError LinearDevelopmentRate(35.0, 10.0)  # lower > upper
     end
 

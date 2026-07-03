@@ -40,8 +40,8 @@
     @testset "SinusoidalWeather" begin
         sw = SinusoidalWeather(15.0, 10.0; phase=200.0)
         w1 = get_weather(sw, 200)
-        @test w1.T_mean ≈ 15.0 atol=0.5  # Near peak
-        w2 = get_weather(sw, 17)  # ~half year before peak → cold (or near mean)
-        @test w2.T_mean < 25.0  # Well below peak
+        @test w1.T_mean ≈ 25.0 atol=1e-6
+        w2 = get_weather(sw, 200 + 91)
+        @test w2.T_mean ≈ 15.0 atol=0.5
     end
 end

@@ -67,6 +67,11 @@ function functional_response(fr::FraserGilbertResponse, supply::Real, demand::Re
     return acquire(fr, supply, demand)
 end
 
+function functional_response(fr::FraserGilbertResponse, prey_density::Real)
+    prey_density <= 0 && return 0.0
+    return acquire(fr, prey_density, 1.0)
+end
+
 # --- Trophic interaction ---
 
 """

@@ -48,6 +48,17 @@
         @test delay_total(dd) + result.outflow + result.attrition ≈ 1.0 atol=1e-6
     end
 
+    @testset "step_delay! stress is independent of DD rate" begin
+        dd_cool = DistributedDelay(1, 1.0e9; W0=100.0)
+        dd_hot = DistributedDelay(1, 1.0e9; W0=100.0)
+
+        step_delay!(dd_cool, 5.0, 0.0; stress=0.5)
+        step_delay!(dd_hot, 15.0, 0.0; stress=0.5)
+
+        @test delay_total(dd_cool) ≈ 50.0 atol=1e-6
+        @test delay_total(dd_hot) ≈ delay_total(dd_cool) atol=1e-6
+    end
+
     @testset "step_population!" begin
         dr = LinearDevelopmentRate(10.0, 35.0)
         stages = [
@@ -94,6 +105,17 @@
         result = step_population!(pop, DailyWeather(20.0))
         @test result.degree_days == 10.0
         @test result.stage_degree_days == [10.0, 5.0]
+    end
+
+    @testset "step_population! caps linear development above T_upper" begin
+        dr = LinearDevelopmentRate(10.0, 35.0)
+        stages = [LifeStage(:egg, DistributedDelay(5, 50.0; W0=10.0), dr, 0.0)]
+        capped = step_population!(Population(:capped, deepcopy(stages)), DailyWeather(35.0))
+        hot = step_population!(Population(:hot, deepcopy(stages)), DailyWeather(45.0))
+
+        @test capped.stage_degree_days == [25.0]
+        @test hot.stage_degree_days == capped.stage_degree_days
+        @test hot.stage_totals[1] ≈ capped.stage_totals[1] atol=1e-8
     end
 
     @testset "step_system! approach-aware dispatch" begin
