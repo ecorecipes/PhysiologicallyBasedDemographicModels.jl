@@ -81,7 +81,8 @@ end
 """
     remake(prob::PBDMProblem; kwargs...)
 
-Create a new PBDMProblem with selected fields replaced.
+Create a new PBDMProblem with selected fields replaced. This is a method of
+`SciMLBase.remake`, the function the other packages of the stack extend too.
 """
 function remake(prob::PBDMProblem;
                 structure=prob.structure, density=prob.density,

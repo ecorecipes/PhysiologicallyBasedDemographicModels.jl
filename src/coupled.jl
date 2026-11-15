@@ -49,16 +49,11 @@ struct MetapopulationPBDM <: MultiPopulationPBDM end
 # StateVariable — mutable auxiliary state in the solver loop
 # ============================================================================
 
-"""
-    AbstractStateVariable
+# The supertype `AbstractStateVariable` is defined in StructuredPopulationCore (shared
+# with MatrixProjectionModels.jl). A state variable lives in a `PopulationSystem` by
+# reference and is accessible to rules, events and observables. It can have an
+# `update_fn` that the solver calls automatically each day (after events, before stepping).
 
-Supertype for named mutable state variables that live inside a
-`PopulationSystem` and are accessible to rules, events, and observables.
-
-State variables can optionally have an `update_fn` that the solver calls
-automatically each day (after events, before stepping).
-"""
-abstract type AbstractStateVariable end
 
 """
     ScalarState{T}(name, init; update=nothing)
@@ -147,6 +142,12 @@ end
 snapshot(sv::ScalarState) = sv.value[]
 snapshot(sv::ArrayState) = copy(sv.value)
 snapshot(sv::DictState) = copy(sv.value)
+
+# State stored in a `PopulationSystem` without a state-variable wrapper (a plain number,
+# array or dictionary) is not updated automatically, and is recorded by copying it.
+update_state!(x, sys, w, day, p) = nothing
+snapshot(x) = deepcopy(x)
+
 
 function Base.show(io::IO, sv::ScalarState)
     print(io, "ScalarState(:$(sv.name), $(sv.value[]))")
@@ -241,278 +242,85 @@ end
 # PopulationSystem — named collection of Population components
 # ============================================================================
 
+# `PopulationComponent` and `PopulationSystem`, and the functions that read and change a
+# system (`get_state`, `set_state!`, `has_state`, `total_population`, `component_total`,
+# `component_totals`, `by_species`, `by_type`, `by_patch`, `inject!`, `remove_fraction!`),
+# are defined in StructuredPopulationCore and shared with MatrixProjectionModels.jl.
+# What follows makes `Population` and `BulkPopulation` usable as the carrier of a
+# component: a component's `population` is one of them, and its `model` is `nothing`,
+# because the carrier steps itself.
+
 """
-    PopulationComponent{T}
+    PopulationComponent(pop; species = pop.name, type = :default, patch = :default)
 
-A single named component in a `PopulationSystem`.
-
-# Fields
-- `population`: a `Population{T}` (stage-structured) or `BulkPopulation{T}` (scalar)
-- `species::Symbol`: biological species label (for grouping)
-- `type::Symbol`: sub-type within a species (`:default` if not applicable)
-- `patch::Symbol`: spatial patch label (`:default` if not applicable)
+Wrap a stage-structured [`Population`](@ref) or a scalar [`BulkPopulation`](@ref) as a
+named component of a `PopulationSystem`, with grouping labels. The population is held by
+reference: the solver steps it in place.
 """
-struct PopulationComponent{T<:Real}
-    population::Union{Population{T}, BulkPopulation{T}}
-    species::Symbol
-    type::Symbol
-    patch::Symbol
-end
-
 function PopulationComponent(pop::Population{T};
                              species::Symbol=pop.name,
                              type::Symbol=:default,
                              patch::Symbol=:default) where {T}
-    PopulationComponent{T}(pop, species, type, patch)
+    PopulationComponent{T, Nothing, typeof(pop)}(
+        nothing, pop, Symbol[s.name for s in pop.stages], species, type, patch)
 end
 
 function PopulationComponent(pop::BulkPopulation{T};
                              species::Symbol=pop.name,
                              type::Symbol=:default,
                              patch::Symbol=:default) where {T}
-    PopulationComponent{T}(pop, species, type, patch)
+    PopulationComponent{T, Nothing, typeof(pop)}(
+        nothing, pop, Symbol[pop.name], species, type, patch)
 end
 
-"""
-    PopulationSystem{T}
+as_component(pop::Population) = PopulationComponent(pop)
+as_component(pop::BulkPopulation) = PopulationComponent(pop)
 
-An ordered, named collection of `PopulationComponent`s with optional
-`StateVariable`s for auxiliary mutable state.
-
-Access components by name: `system[:wild_male]`.
-Access state variables: `get_state(system, :allele_freq)`.
-Iterate with `for (name, comp) in pairs(system)`.
-"""
-struct PopulationSystem{T<:Real}
-    names::Vector{Symbol}
-    components::Dict{Symbol, PopulationComponent{T}}
-    order::Vector{Symbol}  # deterministic iteration order
-    state::Dict{Symbol, AbstractStateVariable}
-end
-
-function PopulationSystem(pairs::Pair{Symbol}...; state::Vector=AbstractStateVariable[])
-    T = Float64
-    names = Symbol[]
-    components = Dict{Symbol, PopulationComponent{T}}()
-    for (name, val) in pairs
-        name in names && throw(ArgumentError("duplicate component name: $name"))
-        push!(names, name)
-        if val isa Population
-            components[name] = PopulationComponent(val)
-        elseif val isa BulkPopulation
-            components[name] = PopulationComponent(val)
-        elseif val isa PopulationComponent
-            components[name] = val
-        else
-            throw(ArgumentError("expected Population, BulkPopulation, or PopulationComponent, got $(typeof(val))"))
-        end
-    end
-    length(names) > 0 || throw(ArgumentError("PopulationSystem must have ≥ 1 component"))
-    state_dict = Dict{Symbol, AbstractStateVariable}(sv.name => sv for sv in state)
-    PopulationSystem{T}(names, components, copy(names), state_dict)
-end
-
-Base.getindex(sys::PopulationSystem, name::Symbol) = sys.components[name]
-Base.haskey(sys::PopulationSystem, name::Symbol) = haskey(sys.components, name)
-Base.keys(sys::PopulationSystem) = sys.order
-Base.length(sys::PopulationSystem) = length(sys.order)
-Base.pairs(sys::PopulationSystem) = ((n, sys.components[n]) for n in sys.order)
-
-function Base.show(io::IO, sys::PopulationSystem)
-    ns = length(sys.state)
-    state_str = ns > 0 ? ", $ns state vars" : ""
-    print(io, "PopulationSystem($(length(sys)) components: $(join(sys.order, ", "))$state_str)")
-end
-
-"""Get a state variable's current value by name."""
-get_state(sys::PopulationSystem, name::Symbol) = get_state(sys.state[name])
-
-"""Set a scalar state variable's value by name."""
-set_state!(sys::PopulationSystem, name::Symbol, v) = set_state!(sys.state[name], v)
-
-"""Check if a state variable exists."""
-has_state(sys::PopulationSystem, name::Symbol) = haskey(sys.state, name)
-
-"""Total population summed across all components."""
-function total_population(sys::PopulationSystem)
-    return sum(total_population(c.population) for (_, c) in pairs(sys))
-end
-
-"""Total population for a single named component."""
-function component_total(sys::PopulationSystem, name::Symbol)
-    return total_population(sys[name].population)
-end
-
-"""Named totals as a Dict."""
-function component_totals(sys::PopulationSystem{T}) where {T}
-    return Dict{Symbol, T}(n => total_population(c.population) for (n, c) in pairs(sys))
-end
-
-"""Filter components by species."""
-function by_species(sys::PopulationSystem, species::Symbol)
-    return [(n, c) for (n, c) in pairs(sys) if c.species == species]
-end
-
-"""Filter components by type."""
-function by_type(sys::PopulationSystem, type::Symbol)
-    return [(n, c) for (n, c) in pairs(sys) if c.type == type]
-end
-
-"""Filter components by patch."""
-function by_patch(sys::PopulationSystem, patch::Symbol)
-    return [(n, c) for (n, c) in pairs(sys) if c.patch == patch]
-end
-
-"""Inject inflow into a specific stage of a named component."""
-function inject!(sys::PopulationSystem, name::Symbol, stage_idx::Int, amount::Real)
-    pop = sys[name].population
-    if pop isa BulkPopulation
-        inject!(pop, amount)
-    else
-        1 <= stage_idx <= n_stages(pop) ||
-            throw(BoundsError("stage $stage_idx out of range for $name ($(n_stages(pop)) stages)"))
-        pop.stages[stage_idx].delay.W[1] += amount
-    end
+"""Inject inflow into the first substage of a stage of a `Population`."""
+function inject!(pop::Population, stage_idx::Int, amount::Real)
+    1 <= stage_idx <= n_stages(pop) ||
+        throw(BoundsError("stage $stage_idx out of range for $(pop.name) ($(n_stages(pop)) stages)"))
+    pop.stages[stage_idx].delay.W[1] += amount
     return nothing
 end
 
-"""Inject inflow into the first stage of a named component."""
-function inject!(sys::PopulationSystem, name::Symbol, amount::Real)
-    inject!(sys, name, 1, amount)
-end
-
-"""Remove a fraction of all substages of a named component."""
-function remove_fraction!(sys::PopulationSystem, name::Symbol, fraction::Real)
+"""Remove a fraction of all substages of a `Population`."""
+function remove_fraction!(pop::Population, fraction::Real)
     0 <= fraction <= 1 || throw(ArgumentError("fraction must be in [0, 1]"))
-    pop = sys[name].population
-    if pop isa BulkPopulation
-        remove_fraction!(pop, fraction)
-    else
-        for stage in pop.stages
-            stage.delay.W .*= (1.0 - fraction)
-        end
+    for stage in pop.stages
+        stage.delay.W .*= (1.0 - fraction)
     end
     return nothing
 end
 
-"""Remove a fraction from a specific stage of a named component."""
-function remove_fraction!(sys::PopulationSystem, name::Symbol, stage_idx::Int, fraction::Real)
+"""Remove a fraction from one stage of a `Population`."""
+function remove_fraction!(pop::Population, stage_idx::Int, fraction::Real)
     0 <= fraction <= 1 || throw(ArgumentError("fraction must be in [0, 1]"))
-    pop = sys[name].population
-    if pop isa BulkPopulation
-        remove_fraction!(pop, fraction)
-    else
-        pop.stages[stage_idx].delay.W .*= (1.0 - fraction)
-    end
+    pop.stages[stage_idx].delay.W .*= (1.0 - fraction)
     return nothing
 end
 
 # ============================================================================
-# Abstract rule and event interfaces
+# Rule and event interfaces
 # ============================================================================
 
-"""
-    AbstractInteractionRule
-
-Supertype for rules evaluated each day after all components are stepped.
-Rules can transfer mass between components, apply mortality, compute
-reproduction, etc.
-
-Implement `apply_rule!(rule, system, weather_day, day, p) -> NamedTuple`
-where the returned tuple contains any per-day observables the rule wants
-to record.
-"""
-abstract type AbstractInteractionRule end
-
-"""
-    AbstractScheduledEvent
-
-Supertype for discrete events applied on specific days (releases,
-introductions, sprays, immigration pulses).
-
-Implement `apply_event!(event, system, weather_day, day, p) -> nothing`.
-The event should return `true` if it fired on this day, `false` otherwise.
-"""
-abstract type AbstractScheduledEvent end
+# `AbstractInteractionRule` and `AbstractScheduledEvent` are defined in
+# StructuredPopulationCore, with the built-in events `PulseRelease`, `SingleDayRelease`
+# and `SprayEvent`, the rule types `TransferRule`, `ReproductionRule`, `MortalityRule`
+# and `CustomRule`, and `Observable`.
+#
+# A rule is applied with `apply_rule!(rule, system, weather_day, day, p) -> NamedTuple`;
+# the tuple holds whatever the rule wants recorded for the day. The functions held by
+# rules, events and observables are called as `fn(system, weather_day, day, p)`.
+#
+# An event is applied with `apply_event!(event, system, weather_day, day, p) -> Bool`,
+# `true` if it fired. For the built-in events, which do not use the weather, that call
+# falls back to the shared `apply_event!(event, system, day, p)`.
 
 # ============================================================================
-# Concrete events
+# Events specific to PBDMs
 # ============================================================================
 
-"""
-    PulseRelease(target, stage_idx, amount, interval; start_day=1, end_day=typemax(Int))
-
-Release `amount` individuals into `target` component (stage `stage_idx`)
-every `interval` days, starting at `start_day`.
-"""
-struct PulseRelease <: AbstractScheduledEvent
-    target::Symbol
-    stage_idx::Int
-    amount::Float64
-    interval::Int
-    start_day::Int
-    end_day::Int
-end
-
-function PulseRelease(target::Symbol, stage_idx::Int, amount::Real, interval::Int;
-                      start_day::Int=1, end_day::Int=typemax(Int))
-    PulseRelease(target, stage_idx, Float64(amount), interval, start_day, end_day)
-end
-
-function PulseRelease(target::Symbol, amount::Real, interval::Int; kwargs...)
-    PulseRelease(target, 1, amount, interval; kwargs...)
-end
-
-function apply_event!(ev::PulseRelease, sys::PopulationSystem, ::Any, day::Int, ::Any)
-    day < ev.start_day && return false
-    day > ev.end_day && return false
-    (day - ev.start_day) % ev.interval == 0 || return false
-    inject!(sys, ev.target, ev.stage_idx, ev.amount)
-    return true
-end
-
-"""
-    SingleDayRelease(target, stage_idx, amount, day)
-
-Release `amount` individuals into `target` on exactly one day.
-"""
-struct SingleDayRelease <: AbstractScheduledEvent
-    target::Symbol
-    stage_idx::Int
-    amount::Float64
-    day::Int
-end
-
-function SingleDayRelease(target::Symbol, amount::Real, day::Int; stage_idx::Int=1)
-    SingleDayRelease(target, stage_idx, Float64(amount), day)
-end
-
-function apply_event!(ev::SingleDayRelease, sys::PopulationSystem, ::Any, day::Int, ::Any)
-    day == ev.day || return false
-    inject!(sys, ev.target, ev.stage_idx, ev.amount)
-    return true
-end
-
-"""
-    SprayEvent(targets, kill_fractions, days)
-
-Apply kill fractions to named components on specified days.
-`targets` and `kill_fractions` should be parallel vectors.
-`days` is the set of calendar days on which the spray fires.
-"""
-struct SprayEvent <: AbstractScheduledEvent
-    targets::Vector{Symbol}
-    kill_fractions::Vector{Float64}
-    days::Vector{Int}
-end
-
-function apply_event!(ev::SprayEvent, sys::PopulationSystem, ::Any, day::Int, ::Any)
-    day in ev.days || return false
-    for (t, kf) in zip(ev.targets, ev.kill_fractions)
-        haskey(sys, t) && remove_fraction!(sys, t, kf)
-    end
-    return true
-end
 
 """
     ConditionalRelease(target, stage_idx, amount_fn, interval; start_day, end_day)
@@ -581,24 +389,26 @@ end
 # Concrete interaction rules
 # ============================================================================
 
-"""
-    TransferRule(source, source_stage, target, target_stage, fraction_fn)
+# ============================================================================
+# Applying the shared rules
+# ============================================================================
 
-Each day, transfer a fraction of source → target.
-`fraction_fn(system, weather_day, day, p) -> Float64` in [0, 1].
 """
-struct TransferRule{F} <: AbstractInteractionRule
-    source::Symbol
-    source_stage::Int
-    target::Symbol
-    target_stage::Int
-    fraction_fn::F
-end
+    apply_rule!(rule, system, weather_day, day, p) -> NamedTuple
 
-function TransferRule(source::Symbol, target::Symbol, fraction_fn;
-                      source_stage::Int=1, target_stage::Int=1)
-    TransferRule(source, source_stage, target, target_stage, fraction_fn)
-end
+Apply an interaction rule to the stepped system, in place, and return what the rule
+records for the day.
+
+For the shared rule types: a `TransferRule` moves the fraction returned by
+`fraction_fn(system, weather_day, day, p)` (clamped to `[0, 1]`) of the source stage into
+the target stage; a `ReproductionRule` injects the offspring returned by
+`reproduction_fn` (negative values count as zero) into `rule.stage` of `rule.target`; a
+`MortalityRule` removes the fraction returned by `mortality_fn` (clamped to `[0, 1]`)
+from all stages of the target, or from `rule.stage` if it is not zero; a `CustomRule`
+returns whatever `apply_fn(system, weather_day, day, p)` returns.
+"""
+function apply_rule! end
+
 
 function apply_rule!(rule::TransferRule, sys::PopulationSystem, w, day::Int, p)
     frac = rule.fraction_fn(sys, w, day, p)
@@ -610,47 +420,22 @@ function apply_rule!(rule::TransferRule, sys::PopulationSystem, w, day::Int, p)
     return (transferred=amount,)
 end
 
-"""
-    ReproductionRule(parents, offspring_target, offspring_stage, reproduction_fn)
-
-Each day, compute offspring from the state of parent components and inject
-them into the offspring target.
-
-`reproduction_fn(system, weather_day, day, p) -> Float64` returns the
-number of new individuals to inject.
-"""
-struct ReproductionRule{F} <: AbstractInteractionRule
-    offspring_target::Symbol
-    offspring_stage::Int
-    reproduction_fn::F
-end
-
-function ReproductionRule(target::Symbol, reproduction_fn; stage::Int=1)
-    ReproductionRule(target, stage, reproduction_fn)
-end
-
 function apply_rule!(rule::ReproductionRule, sys::PopulationSystem, w, day::Int, p)
     offspring = max(0.0, rule.reproduction_fn(sys, w, day, p))
-    inject!(sys, rule.offspring_target, rule.offspring_stage, offspring)
+    inject!(sys, rule.target, rule.stage, offspring)
     return (offspring=offspring,)
-end
-
-"""
-    MortalityRule(target, mortality_fn)
-
-Apply additional daily mortality to a named component.
-`mortality_fn(system, weather_day, day, p) -> Float64` in [0, 1].
-"""
-struct MortalityRule{F} <: AbstractInteractionRule
-    target::Symbol
-    mortality_fn::F
 end
 
 function apply_rule!(rule::MortalityRule, sys::PopulationSystem, w, day::Int, p)
     frac = clamp(rule.mortality_fn(sys, w, day, p), 0.0, 1.0)
-    remove_fraction!(sys, rule.target, frac)
+    if rule.stage == 0
+        remove_fraction!(sys, rule.target, frac)
+    else
+        remove_fraction!(sys, rule.target, rule.stage, frac)
+    end
     return (mortality=frac,)
 end
+
 
 """
     PredationRule(predator, prey, response, conversion; predator_stage, prey_stage)
@@ -729,17 +514,6 @@ function apply_rule!(rule::CompetitionRule, sys::PopulationSystem, w, day::Int, 
     return (resource=resource, stresses=stresses)
 end
 
-"""
-    CustomRule(name, apply_fn)
-
-Escape hatch: `apply_fn(system, weather_day, day, p) -> NamedTuple`
-can do anything.
-"""
-struct CustomRule{F} <: AbstractInteractionRule
-    name::Symbol
-    apply_fn::F
-end
-
 function apply_rule!(rule::CustomRule, sys::PopulationSystem, w, day::Int, p)
     return rule.apply_fn(sys, w, day, p)
 end
@@ -774,20 +548,8 @@ function compute_stress(rule::StressRule, sys::PopulationSystem, w, day::Int, p)
     return rule.stress_fn(sys, w, day, p)
 end
 
-# ============================================================================
-# Observable specification
-# ============================================================================
-
-"""
-    Observable(name, fn)
-
-Records a scalar value each day.
-`fn(system, weather_day, day, p) -> Real`.
-"""
-struct Observable{F}
-    name::Symbol
-    fn::F
-end
+# `Observable(name, fn)` is defined in StructuredPopulationCore. Here it records a scalar
+# each day, `fn(system, weather_day, day, p) -> Real`.
 
 # ============================================================================
 # PhaseCallback — hook into specific solver phases
@@ -1398,6 +1160,17 @@ end
 # Coupled solver
 # ============================================================================
 
+# Names under which rules and events are recorded in a `CoupledPBDMSolution`. The shared
+# rules `TransferRule`, `ReproductionRule` and `MortalityRule` are logged under their type
+# name, as are rule types without a `name` field; other rules (`CustomRule`,
+# `SelectionRule`, ...) under their `name`. Events are logged under their type name,
+# except `WeatherConditionalEvent`, which is logged under its `name`.
+_rule_log_name(r) = hasproperty(r, :name) ? r.name : Symbol(nameof(typeof(r)))
+_rule_log_name(r::Union{TransferRule, ReproductionRule, MortalityRule}) = Symbol(nameof(typeof(r)))
+
+_event_log_name(ev) = Symbol(nameof(typeof(ev)))
+_event_log_name(ev::WeatherConditionalEvent) = ev.name
+
 function _solve(::S, ::DensityDependent, ::Deterministic,
                 approach,
                 prob::PBDMProblem, ::DirectIteration;
@@ -1428,6 +1201,11 @@ function _solve(::S, ::DensityDependent, ::Deterministic,
     cb_end_of_day = [cb for cb in callbacks if cb.phase == END_OF_DAY]
 
     comp_names = collect(keys(sys))
+    for name in comp_names
+        sys[name].population isa Union{Population, BulkPopulation} || throw(ArgumentError(
+            "component :$name carries its population in a $(typeof(sys[name].population)); " *
+            "a coupled PBDM needs a Population or a BulkPopulation"))
+    end
 
     # Pre-allocate per-component outputs
     comp_totals = Dict{Symbol, Vector{T}}(
@@ -1451,12 +1229,7 @@ function _solve(::S, ::DensityDependent, ::Deterministic,
     rule_names = Symbol[]
     seen_names = Set{Symbol}()
     for (i, r) in enumerate(rules)
-        nm = if hasproperty(r, :name)
-            r.name
-        else
-            # Derive a readable default from the rule type (e.g. :DiapauseRule)
-            Symbol(nameof(typeof(r)))
-        end
+        nm = _rule_log_name(r)
         # Guarantee uniqueness: suffix with index if collision.
         if nm in seen_names
             nm = Symbol(nm, "_", i)
@@ -1478,14 +1251,7 @@ function _solve(::S, ::DensityDependent, ::Deterministic,
         # Phase 1: Apply scheduled events
         for ev in events
             fired = apply_event!(ev, sys, w, day, user_p)
-            if fired
-                if ev isa WeatherConditionalEvent
-                    push!(event_log, (day, ev.name))
-                else
-                    ev_name = Symbol(typeof(ev).name.name)
-                    push!(event_log, (day, ev_name))
-                end
-            end
+            fired && push!(event_log, (day, _event_log_name(ev)))
         end
 
         # Phase 1.5: POST_EVENT callbacks

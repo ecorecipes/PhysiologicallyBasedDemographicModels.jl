@@ -747,9 +747,9 @@ grain_loss = 1.0 - result.rice_biomass[end] / total_population(rice)
 println("Total rice biomass reduction: $(round(grain_loss * 100, digits=1))%")
 ```
 
-    Final rice biomass (weedy): 0.0 g/hill
+    Final rice biomass (weedy): 0.48 g/hill
     Weed-free grain: 1.15 g/hill
-    Total rice biomass reduction: 100.0%
+    Total rice biomass reduction: 71.2%
 
 ## Biomass Trajectories
 
@@ -860,11 +860,11 @@ barplot!(ax, fert_levels, final_biomass, color=:seagreen, width=20.0)
 fig3
 ```
 
-    N fertilizer 0.0 kg/ha → rice biomass 0.0 g/hill
-    N fertilizer 30.0 kg/ha → rice biomass 0.0 g/hill
-    N fertilizer 60.0 kg/ha → rice biomass 0.0 g/hill
-    N fertilizer 90.0 kg/ha → rice biomass 0.0 g/hill
-    N fertilizer 120.0 kg/ha → rice biomass 0.0 g/hill
+    N fertilizer 0.0 kg/ha → rice biomass 0.48 g/hill
+    N fertilizer 30.0 kg/ha → rice biomass 0.48 g/hill
+    N fertilizer 60.0 kg/ha → rice biomass 0.48 g/hill
+    N fertilizer 90.0 kg/ha → rice biomass 0.48 g/hill
+    N fertilizer 120.0 kg/ha → rice biomass 0.48 g/hill
 
 <img
 src="15_rice_weed_competition_files/figure-commonmark/cell-15-output-2.png"

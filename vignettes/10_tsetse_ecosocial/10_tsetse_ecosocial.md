@@ -1001,11 +1001,11 @@ println("  NPV per capita:      $(round(project_npv / (N_HOUSEHOLDS * PERSONS_PE
     Economic evaluation (5-year horizon):
     ==================================================
       Discount rate:        10.0%
-      NPV of benefits:     3.029759e6 Birr
+      NPV of benefits:     3.332735e6 Birr
       Total control cost:  127719.0 Birr
       Benefit-cost ratio:  33.8
-      NPV per household:   60595.0 Birr
-      NPV per capita:      8079.0 Birr
+      NPV per household:   66655.0 Birr
+      NPV per capita:      8887.0 Birr
 
 ### Luke Field Results Comparison
 

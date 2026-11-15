@@ -5,6 +5,63 @@ are recorded here. The format is loosely based on
 [Keep a Changelog](https://keepachangelog.com/) and the project follows
 semantic versioning once a `1.0` is tagged.
 
+## [0.2.0]
+
+### Changed (breaking): coupled systems are shared with MatrixProjectionModels.jl
+
+The data layer of coupled systems now lives in StructuredPopulationCore
+(`src/coupled_systems.jl`), and this package and MatrixProjectionModels.jl both build on
+it. The two packages can be loaded together: the names they both export are the same
+types and functions. This package still exports all of them, and the solver and its
+results are unchanged, but the following differs from 0.1.
+
+- **`PopulationComponent`** has the fields `model`, `population`, `stage_names`,
+  `species`, `type`, `patch`. For a `Population` or `BulkPopulation`, `model` is
+  `nothing` and `population` is the carrier, held by reference as before. Build
+  components with `PopulationComponent(pop; species, type, patch)` or by giving the
+  carrier to `PopulationSystem`; the positional
+  `PopulationComponent{T}(pop, species, type, patch)` is gone.
+- **`PopulationSystem`** has the fields `order`, `components`, `state`. The `names` field
+  is gone (use `keys(system)` or `system.order`). `state` is a `Dict{Symbol, Any}`: a
+  vector of state variables is stored by reference as before, and a `NamedTuple`,
+  dictionary or vector of pairs of plain values is now accepted too (plain values are
+  copied in, are not updated automatically, and are recorded in `state_history`).
+  `set_state!(system, name, value)` on a name that does not exist now creates a plain
+  entry instead of throwing a `KeyError`.
+- **`PulseRelease`** starts on day 0 by default (`start_day = 1` before). Pass
+  `start_day = 1` to keep the old schedule.
+- **`PulseRelease`, `SingleDayRelease`, `SprayEvent`** have a `name` field (first), and
+  the amount is the element type of a parametric struct. Constructors check their
+  arguments: `interval > 0`, `stage_idx >= 1`, a finite nonnegative amount, kill
+  fractions in `[0, 1]`, and as many kill fractions as targets. The positional forms
+  `PulseRelease(target, stage_idx, amount, interval; ...)` and
+  `SingleDayRelease(target, stage_idx, amount, day)` still work; the six-argument
+  `PulseRelease(target, stage_idx, amount, interval, start_day, end_day)` does not (use
+  the keywords).
+- **`SprayEvent`** with a target that is not a component of the system throws an
+  `ArgumentError` when it fires. It was skipped silently before.
+- **`TransferRule`, `ReproductionRule`, `MortalityRule`** have a `name` field (first).
+  `ReproductionRule`'s fields are `target` and `stage` (were `offspring_target`,
+  `offspring_stage`), and `stage` must be at least 1. `MortalityRule` has a `stage` field
+  (`0`, the default, means all stages, as before; a positive value limits the mortality to
+  that stage). The positional forms `TransferRule(source, source_stage, target,
+  target_stage, fn)` and `ReproductionRule(target, stage, fn)` still work. The solver
+  logs these three rule types under their type name, as before, whatever their `name`.
+- **`remake`** is `SciMLBase.remake` with a method for `PBDMProblem`, not a function of
+  this package. SciMLBase is now a direct dependency.
+- **`FixedMeshUpwind`** is the type defined in StructuredPopulationCore and shared with
+  ContinuousStatePopulationDynamics.jl. `FixedMeshUpwind(n_mesh = 50)` works as before;
+  `FixedMeshUpwind()` has `n_mesh == nothing`, which PSPM solves read as 100, the old
+  default. `AbstractPSPMMethod` is an alias of the core's
+  `AbstractTransportDiscretization`.
+
+### Added
+
+- `apply_event!(event, system, day, p)`, without the weather argument, for the three
+  shared events.
+- Carrier methods `inject!(pop, stage, amount)` and `remove_fraction!(pop, [stage,]
+  fraction)` for `Population`.
+
 ## [Unreleased]
 
 ### Added

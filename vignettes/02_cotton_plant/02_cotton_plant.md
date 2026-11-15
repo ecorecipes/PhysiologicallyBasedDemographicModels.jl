@@ -56,6 +56,7 @@ const DD_BOLL  = 1200.0  # First open boll
 const DD_LEAF_SENESCE = 700.0  # Leaf senescence age
 ```
 
+
     700.0
 
 ## Plant Organ Populations
@@ -204,10 +205,10 @@ for (i, name) in enumerate(stage_names)
 end
 ```
 
-    leaf: peak=0.3 at day 1
-    stem: peak=0.2 at day 80
-    root: peak=0.0 at day 190
-    fruit: peak=0.0 at day 1
+    leaf: peak=9.3 at day 1
+    stem: peak=3.3 at day 81
+    root: peak=0.3 at day 1
+    fruit: peak=0.5 at day 210
 
 ### Organ biomass trajectories
 
@@ -281,9 +282,9 @@ println("Vegetative:  ", round(alloc[3], digits=2), " / ", round(growth_demand, 
 ```
 
     Supply/Demand ratio φ = 0.0
-    Respiration: 0.0 / 0.0
-    Fruit:       0.0 / 0.0
-    Vegetative:  0.0 / 0.0
+    Respiration: 0.0 / 0.01
+    Fruit:       0.0 / 0.02
+    Vegetative:  0.0 / 0.01
 
 ## Sensitivity Analysis: Temperature Effects
 
@@ -323,9 +324,9 @@ for (label, offset) in scenarios
 end
 ```
 
-    Standard: total DD=2519.0, mean λ=0.9709
-    -10%: total DD=2057.0, mean λ=0.9803
-    +10%: total DD=2981.0, mean λ=0.9565
+    Standard: total DD=2519.0, mean λ=0.9844
+    -10%: total DD=2057.0, mean λ=0.9863
+    +10%: total DD=2981.0, mean λ=0.9794
 
 ### Temperature sensitivity: fruit biomass comparison
 

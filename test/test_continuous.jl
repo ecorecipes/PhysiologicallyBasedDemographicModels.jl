@@ -128,6 +128,18 @@ import PhysiologicallyBasedDemographicModels: _total_substages
         @test prob_fmu.method isa FixedMeshUpwind
         @test prob_fmu.method.n_mesh == 50
 
+        # FixedMeshUpwind is the type shared through StructuredPopulationCore
+        let SPC = PhysiologicallyBasedDemographicModels.StructuredPopulationCore
+            @test FixedMeshUpwind === SPC.FixedMeshUpwind
+            @test AbstractPSPMMethod === SPC.AbstractTransportDiscretization
+            @test AbstractTransportDiscretization === SPC.AbstractTransportDiscretization
+            @test FixedMeshUpwind(50) == FixedMeshUpwind(n_mesh=50)
+            @test FixedMeshUpwind().n_mesh === nothing        # the solver then uses 100 cells
+            @test PSPMProblem(species=[sp], tspan=(0.0, 100.0)).method === FixedMeshUpwind()
+            @test all(M -> M <: AbstractPSPMMethod, (EscalatorBoxcarTrain, CharacteristicMethod,
+                ImplicitFixedMeshUpwind, LaxFriedrichsUpwind))
+        end
+
         # EBT method
         prob_ebt = PSPMProblem(
             species=[sp],
@@ -339,6 +351,14 @@ import PhysiologicallyBasedDemographicModels: _total_substages
             @test length(sol.t) > 1
             @test size(sol.u, 1) == 50  # 50 mesh points
             @test :daphnia in sol.species_names
+
+            # without n_mesh the mesh has 100 cells, the default before the type was shared
+            sol_default = solve_pspm(PSPMProblem(species=[sp], method=FixedMeshUpwind(),
+                tspan=(0.0, 50.0)); reltol=1e-4, abstol=1e-6)
+            sol_100 = solve_pspm(PSPMProblem(species=[sp], method=FixedMeshUpwind(n_mesh=100),
+                tspan=(0.0, 50.0)); reltol=1e-4, abstol=1e-6)
+            @test size(sol_default.u, 1) == 100
+            @test sol_default.u == sol_100.u
         catch e
             if isa(e, ArgumentError) && occursin("OrdinaryDiffEq", string(e))
                 @warn "OrdinaryDiffEq not loaded, skipping PSPM test"

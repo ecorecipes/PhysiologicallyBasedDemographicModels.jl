@@ -892,7 +892,7 @@ Applied Ecology* 33 (6): 1379–94. <https://doi.org/10.2307/2404778>.
 Schreiber, Sebastian J., Nicholas J. Mills, and Andrew P. Gutierrez.
 2001. “Host-Limited Dynamics of Autoparasitoids.” *Journal of
 Theoretical Biology* 212 (2): 141–53.
-<https://doi.org/10.1006/jtbi.2001.2367>.
+<https://doi.org/10.1006/jtbi.2001.2363>.
 
 </div>
 

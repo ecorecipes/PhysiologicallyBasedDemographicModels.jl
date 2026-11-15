@@ -109,6 +109,20 @@ DirectIteration
 
 ## State Variables & Containers
 
+`PopulationComponent`, `PopulationSystem`, `AbstractStateVariable`, `Observable` and the
+functions that read and change a system (`get_state`, `set_state!`, `has_state`,
+`component_total`, `component_totals`, `inject!`, `remove_fraction!`) are defined in
+StructuredPopulationCore and shared with MatrixProjectionModels.jl, so they mean the same
+thing when both packages are loaded. This package exports them and adds the methods for
+its own population carriers (`Population`, `BulkPopulation`) and state variable types.
+
+A component made from a `Population` or `BulkPopulation` holds it, by reference, in
+`component.population`; `component.model` is `nothing` and `component.stage_names` are the
+names of its stages. A system's state is a dictionary from names to state variables (held
+by reference) or plain values. `get_state(system, name)` returns the value of a state
+variable, or a plain value as it is; plain values are not updated automatically by the
+solver.
+
 ```@docs
 AbstractStateVariable
 ScalarState

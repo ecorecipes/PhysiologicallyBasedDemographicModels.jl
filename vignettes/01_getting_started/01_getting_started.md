@@ -80,30 +80,6 @@ println("Initial population: ", total_population(pop))  # 20000 (20 × 1000)
 println("Delay variance: ", delay_variance(egg_delay))  # 500.0
 ```
 
-    Precompiling packages...
-      16965.1 ms  ✓ JSON
-      18728.7 ms  ✓ Cairo_jll
-       8658.2 ms  ✓ ColorBrewer
-      11123.9 ms  ✓ HarfBuzz_jll
-      15253.3 ms  ✓ libass_jll
-      47428.6 ms  ✓ Distributions
-      14789.7 ms  ✓ Pango_jll
-      21443.9 ms  ✓ FFMPEG_jll
-      20187.3 ms  ✓ Cairo
-      29494.1 ms  ✓ Distributions → DistributionsChainRulesCoreExt
-      53559.1 ms  ✓ KernelDensity
-     202196.7 ms  ✓ Makie
-      76002.6 ms  ✓ CairoMakie
-      13 dependencies successfully precompiled in 562 seconds. 264 already precompiled.
-    Precompiling packages...
-       2324.9 ms  ✓ QuartoNotebookWorkerJSONExt (serial)
-      1 dependency successfully precompiled in 3 seconds
-    Precompiling packages...
-      12967.5 ms  ✓ QuartoNotebookWorkerMakieExt (serial)
-      1 dependency successfully precompiled in 13 seconds
-    Precompiling packages...
-      13381.3 ms  ✓ QuartoNotebookWorkerCairoMakieExt (serial)
-      1 dependency successfully precompiled in 13 seconds
     Substages: 20
     Initial population: 20000.0
     Delay variance: 500.0
@@ -125,7 +101,7 @@ println(degree_days(dev_rate, 40.0))  # 25.0
 
     15.0
     0.0
-    30.0
+    25.0
 
 ## Running a Simulation
 
@@ -235,11 +211,11 @@ for i in 1:4
 end
 ```
 
-    Phenological midpoint: day 42
+    Phenological midpoint: day 114
     egg: peak at day 1
-    larva: peak at day 6
-    pupa: peak at day 23
-    adult: peak at day 31
+    larva: peak at day 72
+    pupa: peak at day 100
+    adult: peak at day 107
 
 ### Stage trajectory plot
 

@@ -61,5 +61,11 @@ ImplicitLaxFriedrichsUpwind
 EnsemblePBDMProblem
 EnsemblePBDMSolution
 run_scenarios
-remake
+```
+
+`remake(prob::PBDMProblem; kwargs...)` is a method of `SciMLBase.remake`, the function the
+other packages of the stack extend for their own problem types.
+
+```@docs
+remake(::PBDMProblem)
 ```

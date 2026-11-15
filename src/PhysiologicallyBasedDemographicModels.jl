@@ -5,6 +5,26 @@ using LinearAlgebra
 using StructuredPopulationCore
 using Statistics
 
+# Functions shared across the stack are extended here rather than redefined, so that their
+# names stay usable when several packages are loaded together. `remake` belongs to SciMLBase.
+import SciMLBase
+import SciMLBase: remake
+
+# The coupled-system data layer is shared with MatrixProjectionModels.jl. Its types and
+# functions live in StructuredPopulationCore, which does not export them: they are imported
+# here, extended for the PBDM population carriers and state variables, and exported below.
+import StructuredPopulationCore: AbstractStateVariable, AbstractInteractionRule,
+    AbstractScheduledEvent
+import StructuredPopulationCore: PopulationComponent, PopulationSystem, Observable
+import StructuredPopulationCore: PulseRelease, SingleDayRelease, SprayEvent
+import StructuredPopulationCore: TransferRule, ReproductionRule, MortalityRule, CustomRule
+import StructuredPopulationCore: get_state, set_state!, has_state, total_population,
+    component_total, component_totals, by_species, by_type, by_patch, inject!,
+    remove_fraction!, apply_event!
+import StructuredPopulationCore: n_stages, allocate, supply_demand_index, as_component
+# The fixed-mesh upwind discretization is shared with ContinuousStatePopulationDynamics.jl.
+import StructuredPopulationCore: AbstractTransportDiscretization, FixedMeshUpwind
+
 # --- Layer 1: Core types ---
 include("types.jl")
 export AbstractPBDMStructure, SingleSpeciesPBDM, MultiSpeciesPBDM
@@ -147,6 +167,7 @@ export optimize_management
 # --- Layer 10b: Continuous-time formulations ---
 include("continuous.jl")
 export AbstractContinuousPBDM, AbstractPSPMMethod, AbstractPSPMSpecies
+export AbstractTransportDiscretization
 export ContinuousSpecies, ContinuousTrophicLink
 export ContinuousPBDMProblem, DelayPBDMProblem, PSPMProblem
 export PSPMSpecies, PSPMStage, StagedPSPMSpecies, n_pspm_stages

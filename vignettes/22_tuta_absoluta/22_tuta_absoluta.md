@@ -472,31 +472,31 @@ end
     Mediterranean (S. Spain):
       Annual DD (>7.9°C):  77.0
       Est. generations/yr: 0.2
-      Peak population:     1494.6
+      Peak population:     1499.3
       Final population:    477.1
 
     Temperate (C. Europe):
       Annual DD (>7.9°C):  37.0
       Est. generations/yr: 0.1
-      Peak population:     1498.1
+      Peak population:     1500.0
       Final population:    891.1
 
     Subtropical (E. Africa):
       Annual DD (>7.9°C):  129.0
       Est. generations/yr: 0.3
-      Peak population:     1492.5
+      Peak population:     1494.2
       Final population:    172.7
 
     Arid (N. Africa interior):
       Annual DD (>7.9°C):  66.0
       Est. generations/yr: 0.1
-      Peak population:     1492.1
-      Final population:    573.2
+      Peak population:     1499.8
+      Final population:    573.4
 
     Andean highland (Peru):
       Annual DD (>7.9°C):  25.0
       Est. generations/yr: 0.1
-      Peak population:     1498.5
+      Peak population:     1499.4
       Final population:    1069.6
 
 ## Comparing PBDM vs. Correlative Risk Assessment
@@ -693,7 +693,7 @@ println("  Net effect: range expands into previously temperate-limited regions")
       36.0°N  |  5475.0  |    12.0    | Minimal (Σμ=0.0)
       42.0°N  |  4708.0  |    10.4    | Minimal (Σμ=0.0)
       48.0°N  |  3942.0  |     8.7    | Minimal (Σμ=0.0)
-      54.0°N  |  3292.0  |     7.2    | Minimal (Σμ=0.5)
+      54.0°N  |  3292.0  |     7.2    | Minimal (Σμ=0.4)
 
     --- A1B mid-century (+1.8°C) ---
     Latitude | Annual DD | Generations | Cold mortality risk
@@ -707,7 +707,7 @@ println("  Net effect: range expands into previously temperate-limited regions")
     Latitude | Annual DD | Generations | Cold mortality risk
     ------------------------------------------------------------
       36.0°N  |  6789.0  |    14.9    | Minimal (Σμ=0.0)
-      42.0°N  |  6022.0  |    13.3    | Minimal (Σμ=0.0)
+      42.0°N  |  6023.0  |    13.3    | Minimal (Σμ=0.0)
       48.0°N  |  5256.0  |    11.6    | Minimal (Σμ=0.0)
       54.0°N  |  4490.0  |     9.9    | Minimal (Σμ=0.0)
 

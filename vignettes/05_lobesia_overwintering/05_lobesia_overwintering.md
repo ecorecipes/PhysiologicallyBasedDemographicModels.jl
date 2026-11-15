@@ -255,19 +255,19 @@ end
 ```
 
     Sicily (37.5°N):
-      Total DD (Aug–May): 32.0
-      50% emergence: day 464
-      Survival: 89.5%
+      Total DD (Aug–May): 24.0
+      50% emergence: day 497
+      Survival: 91.0%
 
     Bordeaux (44.8°N):
-      Total DD (Aug–May): 30.0
-      50% emergence: day 396
-      Survival: 89.9%
+      Total DD (Aug–May): 21.0
+      50% emergence: day 498
+      Survival: 91.9%
 
     Switzerland (47.2°N):
-      Total DD (Aug–May): 29.0
-      50% emergence: day 386
-      Survival: 90.0%
+      Total DD (Aug–May): 20.0
+      50% emergence: day 498
+      Survival: 92.1%
 
 ### Post-diapause emergence trajectory at Bordeaux
 

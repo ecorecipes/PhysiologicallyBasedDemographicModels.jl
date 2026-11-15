@@ -533,13 +533,13 @@ end
     Mediterranean (Rome, 42°N):
       Active growing days: 273 / 365
       Cold-limited days:   92
-      Peak population:     194.6
+      Peak population:     200.0
       Final population:    0.0
 
     Temperate (London, 51°N):
       Active growing days: 205 / 365
       Cold-limited days:   160
-      Peak population:     199.4
+      Peak population:     200.0
       Final population:    0.0
 
 ### Population dynamics figure
@@ -684,37 +684,37 @@ end
     ===========================================================================
     Latitude | Mean T | Scenario  | Active days | Peak pop.  | Risk
     ---------------------------------------------------------------------------
-      33.0°N  |  22.0°C | Baseline  |    365      |     189.6 | High
-      33.0°N  |  23.0°C | +1°C      |    365      |     188.7 | High
-      33.0°N  |  24.0°C | +2°C      |    365      |     187.9 | High
+      33.0°N  |  22.0°C | Baseline  |    365      |     196.8 | High
+      33.0°N  |  23.0°C | +1°C      |    365      |     195.9 | High
+      33.0°N  |  24.0°C | +2°C      |    365      |     194.9 | High
 
-      36.0°N  |  21.1°C | Baseline  |    365      |     190.3 | High
-      36.0°N  |  22.1°C | +1°C      |    365      |     189.4 | High
-      36.0°N  |  23.1°C | +2°C      |    365      |     188.5 | High
+      36.0°N  |  21.1°C | Baseline  |    365      |     198.0 | High
+      36.0°N  |  22.1°C | +1°C      |    365      |     197.2 | High
+      36.0°N  |  23.1°C | +2°C      |    365      |     196.3 | High
 
-      39.0°N  |  20.2°C | Baseline  |    365      |     191.0 | High
-      39.0°N  |  21.2°C | +1°C      |    365      |     190.1 | High
-      39.0°N  |  22.2°C | +2°C      |    365      |     189.2 | High
+      39.0°N  |  20.2°C | Baseline  |    365      |     199.2 | High
+      39.0°N  |  21.2°C | +1°C      |    365      |     198.4 | High
+      39.0°N  |  22.2°C | +2°C      |    365      |     197.6 | High
 
-      42.0°N  |  19.3°C | Baseline  |    365      |     191.7 | High
-      42.0°N  |  20.3°C | +1°C      |    365      |     190.8 | High
-      42.0°N  |  21.3°C | +2°C      |    365      |     189.8 | High
+      42.0°N  |  19.3°C | Baseline  |    365      |     200.0 | High
+      42.0°N  |  20.3°C | +1°C      |    365      |     199.5 | High
+      42.0°N  |  21.3°C | +2°C      |    365      |     198.8 | High
 
-      45.0°N  |  18.4°C | Baseline  |    365      |     192.5 | High
-      45.0°N  |  19.4°C | +1°C      |    365      |     191.5 | High
-      45.0°N  |  20.4°C | +2°C      |    365      |     190.5 | High
+      45.0°N  |  18.4°C | Baseline  |    365      |     200.0 | High
+      45.0°N  |  19.4°C | +1°C      |    365      |     200.0 | High
+      45.0°N  |  20.4°C | +2°C      |    365      |     199.8 | High
 
-      48.0°N  |  17.5°C | Baseline  |    305      |     193.2 | High
-      48.0°N  |  18.5°C | +1°C      |    342      |     192.2 | High
-      48.0°N  |  19.5°C | +2°C      |    365      |     191.2 | High
+      48.0°N  |  17.5°C | Baseline  |    305      |     200.0 | High
+      48.0°N  |  18.5°C | +1°C      |    343      |     200.0 | High
+      48.0°N  |  19.5°C | +2°C      |    365      |     200.0 | High
 
-      51.0°N  |  16.6°C | Baseline  |    276      |     193.9 | High
-      51.0°N  |  17.6°C | +1°C      |    295      |     192.9 | High
-      51.0°N  |  18.6°C | +2°C      |    321      |     191.9 | High
+      51.0°N  |  16.6°C | Baseline  |    277      |     200.0 | High
+      51.0°N  |  17.6°C | +1°C      |    295      |     200.0 | High
+      51.0°N  |  18.6°C | +2°C      |    321      |     200.0 | High
 
-      54.0°N  |  15.7°C | Baseline  |    256      |     194.6 | High
-      54.0°N  |  16.7°C | +1°C      |    271      |     193.6 | High
-      54.0°N  |  17.7°C | +2°C      |    288      |     192.6 | High
+      54.0°N  |  15.7°C | Baseline  |    255      |     200.0 | High
+      54.0°N  |  16.7°C | +1°C      |    271      |     200.0 | High
+      54.0°N  |  17.7°C | +2°C      |    287      |     200.0 | High
 
 ### Climate warming comparison figure
 

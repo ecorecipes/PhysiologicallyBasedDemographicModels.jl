@@ -323,15 +323,15 @@ end
     Budbreak→Bloom (days 120–163):
       Leaf Δ:  0.0
       Fruit Δ: 0.0
-      Trunk Δ: 9.01
+      Trunk Δ: 0.0
     Bloom→Veraison (days 163–206):
       Leaf Δ:  0.0
       Fruit Δ: 0.0
-      Trunk Δ: -0.57
+      Trunk Δ: 0.0
     Veraison→Harvest (days 206–238):
       Leaf Δ:  0.0
-      Fruit Δ: -0.0
-      Trunk Δ: -0.36
+      Fruit Δ: 0.0
+      Trunk Δ: 0.0
 
 ## Tissue Trajectories
 
@@ -353,9 +353,9 @@ end
     Tissue population peaks:
       leaf: peak=0.0 (day 1), end=0.0
       shoot: peak=0.0 (day 1), end=0.0
-      root: peak=150.0 (day 1), end=0.0
-      trunk: peak=1500.0 (day 1), end=11.48
-      fruit: peak=0.23 (day 103), end=0.0
+      root: peak=0.0 (day 1), end=0.0
+      trunk: peak=0.0 (day 1), end=0.0
+      fruit: peak=0.0 (day 1), end=0.0
 
 ### Grapevine tissue trajectories across the growing season
 

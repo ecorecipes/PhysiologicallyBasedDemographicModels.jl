@@ -38,8 +38,11 @@ abstract type AbstractContinuousPBDM end
 
 Supertype for numerical methods that discretize the McKendrick–von Foerster
 PDE into an ODE system (method of lines).
+
+It is the `AbstractTransportDiscretization` of StructuredPopulationCore, shared with
+ContinuousStatePopulationDynamics.jl, under the name this package has always used.
 """
-abstract type AbstractPSPMMethod end
+const AbstractPSPMMethod = AbstractTransportDiscretization
 
 """
     AbstractPSPMSpecies{T<:Real}
@@ -401,17 +404,16 @@ function solve_delay end
 # PSPM / McKendrick–von Foerster PDE problem
 # ============================================================================
 
-"""
-    FixedMeshUpwind <: AbstractPSPMMethod
+# `FixedMeshUpwind` is defined in StructuredPopulationCore and shared with
+# ContinuousStatePopulationDynamics.jl: fixed mesh upwind (FMU) discretization of the
+# McKendrick–von Foerster PDE, first-order upwind finite differences on a fixed size grid.
+# Fast but diffusive. From Zhang et al. (2017), Joshi et al. (2023).
+# `FixedMeshUpwind(n_mesh = 50)` sets the number of cells per species (per stage, for a
+# staged species); without `n_mesh` it is `nothing` and the PSPM solver uses
+# `DEFAULT_N_MESH` cells.
 
-Fixed mesh upwind (FMU) discretization of the McKendrick–von Foerster PDE.
-First-order upwind finite differences on a fixed size grid.
-Fast but diffusive. From Zhang et al. (2017), Joshi et al. (2023).
-"""
-struct FixedMeshUpwind <: AbstractPSPMMethod
-    n_mesh::Int
-end
-FixedMeshUpwind(; n_mesh::Int=100) = FixedMeshUpwind(n_mesh)
+"""Number of mesh cells a PSPM method uses when it is not given: 100."""
+const DEFAULT_N_MESH = 100
 
 """
     EscalatorBoxcarTrain <: AbstractPSPMMethod

@@ -162,7 +162,7 @@ end
         27.0 |            15.0 |   15.0
         30.0 |            18.0 |   18.0
         35.0 |            23.0 |   23.0
-        40.0 |            23.0 |   28.0
+        40.0 |            23.0 |   23.0
 
 ### Simulating a growing season
 
@@ -183,11 +183,11 @@ end
 ```
 
     Season temperatures:
-      Day   1: T_mean = 28.4 °C
-      Day  45: T_mean = 24.7 °C
-      Day  90: T_mean = 22.3 °C
-      Day 135: T_mean = 22.5 °C
-      Day 180: T_mean = 25.3 °C
+      Day   1: T_mean = 22.2 °C
+      Day  45: T_mean = 22.5 °C
+      Day  90: T_mean = 25.4 °C
+      Day 135: T_mean = 29.2 °C
+      Day 180: T_mean = 31.7 °C
 
 ``` julia
 # Simulate a 180-day growing season (June sowing through November harvest)
@@ -220,23 +220,23 @@ end
 
 
     --- 180-Day Growing Season Summary ---
-    Total degree-days accumulated: 2148.0
-    Phenology (50% maturation):    day 77
-    Peak vegetative biomass:       239.1 (day 1)
-    Peak fruiting biomass:         100.7 (day 35)
+    Total degree-days accumulated: 2521.0
+    Phenology (50% maturation):    day 92
+    Peak vegetative biomass:       243.2 (day 1)
+    Peak fruiting biomass:         99.2 (day 51)
     Final fruit biomass:           0.0
-    Net growth rate (λ):           0.894
+    Net growth rate (λ):           0.8157
 
     --- Crop Biomass Trajectory ---
     Day | DD (cum) | Vegetative | Fruiting | Total
     -------------------------------------------------------
-        1 |   16.0 |     239.1 |     6.8 |   245.9
-       30 |  455.0 |      36.4 |    98.0 |   134.4
-       60 |  836.0 |       0.0 |    57.4 |    57.4
-       90 | 1162.0 |       0.0 |    14.0 |    14.0
-      120 | 1464.0 |       0.0 |     0.8 |     0.8
-      150 | 1781.0 |       0.0 |     0.0 |     0.0
-      180 | 2148.0 |       0.0 |     0.0 |     0.0
+        1 |   10.0 |     243.2 |     4.3 |   247.4
+       30 |  302.0 |      90.8 |    81.2 |   172.0
+       60 |  620.0 |       5.5 |    93.2 |    98.7
+       90 |  990.0 |       0.0 |    33.2 |    33.2
+      120 | 1432.0 |       0.0 |     1.3 |     1.3
+      150 | 1948.0 |       0.0 |     0.0 |     0.0
+      180 | 2521.0 |       0.0 |     0.0 |     0.0
 
 ### Cotton biomass trajectories over the kharif season
 
@@ -372,13 +372,13 @@ end
     --- PBW Season Dynamics ---
     Day | DD (cum) |  Eggs  | Larvae | Pupae  | Adults | Total
     ----------------------------------------------------------------------
-        1 |   15.0 |   0.0 |   4.0 |   0.4 |   0.0 |    4.4
-       30 |  425.0 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
-       60 |  776.0 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
-       90 | 1072.0 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
-      120 | 1344.0 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
-      150 | 1631.0 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
-      180 | 1968.0 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
+        1 |    9.0 |   0.0 |   5.1 |   0.3 |   0.0 |    5.4
+       30 |  272.0 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
+       60 |  560.0 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
+       90 |  900.0 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
+      120 | 1312.0 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
+      150 | 1798.0 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
+      180 | 2341.0 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
 
 ### Bollworm damage function
 
@@ -1036,9 +1036,9 @@ println("Bt cumulative advantage: \$$(round(bt_npv_val - conv_npv_val, digits=0)
        20 |  0.9296 |     15.7 |   7.41 |  147.0 kg | $  122.0 | $     81.0 | $ 41.0
 
     --- 20-Year NPV (5% discount rate) ---
-    Bt cotton NPV:           $2035.0/ha
-    Conventional cotton NPV: $1005.0/ha
-    Bt cumulative advantage: $1030.0/ha
+    Bt cotton NPV:           $2136.0/ha
+    Conventional cotton NPV: $1055.0/ha
+    Bt cumulative advantage: $1082.0/ha
 
 ### Refuge policy comparison
 
@@ -1092,11 +1092,11 @@ end
     --- Refuge Policy Impact on 20-Year Economics ---
     Refuge | Bt NPV ($/ha) | Conv NPV | Year Bt<Conv | Final R  | Final Eff (%)
     --------------------------------------------------------------------------------
-      None | $    1886.0 | $1005.0 |      Never |    1.0 |     10.0
-        5% | $    2035.0 | $1005.0 |      Never | 0.9296 |     15.7
-       10% | $    2186.0 | $1005.0 |      Never | 0.8623 |     21.1
-       20% | $    2497.0 | $1005.0 |      Never | 0.7357 |     31.5
-       40% | $    3148.0 | $1005.0 |      Never | 0.5098 |     50.4
+      None | $    1980.0 | $1055.0 |      Never |    1.0 |     10.0
+        5% | $    2136.0 | $1055.0 |      Never | 0.9296 |     15.7
+       10% | $    2295.0 | $1055.0 |      Never | 0.8623 |     21.1
+       20% | $    2621.0 | $1055.0 |      Never | 0.7357 |     31.5
+       40% | $    3306.0 | $1055.0 |      Never | 0.5098 |     50.4
 
 ### Rainfall variability × refuge policy
 
@@ -1139,11 +1139,11 @@ end
     --- 20-Year NPV by Rainfall and Refuge Policy ---
     Rain (mm) | Refuge 5% Bt | Refuge 20% Bt | Conventional
     ------------------------------------------------------------
-          400 | $   -486.0 | $     -315.0 | $  -899.0
-          600 | $    954.0 | $     1292.0 | $   189.0
-          750 | $   2035.0 | $     2497.0 | $  1005.0
-          900 | $   3115.0 | $     3702.0 | $  1820.0
-         1200 | $   5276.0 | $     6111.0 | $  3452.0
+          400 | $   -510.0 | $     -331.0 | $  -944.0
+          600 | $   1002.0 | $     1356.0 | $   198.0
+          750 | $   2136.0 | $     2621.0 | $  1055.0
+          900 | $   3271.0 | $     3887.0 | $  1911.0
+         1200 | $   5539.0 | $     6417.0 | $  3625.0
 
 ### Smallholder daily income trajectory
 

@@ -22,7 +22,7 @@ import PhysiologicallyBasedDemographicModels:
     ImplicitFixedMeshUpwind, ImplicitEscalatorBoxcarTrain, ImplicitCharacteristicMethod,
     LaxFriedrichsUpwind, ImplicitLaxFriedrichsUpwind,
     ContinuousSpecies, ContinuousTrophicLink,
-    _total_substages, _get_temperature, species_total_ranges,
+    _total_substages, _get_temperature, species_total_ranges, DEFAULT_N_MESH,
     FraserGilbertResponse, HollingTypeII, HollingTypeIII,
     development_rate, respiration_rate, acquire
 
@@ -318,7 +318,7 @@ end
 
 function _solve_pspm(prob::PSPMProblem, method::FixedMeshUpwind;
                      alg=nothing, kwargs...)
-    n_mesh = method.n_mesh
+    n_mesh = something(method.n_mesh, DEFAULT_N_MESH)
     if _has_staged(prob)
         meshes, u0, sp_ranges = _init_staged_fmu_state(prob, n_mesh)
         rhs! = _build_staged_fmu_rhs(prob, meshes, n_mesh, :upwind)

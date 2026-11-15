@@ -164,7 +164,7 @@ println("SpatialGrid constructor count = ", sg_methods)
 println("apply_event! method count = ", length(methods(apply_event!)))
 ```
 
-    apply_event! method count = 5
+    apply_event! method count = 6
 
 Each of `PulseRelease`, `SingleDayRelease`, `SprayEvent`,
 `ConditionalRelease`, `WeatherConditionalEvent` (and any user-defined

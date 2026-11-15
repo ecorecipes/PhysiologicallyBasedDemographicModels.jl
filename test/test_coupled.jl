@@ -908,4 +908,194 @@
         @test results[1] < results[5]  # higher r → higher final pop
         @test !results.converged
     end
+
+    @testset "Coupled-system layer shared through StructuredPopulationCore" begin
+        PBDM = PhysiologicallyBasedDemographicModels
+        SPC = PBDM.StructuredPopulationCore
+        SciMLBase = PBDM.SciMLBase
+
+        # one definition for the whole stack: the core's types and functions, exported here
+        @test PopulationComponent === SPC.PopulationComponent
+        @test PopulationSystem === SPC.PopulationSystem
+        @test Observable === SPC.Observable
+        @test AbstractStateVariable === SPC.AbstractStateVariable
+        @test AbstractInteractionRule === SPC.AbstractInteractionRule
+        @test AbstractScheduledEvent === SPC.AbstractScheduledEvent
+        @test PulseRelease === SPC.PulseRelease
+        @test SingleDayRelease === SPC.SingleDayRelease
+        @test SprayEvent === SPC.SprayEvent
+        @test TransferRule === SPC.TransferRule
+        @test ReproductionRule === SPC.ReproductionRule
+        @test MortalityRule === SPC.MortalityRule
+        @test CustomRule === SPC.CustomRule
+        @test get_state === SPC.get_state
+        @test set_state! === SPC.set_state!
+        @test has_state === SPC.has_state
+        @test total_population === SPC.total_population
+        @test component_total === SPC.component_total
+        @test component_totals === SPC.component_totals
+        @test by_species === SPC.by_species
+        @test by_type === SPC.by_type
+        @test by_patch === SPC.by_patch
+        @test inject! === SPC.inject!
+        @test remove_fraction! === SPC.remove_fraction!
+        @test apply_event! === SPC.apply_event!
+        @test n_stages === SPC.n_stages
+        @test allocate === SPC.allocate
+        @test supply_demand_index === SPC.supply_demand_index
+        @test remake === SciMLBase.remake
+        @test ScalarState <: AbstractStateVariable
+        @test ConditionalRelease <: AbstractScheduledEvent
+        @test PredationRule <: AbstractInteractionRule
+
+        w = DailyWeather(25.0, 20.0, 30.0)
+
+        @testset "components carry a Population or a BulkPopulation" begin
+            pop = make_test_pop(:fly, 10.0, 5.0)
+            bulk = BulkPopulation(:soil, 3.0)
+            sys = PopulationSystem(:fly => pop, :soil => bulk)
+            @test sys isa PopulationSystem{Float64}
+            @test sys[:fly].population === pop            # held by reference
+            @test sys[:soil].population === bulk
+            @test sys[:fly].model === nothing
+            @test sys[:fly].stage_names == [:juvenile, :adult]
+            @test sys[:soil].stage_names == [:soil]
+            @test (sys[:fly].species, sys[:fly].type, sys[:fly].patch) == (:fly, :default, :default)
+            @test sys.order == [:fly, :soil]
+            @test component_totals(sys) == Dict(:fly => total_population(pop), :soil => 3.0)
+            @test total_population(sys) ≈ total_population(pop) + 3.0
+            comp = PopulationComponent(bulk; species = :pathogen, patch = :plot1)
+            @test (comp.species, comp.type, comp.patch) == (:pathogen, :default, :plot1)
+            @test first.(by_patch(PopulationSystem(:soil => comp), :plot1)) == [:soil]
+            @test_throws ArgumentError PopulationSystem(:x => 1.0)
+
+            inject!(sys, :soil, 2, 1.0)                   # a BulkPopulation ignores the stage
+            @test component_total(sys, :soil) == 4.0
+            remove_fraction!(sys, :soil, 0.5)
+            @test component_total(sys, :soil) == 2.0
+            remove_fraction!(sys, :fly, 1, 1.0)
+            @test delay_total(pop.stages[1].delay) == 0.0
+            @test delay_total(pop.stages[2].delay) > 0.0
+            @test_throws ArgumentError remove_fraction!(sys, :fly, 1, 1.5)
+        end
+
+        @testset "state: variables by reference, plain values allowed" begin
+            counter = ScalarState(:count, 1.0; update = (v, sys, w, day, p) -> v + 1)
+            sys = PopulationSystem(:b => BulkPopulation(:b, 1.0); state = [counter])
+            @test sys.state[:count] === counter
+            @test get_state(sys, :count) == 1.0
+            set_state!(sys, :count, 5.0)
+            @test counter.value[] == 5.0
+            @test sys.state[:count] === counter
+
+            # the order in which the solver updates state is the Dict's, as before
+            vars = [ScalarState(Symbol("v", i), Float64(i)) for i in 1:9]
+            sys9 = PopulationSystem(:b => BulkPopulation(:b, 1.0); state = vars)
+            @test collect(keys(sys9.state)) ==
+                collect(keys(Dict{Symbol, AbstractStateVariable}(sv.name => sv for sv in vars)))
+
+            # a plain value is stored as it is, is not updated automatically, and is recorded
+            plain = PopulationSystem(:b => BulkPopulation(:b, 1.0); state = (level = 2.0,))
+            @test get_state(plain, :level) == 2.0
+            set_state!(plain, :level, 3.0)
+            @test get_state(plain, :level) == 3.0
+            wx = WeatherSeries([DailyWeather(25.0) for _ in 1:3])
+            sol = solve(PBDMProblem(plain, wx, (1, 3)), DirectIteration())
+            @test sol.state_history[:level] == [3.0, 3.0, 3.0]
+            sol2 = solve(PBDMProblem(sys, wx, (1, 3)), DirectIteration())
+            @test sol2.state_history[:count] == [6.0, 7.0, 8.0]
+        end
+
+        @testset "events" begin
+            @test PulseRelease(:t, 10.0, 7).start_day == 0          # shared default
+            ev = PulseRelease(:t, 2, 10.0, 7; start_day = 1)        # positional stage
+            @test (ev.target, ev.stage_idx, ev.amount, ev.interval, ev.start_day) == (:t, 2, 10.0, 7, 1)
+            single = SingleDayRelease(:t, 2, 10.0, 4)
+            @test (single.stage_idx, single.amount, single.day) == (2, 10.0, 4)
+            @test_throws ArgumentError PulseRelease(:t, -1.0, 7)
+            @test_throws ArgumentError SprayEvent([:t], [1.2], [1])
+
+            sys = PopulationSystem(:t => make_test_pop(:t, 10.0, 5.0))
+            adults = delay_total(sys[:t].population.stages[2].delay)
+            @test apply_event!(ev, sys, w, 1, nothing)
+            @test apply_event!(single, sys, w, 4, nothing)
+            @test delay_total(sys[:t].population.stages[2].delay) ≈ adults + 20.0
+            @test apply_event!(ev, sys, 8, nothing)                 # form without weather
+
+            # a spray on a component that does not exist is an error when it fires
+            spray = SprayEvent([:nobody], [0.5], [2])
+            @test !apply_event!(spray, sys, w, 1, nothing)
+            @test_throws ArgumentError apply_event!(spray, sys, w, 2, nothing)
+            wx = WeatherSeries([DailyWeather(25.0) for _ in 1:3])
+            @test_throws ArgumentError solve(
+                PBDMProblem(sys, wx, (1, 3); events = [spray]), DirectIteration())
+        end
+
+        @testset "rules" begin
+            f = (sys, w, day, p) -> 0.5
+            tr = TransferRule(:src, 2, :dst, 1, f)                  # positional stages
+            @test (tr.source, tr.source_stage, tr.target, tr.target_stage) == (:src, 2, :dst, 1)
+            @test tr == TransferRule(:src, :dst, f; source_stage = 2, target_stage = 1)
+            rr = ReproductionRule(:dst, 2, (sys, w, day, p) -> -3.0)
+            @test (rr.target, rr.stage) == (:dst, 2)
+
+            sys = PopulationSystem(:src => make_test_pop(:src, 100.0, 50.0),
+                                   :dst => make_test_pop(:dst, 10.0, 5.0))
+            src_adults = delay_total(sys[:src].population.stages[2].delay)
+            dst_juv = delay_total(sys[:dst].population.stages[1].delay)
+            @test apply_rule!(tr, sys, w, 1, nothing).transferred ≈ src_adults / 2
+            @test delay_total(sys[:src].population.stages[2].delay) ≈ src_adults / 2
+            @test delay_total(sys[:dst].population.stages[1].delay) ≈ dst_juv + src_adults / 2
+
+            # results outside the valid range are clamped, not errors
+            dst_total = component_total(sys, :dst)
+            @test apply_rule!(rr, sys, w, 1, nothing).offspring == 0.0
+            @test component_total(sys, :dst) == dst_total
+            @test apply_rule!(TransferRule(:src, :dst, (sys, w, day, p) -> 7.0), sys, w, 1, nothing).transferred ≈
+                delay_total(sys[:dst].population.stages[1].delay) - dst_juv - src_adults / 2
+            all_dead = MortalityRule(:dst, (sys, w, day, p) -> 2.0)
+            @test all_dead.stage == 0
+            juv_only = MortalityRule(:src, (sys, w, day, p) -> 1.0; stage = 1)
+            @test apply_rule!(juv_only, sys, w, 1, nothing).mortality == 1.0
+            @test delay_total(sys[:src].population.stages[1].delay) == 0.0
+            @test delay_total(sys[:src].population.stages[2].delay) > 0.0
+            @test apply_rule!(all_dead, sys, w, 1, nothing).mortality == 1.0
+            @test component_total(sys, :dst) == 0.0
+        end
+
+        @testset "log keys are unchanged" begin
+            sys = PopulationSystem(:a => make_test_pop(:a, 100.0, 50.0),
+                                   :b => make_test_pop(:b, 10.0, 5.0))
+            wx = WeatherSeries([DailyWeather(25.0, 20.0, 30.0) for _ in 1:4])
+            rules = AbstractInteractionRule[
+                ReproductionRule(:a, (sys, w, day, p) -> 1.0),
+                MortalityRule(:a, (sys, w, day, p) -> 0.01),
+                TransferRule(:a, :b, (sys, w, day, p) -> 0.01),
+                CustomRule(:mine, (sys, w, day, p) -> (day = day,)),
+                ReproductionRule(:b, (sys, w, day, p) -> 1.0; name = :ignored_in_the_log),
+            ]
+            events = AbstractScheduledEvent[
+                PulseRelease(:a, 1.0, 2; start_day = 1),
+                SingleDayRelease(:b, 1.0, 2),
+                SprayEvent([:b], [0.1], [3]),
+                ConditionalRelease(:a, (sys, w, day, p) -> 1.0, 3; start_day = 1),
+                WeatherConditionalEvent(:warm, (w, day, sys, p) -> day == 4, (sys, w, day, p) -> true),
+            ]
+            sol = solve(PBDMProblem(sys, wx, (1, 4); rules = rules, events = events), DirectIteration())
+            @test Set(keys(sol.rule_log)) ==
+                Set([:ReproductionRule, :MortalityRule, :TransferRule, :mine, :ReproductionRule_5])
+            @test all(length(v) == 4 for v in values(sol.rule_log))
+            @test sol.event_log == [(1, :PulseRelease), (1, :ConditionalRelease), (2, :SingleDayRelease),
+                                    (3, :PulseRelease), (3, :SprayEvent), (4, :ConditionalRelease), (4, :warm)]
+        end
+
+        @testset "remake is SciMLBase.remake" begin
+            wx = WeatherSeries([DailyWeather(25.0) for _ in 1:5])
+            prob = PBDMProblem(PopulationSystem(:b => BulkPopulation(:b, 1.0)), wx, (1, 5))
+            again = remake(prob; tspan = (1, 3))
+            @test again isa PBDMProblem
+            @test again.tspan == (1, 3)
+            @test again.populations === prob.populations
+        end
+    end
 end

@@ -390,20 +390,20 @@ end
 
     === Denmark Overwintering Simulation ===
     Simulation: day 240 (late Aug) to day 529
-    Total degree-days accumulated: 1.3
-    50% adult emergence: day 510 (year 2, day 145)
+    Total degree-days accumulated: 2.6
+    50% adult emergence: day 482 (year 2, day 117)
 
     Phase transitions (population in each phase):
     Day  | Phase 1 | Phase 2 | Phase 3 | Total
     -------------------------------------------------------
-      240  | 2499.1 |    0.9 |    0.0 | 2500.0
-      280  | 2488.5 |    9.6 |    1.9 | 2500.0
-      320  | 2485.1 |    3.5 |    1.0 | 2489.7
-      360  | 2425.9 |   58.4 |    2.5 | 2486.7
-      400  |    0.9 | 2317.9 |  161.4 | 2480.2
-      440  |    0.6 | 1376.2 | 1095.4 | 2472.3
-      480  |    0.6 | 1353.6 | 1108.8 | 2463.0
-      520  |    0.6 | 1246.5 | 1180.1 | 2427.2
+      240  | 2499.7 |    0.3 |    0.0 | 2500.0
+      280  | 2292.9 |  203.7 |    3.2 | 2499.7
+      320  |    0.5 | 1960.4 |  533.8 | 2494.8
+      360  |    0.5 | 1380.0 | 1106.8 | 2487.3
+      400  |    0.5 | 1366.7 | 1108.6 | 2475.8
+      440  |    0.5 |  812.8 | 1584.7 | 2398.0
+      480  |    0.0 |    0.5 | 1297.4 | 1297.9
+      520  |    0.0 |    0.0 |    0.0 | 0.0
 
 ## Simulating California Overwintering
 
@@ -476,19 +476,19 @@ end
 
 
     === California Overwintering Simulation ===
-    Total degree-days accumulated: 1.2
-    50% adult emergence: day 471
+    Total degree-days accumulated: 1.7
+    50% adult emergence: day 421
 
     Phase transitions (California):
     Day  | Phase 1 | Phase 2 | Phase 3 | Total
     -------------------------------------------------------
-      240  | 1499.6 |    0.4 |    0.0 | 1500.0
-      280  | 1490.4 |    8.3 |    1.2 | 1500.0
-      320  | 1484.0 |    6.2 |    2.0 | 1492.2
-      360  | 1467.8 |   15.5 |    2.8 | 1486.1
-      400  | 1380.4 |   81.9 |   13.7 | 1476.0
-      440  |  953.3 |  383.9 |  101.7 | 1438.9
-      480  |   90.7 |  695.5 |  471.7 | 1257.8
+      240  | 1499.7 |    0.3 |    0.0 | 1500.0
+      280  | 1474.7 |   23.7 |    1.5 | 1500.0
+      320  | 1331.7 |  133.0 |   24.0 | 1488.7
+      360  |  740.6 |  521.3 |  170.5 | 1432.3
+      400  |   18.3 |  522.7 |  605.8 | 1146.8
+      440  |    0.1 |    5.4 |  206.0 | 211.5
+      480  |    0.0 |    0.0 |    0.2 | 0.2
 
 ## Comparing Emergence Patterns
 
@@ -528,14 +528,14 @@ end
       50% emergence: ~150 DD > 4.3°C from early March
       Expected emergence: late April to mid-May
       95% emergence: ~240 DD > 4.3°C
-      Model 50% emergence: day 510
+      Model 50% emergence: day 482
 
     California (37°N):
       Only ~60% of cohort enters diapause
       Mild winters: diapause phases complete faster
       Continuous activity possible (some adults year-round)
       Shorter critical photoperiod (~12 h vs ~15 h)
-      Model 50% emergence: day 471
+      Model 50% emergence: day 421
 
 ## Validation: Field Emergence Data
 

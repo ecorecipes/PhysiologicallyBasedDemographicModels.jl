@@ -16,8 +16,6 @@ execute:
   echo: true
   warning: false
 engine: julia
-julia:
-  exeflags: ["--project=/Users/username/Projects/ipm/integration_test/unified"]
 ---
 
 ## Introduction

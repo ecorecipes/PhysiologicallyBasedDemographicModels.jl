@@ -386,18 +386,18 @@ end
 
     Davis, CA — Monthly mean temperatures:
     =============================================
-      Month  1: 16.4°C  ████████████████
-      Month  2: 11.9°C  ████████████
-      Month  3: 8.5°C  ████████
-      Month  4: 7.0°C  ███████
-      Month  5: 7.9°C  ████████
-      Month  6: 10.9°C  ███████████
-      Month  7: 15.2°C  ███████████████
-      Month  8: 19.8°C  ████████████████████
-      Month  9: 23.3°C  ███████████████████████
-      Month 10: 24.9°C  █████████████████████████
-      Month 11: 24.3°C  ████████████████████████
-      Month 12: 21.4°C  █████████████████████
+      Month  1: 7.0°C  ███████
+      Month  2: 8.0°C  ████████
+      Month  3: 11.1°C  ███████████
+      Month  4: 15.4°C  ███████████████
+      Month  5: 19.9°C  ████████████████████
+      Month  6: 23.4°C  ███████████████████████
+      Month  7: 25.0°C  █████████████████████████
+      Month  8: 24.2°C  ████████████████████████
+      Month  9: 21.3°C  █████████████████████
+      Month 10: 17.0°C  █████████████████
+      Month 11: 12.4°C  ████████████
+      Month 12: 8.8°C  █████████
 
 ## Seed Bank Dynamics
 
@@ -605,11 +605,11 @@ println("Season length: $(length(sol_yst.t)) days")
 
     YST phenology (one season at Davis, CA):
     ============================================================
-      cotyledon       peak=7635.9 plants/m² (day 274)
-      rosette         peak=6850.1 plants/m² (day 279)
-      bolting         peak=4335.3 plants/m² (day 295)
-      flowering       peak=3476.1 plants/m² (day 311)
-      seed_mature     peak=2582.6 plants/m² (day 357)
+      cotyledon       peak=8451.7 plants/m² (day 274)
+      rosette         peak=6850.5 plants/m² (day 284)
+      bolting         peak=4259.2 plants/m² (day 337)
+      flowering       peak=3415.8 plants/m² (day 480)
+      seed_mature     peak=2543.7 plants/m² (day 532)
 
     Total degree-days (>8°C): 2957.0
     Season length: 365 days

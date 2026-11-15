@@ -90,7 +90,7 @@ invokes — these methods are dispatched on the concrete state type.
 println("update_state! method count = ", length(methods(update_state!)))
 ```
 
-    update_state! method count = 7
+    update_state! method count = 8
 
 ## Bulk populations
 
@@ -201,10 +201,13 @@ println("get_locus     method count = ", length(methods(get_locus)))
 ## `remake`
 
 `remake(prob; ...)` produces a copy of a `PBDMProblem` with overrides —
-the canonical pattern for parameter sweeps.
+the canonical pattern for parameter sweeps. It is a method of
+`SciMLBase.remake`, the function the other packages of the stack extend
+for their own problem types, so the count below is of the methods for a
+`PBDMProblem`.
 
 ``` julia
-println("remake method count = ", length(methods(remake)))
+println("remake method count = ", length(methods(remake, (PBDMProblem,))))
 ```
 
     remake method count = 1

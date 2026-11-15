@@ -218,7 +218,7 @@ end
        30.0 |       18.0
        32.0 |       20.0
        35.0 |       23.0
-       38.0 |       26.0
+       38.0 |       23.0
 
 ### Heat-induced flower abortion
 
@@ -287,12 +287,12 @@ end
 ```
 
     Season temperatures (Sacramento Valley):
-      Day 100: T_mean = 14.1 °C
-      Day 130: T_mean = 14.5 °C
-      Day 160: T_mean = 16.9 °C
-      Day 190: T_mean = 20.6 °C
-      Day 220: T_mean = 24.7 °C
-      Day 250: T_mean = 28.1 °C
+      Day 100: T_mean = 20.8 °C
+      Day 130: T_mean = 24.9 °C
+      Day 160: T_mean = 28.2 °C
+      Day 190: T_mean = 29.9 °C
+      Day 220: T_mean = 29.5 °C
+      Day 250: T_mean = 27.2 °C
 
 ``` julia
 # Simulate 150-day growing season (April transplant through September harvest)
@@ -326,22 +326,22 @@ end
 
 
     --- 150-Day Growing Season Summary ---
-    Total degree-days accumulated: 1136.0
-    Phenology (50% maturation):    day 233
-    Peak vegetative biomass:       99.0 (day 100)
-    Peak fruiting biomass:         60.6 (day 178)
-    Final ripe fruit biomass:      0.3
+    Total degree-days accumulated: 2324.0
+    Phenology (50% maturation):    day 166
+    Peak vegetative biomass:       96.0 (day 100)
+    Peak fruiting biomass:         63.1 (day 125)
+    Final ripe fruit biomass:      0.0
 
     --- Crop Biomass Trajectory ---
     Day | DD (cum) | Vegetative | Fruiting | Ripening | Total
     ------------------------------------------------------------
-      100 |    2.0 |      99.0 |     0.7 |     0.0 |    99.8
-      124 |   52.0 |      77.3 |    17.2 |     0.0 |    94.5
-      149 |  126.0 |      48.2 |    37.5 |     0.0 |    85.7
-      174 |  256.0 |       9.4 |    59.8 |     0.0 |    69.2
-      199 |  462.0 |       0.0 |    43.2 |     2.8 |    46.1
-      224 |  752.0 |       0.0 |     4.3 |    20.5 |    24.8
-      249 | 1120.0 |       0.0 |     0.0 |     0.4 |     0.4
+      100 |    9.0 |      96.0 |     3.1 |     0.0 |    99.1
+      124 |  261.0 |       5.8 |    62.6 |     0.0 |    68.4
+      149 |  604.0 |       0.0 |    20.7 |    14.5 |    35.2
+      174 | 1011.0 |       0.0 |     0.0 |     2.1 |     2.1
+      199 | 1455.0 |       0.0 |     0.0 |     0.0 |     0.0
+      224 | 1899.0 |       0.0 |     0.0 |     0.0 |     0.0
+      249 | 2309.0 |       0.0 |     0.0 |     0.0 |     0.0
 
 ### Crop development plot
 
@@ -578,10 +578,10 @@ end
     --- Fruitworm Season Dynamics ---
     Day | Eggs   | Larvae | Pupae  | Adults | Total
     -------------------------------------------------------
-      100 |   0.0 |   0.0 |  2.32 |  0.02 |   2.34
-      124 |   0.0 |   0.0 |  1.03 |  0.17 |    1.2
-      149 |   0.0 |   0.0 |  0.21 |  0.08 |   0.29
-      174 |   0.0 |   0.0 |   0.0 |   0.0 |   0.01
+      100 |   0.0 |   0.0 |  1.91 |  0.09 |    2.0
+      124 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
+      149 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
+      174 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
       199 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
       224 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
       249 |   0.0 |   0.0 |   0.0 |   0.0 |    0.0
@@ -1014,13 +1014,13 @@ end
 
                               | No Spray   | Calendar   | IPM Threshold
     ----------------------------------------------------------------------
-    Spray applications          |      0.0   |      4.0   |      1.0
+    Spray applications          |      0.0   |      4.0   |      0.0
     Peak fruitworm larvae       |      0.0   |      0.0   |      0.0
     Mean fruitworm larvae       |      0.0   |      0.0   |      0.0
-    Peak BAW density            |    41.64   |    41.64   |     8.33
+    Peak BAW density            |    21.38   |    21.38   |    21.38
     Actual yield (t/ha)         |     90.0   |     90.0   |     90.0
-    Quality multiplier          |      0.9   |      0.9   |      1.0
-    Adjusted yield (t/ha)       |     78.6   |     78.6   |     87.6
+    Quality multiplier          |      0.9   |      0.9   |      0.9
+    Adjusted yield (t/ha)       |     84.0   |     84.0   |     84.0
 
 ### Profitability comparison
 
@@ -1051,28 +1051,28 @@ end
     --- Economic Analysis (per hectare) ---
 
       No Spray:
-        Adjusted yield:  78.6 t/ha
-        Gross revenue:   $6682.0/ha
+        Adjusted yield:  84.0 t/ha
+        Gross revenue:   $7136.0/ha
         Total costs:     $2350.0/ha
-        Net profit:      $4332.0/ha
-        Benefit-cost:    2.84
+        Net profit:      $4786.0/ha
+        Benefit-cost:    3.04
         Spray count:     0
 
       Calendar Spray:
-        Adjusted yield:  78.6 t/ha
-        Gross revenue:   $6682.0/ha
+        Adjusted yield:  84.0 t/ha
+        Gross revenue:   $7136.0/ha
         Total costs:     $2650.0/ha
-        Net profit:      $4032.0/ha
-        Benefit-cost:    2.52
+        Net profit:      $4486.0/ha
+        Benefit-cost:    2.69
         Spray count:     4
 
       IPM Threshold:
-        Adjusted yield:  87.6 t/ha
-        Gross revenue:   $7446.0/ha
+        Adjusted yield:  84.0 t/ha
+        Gross revenue:   $7136.0/ha
         Total costs:     $2555.0/ha
-        Net profit:      $4891.0/ha
-        Benefit-cost:    2.91
-        Spray count:     1
+        Net profit:      $4581.0/ha
+        Benefit-cost:    2.79
+        Spray count:     0
 
 ### Strategy comparison plots
 
@@ -1147,14 +1147,14 @@ end
     --- Profitability vs Initial Fruitworm Pressure ---
     FW Init | No-Spray $/ha | Calendar $/ha | IPM $/ha | Best Strategy
     ----------------------------------------------------------------------
-        0.0 | $   4332.0 | $     4032.0 | $4891.0 | IPM
-       0.05 | $   4332.0 | $     4032.0 | $4891.0 | IPM
-        0.1 | $   4332.0 | $     4032.0 | $4891.0 | IPM
-        0.2 | $   4332.0 | $     4032.0 | $4891.0 | IPM
-        0.5 | $   4332.0 | $     4032.0 | $4891.0 | IPM
-        1.0 | $   4332.0 | $     4032.0 | $4891.0 | IPM
-        2.0 | $   4332.0 | $     4032.0 | $4891.0 | IPM
-        5.0 | $   4332.0 | $     4032.0 | $4891.0 | IPM
+        0.0 | $   4786.0 | $     4486.0 | $4581.0 | No Spray
+       0.05 | $   4786.0 | $     4486.0 | $4581.0 | No Spray
+        0.1 | $   4786.0 | $     4486.0 | $4581.0 | No Spray
+        0.2 | $   4786.0 | $     4486.0 | $4581.0 | No Spray
+        0.5 | $   4786.0 | $     4486.0 | $4581.0 | No Spray
+        1.0 | $   4786.0 | $     4486.0 | $4581.0 | No Spray
+        2.0 | $   4786.0 | $     4486.0 | $4581.0 | No Spray
+        5.0 | $   4786.0 | $     4486.0 | $4581.0 | No Spray
 
 ### Profitability envelope plot
 
@@ -1214,12 +1214,12 @@ end
     --- Temperature Sensitivity (IPM Strategy) ---
     T_mean | Total DD | Adj Yield (t/ha) | Net Profit ($/ha) | Peak FW Larvae
     ----------------------------------------------------------------------
-      18.0 |  594.0 |           87.1 | $      4850.0 |        0.0
-      20.0 |  820.0 |           87.1 | $      4852.0 |        0.0
-      22.0 | 1120.0 |           87.6 | $      4891.0 |        0.0
-      24.0 | 1420.0 |           88.1 | $      4930.0 |        0.0
-      26.0 | 1720.0 |           82.8 | $      4483.0 |        0.0
-      28.0 | 2020.0 |           83.5 | $      4539.0 |        0.0
+      18.0 | 1709.0 |           88.2 | $      4943.0 |        0.0
+      20.0 | 2009.0 |           83.6 | $      4549.0 |        0.0
+      22.0 | 2309.0 |           84.0 | $      4581.0 |        0.0
+      24.0 | 2609.0 |           85.2 | $      4691.0 |        0.0
+      26.0 | 2909.0 |           86.5 | $      4796.0 |        0.0
+      28.0 | 3170.0 |           87.5 | $      4878.0 |        0.0
 
 ``` julia
 fig_temp = Figure(size=(800, 400))

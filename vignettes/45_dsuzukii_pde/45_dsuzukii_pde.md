@@ -902,10 +902,9 @@ Key biological insights from the simulations:
 <div id="ref-Rossini2020DSuzukiiMales" class="csl-entry">
 
 Rossini, Luca, Mario Contarini, Andrew G. S. Cuthbertson, Stefano Maini,
-and Stefano Speranza. 2020. “Modelling the Seasonal Dynamics of the
-Spotted Wing Drosophila Adult Males: A Physiologically Based Approach.”
-*Bulletin of Entomological Research* 110 (5): 567–76.
-<https://doi.org/10.1017/S0007485319000853>.
+and Stefano Speranza. 2020. “Modelling *Drosophila Suzukii* Adult Male
+Populations: A Physiologically Based Approach with Validation.”
+*Insects* 11 (11): 751. <https://doi.org/10.3390/insects11110751>.
 
 </div>
 

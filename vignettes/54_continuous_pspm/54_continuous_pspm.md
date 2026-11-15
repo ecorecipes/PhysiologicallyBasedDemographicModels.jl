@@ -182,7 +182,7 @@ for M in methods_pspm
 end
 ```
 
-    PhysiologicallyBasedDemographicModels.FixedMeshUpwind <: AbstractPSPMMethod = true
+    StructuredPopulationCore.FixedMeshUpwind <: AbstractPSPMMethod = true
     PhysiologicallyBasedDemographicModels.EscalatorBoxcarTrain <: AbstractPSPMMethod = true
     PhysiologicallyBasedDemographicModels.CharacteristicMethod <: AbstractPSPMMethod = true
     PhysiologicallyBasedDemographicModels.ImplicitFixedMeshUpwind <: AbstractPSPMMethod = true

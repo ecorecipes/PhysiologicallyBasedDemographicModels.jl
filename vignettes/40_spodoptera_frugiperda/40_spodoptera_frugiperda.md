@@ -625,16 +625,16 @@ end
 ```
 
     Tropical:
-      Peak population: 614253.0
-      Final population: 614253.0
+      Peak population: 228434.0
+      Final population: 90477.0
       Year 1 DD: 16.0, est. generations: 0.0
     Mediterranean:
-      Peak population: 358560.0
-      Final population: 358560.0
+      Peak population: 7101.0
+      Final population: 0.0
       Year 1 DD: 7.0, est. generations: 0.0
     Temperate:
-      Peak population: 172088.0
-      Final population: 171152.0
+      Peak population: 711.0
+      Final population: 0.0
       Year 1 DD: 3.0, est. generations: 0.0
 
 ## Population Dynamics Across Climates
@@ -736,17 +736,17 @@ end
     Density-dependence scenario comparison (Mediterranean, year 3):
     ======================================================================
       No regulation:
-        Peak (year 3): 358606.0
-        Mean (year 3): 284541.0
+        Peak (year 3): 0.0
+        Mean (year 3): 0.0
       Best case (for pest):
-        Peak (year 3): 358571.0
-        Mean (year 3): 284537.0
+        Peak (year 3): 0.0
+        Mean (year 3): 0.0
       Median:
-        Peak (year 3): 358560.0
-        Mean (year 3): 284536.0
+        Peak (year 3): 0.0
+        Mean (year 3): 0.0
       Worst case (for pest):
-        Peak (year 3): 358566.0
-        Mean (year 3): 284537.0
+        Peak (year 3): 0.0
+        Mean (year 3): 0.0
 
 ``` julia
 fig3 = Figure(size = (900, 500))
@@ -1040,7 +1040,13 @@ fig_mc
 
     Fixed-mesh upwind: solved, peak = 1474.7
     Lax–Friedrichs: solved, peak = 1474.7
+    ┌ Warning: Verbosity toggle: dt_epsilon 
+    │  At t= 0.0, dt was forced below floating point epsilon 5.0e-324, and step error estimate = NaN. Aborting. There is either an error in your model specification or the true solution is unstable (or the true solution can not be represented in the precision of Float64.
+    └ @ SciMLBase ~/.julia/packages/SciMLBase/hLfdZ/src/integrator_interface.jl:735
     Implicit upwind: solved, peak = 50.0
+    ┌ Warning: Verbosity toggle: dt_epsilon 
+    │  At t= 0.0, dt was forced below floating point epsilon 5.0e-324, and step error estimate = NaN. Aborting. There is either an error in your model specification or the true solution is unstable (or the true solution can not be represented in the precision of Float64.
+    └ @ SciMLBase ~/.julia/packages/SciMLBase/hLfdZ/src/integrator_interface.jl:735
     Implicit Lax–Friedrichs: solved, peak = 50.0
 
 <div id="fig-method-comparison">
@@ -1183,27 +1189,27 @@ println("All checks passed: $all_ok")
 
     1. Tropical baseline:
        Generations/year: 0.0 (expected: 4–6)
-       Year 3 peak: 614253.0 (should stabilize at carrying capacity)
+       Year 3 peak: 183088.0 (should stabilize at carrying capacity)
        ✓ Generation count plausible: false
 
     2. Mediterranean:
        Generations/year: 0.0 (expected: 2–3)
-       Year 3 peak: 358560.0
+       Year 3 peak: 0.0
        ✓ Generation count plausible: false
 
     3. Temperate:
        Generations/year: 0.0 (expected: 0–1)
-       Year 3 peak: 172088.0
-       Final population: 171152.0 (should be declining)
+       Year 3 peak: 0.0
+       Final population: 0.0 (should be declining)
        ✓ Generation count plausible: true
 
     4. Density-dependence effect:
-       No regulation peak (yr3): 358606.0
-       Strong DD peak (yr3): 358566.0
+       No regulation peak (yr3): 0.0
+       Strong DD peak (yr3): 0.0
        ✓ DD reduces population: true
 
     5. Population magnitude:
-       Median DD, Mediterranean, year 3 mean: 284536.0
+       Median DD, Mediterranean, year 3 mean: 0.0
        ✓ Population in realistic range (100s–1000s): false
 
     ======================================================================
