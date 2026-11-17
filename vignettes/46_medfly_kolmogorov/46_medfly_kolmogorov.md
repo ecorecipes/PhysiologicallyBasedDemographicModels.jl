@@ -931,8 +931,8 @@ axislegend(ax_mc, position = :lt)
 fig_mc
 ```
 
-    Fixed-mesh upwind: solved, peak = 1435.7
-    Lax–Friedrichs: solved, peak = 1435.7
+    Fixed-mesh upwind: solved, peak = 1437.8
+    Lax–Friedrichs: solved, peak = 1440.8
     Implicit upwind: solved, peak = 1435.7
     Implicit Lax–Friedrichs: solved, peak = 1435.7
 

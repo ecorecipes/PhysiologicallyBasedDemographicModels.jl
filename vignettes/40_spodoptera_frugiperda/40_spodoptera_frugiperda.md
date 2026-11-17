@@ -955,8 +955,8 @@ println("  Final total population: $(round(pspm_total[end], digits=0))")
 
     PSPM solution (Mediterranean, median DD):
       Time points: 1096
-      Peak total population: 1475.0
-      Final total population: -0.0
+      Peak total population: 1472.0
+      Final total population: 0.0
 
 ### Comparing Distributed-Delay and PSPM Approaches
 
@@ -1038,15 +1038,49 @@ axislegend(ax_mc, position = :lt)
 fig_mc
 ```
 
-    Fixed-mesh upwind: solved, peak = 1474.7
-    Lax–Friedrichs: solved, peak = 1474.7
+    Fixed-mesh upwind: solved, peak = 1472.2
+    Lax–Friedrichs: solved, peak = 1472.2
     ┌ Warning: Verbosity toggle: dt_epsilon 
-    │  At t= 0.0, dt was forced below floating point epsilon 5.0e-324, and step error estimate = NaN. Aborting. There is either an error in your model specification or the true solution is unstable (or the true solution can not be represented in the precision of Float64.
-    └ @ SciMLBase ~/.julia/packages/SciMLBase/hLfdZ/src/integrator_interface.jl:735
+    │  At t=0.0, dt was forced below floating point epsilon 5.0e-324. Aborting. There is either an error in your model specification or the true solution is unstable (or it cannot be represented in Float64 precision).
+    │ 
+    │ Diagnostics:
+    │ 
+    │ State Analysis:
+    │   All 120 state variables are non-finite (NaN/Inf)
+    │ 
+    │ Jacobian Analysis:
+    │   row(s) [31, 32, 33, 34, 35, 36, 37, 38, 39, 40, and 20 more] have non-finite entries (e.g. J[31,31] = NaN, J[31,32] = NaN, J[31,33] = NaN, J[31,34] = NaN, J[31,35] = NaN), suggesting a singularity in those equation(s)
+    │   column(s) [31, 32, 33, 34, 35, 36, 37, 38, 39, 40, and 20 more] have non-finite entries, suggesting those state component(s) are diverging
+    │ 
+    │ Error Analysis:
+    │   step error estimate EEst = NaN (a step is accepted when EEst <= 1)
+    │   120 of 120 weighted residuals are non-finite (NaN/Inf)
+    │   largest contributors to EEst = internalnorm(atmp), where atmp is the tolerance-weighted local error per state component:
+    │     atmp[1] = NaN, u[1] = NaN, uprev[1] = 0
+    │     atmp[2] = NaN, u[2] = NaN, uprev[2] = 0
+    │     atmp[3] = NaN, u[3] = NaN, uprev[3] = 0
+    └ @ DiffEqBase ~/.julia/packages/DiffEqBase/WgyOh/src/check_error.jl:44
     Implicit upwind: solved, peak = 50.0
     ┌ Warning: Verbosity toggle: dt_epsilon 
-    │  At t= 0.0, dt was forced below floating point epsilon 5.0e-324, and step error estimate = NaN. Aborting. There is either an error in your model specification or the true solution is unstable (or the true solution can not be represented in the precision of Float64.
-    └ @ SciMLBase ~/.julia/packages/SciMLBase/hLfdZ/src/integrator_interface.jl:735
+    │  At t=0.0, dt was forced below floating point epsilon 5.0e-324. Aborting. There is either an error in your model specification or the true solution is unstable (or it cannot be represented in Float64 precision).
+    │ 
+    │ Diagnostics:
+    │ 
+    │ State Analysis:
+    │   All 120 state variables are non-finite (NaN/Inf)
+    │ 
+    │ Jacobian Analysis:
+    │   row(s) [31, 32, 33, 34, 35, 36, 37, 38, 39, 40, and 20 more] have non-finite entries (e.g. J[31,31] = NaN, J[31,32] = NaN, J[31,33] = NaN, J[31,34] = NaN, J[31,35] = NaN), suggesting a singularity in those equation(s)
+    │   column(s) [31, 32, 33, 34, 35, 36, 37, 38, 39, 40, and 20 more] have non-finite entries, suggesting those state component(s) are diverging
+    │ 
+    │ Error Analysis:
+    │   step error estimate EEst = NaN (a step is accepted when EEst <= 1)
+    │   120 of 120 weighted residuals are non-finite (NaN/Inf)
+    │   largest contributors to EEst = internalnorm(atmp), where atmp is the tolerance-weighted local error per state component:
+    │     atmp[1] = NaN, u[1] = NaN, uprev[1] = 0
+    │     atmp[2] = NaN, u[2] = NaN, uprev[2] = 0
+    │     atmp[3] = NaN, u[3] = NaN, uprev[3] = 0
+    └ @ DiffEqBase ~/.julia/packages/DiffEqBase/WgyOh/src/check_error.jl:44
     Implicit Lax–Friedrichs: solved, peak = 50.0
 
 <div id="fig-method-comparison">
