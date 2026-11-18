@@ -8,7 +8,17 @@ using Statistics
 # Functions shared across the stack are extended here rather than redefined, so that their
 # names stay usable when several packages are loaded together. `remake` belongs to SciMLBase.
 import SciMLBase
-import SciMLBase: remake
+import SciMLBase: remake, reinit!
+# The integrator interface (`init`, `step!`) is CommonSolve's, shared with SciMLBase; imported
+# explicitly so that the re-exported names resolve for `using PhysiologicallyBasedDemographicModels`.
+import CommonSolve: init, step!
+
+# Resilience metrics: ResilienceCore's operators and DynamicalResilience's tools for dynamical
+# systems. They are imported, not `using`'d, so their exports stay out of this namespace;
+# `linearise` is ResilienceCore's function, extended here and re-exported.
+import ResilienceCore
+import ResilienceCore: linearise
+import DynamicalResilience
 
 # The coupled-system data layer is shared with MatrixProjectionModels.jl. Its types and
 # functions live in StructuredPopulationCore, which does not export them: they are imported
@@ -205,5 +215,11 @@ export run_scenarios, compare_metrics
 include("surrogates.jl")
 export LogLinearSurrogate, predict_log, predict, marginal_effects
 export variables, enumerate_strategies, pareto_frontier
+
+# --- Layer 15: Resilience (DynamicalResilience.jl / ResilienceCore.jl) ---
+include("resilience.jl")
+export PBDMIntegrator, init, step!, reinit!
+export full_state, set_full_state!, full_state_labels
+export annual_map, annual_fixed_point, consumer_resource_problem, linearise
 
 end # module PhysiologicallyBasedDemographicModels

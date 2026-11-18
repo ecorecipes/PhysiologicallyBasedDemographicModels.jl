@@ -22,4 +22,5 @@ using Statistics
     include("test_theory.jl")
     include("test_continuous.jl")
     include("test_surrogates.jl")
+    include("test_resilience.jl")
 end

@@ -48,6 +48,18 @@ function CommonSolve.solve(prob::PBDMProblem, ::EigenAnalysis; kwargs...)
     throw(ArgumentError("EigenAnalysis is not supported for nonlinear PBDM problems. Use DirectIteration() instead."))
 end
 
+# One day of a single-species problem, shared by `solve` and the integrator (`init`/`step!`):
+# density-independent problems step the population on its own; density-dependent ones first
+# compute the day's offspring with `reproduction_fn(pop, weather_day, p, day)`, if given.
+function _single_day!(::DensityIndependent, pop, w, approach, p, day, reproduction_fn)
+    return step_system!(pop, w, approach)
+end
+function _single_day!(::DensityDependent, pop, w, approach, p, day, reproduction_fn)
+    T = eltype(pop.stages[1].delay.W)
+    offspring = reproduction_fn !== nothing ? reproduction_fn(pop, w, p, day) : zero(T)
+    return step_system!(pop, w, approach; inflow=offspring)
+end
+
 # --- Single-species, density-independent, deterministic ---
 
 function _solve(::SingleSpeciesPBDM, ::DensityIndependent, ::Deterministic,
@@ -74,7 +86,7 @@ function _solve(::SingleSpeciesPBDM, ::DensityIndependent, ::Deterministic,
     for d in 1:n_days
         day = t0 + d - 1
         w = get_weather(weather, day)
-        result = step_system!(pop, w, approach)
+        result = _single_day!(prob.density, pop, w, approach, prob.p, day, nothing)
 
         dd_accum[d] = result.degree_days
         stage_dds[:, d] = result.stage_degree_days
@@ -121,9 +133,7 @@ function _solve(::SingleSpeciesPBDM, ::DensityDependent, ::Deterministic,
         day = t0 + d - 1
         w = get_weather(weather, day)
 
-        offspring = reproduction_fn !== nothing ? reproduction_fn(pop, w, prob.p, day) : zero(T)
-
-        result = step_system!(pop, w, approach; inflow=offspring)
+        result = _single_day!(prob.density, pop, w, approach, prob.p, day, reproduction_fn)
 
         dd_accum[d] = result.degree_days
         stage_dds[:, d] = result.stage_degree_days
