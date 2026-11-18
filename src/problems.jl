@@ -83,13 +83,19 @@ end
 
 Create a new PBDMProblem with selected fields replaced. This is a method of
 `SciMLBase.remake`, the function the other packages of the stack extend too.
+
+`u0`, a state vector laid out as by [`full_state`](@ref), gives the new problem a copy of
+`populations` holding that state (the original populations are left untouched).
 """
 function remake(prob::PBDMProblem;
                 structure=prob.structure, density=prob.density,
                 stochasticity=prob.stochasticity,
                 approach=prob.approach,
                 populations=prob.populations, weather=prob.weather,
-                tspan=prob.tspan, p=prob.p)
+                tspan=prob.tspan, p=prob.p, u0=nothing)
+    if u0 !== nothing
+        populations = set_full_state!(deepcopy(populations), u0)
+    end
     PBDMProblem(structure, density, stochasticity,
                 populations, weather, tspan; approach=approach, p=p)
 end

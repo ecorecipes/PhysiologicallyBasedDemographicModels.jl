@@ -68,6 +68,7 @@ const TUTORIALS = [
     ("62_screwworm_sit", "SIT Overflooding Ratio for Screwworm Eradication"),
     ("63_bayesian_mortality", "Bayesian Inference of Stage-Specific Mortality"),
     ("64_bmsb_tritrophic", "Tritrophic Biocontrol Design for Brown Marmorated Stink Bug"),
+    ("65_resilience", "Resilience of PBDMs: Temperature, Annual Cycles and Recovery"),
 ]
 
 """
@@ -187,6 +188,7 @@ const API_PAGES = [
     "Epidemiology"              => "api/epidemiology.md",
     "Utilities"                 => "api/utilities.md",
     "Core Abstractions"         => "api/core.md",
+    "Resilience"                => "api/resilience.md",
 ]
 
 makedocs(;

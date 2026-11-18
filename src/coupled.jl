@@ -1171,6 +1171,104 @@ _rule_log_name(r::Union{TransferRule, ReproductionRule, MortalityRule}) = Symbol
 _event_log_name(ev) = Symbol(nameof(typeof(ev)))
 _event_log_name(ev::WeatherConditionalEvent) = ev.name
 
+# The rules, events, observables, stress rules and phase-partitioned callbacks of a coupled
+# problem's parameters, shared by `solve` and the integrator (`init`/`step!`).
+function _coupled_parts(cp)
+    rules = hasfield(typeof(cp), :rules) ? cp.rules : AbstractInteractionRule[]
+    events = hasfield(typeof(cp), :events) ? cp.events : AbstractScheduledEvent[]
+    observables = hasfield(typeof(cp), :observables) ? cp.observables : Observable[]
+    stress_rules = hasfield(typeof(cp), :stress_rules) ? cp.stress_rules : AbstractStressRule[]
+    callbacks = hasfield(typeof(cp), :callbacks) ? cp.callbacks : PhaseCallback[]
+    user_p = hasfield(typeof(cp), :user_p) ? cp.user_p : nothing
+    return (; rules, events, observables, stress_rules, user_p,
+            cb_pre_event = [cb for cb in callbacks if cb.phase == PRE_EVENT],
+            cb_post_event = [cb for cb in callbacks if cb.phase == POST_EVENT],
+            cb_pre_step = [cb for cb in callbacks if cb.phase == PRE_STEP],
+            cb_post_step = [cb for cb in callbacks if cb.phase == POST_STEP],
+            cb_end_of_day = [cb for cb in callbacks if cb.phase == END_OF_DAY])
+end
+
+function _check_coupled_components(sys::PopulationSystem)
+    comp_names = collect(keys(sys))
+    for name in comp_names
+        sys[name].population isa Union{Population, BulkPopulation} || throw(ArgumentError(
+            "component :$name carries its population in a $(typeof(sys[name].population)); " *
+            "a coupled PBDM needs a Population or a BulkPopulation"))
+    end
+    return comp_names
+end
+
+# Phases 0–4 of one day of a coupled system: PRE_EVENT callbacks, scheduled events,
+# POST_EVENT callbacks, automatic state variables, PRE_STEP callbacks and stress, stepping
+# each component, POST_STEP callbacks, and interaction rules. Returns the events that fired
+# and the rules' results, in order, for the solver's logs.
+function _coupled_day!(sys::PopulationSystem, w, day::Int, approach, parts, comp_names)
+    T = Float64
+    user_p = parts.user_p
+
+    # Phase 0: PRE_EVENT callbacks
+    for cb in parts.cb_pre_event
+        cb.fn(sys, w, day, user_p)
+    end
+
+    # Phase 1: Apply scheduled events
+    fired = Any[]
+    for ev in parts.events
+        apply_event!(ev, sys, w, day, user_p) && push!(fired, ev)
+    end
+
+    # Phase 1.5: POST_EVENT callbacks
+    for cb in parts.cb_post_event
+        cb.fn(sys, w, day, user_p)
+    end
+
+    # Phase 2: Update auto state variables
+    for (_, sv) in sys.state
+        update_state!(sv, sys, w, day, user_p)
+    end
+
+    # Phase 2.5: PRE_STEP callbacks + compute stress
+    for cb in parts.cb_pre_step
+        cb.fn(sys, w, day, user_p)
+    end
+
+    component_stress = Dict{Symbol, Vector{T}}()
+    for sr in parts.stress_rules
+        stress_dict = compute_stress(sr, sys, w, day, user_p)
+        for (cname, svec) in stress_dict
+            if haskey(component_stress, cname)
+                component_stress[cname] .= max.(component_stress[cname], svec)
+            else
+                component_stress[cname] = T.(svec)
+            end
+        end
+    end
+
+    # Phase 3: Step each component
+    for name in comp_names
+        comp = sys[name]
+        pop = comp.population
+        if pop isa BulkPopulation
+            step_bulk!(pop, w, day, user_p)
+        elseif approach === nothing
+            ss = get(component_stress, name, nothing)
+            step_population!(pop, w; stage_stress=ss)
+        else
+            ss = get(component_stress, name, nothing)
+            step_system!(pop, w, approach; stage_stress=ss)
+        end
+    end
+
+    # Phase 3.5: POST_STEP callbacks
+    for cb in parts.cb_post_step
+        cb.fn(sys, w, day, user_p)
+    end
+
+    # Phase 4: Apply interaction rules
+    results = Any[apply_rule!(rule, sys, w, day, user_p) for rule in parts.rules]
+    return fired, results
+end
+
 function _solve(::S, ::DensityDependent, ::Deterministic,
                 approach,
                 prob::PBDMProblem, ::DirectIteration;
@@ -1184,28 +1282,11 @@ function _solve(::S, ::DensityDependent, ::Deterministic,
     n_days = tf - t0 + 1
     T = Float64
 
-    # Unpack coupled parameters
-    cp = prob.p
-    rules = hasfield(typeof(cp), :rules) ? cp.rules : AbstractInteractionRule[]
-    events = hasfield(typeof(cp), :events) ? cp.events : AbstractScheduledEvent[]
-    observables = hasfield(typeof(cp), :observables) ? cp.observables : Observable[]
-    stress_rules = hasfield(typeof(cp), :stress_rules) ? cp.stress_rules : AbstractStressRule[]
-    callbacks = hasfield(typeof(cp), :callbacks) ? cp.callbacks : PhaseCallback[]
-    user_p = hasfield(typeof(cp), :user_p) ? cp.user_p : nothing
+    parts = _coupled_parts(prob.p)
+    (; rules, events, observables, user_p) = parts
+    cb_end_of_day = parts.cb_end_of_day
 
-    # Partition callbacks by phase
-    cb_pre_event  = [cb for cb in callbacks if cb.phase == PRE_EVENT]
-    cb_post_event = [cb for cb in callbacks if cb.phase == POST_EVENT]
-    cb_pre_step   = [cb for cb in callbacks if cb.phase == PRE_STEP]
-    cb_post_step  = [cb for cb in callbacks if cb.phase == POST_STEP]
-    cb_end_of_day = [cb for cb in callbacks if cb.phase == END_OF_DAY]
-
-    comp_names = collect(keys(sys))
-    for name in comp_names
-        sys[name].population isa Union{Population, BulkPopulation} || throw(ArgumentError(
-            "component :$name carries its population in a $(typeof(sys[name].population)); " *
-            "a coupled PBDM needs a Population or a BulkPopulation"))
-    end
+    comp_names = _check_coupled_components(sys)
 
     # Pre-allocate per-component outputs
     comp_totals = Dict{Symbol, Vector{T}}(
@@ -1243,67 +1324,12 @@ function _solve(::S, ::DensityDependent, ::Deterministic,
         day = t0 + d - 1
         w = get_weather(weather, day)
 
-        # Phase 0: PRE_EVENT callbacks
-        for cb in cb_pre_event
-            cb.fn(sys, w, day, user_p)
+        # Phases 0–4: events, state variables, stress, stepping and rules
+        fired, results = _coupled_day!(sys, w, day, approach, parts, comp_names)
+        for ev in fired
+            push!(event_log, (day, _event_log_name(ev)))
         end
-
-        # Phase 1: Apply scheduled events
-        for ev in events
-            fired = apply_event!(ev, sys, w, day, user_p)
-            fired && push!(event_log, (day, _event_log_name(ev)))
-        end
-
-        # Phase 1.5: POST_EVENT callbacks
-        for cb in cb_post_event
-            cb.fn(sys, w, day, user_p)
-        end
-
-        # Phase 2: Update auto state variables
-        for (_, sv) in sys.state
-            update_state!(sv, sys, w, day, user_p)
-        end
-
-        # Phase 2.5: PRE_STEP callbacks + compute stress
-        for cb in cb_pre_step
-            cb.fn(sys, w, day, user_p)
-        end
-
-        component_stress = Dict{Symbol, Vector{T}}()
-        for sr in stress_rules
-            stress_dict = compute_stress(sr, sys, w, day, user_p)
-            for (cname, svec) in stress_dict
-                if haskey(component_stress, cname)
-                    component_stress[cname] .= max.(component_stress[cname], svec)
-                else
-                    component_stress[cname] = T.(svec)
-                end
-            end
-        end
-
-        # Phase 3: Step each component
-        for name in comp_names
-            comp = sys[name]
-            pop = comp.population
-            if pop isa BulkPopulation
-                step_bulk!(pop, w, day, user_p)
-            elseif approach === nothing
-                ss = get(component_stress, name, nothing)
-                step_population!(pop, w; stage_stress=ss)
-            else
-                ss = get(component_stress, name, nothing)
-                step_system!(pop, w, approach; stage_stress=ss)
-            end
-        end
-
-        # Phase 3.5: POST_STEP callbacks
-        for cb in cb_post_step
-            cb.fn(sys, w, day, user_p)
-        end
-
-        # Phase 4: Apply interaction rules
-        for (i, rule) in enumerate(rules)
-            result = apply_rule!(rule, sys, w, day, user_p)
+        for (i, result) in enumerate(results)
             push!(rule_log[rule_names[i]], result)
         end
 
