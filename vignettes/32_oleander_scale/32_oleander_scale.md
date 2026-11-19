@@ -512,6 +512,11 @@ println("  Coccophagoides web: $(length(web_cu.links)) link (α=$(CU_SEARCH))")
 
 The single-parasitoid scenario uses the `PopulationSystem` solver with
 `BulkPopulation` components and a `CustomRule` for parasitism dynamics.
+Each parasitized scale yields at most one parasitoid (Gutierrez &
+Pizzamiglio 2007): parasitized hosts join a pool of developing
+immatures, which emerge as adults at rate $dd/\tau$ per day, so immature
+development takes $\tau$ degree-days on average (a one-substage
+distributed delay).
 
 ``` julia
 function run_single_parasitoid(; weather, par_TL, par_search, par_dd_immature, n_years=3)
@@ -525,29 +530,38 @@ function run_single_parasitoid(; weather, par_TL, par_search, par_dd_immature, n
             N + N * rate * (1.0 - N / 500.0) - SCALE_MU_NYMPH * dd * N
         end)
 
-    par_bp = BulkPopulation(:parasitoid, 1.0)
+    par_bp = BulkPopulation(:parasitoid, 1.0)       # adults
+    imm_bp = BulkPopulation(:parasitoid_imm, 0.0)   # developing in parasitized hosts
 
     parasitism = CustomRule(:parasitism, (sys, w, day, p) -> begin
         T = w.T_mean
         dd_par = max(0.0, T - p.par_TL)
         S = total_population(sys[:scale].population)
         P = total_population(sys[:parasitoid].population)
+        I = total_population(sys[:parasitoid_imm].population)
         attacked = 0.0
-        if dd_par > 0 && P > 0
-            per_capita = p.par_search * (1.0 - exp(-0.5 * S / max(P, 0.1)))
-            attacked = min(per_capita * P, 0.5 * S)
-            frac = attacked / max(S, 1e-10)
-            remove_fraction!(sys, :scale, clamp(frac, 0.0, 1.0))
-            emerg = dd_par / p.par_dd_immature
+        if dd_par > 0
+            if P > 0
+                per_capita = p.par_search * (1.0 - exp(-0.5 * S / max(P, 0.1)))
+                attacked = min(per_capita * P, 0.5 * S)
+                frac = attacked / max(S, 1e-10)
+                remove_fraction!(sys, :scale, clamp(frac, 0.0, 1.0))
+            end
+            # Immatures complete development at rate dd/τ per day (mean τ DD):
+            # the emergence fraction acts on the stock of immatures, while each
+            # day's parasitized hosts join that stock.
+            emerged = I * min(1.0, dd_par / p.par_dd_immature)
+            sys[:parasitoid_imm].population.value[] = I - emerged + attacked * 0.3
             sys[:parasitoid].population.value[] = max(0.0,
-                P + attacked * 0.3 * emerg - 0.003 * dd_par * P)
+                P + emerged - 0.003 * dd_par * P)
         else
             sys[:parasitoid].population.value[] = max(0.0, P * 0.999)
         end
         return (attacked=attacked,)
     end)
 
-    system = PopulationSystem(:scale => scale_bp, :parasitoid => par_bp)
+    system = PopulationSystem(:scale => scale_bp, :parasitoid => par_bp,
+                              :parasitoid_imm => imm_bp)
     prob = PBDMProblem(MultiSpeciesPBDMNew(), system, weather, (1, n_sim);
         p=(par_TL=par_TL, par_search=par_search, par_dd_immature=par_dd_immature),
         rules=AbstractInteractionRule[parasitism])
@@ -595,10 +609,10 @@ println("  Inland + Coccophagoides:  $(round(mean(s_cu_inland[yr3]), digits=1))"
 ```
 
     Mean scale density (year 3):
-      Coastal + Aphytis:        470.8
-      Coastal + Coccophagoides: 470.8
-      Inland + Aphytis:         478.1
-      Inland + Coccophagoides:  478.1
+      Coastal + Aphytis:        160.2
+      Coastal + Coccophagoides: 357.5
+      Inland + Aphytis:         419.6
+      Inland + Coccophagoides:  477.9
 
 ``` julia
 fig_single = Figure(size=(1000, 700))
@@ -657,6 +671,8 @@ function run_two_parasitoids(; weather, n_years=3)
 
     ac_bp = BulkPopulation(:aphytis, 1.0)
     cu_bp = BulkPopulation(:coccophagoides, 1.0)
+    ac_imm = BulkPopulation(:aphytis_imm, 0.0)
+    cu_imm = BulkPopulation(:coccophagoides_imm, 0.0)
 
     competition = CustomRule(:competition, (sys, w, day, p) -> begin
         T = w.T_mean
@@ -690,19 +706,24 @@ function run_two_parasitoids(; weather, n_years=3)
             remove_fraction!(sys, :scale, clamp(frac, 0.0, 1.0))
         end
 
-        # Parasitoid population dynamics
+        # Parasitoid population dynamics: parasitized hosts join each species'
+        # immature stock, which emerges at rate dd/τ per day (mean τ DD)
+        Ia = total_population(sys[:aphytis_imm].population)
         if dd_ac > 0
-            emerg_ac = dd_ac / AC_DD_IMMATURE
+            emerged_ac = Ia * min(1.0, dd_ac / AC_DD_IMMATURE)
+            sys[:aphytis_imm].population.value[] = Ia - emerged_ac + attacked_ac * 0.3
             sys[:aphytis].population.value[] = max(0.0,
-                Pa + attacked_ac * 0.3 * emerg_ac - 0.003 * dd_ac * Pa)
+                Pa + emerged_ac - 0.003 * dd_ac * Pa)
         else
             sys[:aphytis].population.value[] = max(0.0, Pa * 0.999)
         end
 
+        Ic = total_population(sys[:coccophagoides_imm].population)
         if dd_cu > 0
-            emerg_cu = dd_cu / CU_DD_IMMATURE
+            emerged_cu = Ic * min(1.0, dd_cu / CU_DD_IMMATURE)
+            sys[:coccophagoides_imm].population.value[] = Ic - emerged_cu + attacked_cu * 0.3
             sys[:coccophagoides].population.value[] = max(0.0,
-                Pc + attacked_cu * 0.3 * emerg_cu - 0.003 * dd_cu * Pc)
+                Pc + emerged_cu - 0.003 * dd_cu * Pc)
         else
             sys[:coccophagoides].population.value[] = max(0.0, Pc * 0.999)
         end
@@ -711,7 +732,8 @@ function run_two_parasitoids(; weather, n_years=3)
     end)
 
     system = PopulationSystem(:scale => scale_bp, :aphytis => ac_bp,
-                              :coccophagoides => cu_bp)
+                              :coccophagoides => cu_bp,
+                              :aphytis_imm => ac_imm, :coccophagoides_imm => cu_imm)
     prob = PBDMProblem(MultiSpeciesPBDMNew(), system, weather, (1, n_sim);
         rules=AbstractInteractionRule[competition])
     sol = solve(prob, DirectIteration())
@@ -741,13 +763,13 @@ println("    C. utilis:    $(round(mean(cu_inland[yr3]), digits=2))")
 
     Two-parasitoid competition — year 3 means:
       Coastal:
-        Scale: 470.8
-        A. chilensis: 0.0
-        C. utilis:    0.0
+        Scale: 201.8
+        A. chilensis: 213.26
+        C. utilis:    6.11
       Inland:
-        Scale: 478.1
-        A. chilensis: 0.0
-        C. utilis:    0.0
+        Scale: 429.9
+        A. chilensis: 43.15
+        C. utilis:    0.1
 
 ``` julia
 fig_comp = Figure(size=(1000, 500))
@@ -811,7 +833,7 @@ println("  Min scale density: $(round(minimum(scale_equilibrium), digits=1)) at 
 
     Regional gradient results:
       T_base range: 12.0–24.0°C
-      Min scale density: 453.4 at T=12.0°C
+      Min scale density: 0.0 at T=12.0°C
 
 ``` julia
 fig_reg = Figure(size=(900, 500))
@@ -827,11 +849,11 @@ lines!(ax1, collect(T_mean_range), cu_equilibrium, linewidth=2.5, color=:forestg
        label="C. utilis")
 vspan!(ax1, 12.0, 16.0, color=(:green, 0.08))
 vspan!(ax1, 20.0, 24.0, color=(:orange, 0.08))
-text!(ax1, 14.0, maximum(cu_equilibrium) * 0.9,
-    text="Coastal\nC. utilis\ndominates", align=(:center, :top), fontsize=9, color=:green)
-text!(ax1, 22.0, maximum(ac_equilibrium) * 0.9,
-    text="Inland\nA. chilensis\ndominates", align=(:center, :top), fontsize=9, color=:darkorange)
-axislegend(ax1, position=:ct, framevisible=true, labelsize=10)
+text!(ax1, 14.0, maximum(ac_equilibrium) * 0.95,
+    text="Coastal", align=(:center, :top), fontsize=9, color=:green)
+text!(ax1, 22.0, maximum(ac_equilibrium) * 0.95,
+    text="Inland", align=(:center, :top), fontsize=9, color=:darkorange)
+axislegend(ax1, position=:rt, framevisible=true, labelsize=10)
 
 ax2 = Axis(fig_reg[2, 1],
     title="(b) Scale Suppression Along Temperature Gradient",
@@ -850,6 +872,17 @@ fig_reg
 <img
 src="32_oleander_scale_files/figure-commonmark/cell-21-output-1.png"
 width="900" height="500" />
+
+> **Note on the competitive outcome.** With the tutorial parameters used
+> here, both parasitoids share the same adult loss rate (0.003 per DD),
+> the same progeny fraction (0.3) and differ mainly in search rate and
+> thermal threshold, so *A. chilensis* outperforms *C. utilis* in both
+> climates and the coastal dominance of *C. utilis* described above is
+> not reproduced. In the source model for the related olive scale system
+> (Rochat & Gutierrez 2001), the thermal ordering is the reverse:
+> *Aphytis* is active in the cooler spring and autumn and goes extinct
+> in hot regimes, while *C. utilis* is most active in summer and goes
+> extinct in cool regimes.
 
 ## Parameter Sources
 
