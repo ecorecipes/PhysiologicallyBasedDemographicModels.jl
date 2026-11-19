@@ -19,7 +19,9 @@ function resilience_test_population()
     ])
 end
 
-# Oleander scale and Aphytis chilensis, as in vignette 32 (Gutierrez & Pizzamiglio 2007).
+# Oleander scale and Aphytis chilensis, after vignette 32 (Gutierrez & Pizzamiglio 2007), but
+# keeping the vignette's earlier recruitment (attacks × 0.3 × dd/τ), under which the
+# parasitoid cannot invade: the tests below use it as a case with a boundary cycle.
 const RT_SCALE_TL = 10.0
 const RT_SCALE_MU = 0.001
 function rt_scale_fecundity(T)

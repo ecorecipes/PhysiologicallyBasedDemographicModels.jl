@@ -5,6 +5,19 @@ are recorded here. The format is loosely based on
 [Keep a Changelog](https://keepachangelog.com/) and the project follows
 semantic versioning once a `1.0` is tagged.
 
+## Unreleased
+
+### Fixed
+
+- **#32 Oleander scale** — the parasitoids now persist. Each day's parasitized
+  hosts were multiplied by the immature emergence fraction `dd/τ` (about 0.02–0.05)
+  and the rest discarded, so a parasitoid's gain per degree-day (at most
+  0.15 × 0.3 / 200 ≈ 0.0002) was far below its loss (0.003) and both species died
+  out. Parasitized hosts now join an immature pool that emerges at rate `dd/τ`,
+  so development still takes `τ` degree-days on average and every recruit
+  eventually emerges (one parasitoid per parasitized host, Gutierrez &
+  Pizzamiglio 2007).
+
 ## [0.2.0]
 
 ### Changed (breaking): coupled systems are shared with MatrixProjectionModels.jl
