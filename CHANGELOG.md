@@ -17,6 +17,18 @@ semantic versioning once a `1.0` is tagged.
   so development still takes `τ` degree-days on average and every recruit
   eventually emerges (one parasitoid per parasitized host, Gutierrez &
   Pizzamiglio 2007).
+- **#12 Cassava mealybug** — the mealybug is now coupled to cassava through the
+  supply/demand ratio φ of Gutierrez et al. (1988b, eqns 2–6). Before, the
+  mealybug declined on its own (≈ 5 eggs per female, no resource limit), so
+  *E. lopezi* had nothing to build on and died out. Now the canopy produces
+  photosynthate, and the mealybug feeds on it through a Frazer–Gilbert
+  response. φ scales embryo production and daily survival, and the plant
+  loses what the mealybug takes. Insect parameters follow the paper's
+  Appendix, and *E. lopezi* attacks through the parasitoid Frazer–Gilbert
+  form, with host feeding, sex ratio and food-related adult survival
+  (eqns 7–13). Without the parasitoid the mealybug reaches about 10⁴ per
+  plant. With it, the mealybug falls to about 0.15 of that in years 2–3, and
+  *E. lopezi* persists.
 
 ## [0.2.0]
 

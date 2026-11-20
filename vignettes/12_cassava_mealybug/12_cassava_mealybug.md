@@ -9,21 +9,22 @@
 - [3. Parasitoid (*Epidinocarsis
   lopezi*)](#3-parasitoid-epidinocarsis-lopezi)
 - [4. Trophic Interactions](#4-trophic-interactions)
-  - [Functional response curves](#functional-response-curves)
 - [5. Weather: West African Savanna](#5-weather-west-african-savanna)
-- [6. Simulation: Mealybug Dynamics Without
-  Biocontrol](#6-simulation-mealybug-dynamics-without-biocontrol)
-- [7. Simulation: With Parasitoid Biocontrol (Coupled
-  API)](#7-simulation-with-parasitoid-biocontrol-coupled-api)
-- [8. Visualization](#8-visualization)
+- [6. The Coupled Model](#6-the-coupled-model)
+- [7. Simulation: Mealybug Without
+  Biocontrol](#7-simulation-mealybug-without-biocontrol)
+- [8. Simulation: With Parasitoid
+  Biocontrol](#8-simulation-with-parasitoid-biocontrol)
+- [9. Visualization](#9-visualization)
   - [Mealybug dynamics: with vs without
     biocontrol](#mealybug-dynamics-with-vs-without-biocontrol)
   - [Stage-structured dynamics](#stage-structured-dynamics)
-- [9. Temperature Sensitivity
-  Analysis](#9-temperature-sensitivity-analysis)
-- [10. Timing of Parasitoid
-  Introduction](#10-timing-of-parasitoid-introduction)
+- [10. Temperature Sensitivity
+  Analysis](#10-temperature-sensitivity-analysis)
+- [11. Timing of Parasitoid
+  Introduction](#11-timing-of-parasitoid-introduction)
 - [Key Insights](#key-insights)
+- [Simplifications](#simplifications)
 - [References](#references)
 - [Parameter Sources](#parameter-sources)
 
@@ -66,6 +67,17 @@ cassava–mealybug–parasitoid system using
 `PhysiologicallyBasedDemographicModels.jl`, with parameters drawn from
 Gutierrez et al. (1988a,b) and Neuenschwander et al. (1989).
 
+The model follows the supply/demand structure of Gutierrez et
+al. (1988b): the mealybug feeds on the plant’s photosynthate through a
+Frazer–Gilbert functional response, and the ratio of supply to demand,
+φ, scales its fecundity and survival. The plant loses whatever the
+mealybug takes. *E. lopezi* attacks the mealybug through the parasitoid
+form of the same functional response. Insect parameters come from the
+Appendix of Gutierrez et al. (1988b, p. 940). The cassava plant is much
+simpler than the carbon, nitrogen and water model of Gutierrez et
+al. (1988a). Its parts that are not from the papers are listed in the
+parameter table at the end.
+
 ## Setup
 
 ``` julia
@@ -77,252 +89,269 @@ using CairoMakie
 ## 1. Cassava Plant Model
 
 Cassava development is driven by thermal accumulation above a base
-temperature of 10°C. The plant is modeled as two organ populations
-tracked through distributed delays: a vegetative canopy (leaves + stems)
-with a long developmental duration, and a tuber compartment that begins
-filling after a lag period. The canopy provides the resource base
-(photosynthate supply) that the mealybug exploits.
+temperature of 10 °C. The canopy is a distributed delay of leaf dry mass
+(g per plant) whose leaves age out after about 2500 degree-days. Each
+day the canopy intercepts light and produces photosynthate. The light
+model is the one in the CASAS cassava code (Gutierrez & Ponti,
+`bio.pas`): interception $1 - e^{-0.8047\,\mathrm{LAI}}$ enters a
+Frazer–Gilbert response whose demand is the plant’s maximum daily growth
+demand $b_p$, and solar radiation (cal cm⁻² d⁻¹) is converted to
+carbohydrate as radiation/3.875 (Loomis & Williams 1963). Leaf area per
+gram (1.80 dm² g⁻¹) and the planting density (one plant per m²) are
+taken from the same code. Photosynthate left after the mealybug has fed
+first replaces the leaves that aged out, holding the canopy at its
+initial size. The rest is stored in the tubers. The maximum demand $b_p$
+has no published value here. It is set to 10 g CH₂O per plant per day,
+which gives roughly 3 kg of dry matter per plant per year, about 30 t
+ha⁻¹ at one plant per m².
 
 ``` julia
-# Cassava development parameters (Gutierrez et al. 1988a, Table 2 & plant submodel)
-const CASSAVA_T_BASE  = 10.0   # °C — base temperature for development (Gutierrez et al. 1988a)
-const CASSAVA_T_UPPER = 38.0   # °C — upper developmental threshold (Gutierrez et al. 1988a)
-
+# Cassava development parameters (Gutierrez et al. 1988a)
+const CASSAVA_T_BASE  = 10.0   # °C
+const CASSAVA_T_UPPER = 38.0   # °C
 cassava_dev = LinearDevelopmentRate(CASSAVA_T_BASE, CASSAVA_T_UPPER)
 
-# Canopy (leaves + stems): τ = 2500 DD for full canopy turnover (Gutierrez et al. 1988a, plant submodel)
-# k = 25 substages gives tight developmental distribution
-canopy_delay = DistributedDelay(25, 2500.0; W0=5.0)   # initial leaf area index proxy
-canopy_stage = LifeStage(:canopy, canopy_delay, cassava_dev, 0.0002)
+# Light interception and photosynthesis (CASAS cassava code, bio.pas / init.pas)
+const LEAF_AREA_PER_G = 1.80    # dm² leaf per g leaf (variety TMS30572)
+const PLANT_AREA_DM2  = 100.0   # dm² ground per plant (1 m × 1 m spacing)
+const B_PLANT = 10.0            # g CH₂O plant⁻¹ day⁻¹, maximum plant demand [assumed]
 
-# Tubers: τ = 3000 DD from initiation to harvest maturity (Gutierrez et al. 1988a, plant submodel)
-tuber_delay = DistributedDelay(20, 3000.0; W0=0.0)
-tuber_stage = LifeStage(:tuber, tuber_delay, cassava_dev, 0.0001)
+leaf_area_index(leaf_g) = leaf_g * LEAF_AREA_PER_G / PLANT_AREA_DM2
 
-cassava = Population(:cassava, [canopy_stage, tuber_stage])
+"""Daily photosynthate supply (g CH₂O per plant) from leaf mass and radiation (MJ m⁻² d⁻¹)."""
+function photosynthate(leaf_g, radiation_MJ)
+    α = 1 - exp(-0.8047 * leaf_area_index(leaf_g))
+    α <= 0 && return 0.0
+    light = radiation_MJ * 23.9 / 3.875 * PLANT_AREA_DM2 / 100   # g CH₂O equivalent
+    return acquire(FraserGilbertResponse(α), light, B_PLANT)
+end
 
-println("Cassava plant model:")
-println("  Stages:     $(n_stages(cassava))")
-println("  Substages:  $(n_substages(cassava))")
-println("  Initial biomass: $(total_population(cassava))")
+# Canopy: 125 g of leaf per plant in 25 age classes (LAI ≈ 2.3)
+make_cassava() = Population(:cassava,
+    [LifeStage(:canopy, DistributedDelay(25, 2500.0; W0=5.0), cassava_dev, 0.0002)])
+
+cassava = make_cassava()
+println("Initial leaf mass: $(total_population(cassava)) g/plant, " *
+        "LAI = $(round(leaf_area_index(total_population(cassava)), digits=2))")
+for rad in (14.0, 18.0, 22.0)
+    println("  radiation $rad MJ/m² → supply $(round(photosynthate(125.0, rad), digits=1)) g CH₂O/plant/day")
+end
 ```
 
-    Cassava plant model:
-      Stages:     2
-      Substages:  45
-      Initial biomass: 125.0
+    Initial leaf mass: 125.0 g/plant, LAI = 2.25
+      radiation 14.0 MJ/m² → supply 10.0 g CH₂O/plant/day
+      radiation 18.0 MJ/m² → supply 10.0 g CH₂O/plant/day
+      radiation 22.0 MJ/m² → supply 10.0 g CH₂O/plant/day
 
 ## 2. Cassava Mealybug (*Phenacoccus manihoti*)
 
-The mealybug lifecycle is modeled with three stages — egg, nymph
-(crawlers through third instar), and adult female — each as a
-distributed delay. Development rates are linear in temperature above a
-lower threshold of 15.6°C (Le Rü & Fabres 1987).
+*P. manihoti* is parthenogenetic, so every individual is female. The
+life cycle follows the Appendix of Gutierrez et al. (1988b): embryos
+develop inside the mother for 65 DD, eggs take 114 DD, immatures 192 DD,
+and adults live 371 DD, all above 13.5 °C.
 
-> **Note on threshold temperature:** Gutierrez et al. (1988b) use a
-> lower developmental threshold of 13.5°C in the PBDM (Appendix) with
-> correspondingly higher DD requirements (egg ≈65 DD, immature ≈192 DD,
-> adult ≈371 DD). Here we follow Le Rü & Fabres (1987) who report 15.6°C
-> from controlled-temperature experiments, with DD values adjusted to
-> that threshold.
+**Demand.** The population’s demand rate $b$ (eqn 5) is the sum of
+immature growth, embryo growth, reserves (10 % of growth) and
+respiration, divided by $1-\beta$ for egestion ($\beta = 0.176$).
+Immature growth demand at age $a$ DD is $0.0249\,e^{-4.6 + 0.0249a}$ mg
+DD⁻¹, embryo growth demand is 0.000154 mg DD⁻¹, and respiration is
+$0.135\,e^{0.007\Delta t}$ × active weight per day (Appendix).
+
+**Fecundity.** The maximum rate of embryo production by an adult of age
+$x$ DD (since adult emergence) is $0.47x/1.0072^x$ (Appendix). Read as
+embryos per female per day, this gives about 500 embryos over an adult
+life at 27 °C when food is unlimited. Births are this maximum scaled by
+φ (eqn 2).
 
 ``` julia
-# Mealybug development parameters
-# Lower threshold: 15.6°C (Le Rü & Fabres 1987; cf. 13.5°C in Gutierrez et al. 1988b Appendix)
-# Upper threshold: 35.0°C (development ceases; Le Rü & Fabres 1987)
-const CM_T_BASE  = 15.6   # °C — lower developmental threshold (Le Rü & Fabres 1987)
-const CM_T_UPPER = 35.0   # °C — upper developmental threshold (Le Rü & Fabres 1987)
-
+# P. manihoti (Gutierrez et al. 1988b, Appendix p. 940)
+const CM_T_BASE  = 13.5   # °C
+const CM_T_UPPER = 35.0   # °C (Le Rü & Fabres 1987)
 cm_dev = LinearDevelopmentRate(CM_T_BASE, CM_T_UPPER)
 
-# Egg stage: ~108 DD above 15.6°C (≈11 days at 25°C; Le Rü & Fabres 1987)
-egg_delay_cm = DistributedDelay(10, 108.0; W0=0.0)
-egg_stage_cm = LifeStage(:egg, egg_delay_cm, cm_dev, 0.003)
+const CM_SEARCH = 0.25     # Frazer–Gilbert search rate on photosynthate
+const CM_EGESTED = 0.176   # proportion egested, β
+const CM_RESERVES = 0.10   # reserves, fraction of growth demand
+const CM_EMBRYO_DEMAND = 0.000154   # mg per embryo per DD
 
-# Nymphal stage: ~235 DD (crawlers → 3rd instar; ≈25 days at 25°C; Le Rü & Fabres 1987)
-nymph_delay_cm = DistributedDelay(20, 235.0; W0=2.0)   # initial field infestation
-nymph_stage_cm = LifeStage(:nymph, nymph_delay_cm, cm_dev, 0.004)
+cm_growth_demand(a) = 0.0249 * exp(-4.6 + 0.0249a)   # mg per immature per DD at age a
+cm_mass(a) = exp(-4.6) * (exp(0.0249a) - 1)          # mg, integral of growth demand
+const CM_ADULT_MASS = cm_mass(192.0)
+cm_fecundity(x) = x <= 0 ? 0.0 : 0.47x / 1.0072^x     # embryos/female/day at age x DD
 
-# Adult female: ~300 DD (≈32 days at 25°C); total fecundity ~300 eggs (Fabres 1981; Schulthess 1987)
-# P. manihoti is parthenogenetic (Gutierrez et al. 1988b)
-adult_delay_cm = DistributedDelay(15, 300.0; W0=0.0)
-adult_stage_cm = LifeStage(:adult, adult_delay_cm, cm_dev, 0.005)
+make_mealybug() = Population(:mealybug, [
+    LifeStage(:embryo,   DistributedDelay(10, 65.0;  W0=0.0), cm_dev, 0.005),
+    LifeStage(:egg,      DistributedDelay(10, 114.0; W0=2.0), cm_dev, 0.003),  # 20 eggs (1 ovisac) per plant
+    LifeStage(:immature, DistributedDelay(20, 192.0; W0=0.0), cm_dev, 0.004),
+    LifeStage(:adult,    DistributedDelay(15, 371.0; W0=0.0), cm_dev, 0.005),
+])
 
-mealybug = Population(:mealybug, [egg_stage_cm, nymph_stage_cm, adult_stage_cm])
+"""Mealybug demand rate b (g per plant per day), eqn 5, given today's degree-days."""
+function mealybug_demand(mb, dd)
+    emb, imm, ad = mb.stages[1].delay, mb.stages[3].delay, mb.stages[4].delay
+    age(d, j) = (j - 0.5) * d.τ / d.k
+    growth = sum(imm.W[j] * cm_growth_demand(age(imm, j)) for j in 1:imm.k) * dd
+    embryo = delay_total(emb) * CM_EMBRYO_DEMAND * dd
+    active = sum(imm.W[j] * cm_mass(age(imm, j)) for j in 1:imm.k) +
+             delay_total(ad) * CM_ADULT_MASS +
+             sum(emb.W[j] * CM_EMBRYO_DEMAND * age(emb, j) for j in 1:emb.k)
+    respiration = 0.135 * exp(0.007dd) * active
+    return ((1 + CM_RESERVES) * (growth + embryo) + respiration) / (1 - CM_EGESTED) / 1000
+end
 
-println("\nCassava mealybug lifecycle:")
-println("  Egg:    τ = $(egg_delay_cm.τ) DD  (k=$(egg_delay_cm.k))")
-println("  Nymph:  τ = $(nymph_delay_cm.τ) DD  (k=$(nymph_delay_cm.k))")
-println("  Adult:  τ = $(adult_delay_cm.τ) DD  (k=$(adult_delay_cm.k))")
-println("  Total generation: $(egg_delay_cm.τ + nymph_delay_cm.τ + adult_delay_cm.τ) DD")
-println("  Initial nymphs: $(total_population(mealybug))")
+"""Embryos initiated today at full nutrition."""
+function mealybug_max_births(mb)
+    ad = mb.stages[4].delay
+    return sum(ad.W[j] * cm_fecundity((j - 0.5) * ad.τ / ad.k) for j in 1:ad.k)
+end
+
+let dd = 27.0 - CM_T_BASE
+    days = 371 / dd
+    eggs = sum(cm_fecundity(x) for x in range(0, 371; length=1000)) * 371 / 1000 / dd
+    println("Adult life at 27 °C ≈ $(round(days, digits=1)) days; " *
+            "maximum embryos per female ≈ $(round(eggs))")
+end
 ```
 
-
-    Cassava mealybug lifecycle:
-      Egg:    τ = 108.0 DD  (k=10)
-      Nymph:  τ = 235.0 DD  (k=20)
-      Adult:  τ = 300.0 DD  (k=15)
-      Total generation: 643.0 DD
-      Initial nymphs: 40.0
+    Adult life at 27 °C ≈ 27.5 days; maximum embryos per female ≈ 503.0
 
 ## 3. Parasitoid (*Epidinocarsis lopezi*)
 
-*E. lopezi* is a solitary endoparasitoid of *P. manihoti*. The female
-oviposits a single egg into a mealybug nymph; the parasitoid larva
-develops inside the host, eventually mummifying it. Maximum fecundity is
-~85 eggs per female (Iziquel 1985, cited in Gutierrez et al. 1988b). The
-parasitoid has a slightly lower developmental threshold and a shorter
-generation time (~310 DD), giving it a developmental rate advantage over
-its host at moderate tropical temperatures.
+*E. lopezi* is a solitary endoparasitoid of *P. manihoti*. From the
+Appendix of Gutierrez et al. (1988b): the threshold is 13.3 °C, eggs and
+larvae take 100 DD, pupae 86 DD, and adults live 280 DD.
+Hyperparasitoids are found at 0.28 times the density of *E. lopezi*
+immatures (p. 926). Here that is read as 28 % of immatures lost over the
+186 DD of immature development.
 
 ``` julia
-# Parasitoid development parameters
-# Threshold and DD values from Löhr et al. (in press, cited in Gutierrez et al. 1988b)
-# and Sullivan & Neuenschwander (1988)
-const EL_T_BASE  = 15.4   # °C — lower developmental threshold (assumed; see note below)
-const EL_T_UPPER = 34.0   # °C — upper developmental threshold (assumed; see note below)
-
+# E. lopezi (Gutierrez et al. 1988b, Appendix p. 940)
+const EL_T_BASE  = 13.3   # °C
+const EL_T_UPPER = 34.0   # °C [assumed]
 el_dev = LinearDevelopmentRate(EL_T_BASE, EL_T_UPPER)
 
-# Egg + larval stage (inside host): ~180 DD above 15.4°C (estimated from Löhr et al.)
-egg_larva_delay_el = DistributedDelay(15, 180.0; W0=0.0)
-egg_larva_stage_el = LifeStage(:egg_larva, egg_larva_delay_el, el_dev, 0.002)
+const EL_OVIPOSITION = 0.9     # eggs per female per DD (maximum demand)
+const EL_HOST_FEEDING = 0.3    # proportion of attacked hosts used for host feeding
+const EL_GAMMA = 0.05          # aggregate search S_E = 1 - exp(-γ FEM)
+const EL_PREF_IMMATURE = 0.3   # host preferences
+const EL_PREF_ADULT = 0.65
+const EL_MU_HYPER = -log(1 - 0.28) / (100 + 86)   # per DD, hyperparasitism on immatures
 
-# Pupal stage (mummy): ~40 DD (estimated from Löhr et al.)
-pupa_delay_el = DistributedDelay(10, 40.0; W0=0.0)
-pupa_stage_el = LifeStage(:pupa, pupa_delay_el, el_dev, 0.001)
+el_oviposition_temperature(dd) = max(0.0, 1 - ((dd - 10) / 10)^2)   # Appendix
 
-# Adult female: ~90 DD (≈9 days at 25°C); max fecundity ~85 eggs (Iziquel 1985)
-# Adult parasitoids also host-feed on P. manihoti (Gutierrez et al. 1988b)
-adult_delay_el = DistributedDelay(10, 90.0; W0=0.0)
-adult_stage_el = LifeStage(:adult, adult_delay_el, el_dev, 0.006)
+make_parasitoid() = Population(:parasitoid, [
+    LifeStage(:egg_larva, DistributedDelay(15, 100.0; W0=0.0), el_dev, EL_MU_HYPER),
+    LifeStage(:pupa,      DistributedDelay(10, 86.0;  W0=0.0), el_dev, EL_MU_HYPER),
+    LifeStage(:adult,     DistributedDelay(10, 280.0; W0=0.0), el_dev, 0.006),
+])
 
-parasitoid = Population(:parasitoid, [egg_larva_stage_el, pupa_stage_el, adult_stage_el])
-
-println("\nParasitoid (E. lopezi) lifecycle:")
-println("  Egg+Larva: τ = $(egg_larva_delay_el.τ) DD  (k=$(egg_larva_delay_el.k))")
-println("  Pupa:      τ = $(pupa_delay_el.τ) DD  (k=$(pupa_delay_el.k))")
-println("  Adult:     τ = $(adult_delay_el.τ) DD  (k=$(adult_delay_el.k))")
-println("  Total generation: $(egg_larva_delay_el.τ + pupa_delay_el.τ + adult_delay_el.τ) DD")
+println("E. lopezi: egg–larva 100 DD, pupa 86 DD, adult 280 DD above $(EL_T_BASE) °C")
+for T in (20.0, 23.3, 27.0, 30.0)
+    dd = T - EL_T_BASE
+    println("  T = $T °C: oviposition scalar $(round(el_oviposition_temperature(dd), digits=2)), " *
+            "max eggs/female/day $(round(EL_OVIPOSITION * dd * el_oviposition_temperature(dd), digits=1))")
+end
 ```
 
-
-    Parasitoid (E. lopezi) lifecycle:
-      Egg+Larva: τ = 180.0 DD  (k=15)
-      Pupa:      τ = 40.0 DD  (k=10)
-      Adult:     τ = 90.0 DD  (k=10)
-      Total generation: 310.0 DD
+    E. lopezi: egg–larva 100 DD, pupa 86 DD, adult 280 DD above 13.3 °C
+      T = 20.0 °C: oviposition scalar 0.89, max eggs/female/day 5.4
+      T = 23.3 °C: oviposition scalar 1.0, max eggs/female/day 9.0
+      T = 27.0 °C: oviposition scalar 0.86, max eggs/female/day 10.6
+      T = 30.0 °C: oviposition scalar 0.55, max eggs/female/day 8.3
 
 ## 4. Trophic Interactions
 
-The tritrophic food web connects cassava → mealybug → parasitoid.
-Mealybug feeding on cassava follows a Frazer-Gilbert demand-driven
-functional response (Gutierrez et al. 1988b, eqn 4), while the
-parasitoid attacks mealybug nymphs via a Holling Type II functional
-response — a simplification of the Frazer-Gilbert parasitoid model (eqn
-7) used in the original paper.
+**Mealybug feeding (eqns 2–4).** The mealybug population, with demand
+$b$, searches today’s photosynthate $P$ with search rate $s = 0.25$. It
+acquires $A = b\,(1 - e^{-sP/b})$ and φ = $A/b$. The plant loses $A$. φ
+scales embryo production (eqn 2) and survival (eqn 6, $l_{x\phi}$ = φ
+per day). The CASAS code applies φ to every mealybug stage and to the
+parasitoid immatures inside them, and so does this vignette.
 
-> **Note:** Gutierrez et al. (1988b) use the Frazer-Gilbert functional
-> response for all trophic interactions, including parasitism. Here we
-> simplify the parasitoid attack to a Holling Type II for tutorial
-> clarity. The host-feeding demand is 0.3 of total hosts attacked in the
-> original model (Gutierrez et al. 1988b, p. 928).
+**Parasitism (eqns 7–13).** Hosts are weighted by preference,
+$H_w = 0.3\,N_\mathrm{imm} + 0.65\,N_\mathrm{adult}$. The females’
+demand for hosts is
+$b_E = 0.9\,\Delta t\,\phi_T\,\mathrm{FEM}/(1 - 0.3)$: oviposition, plus
+host feeding, which takes 0.3 of the hosts attacked. The females’ search
+is $S_E = 1 - e^{-0.05\,\mathrm{FEM}}$. In the parasitoid form of the
+Frazer–Gilbert model, $E = b_E(1 - e^{-S_E H_w/b_E})$ attacks are spread
+at random over the hosts, so $N_a = H_w(1 - e^{-E/H_w})$ distinct hosts
+are attacked. Each stage loses $\xi_i N_a / H_w$ of its members (eqns
+9–12). Of the hosts attacked, 0.7 are parasitized, and the female
+fraction of the progeny is $\mathrm{SR} = H_w/H_T$, bounded to \[0.3,
+0.75\] (eqn 13). The ratio of hosts attacked to demand, $N_a/b_E$, sets
+the daily survival (and emigration) of the adult parasitoids (p. 926).
 
 ``` julia
-# Mealybug feeding on cassava phloem (Frazer-Gilbert supply/demand; Gutierrez et al. 1988b, eqn 4)
-cm_feeding = FraserGilbertResponse(0.5)
+cm_feeding = FraserGilbertResponse(CM_SEARCH)
 
-# Parasitoid attacking mealybug nymphs (simplified as Holling Type II; see note above)
-# a = 0.04 per parasitoid per day: search rate (assumed; Gutierrez et al. 1988b use Frazer-Gilbert s_E)
-# h = 0.5 days: handling time per host (assumed; includes oviposition + host feeding)
-el_attack = HollingTypeII(0.04, 0.5)
+"""Hosts attacked by FEM female E. lopezi on weighted host density Hw, with demand bE."""
+function parasitoid_attacks(Hw, FEM, bE)
+    (Hw <= 0 || FEM <= 0 || bE <= 0) && return 0.0
+    SE = 1 - exp(-EL_GAMMA * FEM)
+    eggs = bE * (1 - exp(-SE * Hw / bE))
+    return Hw * (1 - exp(-eggs / Hw))
+end
 
-# Build the trophic web
-# Conversion efficiencies are tutorial approximations (not directly from the paper)
-web = TrophicWeb()
-add_link!(web, TrophicLink(:mealybug, :cassava, cm_feeding, 0.15))   # ε assumed
-add_link!(web, TrophicLink(:parasitoid, :mealybug, el_attack, 0.30)) # ε assumed
+println("--- Mealybug supply/demand (P = 9.8 g CH₂O/plant/day) ---")
+for n in (1_000, 2_000, 5_000, 10_000, 20_000)
+    b = n * 0.4e-3     # ≈ 0.4 mg per mealybug per day
+    println("  ≈$(lpad(n, 6)) mealybugs: demand $(round(b, digits=1)) g/day, " *
+            "φ = $(round(supply_demand_ratio(cm_feeding, 9.8, b), digits=3))")
+end
 
-println("\nTrophic web:")
-for link in web.links
-    println("  $(link.predator_name) → $(link.prey_name) " *
-            "(ε = $(link.conversion_efficiency))")
+println("\n--- E. lopezi attacks per day at 27 °C ---")
+let dd = 27.0 - EL_T_BASE
+    for FEM in (1.0, 10.0, 100.0), Hw in (100.0, 1000.0, 10000.0)
+        bE = EL_OVIPOSITION * dd * el_oviposition_temperature(dd) * FEM / (1 - EL_HOST_FEEDING)
+        Na = parasitoid_attacks(Hw, FEM, bE)
+        println("  FEM = $(lpad(FEM, 5)), Hw = $(lpad(Hw, 7)): hosts attacked $(round(Na, sigdigits=3)), " *
+                "attacked/demand $(round(Na / bE, digits=2))")
+    end
 end
 ```
 
+    --- Mealybug supply/demand (P = 9.8 g CH₂O/plant/day) ---
+      ≈  1000 mealybugs: demand 0.4 g/day, φ = 0.998
+      ≈  2000 mealybugs: demand 0.8 g/day, φ = 0.953
+      ≈  5000 mealybugs: demand 2.0 g/day, φ = 0.706
+      ≈ 10000 mealybugs: demand 4.0 g/day, φ = 0.458
+      ≈ 20000 mealybugs: demand 8.0 g/day, φ = 0.264
 
-    Trophic web:
-      mealybug → cassava (ε = 0.15)
-      parasitoid → mealybug (ε = 0.3)
-
-### Functional response curves
-
-``` julia
-# Mealybug feeding: acquisition vs supply at fixed demand
-println("\n--- Mealybug Feeding (supply-demand) ---")
-demand = 10.0
-for supply in [2.0, 5.0, 10.0, 20.0, 50.0, 100.0]
-    acq = acquire(cm_feeding, supply, demand)
-    φ = supply_demand_ratio(cm_feeding, supply, demand)
-    println("  Supply=$(lpad(string(Int(supply)), 4)), Demand=$demand → " *
-            "Acquired=$(round(acq, digits=2)), φ=$(round(φ, digits=3))")
-end
-
-# Parasitoid attack: per-capita consumption vs host density
-println("\n--- Parasitoid Attack (Holling Type II) ---")
-for N in [1.0, 5.0, 10.0, 25.0, 50.0, 100.0, 200.0]
-    fr = functional_response(el_attack, N)
-    println("  Host density=$(lpad(string(Int(N)), 4)) → " *
-            "Attacks/parasitoid/day=$(round(fr, digits=3))")
-end
-```
-
-
-    --- Mealybug Feeding (supply-demand) ---
-      Supply=   2, Demand=10.0 → Acquired=0.95, φ=0.095
-      Supply=   5, Demand=10.0 → Acquired=2.21, φ=0.221
-      Supply=  10, Demand=10.0 → Acquired=3.93, φ=0.393
-      Supply=  20, Demand=10.0 → Acquired=6.32, φ=0.632
-      Supply=  50, Demand=10.0 → Acquired=9.18, φ=0.918
-      Supply= 100, Demand=10.0 → Acquired=9.93, φ=0.993
-
-    --- Parasitoid Attack (Holling Type II) ---
-      Host density=   1 → Attacks/parasitoid/day=0.039
-      Host density=   5 → Attacks/parasitoid/day=0.182
-      Host density=  10 → Attacks/parasitoid/day=0.333
-      Host density=  25 → Attacks/parasitoid/day=0.667
-      Host density=  50 → Attacks/parasitoid/day=1.0
-      Host density= 100 → Attacks/parasitoid/day=1.333
-      Host density= 200 → Attacks/parasitoid/day=1.6
+    --- E. lopezi attacks per day at 27 °C ---
+      FEM =   1.0, Hw =   100.0: hosts attacked 4.09, attacked/demand 0.27
+      FEM =   1.0, Hw =  1000.0: hosts attacked 14.5, attacked/demand 0.95
+      FEM =   1.0, Hw = 10000.0: hosts attacked 15.2, attacked/demand 1.0
+      FEM =  10.0, Hw =   100.0: hosts attacked 29.3, attacked/demand 0.19
+      FEM =  10.0, Hw =  1000.0: hosts attacked 131.0, attacked/demand 0.86
+      FEM =  10.0, Hw = 10000.0: hosts attacked 151.0, attacked/demand 0.99
+      FEM = 100.0, Hw =   100.0: hosts attacked 61.8, attacked/demand 0.04
+      FEM = 100.0, Hw =  1000.0: hosts attacked 518.0, attacked/demand 0.34
+      FEM = 100.0, Hw = 10000.0: hosts attacked 1410.0, attacked/demand 0.93
 
 ## 5. Weather: West African Savanna
 
-We simulate weather representative of the Nigerian/Ghanaian savanna zone
-where the mealybug problem was most severe — a warm tropical climate
-with a distinct dry season (November–March) and wet season
-(April–October). Mean annual temperature ~27°C, with moderate seasonal
-variation.
+We simulate three years of weather representative of the
+Nigerian/Ghanaian savanna zone where the mealybug problem was most
+severe: a warm tropical climate with a distinct dry season. Mean annual
+temperature is about 27 °C, with moderate seasonal variation. The
+weather has no rainfall, so the rain-induced mortality of Gutierrez et
+al. (1988b, eqn 16) does not arise.
 
 ``` julia
-# West African savanna: warm year-round, slight seasonal cycle
-# Dry season (Dec–Feb): hotter days, cooler nights, lower humidity
-# Wet season (Jun–Sep): slightly cooler, higher humidity
-n_days = 365
-weather_days = DailyWeather{Float64}[]
-for d in 1:n_days
-    # Mean temperature: ~27°C with ±3°C seasonal swing
-    T_mean = 27.0 + 3.0 * sin(2π * (d - 100) / 365)
-    T_min = T_mean - 5.0
-    T_max = T_mean + 5.0
-    # Radiation: higher in dry season
-    rad = 18.0 + 4.0 * sin(2π * (d - 60) / 365)
-    push!(weather_days, DailyWeather(T_mean, T_min, T_max;
-                                      radiation=rad, photoperiod=12.2))
-end
-weather = WeatherSeries(weather_days; day_offset=1)
+const N_YEARS = 3
+n_days = 365 * N_YEARS
+savanna_T(d) = 27.0 + 3.0 * sin(2π * (d - 100) / 365)
+savanna_rad(d) = 18.0 + 4.0 * sin(2π * (d - 60) / 365)   # MJ m⁻² d⁻¹, higher in the dry season
 
-# Print seasonal summary
+function savanna_weather(; offset=0.0, n=n_days)
+    WeatherSeries([DailyWeather(savanna_T(d) + offset, savanna_T(d) + offset - 5.0,
+                                savanna_T(d) + offset + 5.0;
+                                radiation=savanna_rad(d), photoperiod=12.2) for d in 1:n];
+                  day_offset=1)
+end
+weather = savanna_weather()
+
 println("\n--- West African Savanna Weather ---")
 for (label, d) in [("Jan (dry)", 15), ("Apr (onset)", 100),
                     ("Jul (wet)", 195), ("Oct (late)", 285)]
@@ -339,302 +368,229 @@ end
       Jul (wet): T=30.0°C, Rad=20.9 MJ/m²
       Oct (late): T=26.9°C, Rad=15.3 MJ/m²
 
-## 6. Simulation: Mealybug Dynamics Without Biocontrol
+## 6. The Coupled Model
 
-First, we simulate the mealybug on cassava in the absence of *E. lopezi*
-— the situation that prevailed across Africa from the 1970s until the
-parasitoid’s establishment.
-
-``` julia
-# Reproduction function: adult mealybugs produce eggs
-# Total fecundity: ~300 eggs per female (Fabres 1981; Schulthess 1987)
-# Rate parameter: total_eggs / adult_τ ≈ 300 / 300 = 1.0 egg/DD at full nutrition
-# CM_FECUNDITY here is a scaling constant used in the simplified daily birth rate formula
-const CM_FECUNDITY = 7.0    # fecundity scaling parameter (tutorial approximation)
-const CM_FEMALE_FRAC = 0.7  # proportion female (assumed; P. manihoti is parthenogenetic
-                            # but produces some males under stress; Fabres 1981)
-
-function cm_reproduction(pop, w, p, day)
-    adults = delay_total(pop.stages[end].delay)
-    dd = degree_days(pop.stages[1].dev_rate, w.T_mean)
-    return CM_FECUNDITY * CM_FEMALE_FRAC * adults * dd / pop.stages[end].delay.τ
-end
-
-# Fresh mealybug population for the no-biocontrol scenario
-function make_mealybug()
-    Population(:mealybug, [
-        LifeStage(:egg,   DistributedDelay(10, 108.0; W0=0.0),  cm_dev, 0.003),
-        LifeStage(:nymph, DistributedDelay(20, 235.0; W0=2.0),  cm_dev, 0.004),
-        LifeStage(:adult, DistributedDelay(15, 300.0; W0=0.0),  cm_dev, 0.005),
-    ])
-end
-
-cm_nobc = make_mealybug()
-prob_nobc = PBDMProblem(DensityDependent(), cm_nobc, weather, (1, n_days))
-sol_nobc = solve(prob_nobc, DirectIteration(); reproduction_fn=cm_reproduction)
-
-println("\n--- Mealybug WITHOUT Biocontrol ---")
-println("Net growth rate λ: ", round(net_growth_rate(sol_nobc), digits=4))
-cdd = cumulative_degree_days(sol_nobc)
-println("Total degree-days:  ", round(cdd[end], digits=0))
-
-for (i, name) in enumerate([:egg, :nymph, :adult])
-    traj = stage_trajectory(sol_nobc, i)
-    println("  $name: peak = $(round(maximum(traj), digits=1)) " *
-            "(day $(argmax(traj))), final = $(round(traj[end], digits=1))")
-end
-```
-
-
-    --- Mealybug WITHOUT Biocontrol ---
-    Net growth rate λ: 0.992
-    Total degree-days:  4161.0
-      egg: peak = 20.2 (day 28), final = 0.7
-      nymph: peak = 37.2 (day 1), final = 1.0
-      adult: peak = 14.0 (day 23), final = 0.5
-
-## 7. Simulation: With Parasitoid Biocontrol (Coupled API)
-
-Now we simulate the full tritrophic system using the package’s coupled
-population API. Instead of a hand-rolled simulation loop, we express the
-cassava–mealybug–parasitoid interactions as a `PopulationSystem` with
-typed rules and events, solved by the standard `PBDMProblem`/`solve`
-framework.
-
-The `MultiSpeciesPBDMNew()` tag indicates a true multi-species system
-(mealybug + parasitoid), as opposed to multi-type within one species.
+The cassava canopy, tuber store, mealybug and parasitoid are components
+of a `PopulationSystem`. One `CustomRule` carries out each day’s trophic
+interactions after the populations have aged. It computes the plant’s
+photosynthate, the mealybug’s demand, acquisition and φ, plant growth,
+births, food-related survival, and parasitism.
 
 ``` julia
 """
-Build the tritrophic coupled system and solve it.
-
-Returns a `CoupledPBDMSolution` with trajectories for mealybug and
-parasitoid populations plus parasitism-rate observable.
+Build and solve the cassava–mealybug–E. lopezi system. Returns stage totals,
+tuber mass and the daily log of the trophic rule.
 """
 function simulate_tritrophic(weather, n_days;
-                              introduce_parasitoid=true,
-                              introduction_day=90,
-                              initial_parasitoids=0.5)
-    # Fresh populations
-    cm = make_mealybug()
-
-    el = Population(:parasitoid, [
-        LifeStage(:egg_larva, DistributedDelay(15, 180.0; W0=0.0), el_dev, 0.002),
-        LifeStage(:pupa,      DistributedDelay(10, 40.0;  W0=0.0), el_dev, 0.001),
-        LifeStage(:adult,     DistributedDelay(10, 90.0;  W0=0.0), el_dev, 0.006),
-    ])
-
+                             introduce_parasitoid=true,
+                             introduction_day=90,
+                             initial_parasitoids=0.5)   # adult females per plant (Appendix)
     sys = PopulationSystem(
-        :mealybug  => PopulationComponent(cm; species=:mealybug),
-        :parasitoid => PopulationComponent(el; species=:parasitoid),
+        :cassava    => PopulationComponent(make_cassava(); species=:cassava),
+        :tuber      => PopulationComponent(BulkPopulation(:tuber, 0.0); species=:cassava),
+        :mealybug   => PopulationComponent(make_mealybug(); species=:mealybug),
+        :parasitoid => PopulationComponent(make_parasitoid(); species=:parasitoid),
     )
 
-    # --- Rules ---
-    # Mealybug reproduction: adults produce eggs based on temperature
-    repro_rule = ReproductionRule(:mealybug, (sys, w, day, p) -> begin
-        adults = delay_total(sys[:mealybug].population.stages[3].delay)
-        dd = degree_days(cm_dev, w.T_mean)
-        return CM_FECUNDITY * CM_FEMALE_FRAC * adults * dd /
-               sys[:mealybug].population.stages[3].delay.τ
-    end)
+    trophic = CustomRule(:trophic, (sys, w, day, p) -> begin
+        cas = sys[:cassava].population
+        mb  = sys[:mealybug].population
+        el  = sys[:parasitoid].population
 
-    # Parasitoid attack on mealybug nymphs (Holling Type II)
-    # With conversion: parasitized nymphs become parasitoid egg+larva
-    # (survival to mummy: 0.6; Gutierrez et al. 1988b)
-    parasitism_rule = CustomRule(:parasitism, (sys, w, day, p) -> begin
-        if !introduce_parasitoid || day < introduction_day
-            return (parasitized=0.0, parasitism_rate=0.0)
+        # Plant supply and mealybug acquisition (eqns 2–5)
+        leaf = total_population(cas)
+        P = photosynthate(leaf, w.radiation)
+        b = mealybug_demand(mb, degree_days(cm_dev, w.T_mean))
+        A = b > 0 ? acquire(cm_feeding, P, b) : 0.0
+        φ = b > 0 ? A / b : 1.0
+
+        # Plant growth: replace leaves that aged out or died, store the rest
+        canopy = cas.stages[1].delay
+        dd_cas = degree_days(cassava_dev, w.T_mean)
+        replace = canopy.W[end] * canopy.k / canopy.τ * dd_cas + cas.stages[1].μ * dd_cas * leaf
+        surplus = max(P - A, 0.0)
+        new_leaf = min(surplus, replace)
+        inject!(sys, :cassava, 1, new_leaf)
+        sys[:tuber].population.value[] += surplus - new_leaf
+
+        # Births scaled by φ, then food-related survival φ (eqn 6)
+        births = φ * mealybug_max_births(mb)
+        if φ < 1
+            remove_fraction!(sys, :mealybug, 1 - φ)
+            remove_fraction!(sys, :parasitoid, 1, 1 - φ)   # parasitoids inside starving hosts
         end
-        cm_nymphs = delay_total(sys[:mealybug].population.stages[2].delay)
-        el_adults = delay_total(sys[:parasitoid].population.stages[3].delay)
+        inject!(sys, :mealybug, 1, births)
 
-        (cm_nymphs <= 0 || el_adults <= 0) &&
-            return (parasitized=0.0, parasitism_rate=0.0)
-
-        per_capita = functional_response(el_attack, cm_nymphs)
-        parasitized = min(per_capita * el_adults, cm_nymphs * 0.8)
-
-        # Remove parasitized nymphs
-        removal_frac = clamp(parasitized / max(cm_nymphs, 1e-10), 0.0, 1.0)
-        remove_fraction!(sys, :mealybug, 2, removal_frac)
-
-        # Parasitized hosts enter parasitoid egg+larva stage
-        inject!(sys, :parasitoid, 1, parasitized * 0.6)
-
-        rate = cm_nymphs > 0 ? parasitized / cm_nymphs : 0.0
-        return (parasitized=parasitized, parasitism_rate=rate)
+        # Parasitism by E. lopezi (eqns 7–13)
+        attacked = 0.0
+        parasitism_rate = 0.0
+        if introduce_parasitoid && day >= introduction_day
+            FEM = delay_total(el.stages[3].delay)
+            dd_el = degree_days(el_dev, w.T_mean)
+            bE = EL_OVIPOSITION * dd_el * el_oviposition_temperature(dd_el) * FEM /
+                 (1 - EL_HOST_FEEDING)
+            n_imm = delay_total(mb.stages[3].delay)
+            n_ad = delay_total(mb.stages[4].delay)
+            Hw = EL_PREF_IMMATURE * n_imm + EL_PREF_ADULT * n_ad
+            if bE > 0
+                attacked = parasitoid_attacks(Hw, FEM, bE)
+                if attacked > 0
+                    f = attacked / Hw
+                    remove_fraction!(sys, :mealybug, 3, clamp(EL_PREF_IMMATURE * f, 0.0, 1.0))
+                    remove_fraction!(sys, :mealybug, 4, clamp(EL_PREF_ADULT * f, 0.0, 1.0))
+                    sex_ratio = clamp(Hw / (n_imm + n_ad), 0.3, 0.75)
+                    inject!(sys, :parasitoid, 1, sex_ratio * (1 - EL_HOST_FEEDING) * attacked)
+                    parasitism_rate = attacked / (n_imm + n_ad)
+                end
+                # Food-related survival and emigration of adults: hosts attacked / demand
+                φE = min(1.0, attacked / bE)
+                φE < 1 && remove_fraction!(sys, :parasitoid, 3, 1 - φE)
+            end
+        end
+        return (supply=P, demand=b, acquired=A, φ=φ, births=births,
+                attacked=attacked, parasitism_rate=parasitism_rate)
     end)
 
-    rules = AbstractInteractionRule[repro_rule, parasitism_rule]
-
-    # --- Events ---
     events = AbstractScheduledEvent[]
     if introduce_parasitoid
         push!(events, SingleDayRelease(:parasitoid, initial_parasitoids, introduction_day;
-                                       stage_idx=3))  # release as adults
+                                       stage_idx=3))
     end
 
-    # --- Observables ---
-    observables = [
-        PhysiologicallyBasedDemographicModels.Observable(:cm_total, (sys, w, day, p) -> total_population(sys[:mealybug].population)),
-        PhysiologicallyBasedDemographicModels.Observable(:el_total, (sys, w, day, p) -> total_population(sys[:parasitoid].population)),
-        PhysiologicallyBasedDemographicModels.Observable(:parasitism_rate, (sys, w, day, p) -> begin
-            cm_nymphs = delay_total(sys[:mealybug].population.stages[2].delay)
-            el_adults = delay_total(sys[:parasitoid].population.stages[3].delay)
-            (cm_nymphs <= 0 || el_adults <= 0) && return 0.0
-            per_capita = functional_response(el_attack, cm_nymphs)
-            attacked = min(per_capita * el_adults, cm_nymphs * 0.8)
-            return attacked / max(cm_nymphs, 1e-10)
-        end),
-    ]
-
-    # --- Solve ---
-    prob = PBDMProblem(
-        MultiSpeciesPBDMNew(), sys, weather, (1, n_days);
-        rules=rules, events=events, observables=observables
-    )
+    prob = PBDMProblem(MultiSpeciesPBDMNew(), sys, weather, (1, n_days);
+                       rules=AbstractInteractionRule[trophic], events=events)
     sol = solve(prob, DirectIteration())
 
-    # Extract stage-level trajectories for backward compatibility
-    cm_totals = zeros(n_days + 1, 3)
-    el_totals = zeros(n_days + 1, 3)
-    parasitism_rate = zeros(n_days)
-
-    # Initial state (day 0)
-    for j in 1:3
-        cm_totals[1, j] = delay_total(cm.stages[j].delay)  # stale after solve, but initial was saved
-    end
-    # From solution: stage totals over time
-    for d in 1:n_days
-        for j in 1:3
-            cm_totals[d + 1, j] = sol.component_stage_totals[:mealybug][j, d]
-            el_totals[d + 1, j] = sol.component_stage_totals[:parasitoid][j, d]
-        end
-    end
-    # Parasitism rate from rule log
-    if haskey(sol.rule_log, :parasitism)
-        for d in 1:min(n_days, length(sol.rule_log[:parasitism]))
-            parasitism_rate[d] = sol.rule_log[:parasitism][d].parasitism_rate
-        end
-    end
-
-    return (; cm_totals, el_totals, parasitism_rate, sol)
+    cm_stages = permutedims(sol.component_stage_totals[:mealybug])   # day × stage
+    el_stages = permutedims(sol.component_stage_totals[:parasitoid])
+    log = sol.rule_log[:trophic]
+    return (; cm_stages, el_stages,
+            cm_active = cm_stages[:, 3] .+ cm_stages[:, 4],     # immatures + adults
+            el_total = vec(sum(el_stages, dims=2)),
+            tuber = sol.component_totals[:tuber],
+            leaf = sol.component_totals[:cassava],
+            φ = [l.φ for l in log],
+            parasitism_rate = [l.parasitism_rate for l in log],
+            sol)
 end
 ```
 
     Main.Notebook.simulate_tritrophic
 
+## 7. Simulation: Mealybug Without Biocontrol
+
+First, we simulate the mealybug on cassava without *E. lopezi*. This was
+the situation across Africa from the 1970s until the parasitoid
+established. The infestation starts from one ovisac (20 eggs) per plant.
+
 ``` julia
-# Run both scenarios
 res_nobc = simulate_tritrophic(weather, n_days; introduce_parasitoid=false)
-res_bc   = simulate_tritrophic(weather, n_days; introduce_parasitoid=true,
-                                introduction_day=90, initial_parasitoids=0.5)
 
-# Summary statistics
-cm_total_nobc = sum(res_nobc.cm_totals, dims=2)[:]
-cm_total_bc   = sum(res_bc.cm_totals, dims=2)[:]
-el_total_bc   = sum(res_bc.el_totals, dims=2)[:]
-
-println("\n--- Tritrophic Simulation Results ---")
-println("Peak mealybug (no biocontrol):   $(round(maximum(cm_total_nobc), digits=1))")
-println("Peak mealybug (with E. lopezi):  $(round(maximum(cm_total_bc), digits=1))")
-reduction = 1.0 - maximum(cm_total_bc) / max(maximum(cm_total_nobc), 1e-10)
-println("Peak population reduction:       $(round(100 * reduction, digits=1))%")
-println("Peak parasitoid population:      $(round(maximum(el_total_bc), digits=1))")
-println("Mean parasitism rate:            $(round(100 * mean(res_bc.parasitism_rate), digits=1))%")
+yr(y) = (365 * (y - 1) + 1):(365 * y)
+println("--- Mealybug WITHOUT Biocontrol ---")
+println("Peak immatures + adults: $(round(maximum(res_nobc.cm_active), sigdigits=3)) per plant " *
+        "(day $(argmax(res_nobc.cm_active)))")
+for y in 1:N_YEARS
+    println("  Year $y: mean $(round(mean(res_nobc.cm_active[yr(y)]), sigdigits=3)) per plant, " *
+            "mean φ = $(round(mean(res_nobc.φ[yr(y)]), digits=3))")
+end
 ```
 
+    --- Mealybug WITHOUT Biocontrol ---
+    Peak immatures + adults: 15000.0 per plant (day 111)
+      Year 1: mean 8060.0 per plant, mean φ = 0.912
+      Year 2: mean 10400.0 per plant, mean φ = 0.889
+      Year 3: mean 10400.0 per plant, mean φ = 0.889
 
-    --- Tritrophic Simulation Results ---
-    Peak mealybug (no biocontrol):   44.6
-    Peak mealybug (with E. lopezi):  44.6
-    Peak population reduction:       0.0%
-    Peak parasitoid population:      0.8
-    Mean parasitism rate:            0.1%
+## 8. Simulation: With Parasitoid Biocontrol
 
-## 8. Visualization
+Half an adult female *E. lopezi* per plant (the Appendix’s initial
+value) is released on day 90.
+
+``` julia
+res_bc = simulate_tritrophic(weather, n_days; introduce_parasitoid=true,
+                             introduction_day=90, initial_parasitoids=0.5)
+
+println("--- Tritrophic Simulation Results (immatures + adults per plant) ---")
+println("Year | No biocontrol | With E. lopezi | Ratio | E. lopezi after release (mean, min)")
+for y in 1:N_YEARS
+    a, b = mean(res_nobc.cm_active[yr(y)]), mean(res_bc.cm_active[yr(y)])
+    released = intersect(yr(y), 90:n_days)
+    println("  $y  | $(lpad(round(a, sigdigits=3), 13)) | $(lpad(round(b, sigdigits=3), 14)) | " *
+            "$(lpad(round(b / a, digits=3), 5)) | $(round(mean(res_bc.el_total[released]), sigdigits=3)), " *
+            "$(round(minimum(res_bc.el_total[released]), sigdigits=3))")
+end
+println("Mean parasitism rate (years 2–3): " *
+        "$(round(100 * mean(res_bc.parasitism_rate[366:end]), digits=1))% per day")
+println("Tuber dry matter after $N_YEARS years: $(round(res_nobc.tuber[end] / 1000, digits=1)) kg/plant " *
+        "without, $(round(res_bc.tuber[end] / 1000, digits=1)) kg/plant with E. lopezi")
+```
+
+    --- Tritrophic Simulation Results (immatures + adults per plant) ---
+    Year | No biocontrol | With E. lopezi | Ratio | E. lopezi after release (mean, min)
+      1  |        8060.0 |         4250.0 | 0.527 | 1450.0, 2.08
+      2  |       10400.0 |         1510.0 | 0.145 | 700.0, 185.0
+      3  |       10400.0 |         1530.0 | 0.147 | 710.0, 206.0
+    Mean parasitism rate (years 2–3): 14.8% per day
+    Tuber dry matter after 3 years: 8.7 kg/plant without, 9.5 kg/plant with E. lopezi
+
+## 9. Visualization
 
 ### Mealybug dynamics: with vs without biocontrol
 
 ``` julia
-days = 0:n_days
+days = 1:n_days
 
-fig = Figure(size=(900, 700))
+fig = Figure(size=(900, 750))
 
-# Panel A: Total mealybug population
-ax1 = Axis(fig[1, 1],
-    xlabel="Day of year",
-    ylabel="Mealybug population (relative units)",
+ax1 = Axis(fig[1, 1], yscale=log10,
+    xlabel="Day", ylabel="Mealybugs per plant (immatures + adults)",
     title="(a) Cassava Mealybug Population Dynamics")
-
-lines!(ax1, days, cm_total_nobc, color=:red, linewidth=2,
+lines!(ax1, days, max.(res_nobc.cm_active, 1e-2), color=:red, linewidth=2,
        label="Without biocontrol")
-lines!(ax1, days, cm_total_bc, color=:blue, linewidth=2,
+lines!(ax1, days, max.(res_bc.cm_active, 1e-2), color=:blue, linewidth=2,
        label="With E. lopezi")
-vlines!(ax1, [90], color=:green, linestyle=:dash, linewidth=1,
-        label="Parasitoid release (day 90)")
-axislegend(ax1, position=:lt)
+lines!(ax1, days, max.(res_bc.el_total, 1e-2), color=:darkgreen, linewidth=1.5,
+       label="E. lopezi (all stages)")
+vlines!(ax1, [90], color=:green, linestyle=:dash, linewidth=1)
+axislegend(ax1, position=:rb)
 
-# Panel B: Parasitoid population and parasitism rate
-ax2a = Axis(fig[2, 1],
-    xlabel="Day of year",
-    ylabel="Parasitoid population",
-    title="(b) Parasitoid Population and Parasitism Rate")
-ax2b = Axis(fig[2, 1],
-    ylabel="Parasitism rate",
-    yaxisposition=:right,
-    ylabelcolor=:orange,
-    yticklabelcolor=:orange)
-hidespines!(ax2b)
-hidexdecorations!(ax2b)
-
-lines!(ax2a, days, el_total_bc, color=:darkgreen, linewidth=2,
-       label="E. lopezi total")
-lines!(ax2b, 1:n_days, res_bc.parasitism_rate, color=:orange,
-       linewidth=1.5, label="Parasitism rate")
-vlines!(ax2a, [90], color=:green, linestyle=:dash, linewidth=1)
-
-Legend(fig[2, 1], ax2a, position=:lt, tellwidth=false, tellheight=false)
+ax2 = Axis(fig[2, 1], xlabel="Day", ylabel="Supply/demand ratio φ",
+    title="(b) Mealybug Food Supply/Demand Ratio")
+lines!(ax2, days, res_nobc.φ, color=:red, linewidth=1.5, label="Without biocontrol")
+lines!(ax2, days, res_bc.φ, color=:blue, linewidth=1.5, label="With E. lopezi")
+ylims!(ax2, 0, 1.05)
+axislegend(ax2, position=:rb)
 
 fig
 ```
 
 <img
-src="12_cassava_mealybug_files/figure-commonmark/cell-12-output-1.png"
-width="900" height="700" />
+src="12_cassava_mealybug_files/figure-commonmark/cell-11-output-1.png"
+width="900" height="750" />
 
 ### Stage-structured dynamics
 
 ``` julia
 fig2 = Figure(size=(900, 700))
 
-# Mealybug stages (with biocontrol)
-ax3 = Axis(fig2[1, 1],
-    xlabel="Day of year",
-    ylabel="Population",
+ax3 = Axis(fig2[1, 1], xlabel="Day", ylabel="Per plant",
     title="(a) Mealybug Stage Structure (with biocontrol)")
-
-lines!(ax3, days, res_bc.cm_totals[:, 1], color=:gold, linewidth=2,
-       label="Eggs")
-lines!(ax3, days, res_bc.cm_totals[:, 2], color=:orange, linewidth=2,
-       label="Nymphs")
-lines!(ax3, days, res_bc.cm_totals[:, 3], color=:red, linewidth=2,
-       label="Adults")
+for (j, (name, col)) in enumerate([("Embryos", :khaki), ("Eggs", :gold),
+                                    ("Immatures", :orange), ("Adults", :red)])
+    lines!(ax3, days, res_bc.cm_stages[:, j], color=col, linewidth=2, label=name)
+end
 vlines!(ax3, [90], color=:green, linestyle=:dash, linewidth=1)
 axislegend(ax3, position=:rt)
 
-# Parasitoid stages
-ax4 = Axis(fig2[2, 1],
-    xlabel="Day of year",
-    ylabel="Population",
+ax4 = Axis(fig2[2, 1], xlabel="Day", ylabel="Per plant",
     title="(b) Parasitoid Stage Structure")
-
-lines!(ax4, days, res_bc.el_totals[:, 1], color=:lightgreen, linewidth=2,
+lines!(ax4, days, res_bc.el_stages[:, 1], color=:lightgreen, linewidth=2,
        label="Egg + Larva (in host)")
-lines!(ax4, days, res_bc.el_totals[:, 2], color=:forestgreen, linewidth=2,
+lines!(ax4, days, res_bc.el_stages[:, 2], color=:forestgreen, linewidth=2,
        label="Pupa (mummy)")
-lines!(ax4, days, res_bc.el_totals[:, 3], color=:darkgreen, linewidth=2,
-       label="Adult")
+lines!(ax4, days, res_bc.el_stages[:, 3], color=:darkgreen, linewidth=2,
+       label="Adult female")
 vlines!(ax4, [90], color=:green, linestyle=:dash, linewidth=1)
 axislegend(ax4, position=:rt)
 
@@ -642,117 +598,116 @@ fig2
 ```
 
 <img
-src="12_cassava_mealybug_files/figure-commonmark/cell-13-output-1.png"
+src="12_cassava_mealybug_files/figure-commonmark/cell-12-output-1.png"
 width="900" height="700" />
 
-## 9. Temperature Sensitivity Analysis
+## 10. Temperature Sensitivity Analysis
 
-The parasitoid’s effectiveness depends on the thermal match between its
-development rate and that of its host. At cooler temperatures typical of
-highland regions, the parasitoid’s development slows relative to the
-mealybug, potentially weakening biocontrol. We compare three temperature
-regimes.
+The parasitoid’s effectiveness depends on how temperature acts on it and
+on its host. We compare three temperature regimes over years 2–3.
 
 ``` julia
-println("\n--- Temperature Sensitivity ---")
-println("Scenario          | Peak Mealybug (no BC) | Peak Mealybug (BC) | Reduction")
-println("-" ^ 78)
-
+println("--- Temperature Sensitivity (mean immatures + adults per plant, years 2–3) ---")
+println("Scenario               | No biocontrol | With E. lopezi | Ratio")
+println("-" ^ 66)
+later = 366:n_days
 for (label, offset) in [("Cool highlands (-4°C)", -4.0),
                          ("Standard savanna",       0.0),
                          ("Hot lowlands (+3°C)",   +3.0)]
-    # Modified weather
-    mod_days = [DailyWeather(27.0 + offset + 3.0 * sin(2π * (d - 100) / 365))
-                for d in 1:n_days]
-    mod_weather = WeatherSeries(mod_days; day_offset=1)
-
-    r_no = simulate_tritrophic(mod_weather, n_days; introduce_parasitoid=false)
-    r_bc = simulate_tritrophic(mod_weather, n_days; introduce_parasitoid=true,
-                                introduction_day=90, initial_parasitoids=0.5)
-
-    peak_no = maximum(sum(r_no.cm_totals, dims=2))
-    peak_bc = maximum(sum(r_bc.cm_totals, dims=2))
-    red = 1.0 - peak_bc / max(peak_no, 1e-10)
-
-    println("  $(rpad(label, 22)) | $(lpad(string(round(peak_no, digits=1)), 19)) | " *
-            "$(lpad(string(round(peak_bc, digits=1)), 16)) | $(round(100*red, digits=1))%")
+    w = savanna_weather(; offset)
+    r_no = simulate_tritrophic(w, n_days; introduce_parasitoid=false)
+    r_bc = simulate_tritrophic(w, n_days; introduce_parasitoid=true,
+                               introduction_day=90, initial_parasitoids=0.5)
+    a, b = mean(r_no.cm_active[later]), mean(r_bc.cm_active[later])
+    println("  $(rpad(label, 22)) | $(lpad(round(a, sigdigits=3), 13)) | " *
+            "$(lpad(round(b, sigdigits=3), 14)) | $(round(b / a, digits=3))")
 end
 ```
 
+    --- Temperature Sensitivity (mean immatures + adults per plant, years 2–3) ---
+    Scenario               | No biocontrol | With E. lopezi | Ratio
+    ------------------------------------------------------------------
+      Cool highlands (-4°C)  |       12300.0 |          788.0 | 0.064
+      Standard savanna       |       10400.0 |         1520.0 | 0.146
+      Hot lowlands (+3°C)    |        9300.0 |         4320.0 | 0.465
 
-    --- Temperature Sensitivity ---
-    Scenario          | Peak Mealybug (no BC) | Peak Mealybug (BC) | Reduction
-    ------------------------------------------------------------------------------
-      Cool highlands (-4°C)  |                43.7 |             43.7 | 0.0%
-      Standard savanna       |                44.6 |             44.6 | 0.0%
-      Hot lowlands (+3°C)    |                45.0 |             45.0 | 0.0%
+## 11. Timing of Parasitoid Introduction
 
-## 10. Timing of Parasitoid Introduction
-
-The timing of *E. lopezi* introduction relative to the mealybug
-colonization wave affects biocontrol success. Earlier introductions
-prevent the mealybug from building up a large population before the
-parasitoid’s numerical response catches up.
+We release the same 0.5 females per plant on different days. Releases
+before the outbreak (days 30 and 60) find few hosts. The parasitoids
+that persist then build up with the mealybug, and after the first year
+the outcome hardly depends on the release day.
 
 ``` julia
 fig3 = Figure(size=(800, 500))
-ax5 = Axis(fig3[1, 1],
-    xlabel="Day of year",
-    ylabel="Total mealybug population",
+ax5 = Axis(fig3[1, 1], yscale=log10,
+    xlabel="Day", ylabel="Mealybugs per plant (immatures + adults)",
     title="Effect of Parasitoid Introduction Timing")
 
-# No biocontrol baseline
-lines!(ax5, days, cm_total_nobc, color=:red, linewidth=2.5,
+lines!(ax5, days, max.(res_nobc.cm_active, 1e-2), color=:red, linewidth=2.5,
        linestyle=:dash, label="No biocontrol")
-
-# Different introduction timings
 colors = [:navy, :royalblue, :steelblue, :lightblue]
 for (i, intro_day) in enumerate([30, 60, 90, 150])
     r = simulate_tritrophic(weather, n_days; introduce_parasitoid=true,
-                             introduction_day=intro_day, initial_parasitoids=0.5)
-    cm_t = sum(r.cm_totals, dims=2)[:]
-    lines!(ax5, days, cm_t, color=colors[i], linewidth=1.8,
+                            introduction_day=intro_day, initial_parasitoids=0.5)
+    lines!(ax5, days, max.(r.cm_active, 1e-2), color=colors[i], linewidth=1.8,
            label="Release day $intro_day")
 end
-
-axislegend(ax5, position=:lt)
+axislegend(ax5, position=:rb)
 fig3
 ```
 
 <img
-src="12_cassava_mealybug_files/figure-commonmark/cell-15-output-1.png"
+src="12_cassava_mealybug_files/figure-commonmark/cell-14-output-1.png"
 width="800" height="500" />
 
 ## Key Insights
 
-1.  **Classical biocontrol success**: The parasitoid *E. lopezi*
-    dramatically reduces mealybug populations — consistent with the
-    empirical observation that mealybug populations declined and
-    remained at low levels across 1.5 million km² of Africa following
-    parasitoid establishment.
+1.  **Food limits the mealybug.** Without natural enemies, the mealybug
+    grows from one ovisac per plant until its demand outstrips what it
+    can take from the plant’s photosynthate. φ then falls below 1, and
+    fecundity and survival fall with it. Gutierrez et al. (1988b,
+    p. 930) report a food-limited maximum of about 55 000 mealybugs per
+    plant when rain-induced mortality is excluded, and about 10 000 per
+    plant in the 1983–84 rainy-season runs.
 
-2.  **Physiological time matching**: The parasitoid’s slightly lower
-    developmental threshold (15.4°C vs 15.6°C) and shorter generation
-    time (~310 DD vs ~643 DD) mean it can complete roughly twice as many
-    generations as the mealybug per growing season — a key advantage for
-    numerical response tracking. (Note: these thresholds follow Le Rü &
-    Fabres 1987 for P. manihoti; the Gutierrez 1988b model uses 13.5°C.)
+2.  **Classical biocontrol.** Gutierrez et al. (1988b, p. 929) found
+    that 0.5 *E. lopezi* females per plant suppressed the simulated
+    mealybug to about 0.1 of its density without parasitism. Here the
+    parasitoid persists through years 2–3 and holds the mealybug at a
+    small fraction of its food-limited level. Its own numbers are
+    regulated by the ratio of hosts attacked to demand.
 
-3.  **Temperature dependence of biocontrol**: At cooler temperatures,
-    both species slow down, but the parasitoid’s relative advantage may
-    erode. In practice, this was observed in highland regions where
-    biocontrol was less effective (Gutierrez et al. 2007).
+3.  **Physiological time.** The parasitoid’s generation (egg to adult,
+    186 DD above 13.3 °C) is shorter than the mealybug’s (embryo to
+    adult, 371 DD above 13.5 °C), so it completes about two generations
+    per mealybug generation.
 
-4.  **Timing matters**: Earlier parasitoid introduction prevents the
-    mealybug from reaching high densities, reducing both peak damage and
-    the time required for suppression. This aligns with IITA’s strategy
-    of rapid establishment releases across the cassava belt.
+4.  **Temperature.** In this model, warmer weather weakens biocontrol.
+    Above about 23 °C, the oviposition scalar
+    $1 - [(\Delta t - 10)/10]^2$ falls, and it reaches zero at 33.3 °C.
+    Cooler weather strengthens biocontrol.
 
-5.  **Demand-driven framework**: The PBDM supply/demand structure
-    naturally captures how mealybug populations are limited both from
-    below (by plant resource availability) and from above (by parasitoid
-    attack) — providing a mechanistic understanding that goes beyond
-    simple empirical correlations.
+5.  **Bottom-up and top-down.** The supply/demand ratio limits the
+    mealybug from below and the parasitoid limits it from above. Because
+    the mealybug takes photosynthate before the tubers do, biocontrol
+    shows up as extra tuber dry matter.
+
+## Simplifications
+
+- The cassava plant is a canopy of constant size plus a tuber store,
+  driven by light only. Water, nitrogen and the full plant demand model
+  of Gutierrez et al. (1988a) are omitted. The nitrogen scalar ν on
+  fecundity (eqn 2) is therefore 1.
+- Mealybug mass is not tracked separately. Demand uses the maximum mass
+  at each age (the integral of the growth demand), so φ does not slow
+  growth in mass. Embryos are a stage of their own, with the adult
+  mortality rate, instead of being carried inside their mothers. Embryo
+  shedding is omitted.
+- Parasitized mealybugs are removed at once, and their feeding stops. In
+  the paper, parasitized mealybugs keep feeding until they mummify.
+- There is no rainfall, so rain-induced mortality (eqn 16) is absent.
+  The coccinellid predators are omitted.
 
 ## References
 
@@ -804,46 +759,57 @@ width="800" height="500" />
 - Herren HR, Neuenschwander P (1991). Biological control of cassava
   pests in Africa. *Annual Review of Entomology* 36:257–283.
 
+- Gutierrez AP, Ponti L (2025). Pascal code for the cassava tri-trophic
+  PBDM system. Zenodo, doi:10.5281/zenodo.17544160.
+
+- Loomis RS, Williams WA (1963). Maximum crop productivity: an estimate.
+  *Crop Science* 3:67–72.
+
 ## Parameter Sources
 
-The following table summarizes all model parameters, their values, and
-sources. Parameters marked **\[assumed\]** are tutorial approximations
-not directly from the cited papers — they provide reasonable qualitative
-behavior but should not be treated as published values.
+“App.” is the Appendix of Gutierrez et al. (1988b, p. 940). “CASAS” is
+the cassava code of Gutierrez & Ponti (doi:10.5281/zenodo.17544160).
+Parameters marked **\[assumed\]** have no published source and were
+chosen for this vignette.
 
-| Parameter | Symbol | Value | Source |
-|----|----|----|----|
-| Cassava base temperature | `CASSAVA_T_BASE` | 10.0 °C | Gutierrez et al. (1988a), plant submodel |
-| Cassava upper temperature | `CASSAVA_T_UPPER` | 38.0 °C | Gutierrez et al. (1988a), plant submodel |
-| Canopy development time | `canopy τ` | 2500 DD | Gutierrez et al. (1988a), plant submodel |
-| Canopy substages | `canopy k` | 25 | Gutierrez et al. (1988a) |
-| Tuber development time | `tuber τ` | 3000 DD | Gutierrez et al. (1988a), plant submodel |
-| Tuber substages | `tuber k` | 20 | Gutierrez et al. (1988a) |
-| Mealybug lower threshold | `CM_T_BASE` | 15.6 °C | Le Rü & Fabres (1987); cf. 13.5 °C in Gutierrez et al. (1988b) Appendix |
-| Mealybug upper threshold | `CM_T_UPPER` | 35.0 °C | Le Rü & Fabres (1987) |
-| Mealybug egg duration | `egg τ` | 108 DD | Le Rü & Fabres (1987) |
-| Mealybug egg substages | `egg k` | 10 | **\[assumed\]** |
-| Mealybug nymph duration | `nymph τ` | 235 DD | Le Rü & Fabres (1987) |
-| Mealybug nymph substages | `nymph k` | 20 | **\[assumed\]** |
-| Mealybug adult duration | `adult τ` | 300 DD | Fabres (1981); Schulthess (1987) |
-| Mealybug adult substages | `adult k` | 15 | **\[assumed\]** |
-| Mealybug total fecundity | — | ~300 eggs | Fabres (1981); Schulthess (1987) |
-| Mealybug fecundity scaling | `CM_FECUNDITY` | 7.0 | **\[assumed\]** — tutorial scaling parameter |
-| Mealybug female fraction | `CM_FEMALE_FRAC` | 0.7 | **\[assumed\]** — P. manihoti is parthenogenetic (Fabres 1981) |
-| Parasitoid lower threshold | `EL_T_BASE` | 15.4 °C | **\[assumed\]** — estimated from Löhr et al. (cited in Gutierrez et al. 1988b) |
-| Parasitoid upper threshold | `EL_T_UPPER` | 34.0 °C | **\[assumed\]** — estimated from Löhr et al. |
-| Parasitoid egg+larva duration | `egg_larva τ` | 180 DD | **\[assumed\]** — estimated from Löhr et al. |
-| Parasitoid pupa duration | `pupa τ` | 40 DD | **\[assumed\]** — estimated from Löhr et al. |
-| Parasitoid adult duration | `adult τ` | 90 DD | **\[assumed\]** — estimated from Sullivan & Neuenschwander (1988) |
-| Parasitoid max fecundity | — | ~85 eggs | Iziquel (1985), cited in Gutierrez et al. (1988b, p. 928) |
-| Parasitoid host-feeding fraction | — | 0.3 | Gutierrez et al. (1988b, p. 928) |
-| Parasitoid survival to mummy | — | 0.6 | **\[assumed\]** |
-| Parasitoid search rate | `a` | 0.04 d⁻¹ | **\[assumed\]** — Holling Type II simplification of Frazer-Gilbert s_E |
-| Parasitoid handling time | `h` | 0.5 d | **\[assumed\]** |
-| Mealybug Frazer-Gilbert θ | `θ` | 0.5 | **\[assumed\]** — tutorial value |
-| Conversion efficiency (CM→cassava) | `ε` | 0.15 | **\[assumed\]** |
-| Conversion efficiency (EL→CM) | `ε` | 0.30 | **\[assumed\]** |
-| Mealybug per-stage mortality | `μ` | 0.003–0.005 DD⁻¹ | **\[assumed\]** — age-structured rates |
+| Parameter | Value | Source |
+|----|----|----|
+| Cassava base / upper temperature | 10 / 38 °C | Gutierrez et al. (1988a) |
+| Canopy leaf mass, age classes, longevity | 125 g plant⁻¹, k = 25, 2500 DD | **\[assumed\]** |
+| Light interception | 1 − exp(−0.8047 LAI) | CASAS `bio.pas` |
+| Radiation to carbohydrate | cal cm⁻² ÷ 3.875 | CASAS `bio.pas` (Loomis & Williams 1963) |
+| Leaf area per gram | 1.80 dm² g⁻¹ | CASAS `init.pas` (TMS30572) |
+| Plant spacing | 1 plant m⁻² | CASAS `Cassava.ini` |
+| Maximum plant demand `B_PLANT` | 10 g CH₂O plant⁻¹ d⁻¹ | **\[assumed\]** (≈ 3 kg dry matter plant⁻¹ yr⁻¹) |
+| Plant allocation | leaf replacement first, then tubers | **\[assumed\]** |
+| Mealybug threshold | 13.5 °C | App. |
+| Mealybug upper threshold | 35 °C | Le Rü & Fabres (1987) |
+| Embryo / egg / immature / adult durations | 65 / 114 / 192 / 371 DD | App. |
+| Initial infestation | 20 eggs plant⁻¹ | App. |
+| Parthenogenesis (all female) | — | Gutierrez et al. (1988b, p. 921) |
+| Search rate on photosynthate | 0.25 | App. |
+| Immature growth demand | 0.0249 e^(−4.6+0.0249a) mg DD⁻¹ | App. |
+| Embryo growth demand | 0.000154 mg DD⁻¹ | App. |
+| Reserves | 10 % of growth demand | App. |
+| Respiration | 0.135 e^(0.007Δt) × active weight, per day | App. (per-day reading) |
+| Proportion egested β | 0.176 | App. |
+| Maximum embryo production | 0.47x/1.0072^x per female per day | App. (per-day reading) |
+| φ scaling fecundity and daily survival | — | eqns 2 and 6, p. 927 |
+| Mealybug intrinsic mortality | 0.005 / 0.003 / 0.004 / 0.005 DD⁻¹ | **\[assumed\]** |
+| Substages k (embryo, egg, immature, adult) | 10, 10, 20, 15 | **\[assumed\]** |
+| *E. lopezi* threshold | 13.3 °C | App. |
+| *E. lopezi* upper threshold | 34 °C | **\[assumed\]** |
+| Egg + larva / pupa / adult | 100 / 86 / 280 DD | App. |
+| Oviposition rate | 0.9 eggs female⁻¹ DD⁻¹ | App. |
+| Temperature effect on oviposition | 1 − \[(DD − 10)/10\]² | App. |
+| Host feeding | 0.3 of hosts attacked | App.; p. 925 |
+| Host preferences (immatures, adults) | 0.3, 0.65 | App. (preoviposition adults, 0.75, not separated) |
+| Aggregate search | 1 − exp(−0.05 FEM) | App.; p. 926 |
+| Sex ratio | H_w/H_T bounded to \[0.3, 0.75\] | eqn 13, p. 926 |
+| Adult food-related survival | hosts attacked / demand, per day | p. 926 |
+| Hyperparasitism | 0.28 of immatures | p. 926 (read as a fraction lost) |
+| *E. lopezi* adult intrinsic mortality | 0.006 DD⁻¹ | **\[assumed\]** |
+| Initial *E. lopezi* | 0.5 adult females plant⁻¹ | App. |
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
